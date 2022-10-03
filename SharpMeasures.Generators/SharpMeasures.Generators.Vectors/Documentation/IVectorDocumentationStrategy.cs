@@ -1,10 +1,7 @@
 ﻿namespace SharpMeasures.Generators.Vectors.Documentation;
 
 using SharpMeasures.Generators.Quantities;
-using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
 using SharpMeasures.Generators.Units;
-
-using System.Collections.Generic;
 
 internal interface IVectorDocumentationStrategy
 {
@@ -37,10 +34,14 @@ internal interface IVectorDocumentationStrategy
     public abstract string CastConversion(NamedType vector);
     public abstract string AntidirectionalCastConversion(NamedType vector);
 
-    public abstract string Derivation(DerivedQuantitySignature signature, IReadOnlyList<string> parameterNames);
-    public abstract string OperatorDerivation(OperatorDerivation derivation);
+    public abstract string OperationMethod(IQuantityOperation operation, NamedType other);
+    public abstract string MirroredOperationMethod(IQuantityOperation operation, NamedType other);
+    public abstract string VectorOperationMethod(IVectorOperation operation, NamedType other);
+    public abstract string MirroredVectorOperationMethod(IVectorOperation operation, NamedType other);
+    public abstract string OperationOperator(IQuantityOperation operation, NamedType other);
+    public abstract string MirroredOperationOperator(IQuantityOperation operation, NamedType other);
 
-    public abstract string Process(IProcessedQuantity process);
+    public abstract string Process(IQuantityProcess process);
 
     public abstract string IsNaN();
     public abstract string IsZero();

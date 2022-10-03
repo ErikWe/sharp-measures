@@ -4,7 +4,7 @@
     Title: Duplicate derivation signature,
     Severity: Error,
     WarningLevel: 0,
-    Location: : (19,33)-(19,73),
+    Location: : (18,33)-(18,73),
     Description: ,
     HelpLink: ,
     MessageFormat: {0} already defines a derivation with an identical signature,

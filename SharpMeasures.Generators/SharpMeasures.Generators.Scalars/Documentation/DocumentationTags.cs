@@ -1,7 +1,6 @@
 ﻿namespace SharpMeasures.Generators.Scalars.Documentation;
 
 using SharpMeasures.Generators.Quantities;
-using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
 using SharpMeasures.Generators.SourceBuilding;
 using SharpMeasures.Generators.Units;
 
@@ -37,10 +36,20 @@ internal sealed class DocumentationTags : IDocumentationStrategy, IEquatable<Doc
     public string CastConversion(NamedType scalar) => $"Operator_CastTo_{scalar.Name}";
     public string AntidirectionalCastConversion(NamedType scalar) => $"Operator_CastFrom_{scalar.Name}";
 
-    public string Derivation(DerivedQuantitySignature signature, IReadOnlyList<string> parameterNames) => $"Derivation_{ParseDerivableSignature(signature)}";
-    public string OperatorDerivation(OperatorDerivation derivation) => $"OperatorDerivationLHS_{derivation.Result.Name}_{derivation.RightHandSide.Name}";
+    public string OperationMethod(IQuantityOperation operation, NamedType other) => $"OperationMethod_{operation.MethodName}_{other.Name}";
+    public string MirroredOperationMethod(IQuantityOperation operation, NamedType other) => $"OperationMethod_{operation.MirroredMethodName}_{other.Name}";
+    public string OperationOperator(IQuantityOperation operation, NamedType other) => $"Operation_{(operation.Position is OperatorPosition.Left ? "LHS" : "RHS")}_{operation.OperatorType}_{other.Name}";
+    public string MirroredOperationOperator(IQuantityOperation operation, NamedType other) => $"Operation_{(operation.Position is OperatorPosition.Right ? "LHS" : "RHS")}_{operation.OperatorType}_{other.Name}";
 
-    public string Process(IProcessedQuantity process) => $"Process_{process.Name}";
+    public string Process(IQuantityProcess process)
+    {
+        if (process.ImplementAsProperty || process.ParameterTypes.Count is 0)
+        {
+            return $"Process_{process.Name}";
+        }
+
+        return $"Process_{process.Name}_{ParseProcessSignature(process.ParameterTypes)}";
+    }
 
     public string IsNaN() => "IsNaN";
     public string IsZero() => "IsZero";
@@ -106,7 +115,7 @@ internal sealed class DocumentationTags : IDocumentationStrategy, IEquatable<Doc
     public string LessThanOrEqualSameType() => "Operator_LessThanOrEqual_SameType";
     public string GreaterThanOrEqualSameType() => "Operator_GreaterThanOrEqual_SameType";
 
-    private static string ParseDerivableSignature(IReadOnlyList<NamedType> signature)
+    private static string ParseProcessSignature(IReadOnlyList<NamedType> signature)
     {
         StringBuilder tag = new();
 

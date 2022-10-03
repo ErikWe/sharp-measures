@@ -68,12 +68,13 @@ internal sealed class GroupMemberValidator
 
         var inheritedConstants = CollectInheritedItems(vectorType, vectorPopulation, static (vector) => vector.Constants, static (vector) => Array.Empty<IVectorConstant>(), static (vector) => vector.Definition.InheritConstantsFromMembers, static (vector) => false, static (vector) => false);
 
-        var derivations = CommonValidation.ValidateDerivations(vectorType.Type, vectorType.Derivations, scalarPopulation, vectorPopulation, DiagnosticsStrategy);
+        var operations = CommonValidation.ValidateOperations(vectorType.Type, new[] { vectorType.Definition.Dimension }, vectorType.Operations, scalarPopulation, vectorPopulation, DiagnosticsStrategy);
+        var vectorOperations = CommonValidation.ValidateVectorOperations(vectorType.Type, new[] { vectorType.Definition.Dimension }, vectorType.VectorOperations, scalarPopulation, vectorPopulation, DiagnosticsStrategy);
         var constants = CommonValidation.ValidateConstants(vectorType.Type, vectorType.Definition.Dimension, unit, allUnits, vectorType.Constants, inheritedConstants, DiagnosticsStrategy);
         var conversions = CommonValidation.ValidateConversions(vectorType.Type, vectorType.Definition.Dimension, vectorType.Conversions, vectorPopulation, DiagnosticsStrategy);
 
-        GroupMemberType product = new(vectorType.Type, vector.Result, derivations.Result, vectorType.Processes, constants.Result, conversions.Result, unitInstanceInclusions.Result, unitInstanceExclusions.Result);
-        var allDiagnostics = vector.Concat(derivations).Concat(constants).Concat(conversions).Concat(unitInstanceInclusions).Concat(unitInstanceExclusions);
+        GroupMemberType product = new(vectorType.Type, vector.Result, operations.Result, vectorOperations.Result, vectorType.Processes, constants.Result, conversions.Result, unitInstanceInclusions.Result, unitInstanceExclusions.Result);
+        var allDiagnostics = vector.Concat(operations).Concat(vectorOperations).Concat(constants).Concat(conversions).Concat(unitInstanceInclusions).Concat(unitInstanceExclusions);
 
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }

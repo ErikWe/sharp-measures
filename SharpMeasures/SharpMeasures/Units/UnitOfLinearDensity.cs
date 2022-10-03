@@ -1,8 +1,8 @@
 ﻿namespace SharpMeasures;
 
-using SharpMeasures.Generators.Units;
+using SharpMeasures.Generators;
 
 [DerivedUnitInstance("KilogramPerMetre", "s[Per]", new[] { "Kilogram", "Metre" })]
 [DerivableUnit("{0} / {1}", typeof(UnitOfMass), typeof(UnitOfLength))]
-[SharpMeasuresUnit(typeof(LinearDensity))]
+[Unit(typeof(LinearDensity))]
 public readonly partial record struct UnitOfLinearDensity { }

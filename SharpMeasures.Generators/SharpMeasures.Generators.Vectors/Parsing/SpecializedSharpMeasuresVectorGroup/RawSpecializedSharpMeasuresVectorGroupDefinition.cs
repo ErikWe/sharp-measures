@@ -8,7 +8,7 @@ internal sealed record class RawSpecializedSharpMeasuresVectorGroupDefinition : 
     public static RawSpecializedSharpMeasuresVectorGroupDefinition FromSymbolic(SymbolicSpecializedSharpMeasuresVectorGroupDefinition symbolicDefinition) => new RawSpecializedSharpMeasuresVectorGroupDefinition(symbolicDefinition.Locations) with
     {
         OriginalQuantity = symbolicDefinition.OriginalQuantity?.AsNamedType(),
-        InheritDerivations = symbolicDefinition.InheritDerivations,
+        InheritDerivations = symbolicDefinition.InheritOperations,
         InheritConstants = symbolicDefinition.InheritConstants,
         InheritConversions = symbolicDefinition.InheritConversions,
         InheritUnits = symbolicDefinition.InheritUnits,

@@ -4,7 +4,7 @@
     Title: Expected the name of a unit,
     Severity: Error,
     WarningLevel: 0,
-    Location: : (6,38)-(6,42),
+    Location: : (5,38)-(5,42),
     Description: ,
     HelpLink: ,
     MessageFormat: Expected the name of a {0},

@@ -4,7 +4,7 @@
     Title: Unit does not support biased instances,
     Severity: Error,
     WarningLevel: 0,
-    Location: : (7,1)-(7,19),
+    Location: : (6,1)-(6,19),
     Description: ,
     HelpLink: ,
     MessageFormat: The biased unit "{0}" could not be implemented, as {1} does not include a bias term,

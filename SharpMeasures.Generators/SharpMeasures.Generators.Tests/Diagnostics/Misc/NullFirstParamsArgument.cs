@@ -15,26 +15,25 @@ public class NullFirstParamsArgument
     public void DerivableUnitSignature() => AssertDerivableUnitSignature();
 
     private static string DerivationUnitSignatureText => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [SharpMeasuresScalar(typeof(UnitOfTime))]
+        [ScalarQuantity(typeof(UnitOfTime))]
         public partial class Time { }
 
-        [SharpMeasuresScalar(typeof(UnitOfSpeed))]
+        [ScalarQuantity(typeof(UnitOfSpeed))]
         public partial class Speed { }
 
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
 
-        [SharpMeasuresUnit(typeof(Time))]
+        [Unit(typeof(Time))]
         public partial class UnitOfTime { }
 
         [DerivableUnit("1", "{0} + {1} + {2}", null, typeof(UnitOfTime), typeof(UnitOfLength))]
-        [SharpMeasuresUnit(typeof(Speed))]
+        [Unit(typeof(Speed))]
         public partial class UnitOfSpeed { }
         """;
 

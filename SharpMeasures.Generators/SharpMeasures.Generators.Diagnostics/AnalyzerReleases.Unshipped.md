@@ -56,13 +56,13 @@ Measures1225 | Usage | Error | Quantity convertible to itself
 Measures1240 | Usage | Warning | Contradictory attributes
 Measures1241 | Usage | Warning | Inclusion or exclusion had no effect
 Measures1242 | Usage | Info | Union inclusion stacking mode is redundant
-Measures1260 | Usage | Error | Expression cannot be implemented with operators
-Measures1261 | Usage | Error | Unmatched derivation expression quantity
-Measures1262 | Usage | Error | Quantity is not included in expression
-Measures1263 | Usage | Error | Expression could not be interpreted
-Measures1264 | Usage | Error | Expression contains constant
-Measures1265 | Usage | Error | Derivation contains incompatible quantities
-Measures1266 | Usage | Error | Derivation results in an unexpected quantity
+Measures1260 | Naming | Error | Invalid name of quantity operation
+Measures1261 | Naming | Info | Quantity operation name redundant
+Measures1262 | Usage | Error | Duplicate quantity operation
+Measures1263 | Usage | Error | Invalid quantity operation
+Measures1264 | Usage | Warning | Quantity operation cannot be mirrored
+Measures1265 | Usage | Warning | Quantity operation method cannot be mirrored
+Measures1266 | Usage | Info | Quantity operation not mirrored
 Measures1280 | Naming | Error | Invalid name of process
 Measures1281 | Naming | Error | Duplicate name of process
 Measures1282 | Usage | Error | Invalid processing expression
@@ -78,7 +78,9 @@ Measures1423 | Usage | Error | Vector group already contains dimension
 Measures1424 | Usage | Error | No vector of appropiate dimension in group
 Measures1425 | Naming | Warning | Vector name and dimension conflict
 Measures1426 | Naming | Warning | Vector group name suggests dimension
+Measures1427 | Usage | Error | Non-overlapping vector dimensions
 Measures1440 | Usage | Error | Invalid dimension of vector constant
+Measures1460 | Usage | Error | Vector does not support cross product
 Measures1800 | Usage | Error | Unrecognized enum value
 Measures1900 | Documentation | Error | Unresolved documentation dependency
 Measures1901 | Documentation | Error | Documentation tag not found

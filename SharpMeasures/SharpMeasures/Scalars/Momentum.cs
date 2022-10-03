@@ -1,10 +1,6 @@
 ﻿namespace SharpMeasures;
 
-using SharpMeasures.Generators.Quantities;
-using SharpMeasures.Generators.Scalars;
+using SharpMeasures.Generators;
 
-[SharpMeasuresScalar(typeof(UnitOfMomentum), DefaultUnitInstanceName = "KilogramMetrePerSecond", DefaultUnitInstanceSymbol = "kg∙m∙s⁻¹")]
-public readonly partial record struct Momentum { }
-
-[DerivedQuantity("{0} * {1}", typeof(Mass), typeof(Speed), Permutations = true)]
+[ScalarQuantity(typeof(UnitOfMomentum), DefaultUnitInstanceName = "KilogramMetrePerSecond", DefaultUnitInstanceSymbol = "kg∙m∙s⁻¹")]
 public readonly partial record struct Momentum { }

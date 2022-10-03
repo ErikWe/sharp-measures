@@ -1,6 +1,6 @@
 ﻿namespace SharpMeasures;
 
-using SharpMeasures.Generators.Units;
+using SharpMeasures.Generators;
 
 [FixedUnitInstance("Kilogram", "[*]s")]
 [PrefixedUnitInstance("Gram", "[*]s", "Kilogram", MetricPrefixName.Milli)]
@@ -9,5 +9,5 @@ using SharpMeasures.Generators.Units;
 [PrefixedUnitInstance("Tonne", "[*]s", "Gram", MetricPrefixName.Mega)]
 [ScaledUnitInstance("Ounce", "[*]s", "Gram", 28.349523125)]
 [ScaledUnitInstance("Pound", "[*]s", "Ounce", 16)]
-[SharpMeasuresUnit(typeof(Mass))]
+[Unit(typeof(Mass))]
 public readonly partial record struct UnitOfMass { }

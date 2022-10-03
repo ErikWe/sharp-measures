@@ -4,7 +4,7 @@
     Title: Vector group already contains dimension,
     Severity: Error,
     WarningLevel: 0,
-    Location: : (7,1)-(7,31),
+    Location: : (5,1)-(5,18),
     Description: ,
     HelpLink: ,
     MessageFormat: The vector group {0} already contains a member of dimension {1},

@@ -1,6 +1,6 @@
 ﻿namespace SharpMeasures;
 
-using SharpMeasures.Generators.Scalars;
+using SharpMeasures.Generators;
 
-[SharpMeasuresScalar(typeof(UnitOfTemperature), UseUnitBias = true, DefaultUnitInstanceName = "Kelvin", DefaultUnitInstanceSymbol = "K")]
+[ScalarQuantity(typeof(UnitOfTemperature), UseUnitBias = true, DefaultUnitInstanceName = "Kelvin", DefaultUnitInstanceSymbol = "K")]
 public readonly partial record struct Temperature { }

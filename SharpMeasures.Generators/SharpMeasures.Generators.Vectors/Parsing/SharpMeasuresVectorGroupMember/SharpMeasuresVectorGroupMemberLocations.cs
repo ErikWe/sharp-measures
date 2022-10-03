@@ -9,11 +9,11 @@ internal sealed record class SharpMeasuresVectorGroupMemberLocations : AAttribut
 
     public MinimalLocation? VectorGroup { get; init; }
 
-    public MinimalLocation? InheritDerivations { get; init; }
+    public MinimalLocation? InheritOperations { get; init; }
     public MinimalLocation? InheritConversions { get; init; }
     public MinimalLocation? InheritUnits { get; init; }
 
-    public MinimalLocation? InheritDerivationsFromMembers { get; init; }
+    public MinimalLocation? InheritOperationsFromMembers { get; init; }
     public MinimalLocation? InheritProcessesFromMembers { get; init; }
     public MinimalLocation? InheritConstantsFromMembers { get; init; }
     public MinimalLocation? InheritConversionsFromMembers { get; init; }
@@ -32,11 +32,11 @@ internal sealed record class SharpMeasuresVectorGroupMemberLocations : AAttribut
 
     public bool ExplicitlySetVectorGroup => VectorGroup is not null;
 
-    public bool ExplicitlySetInheritDerivations => InheritDerivations is not null;
+    public bool ExplicitlySetInheritOperations => InheritOperations is not null;
     public bool ExplicitlySetInheritConversions => InheritConversions is not null;
     public bool ExplicitlySetInheritUnits => InheritUnits is not null;
 
-    public bool ExplicitlySetInheritDerivationsFromMembers => InheritDerivationsFromMembers is not null;
+    public bool ExplicitlySetInheritOperationsFromMembers => InheritOperationsFromMembers is not null;
     public bool ExplicitlySetInheritProcessesFromMembers => InheritProcessesFromMembers is not null;
     public bool ExplicitlySetInheritConstantsFromMembers => InheritConstantsFromMembers is not null;
     public bool ExplicitlySetInheritConversionsFromMembers => InheritConversionsFromMembers is not null;

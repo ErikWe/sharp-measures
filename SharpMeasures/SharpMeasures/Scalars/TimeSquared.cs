@@ -1,8 +1,6 @@
 ﻿namespace SharpMeasures;
 
-using SharpMeasures.Generators.Quantities;
-using SharpMeasures.Generators.Scalars;
+using SharpMeasures.Generators;
 
-[DerivedQuantity("{0} / {1}", typeof(Distance), typeof(Acceleration))]
-[SharpMeasuresScalar(typeof(UnitOfTimeSquared), DefaultUnitInstanceName = "SquareSecond", DefaultUnitInstanceSymbol = "s²")]
+[ScalarQuantity(typeof(UnitOfTimeSquared), DefaultUnitInstanceName = "SquareSecond", DefaultUnitInstanceSymbol = "s²")]
 public readonly partial record struct TimeSquared { }

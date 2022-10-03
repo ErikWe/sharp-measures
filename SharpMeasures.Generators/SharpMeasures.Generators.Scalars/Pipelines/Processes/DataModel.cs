@@ -10,11 +10,11 @@ internal readonly record struct DataModel
 {
     public DefinedType Scalar { get; }
 
-    public IReadOnlyList<IProcessedQuantity> Processes { get; }
+    public IReadOnlyList<IQuantityProcess> Processes { get; }
 
     public IDocumentationStrategy Documentation { get; }
 
-    public DataModel(DefinedType scalar, IReadOnlyList<IProcessedQuantity> processes, IDocumentationStrategy documentation)
+    public DataModel(DefinedType scalar, IReadOnlyList<IQuantityProcess> processes, IDocumentationStrategy documentation)
     {
         Scalar = scalar;
 

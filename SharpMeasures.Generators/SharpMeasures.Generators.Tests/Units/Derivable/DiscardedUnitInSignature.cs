@@ -15,19 +15,18 @@ public class DiscardedUnitInSignature
     private static GeneratorVerifier Assert(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source, GeneratorVerifierSettings.NoAssertions);
 
     private static string Text => """
-        using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators;
         
         public partial class A { }
         
-        [SharpMeasuresScalar(typeof(UnitOfB))]
+        [ScalarQuantity(typeof(UnitOfB))]
         public partial class B { }
         
-        [SharpMeasuresUnit(typeof(A))]
+        [Unit(typeof(A))]
         public partial class UnitOfA { }
         
         [DerivableUnit("1 / {0}", typeof(UnitOfA))]
-        [SharpMeasuresUnit(typeof(B))]
+        [Unit(typeof(B))]
         public partial class UnitOfB { }
         """;
 }

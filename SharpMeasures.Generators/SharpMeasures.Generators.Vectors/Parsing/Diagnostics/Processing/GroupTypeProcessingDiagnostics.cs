@@ -3,7 +3,6 @@
 using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Diagnostics;
-using SharpMeasures.Generators.Quantities;
 using SharpMeasures.Generators.Vectors.Parsing.Abstraction;
 
 internal sealed class GroupTypeProcessingDiagnostics : IGroupTypeProcessingDiagnostics

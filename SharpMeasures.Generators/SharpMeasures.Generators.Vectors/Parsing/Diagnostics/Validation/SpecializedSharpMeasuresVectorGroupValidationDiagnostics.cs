@@ -42,7 +42,7 @@ internal sealed class SpecializedSharpMeasuresVectorGroupValidationDiagnostics :
 
     public Diagnostic RootVectorGroupNotResolved(ISpecializedSharpMeasuresVectorGroupValidationContext context, SpecializedSharpMeasuresVectorGroupDefinition definition)
     {
-        return DiagnosticConstruction.QuantityGroupMissingRoot<SharpMeasuresVectorGroupAttribute>(definition.Locations.AttributeName.AsRoslynLocation());
+        return DiagnosticConstruction.QuantityGroupMissingRoot<VectorGroupAttribute>(definition.Locations.AttributeName.AsRoslynLocation());
     }
 
     public Diagnostic TypeNotScalar(ISpecializedSharpMeasuresVectorGroupValidationContext context, SpecializedSharpMeasuresVectorGroupDefinition definition)

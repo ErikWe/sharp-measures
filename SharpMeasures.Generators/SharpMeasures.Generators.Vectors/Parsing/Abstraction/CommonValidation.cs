@@ -3,7 +3,7 @@
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Quantities.Parsing.Contexts.Validation;
-using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
+using SharpMeasures.Generators.Quantities.Parsing.QuantityOperation;
 using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
 using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
 using SharpMeasures.Generators.Scalars;
@@ -14,14 +14,23 @@ using SharpMeasures.Generators.Vectors.Parsing.VectorConstant;
 
 using System.Collections.Generic;
 using System.Linq;
+using SharpMeasures.Generators.Quantities;
+using SharpMeasures.Generators.Vectors.Parsing.VectorOperation;
 
 internal static class CommonValidation
 {
-    public static IResultWithDiagnostics<IReadOnlyList<DerivedQuantityDefinition>> ValidateDerivations(DefinedType type, IReadOnlyList<DerivedQuantityDefinition> derivations, IScalarPopulation scalarPopulation, IVectorPopulation vectorPopulation, IVectorValidationDiagnosticsStrategy diagnosticsStrategy)
+    public static IResultWithDiagnostics<IReadOnlyList<QuantityOperationDefinition>> ValidateOperations(DefinedType type, IReadOnlyList<int> dimensions, IReadOnlyList<QuantityOperationDefinition> operations, IScalarPopulation scalarPopulation, IVectorPopulation vectorPopulation, IVectorValidationDiagnosticsStrategy diagnosticsStrategy)
     {
-        var validationContext = new DerivedQuantityValidationContext(type, scalarPopulation, vectorPopulation);
+        var validationContext = new QuantityOperationValidationContext(type, QuantityType.Vector, dimensions, scalarPopulation, vectorPopulation);
 
-        return ProcessingFilter.Create(new DerivedQuantityValidator(diagnosticsStrategy.DerivedQuantityDiagnostics)).Filter(validationContext, derivations);
+        return ValidityFilter.Create(new QuantityOperationValidator(diagnosticsStrategy.QuantityOperationDiagnostics)).Filter(validationContext, operations);
+    }
+
+    public static IResultWithDiagnostics<IReadOnlyList<VectorOperationDefinition>> ValidateVectorOperations(DefinedType type, IReadOnlyList<int> dimensions, IReadOnlyList<VectorOperationDefinition> vectorOperations, IScalarPopulation scalarPopulation, IVectorPopulation vectorPopulation, IVectorValidationDiagnosticsStrategy diagnosticsStrategy)
+    {
+        var validationContext = new VectorOperationValidationContext(type, dimensions, scalarPopulation, vectorPopulation);
+
+        return ValidityFilter.Create(new VectorOperationValidator(diagnosticsStrategy.VectorOperationDiagnostics)).Filter(validationContext, vectorOperations);
     }
 
     public static IResultWithDiagnostics<IReadOnlyList<VectorConstantDefinition>> ValidateConstants(DefinedType type, int dimension, IUnitType unit, IEnumerable<IUnitInstance> includedUnits, IReadOnlyList<VectorConstantDefinition> constants, IEnumerable<IVectorConstant> inheritedConstants, IVectorValidationDiagnosticsStrategy diagnosticsStrategy)

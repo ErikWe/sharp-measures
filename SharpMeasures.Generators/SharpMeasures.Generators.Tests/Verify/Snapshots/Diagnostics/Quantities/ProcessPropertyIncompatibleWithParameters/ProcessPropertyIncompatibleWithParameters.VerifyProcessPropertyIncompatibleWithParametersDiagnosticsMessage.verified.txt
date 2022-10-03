@@ -4,7 +4,7 @@
     Title: Process with parameter cannot be a property,
     Severity: Warning,
     WarningLevel: 1,
-    Location: : (4,105)-(4,109),
+    Location: : (2,103)-(2,107),
     Description: ,
     HelpLink: ,
     MessageFormat: As "{0}" defines parameters, it can not be defined as a property. Remove all parameters or do not define the process as a property.,

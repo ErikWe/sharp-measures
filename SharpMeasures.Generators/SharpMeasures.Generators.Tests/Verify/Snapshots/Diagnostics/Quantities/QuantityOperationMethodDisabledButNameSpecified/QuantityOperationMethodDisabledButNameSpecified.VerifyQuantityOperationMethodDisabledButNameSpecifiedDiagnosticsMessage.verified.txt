@@ -1,0 +1,17 @@
+﻿[
+  {
+    Id: Measures1261,
+    Title: Quantity operation name redundant,
+    Severity: Info,
+    WarningLevel: 1,
+    Location: : (2,146)-(2,154),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: The quantity operation is not implemented as a method, making the name redundant,
+    Message: The quantity operation is not implemented as a method, making the name redundant,
+    Category: Naming,
+    CustomTags: [
+      Unnecessary
+    ]
+  }
+]

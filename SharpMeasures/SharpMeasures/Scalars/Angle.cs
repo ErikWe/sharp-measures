@@ -1,13 +1,6 @@
 ﻿namespace SharpMeasures;
 
-using SharpMeasures.Generators.Quantities;
-using SharpMeasures.Generators.Scalars;
+using SharpMeasures.Generators;
 
-[SharpMeasuresScalar(typeof(UnitOfAngle), DefaultUnitInstanceName = "Radian", DefaultUnitInstanceSymbol = "rad")]
-public readonly partial record struct Angle { }
-
-[DerivedQuantity("{0} / {1}", typeof(AngularAcceleration), typeof(FrequencyDrift))]
-[DerivedQuantity("{0} * {1}", typeof(AngularAcceleration), typeof(TimeSquared), Permutations = true)]
-[DerivedQuantity("{0} / {1}", typeof(AngularSpeed), typeof(Frequency))]
-[DerivedQuantity("{0} * {1}", typeof(AngularSpeed), typeof(Time), Permutations = true)]
+[ScalarQuantity(typeof(UnitOfAngle), DefaultUnitInstanceName = "Radian", DefaultUnitInstanceSymbol = "rad")]
 public readonly partial record struct Angle { }

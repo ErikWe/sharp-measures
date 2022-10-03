@@ -16,23 +16,21 @@ public class NormalCases
     public Task Verify() => GeneratorVerifier.Construct<SharpMeasuresGenerator>(Text).AssertNoDiagnosticsReported().VerifyMatchingSourceNames(new Regex(@"^Position\.\S+\.g\.cs"));
 
     private static string Text => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Vectors;
+        using SharpMeasures.Generators;
 
-        [SharpMeasuresVectorGroupMember(typeof(Position))]
+        [VectorGroupMember(typeof(Position))]
         public partial class Position3 { }
 
-        [SharpMeasuresVectorGroupMember(typeof(Position))]
+        [VectorGroupMember(typeof(Position))]
         public partial class Position2 { }
 
-        [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
+        [VectorGroup(typeof(UnitOfLength))]
         public static partial class Position { }
         
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
         
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 }

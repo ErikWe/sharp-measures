@@ -1,6 +1,6 @@
 ﻿namespace SharpMeasures;
 
-using SharpMeasures.Generators.Units;
+using SharpMeasures.Generators;
 
 [DerivedUnitInstance("PerSquareMetre", "[*]", new[] { "SquareMetre" })]
 [DerivedUnitInstance("PerSquareDecimetre", "[*]", new[] { "SquareDecimetre" })]
@@ -15,5 +15,5 @@ using SharpMeasures.Generators.Units;
 [DerivedUnitInstance("PerHectare", "[*]", new[] { "Hectare" })]
 [DerivedUnitInstance("PerAcre", "[*]", new[] { "Acre" })]
 [DerivableUnit("1 / {0}", typeof(UnitOfArea))]
-[SharpMeasuresUnit(typeof(ArealFrequency))]
+[Unit(typeof(ArealFrequency))]
 public readonly partial record struct UnitOfArealFrequency { }

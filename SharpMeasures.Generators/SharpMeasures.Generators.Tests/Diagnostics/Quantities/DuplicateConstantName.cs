@@ -103,17 +103,16 @@ public class DuplicateConstantName
     };
 
     private static string ScalarText(TextConfig config) => $$"""
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
 
         [ScalarConstant("{{config.FirstSingular}}", "Metre", 1000{{(config.FirstMultiples.Length > 0 ? $", Multiples = \"{config.FirstMultiples}\"" : string.Empty)}})]
         [ScalarConstant("{{config.SecondSingular}}", "Meter", 1001{{(config.SecondMultiples.Length > 0 ? $", Multiples = \"{config.SecondMultiples}\"" : string.Empty)}})]
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
             
         [FixedUnitInstance("Metre", "Metres")]
         [UnitInstanceAlias("Meter", "Meters", "Metre")]
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
@@ -126,20 +125,19 @@ public class DuplicateConstantName
     }
 
     private static string SpecializedScalarText(TextConfig config) => $$"""
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
 
         [ScalarConstant("{{config.FirstSingular}}", "Metre", 1000{{(config.FirstMultiples.Length > 0 ? $", Multiples = \"{config.FirstMultiples}\"" : string.Empty)}})]
         [ScalarConstant("{{config.SecondSingular}}", "Meter", 1001{{(config.SecondMultiples.Length > 0 ? $", Multiples = \"{config.SecondMultiples}\"" : string.Empty)}})]
-        [SpecializedSharpMeasuresScalar(typeof(Length))]
+        [SpecializedScalarQuantity(typeof(Length))]
         public partial class Distance { }
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
             
         [FixedUnitInstance("Metre", "Metres")]
         [UnitInstanceAlias("Meter", "Meters", "Metre")]
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
@@ -152,20 +150,19 @@ public class DuplicateConstantName
     }
 
     private static string SpecializedScalarText_Inherited(TextConfig config) => $$"""
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
 
         [ScalarConstant("{{config.SecondSingular}}", "Meter", 1001{{(config.SecondMultiples.Length > 0 ? $", Multiples = \"{config.SecondMultiples}\"" : string.Empty)}})]
-        [SpecializedSharpMeasuresScalar(typeof(Length))]
+        [SpecializedScalarQuantity(typeof(Length))]
         public partial class Distance { }
 
         [ScalarConstant("{{config.FirstSingular}}", "Metre", 1000{{(config.FirstMultiples.Length > 0 ? $", Multiples = \"{config.FirstMultiples}\"" : string.Empty)}})]
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
             
         [FixedUnitInstance("Metre", "Metres")]
         [UnitInstanceAlias("Meter", "Meters", "Metre")]
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
@@ -178,21 +175,19 @@ public class DuplicateConstantName
     }
 
     private static string VectorText(TextConfig config) => $$"""
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Vectors;
+        using SharpMeasures.Generators;
 
         [VectorConstant("{{config.FirstSingular}}", "Metre", 1, 1, 1{{(config.FirstMultiples.Length > 0 ? $", Multiples = \"{config.FirstMultiples}\"" : string.Empty)}})]
         [VectorConstant("{{config.SecondSingular}}", "Meter", 2, 2, 2{{(config.SecondMultiples.Length > 0 ? $", Multiples = \"{config.SecondMultiples}\"" : string.Empty)}})]
-        [SharpMeasuresVector(typeof(UnitOfLength))]
+        [VectorQuantity(typeof(UnitOfLength))]
         public partial class Position3 { }
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
             
         [FixedUnitInstance("Metre", "Metres")]
         [UnitInstanceAlias("Meter", "Meters", "Metre")]
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
@@ -205,24 +200,22 @@ public class DuplicateConstantName
     }
 
     private static string SpecializedVectorText(TextConfig config) => $$"""
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Vectors;
+        using SharpMeasures.Generators;
 
         [VectorConstant("{{config.FirstSingular}}", "Metre", 1, 1, 1{{(config.FirstMultiples.Length > 0 ? $", Multiples = \"{config.FirstMultiples}\"" : string.Empty)}})]
         [VectorConstant("{{config.SecondSingular}}", "Meter", 2, 2, 2{{(config.SecondMultiples.Length > 0 ? $", Multiples = \"{config.SecondMultiples}\"" : string.Empty)}})]
-        [SpecializedSharpMeasuresVector(typeof(Position3))]
+        [SpecializedVectorQuantity(typeof(Position3))]
         public partial class Displacement3 { }
 
-        [SharpMeasuresVector(typeof(UnitOfLength))]
+        [VectorQuantity(typeof(UnitOfLength))]
         public partial class Position3 { }
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
             
         [FixedUnitInstance("Metre", "Metres")]
         [UnitInstanceAlias("Meter", "Meters", "Metre")]
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
@@ -235,24 +228,22 @@ public class DuplicateConstantName
     }
 
     private static string SpecializedVectorText_Inherited(TextConfig config) => $$"""
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Vectors;
+        using SharpMeasures.Generators;
 
         [VectorConstant("{{config.SecondSingular}}", "Meter", 2, 2, 2{{(config.SecondMultiples.Length > 0 ? $", Multiples = \"{config.SecondMultiples}\"" : string.Empty)}})]
-        [SpecializedSharpMeasuresVector(typeof(Position3))]
+        [SpecializedVectorQuantity(typeof(Position3))]
         public partial class Displacement3 { }
 
         [VectorConstant("{{config.FirstSingular}}", "Metre", 1, 1, 1{{(config.FirstMultiples.Length > 0 ? $", Multiples = \"{config.FirstMultiples}\"" : string.Empty)}})]
-        [SharpMeasuresVector(typeof(UnitOfLength))]
+        [VectorQuantity(typeof(UnitOfLength))]
         public partial class Position3 { }
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
             
         [FixedUnitInstance("Metre", "Metres")]
         [UnitInstanceAlias("Meter", "Meters", "Metre")]
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
@@ -265,24 +256,22 @@ public class DuplicateConstantName
     }
 
     private static string VectorGroupMemberText(TextConfig config) => $$"""
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Vectors;
+        using SharpMeasures.Generators;
 
         [VectorConstant("{{config.FirstSingular}}", "Metre", 1, 1, 1{{(config.FirstMultiples.Length > 0 ? $", Multiples = \"{config.FirstMultiples}\"" : string.Empty)}})]
         [VectorConstant("{{config.SecondSingular}}", "Meter", 2, 2, 2{{(config.SecondMultiples.Length > 0 ? $", Multiples = \"{config.SecondMultiples}\"" : string.Empty)}})]
-        [SharpMeasuresVectorGroupMember(typeof(Position))]
+        [VectorGroupMember(typeof(Position))]
         public partial class Position3 { }
 
-        [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
+        [VectorGroup(typeof(UnitOfLength))]
         public static partial class Position { }
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
             
         [FixedUnitInstance("Metre", "Metres")]
         [UnitInstanceAlias("Meter", "Meters", "Metre")]
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
@@ -295,30 +284,28 @@ public class DuplicateConstantName
     }
 
     private static string VectorGroupMemberText_Inherited(TextConfig config) => $$"""
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Vectors;
+        using SharpMeasures.Generators;
 
         [VectorConstant("{{config.SecondSingular}}", "Meter", 2, 2, 2{{(config.SecondMultiples.Length > 0 ? $", Multiples = \"{config.SecondMultiples}\"" : string.Empty)}})]
-        [SharpMeasuresVectorGroupMember(typeof(Displacement))]
+        [VectorGroupMember(typeof(Displacement))]
         public partial class Displacement3 { }
 
-        [SpecializedSharpMeasuresVectorGroup(typeof(Position))]
+        [SpecializedVectorGroup(typeof(Position))]
         public static partial class Displacement { }
 
         [VectorConstant("{{config.FirstSingular}}", "Metre", 1, 1, 1{{(config.FirstMultiples.Length > 0 ? $", Multiples = \"{config.FirstMultiples}\"" : string.Empty)}})]
-        [SharpMeasuresVectorGroupMember(typeof(Position))]
+        [VectorGroupMember(typeof(Position))]
         public partial class Position3 { }
 
-        [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
+        [VectorGroup(typeof(UnitOfLength))]
         public static partial class Position { }
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
             
         [FixedUnitInstance("Metre", "Metres")]
         [UnitInstanceAlias("Meter", "Meters", "Metre")]
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
@@ -344,8 +331,7 @@ public class DuplicateConstantName
         StringBuilder source = new();
 
         source.AppendLine(CultureInfo.InvariantCulture, $$"""
-            using SharpMeasures.Generators.Scalars;
-            using SharpMeasures.Generators.Units;
+            using SharpMeasures.Generators;
 
             [ScalarConstant("{{config.FirstSingular}}", "Metre", 1000{{(config.FirstMultiples.Length > 0 ? $", Multiples = \"{config.FirstMultiples}\"" : string.Empty)}})]
             """);
@@ -356,12 +342,12 @@ public class DuplicateConstantName
         }
         
         source.AppendLine("""
-            [SharpMeasuresScalar(typeof(UnitOfLength))]
+            [ScalarQuantity(typeof(UnitOfLength))]
             public partial class Length { }
             
             [FixedUnitInstance("Metre", "Metres")]
             [UnitInstanceAlias("Meter", "Meters", "Metre")]
-            [SharpMeasuresUnit(typeof(Length))]
+            [Unit(typeof(Length))]
             public partial class UnitOfLength { }
             """);
 
@@ -373,8 +359,7 @@ public class DuplicateConstantName
         StringBuilder source = new();
 
         source.AppendLine(CultureInfo.InvariantCulture, $$"""
-            using SharpMeasures.Generators.Scalars;
-            using SharpMeasures.Generators.Units;
+            using SharpMeasures.Generators;
 
             [ScalarConstant("{{config.FirstSingular}}", "Metre", 1000{{(config.FirstMultiples.Length > 0 ? $", Multiples = \"{config.FirstMultiples}\"" : string.Empty)}})]
             """);
@@ -385,15 +370,15 @@ public class DuplicateConstantName
         }
 
         source.AppendLine("""
-            [SpecializedSharpMeasuresScalar(typeof(Length))]
+            [SpecializedScalarQuantity(typeof(Length))]
             public partial class Distance { }
             
-            [SharpMeasuresScalar(typeof(UnitOfLength))]
+            [ScalarQuantity(typeof(UnitOfLength))]
             public partial class Length { }
                 
             [FixedUnitInstance("Metre", "Metres")]
             [UnitInstanceAlias("Meter", "Meters", "Metre")]
-            [SharpMeasuresUnit(typeof(Length))]
+            [Unit(typeof(Length))]
             public partial class UnitOfLength { }
             """);
 
@@ -405,8 +390,7 @@ public class DuplicateConstantName
         StringBuilder source = new();
 
         source.AppendLine("""
-            using SharpMeasures.Generators.Scalars;
-            using SharpMeasures.Generators.Units;
+            using SharpMeasures.Generators;
 
             """);
 
@@ -416,16 +400,16 @@ public class DuplicateConstantName
         }
 
         source.AppendLine(CultureInfo.InvariantCulture, $$"""
-            [SpecializedSharpMeasuresScalar(typeof(Length))]
+            [SpecializedScalarQuantity(typeof(Length))]
             public partial class Distance { }
 
             [ScalarConstant("{{config.FirstSingular}}", "Metre", 1000{{(config.FirstMultiples.Length > 0 ? $", Multiples = \"{config.FirstMultiples}\"" : string.Empty)}})]
-            [SharpMeasuresScalar(typeof(UnitOfLength))]
+            [ScalarQuantity(typeof(UnitOfLength))]
             public partial class Length { }
             
             [FixedUnitInstance("Metre", "Metres")]
             [UnitInstanceAlias("Meter", "Meters", "Metre")]
-            [SharpMeasuresUnit(typeof(Length))]
+            [Unit(typeof(Length))]
             public partial class UnitOfLength { }
             """);
 
@@ -437,9 +421,7 @@ public class DuplicateConstantName
         StringBuilder source = new();
 
         source.AppendLine(CultureInfo.InvariantCulture, $$"""
-            using SharpMeasures.Generators.Scalars;
-            using SharpMeasures.Generators.Units;
-            using SharpMeasures.Generators.Vectors;
+            using SharpMeasures.Generators;
             
             [VectorConstant("{{config.FirstSingular}}", "Metre", 1, 1, 1{{(config.FirstMultiples.Length > 0 ? $", Multiples = \"{config.FirstMultiples}\"" : string.Empty)}})]
             """);
@@ -450,15 +432,15 @@ public class DuplicateConstantName
         }
 
         source.AppendLine($$"""
-            [SharpMeasuresVector(typeof(UnitOfLength))]
+            [VectorQuantity(typeof(UnitOfLength))]
             public partial class Position3 { }
 
-            [SharpMeasuresScalar(typeof(UnitOfLength))]
+            [ScalarQuantity(typeof(UnitOfLength))]
             public partial class Length { }
             
             [FixedUnitInstance("Metre", "Metres")]
             [UnitInstanceAlias("Meter", "Meters", "Metre")]
-            [SharpMeasuresUnit(typeof(Length))]
+            [Unit(typeof(Length))]
             public partial class UnitOfLength { }
             """);
 
@@ -470,9 +452,7 @@ public class DuplicateConstantName
         StringBuilder source = new();
 
         source.AppendLine(CultureInfo.InvariantCulture, $$"""
-            using SharpMeasures.Generators.Scalars;
-            using SharpMeasures.Generators.Units;
-            using SharpMeasures.Generators.Vectors;
+            using SharpMeasures.Generators;
             
             [VectorConstant("{{config.FirstSingular}}", "Metre", 1, 1, 1{{(config.FirstMultiples.Length > 0 ? $", Multiples = \"{config.FirstMultiples}\"" : string.Empty)}})]
             """);
@@ -483,18 +463,18 @@ public class DuplicateConstantName
         }
 
         source.AppendLine($$"""
-            [SpecializedSharpMeasuresVector(typeof(Position3))]
+            [SpecializedVectorQuantity(typeof(Position3))]
             public partial class Displacement3 { }
             
-            [SharpMeasuresVector(typeof(UnitOfLength))]
+            [VectorQuantity(typeof(UnitOfLength))]
             public partial class Position3 { }
             
-            [SharpMeasuresScalar(typeof(UnitOfLength))]
+            [ScalarQuantity(typeof(UnitOfLength))]
             public partial class Length { }
                 
             [FixedUnitInstance("Metre", "Metres")]
             [UnitInstanceAlias("Meter", "Meters", "Metre")]
-            [SharpMeasuresUnit(typeof(Length))]
+            [Unit(typeof(Length))]
             public partial class UnitOfLength { }
             """);
 
@@ -506,9 +486,7 @@ public class DuplicateConstantName
         StringBuilder source = new();
 
         source.AppendLine("""
-            using SharpMeasures.Generators.Scalars;
-            using SharpMeasures.Generators.Units;
-            using SharpMeasures.Generators.Vectors;
+            using SharpMeasures.Generators;
 
             """);
 
@@ -518,19 +496,19 @@ public class DuplicateConstantName
         }
 
         source.AppendLine(CultureInfo.InvariantCulture, $$"""
-            [SpecializedSharpMeasuresVector(typeof(Position3))]
+            [SpecializedVectorQuantity(typeof(Position3))]
             public partial class Displacement3 { }
 
             [VectorConstant("{{config.FirstSingular}}", "Metre", 1, 1, 1{{(config.FirstMultiples.Length > 0 ? $", Multiples = \"{config.FirstMultiples}\"" : string.Empty)}})]
-            [SharpMeasuresVector(typeof(UnitOfLength))]
+            [VectorQuantity(typeof(UnitOfLength))]
             public partial class Position3 { }
             
-            [SharpMeasuresScalar(typeof(UnitOfLength))]
+            [ScalarQuantity(typeof(UnitOfLength))]
             public partial class Length { }
                 
             [FixedUnitInstance("Metre", "Metres")]
             [UnitInstanceAlias("Meter", "Meters", "Metre")]
-            [SharpMeasuresUnit(typeof(Length))]
+            [Unit(typeof(Length))]
             public partial class UnitOfLength { }
             """);
 
@@ -542,9 +520,7 @@ public class DuplicateConstantName
         StringBuilder source = new();
 
         source.AppendLine(CultureInfo.InvariantCulture, $$"""
-            using SharpMeasures.Generators.Scalars;
-            using SharpMeasures.Generators.Units;
-            using SharpMeasures.Generators.Vectors;
+            using SharpMeasures.Generators;
             
             [VectorConstant("{{config.FirstSingular}}", "Metre", 1, 1, 1{{(config.FirstMultiples.Length > 0 ? $", Multiples = \"{config.FirstMultiples}\"" : string.Empty)}})]
             """);
@@ -555,18 +531,18 @@ public class DuplicateConstantName
         }
 
         source.AppendLine($$"""
-            [SharpMeasuresVectorGroupMember(typeof(Position))]
+            [VectorGroupMember(typeof(Position))]
             public partial class Position3 { }
             
-            [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
+            [VectorGroup(typeof(UnitOfLength))]
             public static partial class Position { }
             
-            [SharpMeasuresScalar(typeof(UnitOfLength))]
+            [ScalarQuantity(typeof(UnitOfLength))]
             public partial class Length { }
                 
             [FixedUnitInstance("Metre", "Metres")]
             [UnitInstanceAlias("Meter", "Meters", "Metre")]
-            [SharpMeasuresUnit(typeof(Length))]
+            [Unit(typeof(Length))]
             public partial class UnitOfLength { }
             """);
 
@@ -578,9 +554,7 @@ public class DuplicateConstantName
         StringBuilder source = new();
 
         source.AppendLine("""
-            using SharpMeasures.Generators.Scalars;
-            using SharpMeasures.Generators.Units;
-            using SharpMeasures.Generators.Vectors;
+            using SharpMeasures.Generators;
 
             """);
 
@@ -590,25 +564,25 @@ public class DuplicateConstantName
         }
 
         source.AppendLine(CultureInfo.InvariantCulture, $$"""
-            [SharpMeasuresVectorGroupMember(typeof(Displacement))]
+            [VectorGroupMember(typeof(Displacement))]
             public partial class Displacement3 { }
             
-            [SpecializedSharpMeasuresVectorGroup(typeof(Position))]
+            [SpecializedVectorGroup(typeof(Position))]
             public static partial class Displacement { }
 
             [VectorConstant("{{config.FirstSingular}}", "Metre", 1, 1, 1{{(config.FirstMultiples.Length > 0 ? $", Multiples = \"{config.FirstMultiples}\"" : string.Empty)}})]
-            [SharpMeasuresVectorGroupMember(typeof(Position))]
+            [VectorGroupMember(typeof(Position))]
             public partial class Position3 { }
             
-            [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
+            [VectorGroup(typeof(UnitOfLength))]
             public static partial class Position { }
             
-            [SharpMeasuresScalar(typeof(UnitOfLength))]
+            [ScalarQuantity(typeof(UnitOfLength))]
             public partial class Length { }
                 
             [FixedUnitInstance("Metre", "Metres")]
             [UnitInstanceAlias("Meter", "Meters", "Metre")]
-            [SharpMeasuresUnit(typeof(Length))]
+            [Unit(typeof(Length))]
             public partial class UnitOfLength { }
             """);
 

@@ -57,15 +57,14 @@ public class InvalidUnitPluralForm
     private static IReadOnlyCollection<string> InvalidUnitFormDiagnostics { get; } = new string[] { DiagnosticIDs.InvalidUnitInstancePluralForm };
 
     private static string AliasText(SourceSubtext plural) => $$"""
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
 
         [FixedUnitInstance("Metre", "Metres")]
         [UnitInstanceAlias("Meter", {{plural}}, "Metre")]
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
@@ -78,15 +77,14 @@ public class InvalidUnitPluralForm
     }
 
     private static string BiasedText(SourceSubtext plural) => $$"""
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
 
-        [SharpMeasuresScalar(typeof(UnitOfTemperature))]
+        [ScalarQuantity(typeof(UnitOfTemperature))]
         public partial class TemperatureDifference { }
 
         [FixedUnitInstance("Kelvin", "Kelvin")]
         [BiasedUnitInstance("Celsius", {{plural}}, "Kelvin", -273.15)]
-        [SharpMeasuresUnit(typeof(TemperatureDifference), BiasTerm = true)]
+        [Unit(typeof(TemperatureDifference), BiasTerm = true)]
         public partial class UnitOfTemperature { }
         """;
 
@@ -99,29 +97,28 @@ public class InvalidUnitPluralForm
     }
 
     private static string DerivedText(SourceSubtext plural) => $$"""
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [SharpMeasuresScalar(typeof(UnitOfTime))]
+        [ScalarQuantity(typeof(UnitOfTime))]
         public partial class Time { }
 
-        [SharpMeasuresScalar(typeof(UnitOfSpeed))]
+        [ScalarQuantity(typeof(UnitOfSpeed))]
         public partial class Speed { }
 
         [FixedUnitInstance("Metre", "Metres")]
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
 
         [FixedUnitInstance("Second", "Seconds")]
-        [SharpMeasuresUnit(typeof(Time))]
+        [Unit(typeof(Time))]
         public partial class UnitOfTime { }
 
         [DerivableUnit("{0} / {1}", typeof(UnitOfLength), typeof(UnitOfTime))]
         [DerivedUnitInstance("MetrePerSecond", {{plural}}, new[] { "Metre", "Second" })]
-        [SharpMeasuresUnit(typeof(Speed))]
+        [Unit(typeof(Speed))]
         public partial class UnitOfSpeed { }
         """;
 
@@ -134,14 +131,13 @@ public class InvalidUnitPluralForm
     }
 
     private static string FixedText(SourceSubtext plural) => $$"""
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
 
         [FixedUnitInstance("Metre", {{plural}})]
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
@@ -154,15 +150,14 @@ public class InvalidUnitPluralForm
     }
 
     private static string PrefixedText(SourceSubtext plural) => $$"""
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
 
         [FixedUnitInstance("Metre", "Metres")]
         [PrefixedUnitInstance("Kilometre", {{plural}}, "Metre", MetricPrefixName.Kilo)]
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
@@ -175,15 +170,14 @@ public class InvalidUnitPluralForm
     }
 
     private static string ScaledText(SourceSubtext plural) => $$"""
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
 
         [FixedUnitInstance("Metre", "Metres")]
         [ScaledUnitInstance("Kilometre", {{plural}}, "Metre", 1000)]
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
@@ -201,63 +195,59 @@ public class InvalidUnitPluralForm
     private static GeneratorVerifier FixedIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(FixedIdenticalText);
 
     private static string NonDerivableIdenticalText => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
 
         [FixedUnitInstance("Metre", "Metres")]
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
     private static string BiasedIdenticalText => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
 
-        [SharpMeasuresScalar(typeof(UnitOfTemperature))]
+        [ScalarQuantity(typeof(UnitOfTemperature))]
         public partial class TemperatureDifference { }
 
         [FixedUnitInstance("Kelvin", "Kelvin")]
-        [SharpMeasuresUnit(typeof(TemperatureDifference), BiasTerm = true)]
+        [Unit(typeof(TemperatureDifference), BiasTerm = true)]
         public partial class UnitOfTemperature { }
         """;
 
     private static string DerivableIdenticalText => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [SharpMeasuresScalar(typeof(UnitOfTime))]
+        [ScalarQuantity(typeof(UnitOfTime))]
         public partial class Time { }
 
-        [SharpMeasuresScalar(typeof(UnitOfSpeed))]
+        [ScalarQuantity(typeof(UnitOfSpeed))]
         public partial class Speed { }
 
         [FixedUnitInstance("Metre", "Metres")]
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
 
         [FixedUnitInstance("Second", "Seconds")]
-        [SharpMeasuresUnit(typeof(Time))]
+        [Unit(typeof(Time))]
         public partial class UnitOfTime { }
 
         [DerivableUnit("{0} / {1}", typeof(UnitOfLength), typeof(UnitOfTime))]
-        [SharpMeasuresUnit(typeof(Speed))]
+        [Unit(typeof(Speed))]
         public partial class UnitOfSpeed { }
         """;
 
     private static string FixedIdenticalText => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 }

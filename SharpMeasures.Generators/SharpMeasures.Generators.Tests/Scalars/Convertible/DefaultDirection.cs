@@ -28,111 +28,95 @@ public class DefaultDirection
     public void BiasedScalar_Explicit() => GeneratorVerifier.Construct<SharpMeasuresGenerator>(BiasedScalarText_SpecifiedBehaviour("Explicit")).AssertNoDiagnosticsReported().AssertIdenticalSources<SharpMeasuresGenerator>(BiasedScalarIdenticalText("Explicit"));
 
     private static string UnbiasedScalarText => """
-        using SharpMeasures.Generators.Quantities;
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
 
         [ConvertibleQuantity(typeof(Length))]
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Distance { }
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
         
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
     private static string UnbiasedScalarText_SpecifiedBehaviour(string behaviour) => $$"""
         using SharpMeasures.Generators;
-        using SharpMeasures.Generators.Quantities;
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
 
         [ConvertibleQuantity(typeof(Length), CastOperatorBehaviour = ConversionOperatorBehaviour.{{behaviour}})]
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Distance { }
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
         
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
     private static string BiasedScalarText => """
-        using SharpMeasures.Generators.Quantities;
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
 
         [ConvertibleQuantity(typeof(Temperature))]
-        [SharpMeasuresScalar(typeof(UnitOfTemperature), UseUnitBias = true)]
+        [ScalarQuantity(typeof(UnitOfTemperature), UseUnitBias = true)]
         public partial class Temperature2 { }
 
-        [SharpMeasuresScalar(typeof(UnitOfTemperature), UseUnitBias = true)]
+        [ScalarQuantity(typeof(UnitOfTemperature), UseUnitBias = true)]
         public partial class Temperature { }
         
-        [SharpMeasuresScalar(typeof(UnitOfTemperature))]
+        [ScalarQuantity(typeof(UnitOfTemperature))]
         public partial class TemperatureDifference { }
         
-        [SharpMeasuresUnit(typeof(TemperatureDifference), BiasTerm = true)]
+        [Unit(typeof(TemperatureDifference), BiasTerm = true)]
         public partial class UnitOfTemperature { }
         """;
 
     private static string BiasedScalarText_SpecifiedBehaviour(string behaviour) => $$"""
         using SharpMeasures.Generators;
-        using SharpMeasures.Generators.Quantities;
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
 
         [ConvertibleQuantity(typeof(Temperature), CastOperatorBehaviour = ConversionOperatorBehaviour.{{behaviour}})]
-        [SharpMeasuresScalar(typeof(UnitOfTemperature), UseUnitBias = true)]
+        [ScalarQuantity(typeof(UnitOfTemperature), UseUnitBias = true)]
         public partial class Temperature2 { }
 
-        [SharpMeasuresScalar(typeof(UnitOfTemperature), UseUnitBias = true)]
+        [ScalarQuantity(typeof(UnitOfTemperature), UseUnitBias = true)]
         public partial class Temperature { }
         
-        [SharpMeasuresScalar(typeof(UnitOfTemperature))]
+        [ScalarQuantity(typeof(UnitOfTemperature))]
         public partial class TemperatureDifference { }
         
-        [SharpMeasuresUnit(typeof(TemperatureDifference), BiasTerm = true)]
+        [Unit(typeof(TemperatureDifference), BiasTerm = true)]
         public partial class UnitOfTemperature { }
         """;
 
     private static string UnbiasedScalarIdenticalText(string behaviour) => $$"""
         using SharpMeasures.Generators;
-        using SharpMeasures.Generators.Quantities;
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
 
         [ConvertibleQuantity(typeof(Length), ConversionDirection = QuantityConversionDirection.Onedirectional, CastOperatorBehaviour = ConversionOperatorBehaviour.{{behaviour}})]
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Distance { }
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
         
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
     private static string BiasedScalarIdenticalText(string behaviour) => $$"""
         using SharpMeasures.Generators;
-        using SharpMeasures.Generators.Quantities;
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
 
         [ConvertibleQuantity(typeof(Temperature), ConversionDirection = QuantityConversionDirection.Onedirectional, CastOperatorBehaviour = ConversionOperatorBehaviour.{{behaviour}})]
-        [SharpMeasuresScalar(typeof(UnitOfTemperature), UseUnitBias = true)]
+        [ScalarQuantity(typeof(UnitOfTemperature), UseUnitBias = true)]
         public partial class Temperature2 { }
 
-        [SharpMeasuresScalar(typeof(UnitOfTemperature), UseUnitBias = true)]
+        [ScalarQuantity(typeof(UnitOfTemperature), UseUnitBias = true)]
         public partial class Temperature { }
         
-        [SharpMeasuresScalar(typeof(UnitOfTemperature))]
+        [ScalarQuantity(typeof(UnitOfTemperature))]
         public partial class TemperatureDifference { }
         
-        [SharpMeasuresUnit(typeof(TemperatureDifference), BiasTerm = true)]
+        [Unit(typeof(TemperatureDifference), BiasTerm = true)]
         public partial class UnitOfTemperature { }
         """;
 }

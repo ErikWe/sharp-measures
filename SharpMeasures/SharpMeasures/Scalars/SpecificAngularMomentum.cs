@@ -1,6 +1,6 @@
 ﻿namespace SharpMeasures;
 
-using SharpMeasures.Generators.Scalars;
+using SharpMeasures.Generators;
 
-[SharpMeasuresScalar(typeof(UnitOfSpecificAngularMomentum), DefaultUnitInstanceName = "SquareMetrePerSecond", DefaultUnitInstanceSymbol = "m²∙s⁻¹")]
+[ScalarQuantity(typeof(UnitOfSpecificAngularMomentum), DefaultUnitInstanceName = "SquareMetrePerSecond", DefaultUnitInstanceSymbol = "m²∙s⁻¹")]
 public readonly partial record struct SpecificAngularMomentum { }

@@ -4,7 +4,7 @@
     Title: Unit does not include a bias term,
     Severity: Error,
     WarningLevel: 0,
-    Location: : (3,57)-(3,61),
+    Location: : (2,52)-(2,56),
     Description: ,
     HelpLink: ,
     MessageFormat: {0} requires a unit that includes a bias term, which {1} does not,

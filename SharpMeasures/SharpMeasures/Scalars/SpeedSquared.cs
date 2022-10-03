@@ -1,6 +1,6 @@
 ﻿namespace SharpMeasures;
 
-using SharpMeasures.Generators.Scalars;
+using SharpMeasures.Generators;
 
-[SharpMeasuresScalar(typeof(UnitOfSpeedSquared), DefaultUnitInstanceName = "SquareMetrePerSecondSquared", DefaultUnitInstanceSymbol = "m²∙s⁻²")]
+[ScalarQuantity(typeof(UnitOfSpeedSquared), DefaultUnitInstanceName = "SquareMetrePerSecondSquared", DefaultUnitInstanceSymbol = "m²∙s⁻²")]
 public readonly partial record struct SpeedSquared { }

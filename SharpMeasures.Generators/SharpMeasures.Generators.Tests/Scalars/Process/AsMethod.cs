@@ -18,28 +18,24 @@ public class AsMethod
     public Task WithParameters() => GeneratorVerifier.Construct<SharpMeasuresGenerator>(WithParametersText).VerifyMatchingSourceNames("Length.Processes.g.cs");
 
     private static string WithoutParametersText => """
-        using SharpMeasures.Generators.Quantities;
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
 
-        [ProcessedQuantity("Double", "new(2 * Magnitude)")]
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [QuantityProcess("Double", "new(2 * Magnitude)")]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
         
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
     private static string WithParametersText => """
-        using SharpMeasures.Generators.Quantities;
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
 
-        [ProcessedQuantity("Scale", "new(Magnitude * x)", new[] { typeof(double) }, new[] { "x" })]
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [QuantityProcess("Scale", "new(Magnitude * x)", new[] { typeof(double) }, new[] { "x" })]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
         
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 }

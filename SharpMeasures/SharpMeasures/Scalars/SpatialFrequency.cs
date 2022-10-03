@@ -1,6 +1,6 @@
 ﻿namespace SharpMeasures;
 
-using SharpMeasures.Generators.Scalars;
+using SharpMeasures.Generators;
 
-[SharpMeasuresScalar(typeof(UnitOfSpatialFrequency), DefaultUnitInstanceName = "PerMetre", DefaultUnitInstanceSymbol = "m⁻¹")]
+[ScalarQuantity(typeof(UnitOfSpatialFrequency), DefaultUnitInstanceName = "PerMetre", DefaultUnitInstanceSymbol = "m⁻¹")]
 public readonly partial record struct SpatialFrequency { }

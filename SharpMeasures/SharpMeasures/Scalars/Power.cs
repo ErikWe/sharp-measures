@@ -1,6 +1,6 @@
 ﻿namespace SharpMeasures;
 
-using SharpMeasures.Generators.Scalars;
+using SharpMeasures.Generators;
 
-[SharpMeasuresScalar(typeof(UnitOfPower), DefaultUnitInstanceName = "Watt", DefaultUnitInstanceSymbol = "W")]
+[ScalarQuantity(typeof(UnitOfPower), DefaultUnitInstanceName = "Watt", DefaultUnitInstanceSymbol = "W")]
 public readonly partial record struct Power { }

@@ -73,15 +73,12 @@ public class UnionInclusionStackingModeRedundant
 
     private static string ScalarText(string attribute) => $$"""
         using SharpMeasures.Generators;
-        using SharpMeasures.Generators.Quantities;
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
 
         [{{attribute}}("Kilometre", StackingMode = InclusionStackingMode.Union)]
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
@@ -95,19 +92,16 @@ public class UnionInclusionStackingModeRedundant
 
     private static string SpecializedScalarText(string attribute, bool inherit) => $$"""
         using SharpMeasures.Generators;
-        using SharpMeasures.Generators.Quantities;
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
         
         [{{attribute}}("Kilometre", StackingMode = InclusionStackingMode.Union)]
-        [SpecializedSharpMeasuresScalar(typeof(Length), InheritUnits = {{inherit.ToString().ToLowerInvariant()}}, InheritBases = {{inherit.ToString().ToLowerInvariant()}})]
+        [SpecializedScalarQuantity(typeof(Length), InheritUnits = {{inherit.ToString().ToLowerInvariant()}}, InheritBases = {{inherit.ToString().ToLowerInvariant()}})]
         public partial class Distance { }
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
         
         [FixedUnitInstance("Metre", "Metres")]
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
@@ -121,20 +115,16 @@ public class UnionInclusionStackingModeRedundant
 
     private static string VectorText => """
         using SharpMeasures.Generators;
-        using SharpMeasures.Generators.Quantities;
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Vectors;
 
         [IncludeUnits("Kilometre", StackingMode = InclusionStackingMode.Union)]
-        [SharpMeasuresVector(typeof(UnitOfLength))]
+        [VectorQuantity(typeof(UnitOfLength))]
         public partial class Position3 { }
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
         
         [FixedUnitInstance("Metre", "Metres")]
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
@@ -148,23 +138,19 @@ public class UnionInclusionStackingModeRedundant
 
     private static string SpecializedVectorText(bool inherit) => $$"""
         using SharpMeasures.Generators;
-        using SharpMeasures.Generators.Quantities;
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Vectors;
 
         [IncludeUnits("Kilometre", StackingMode = InclusionStackingMode.Union)]
-        [SpecializedSharpMeasuresVector(typeof(Position3), InheritUnits = {{inherit.ToString().ToLowerInvariant()}})]
+        [SpecializedVectorQuantity(typeof(Position3), InheritUnits = {{inherit.ToString().ToLowerInvariant()}})]
         public partial class Displacement3 { }
 
-        [SharpMeasuresVector(typeof(UnitOfLength))]
+        [VectorQuantity(typeof(UnitOfLength))]
         public partial class Position3 { }
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
         
         [FixedUnitInstance("Metre", "Metres")]
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
@@ -178,20 +164,16 @@ public class UnionInclusionStackingModeRedundant
 
     private static string VectorGroupText => """
         using SharpMeasures.Generators;
-        using SharpMeasures.Generators.Quantities;
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Vectors;
 
         [IncludeUnits("Kilometre", StackingMode = InclusionStackingMode.Union)]
-        [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
+        [VectorGroup(typeof(UnitOfLength))]
         public static partial class Position { }
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
         
         [FixedUnitInstance("Metre", "Metres")]
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
@@ -205,23 +187,19 @@ public class UnionInclusionStackingModeRedundant
 
     private static string SpecializedVectorGroupText(bool inherit) => $$"""
         using SharpMeasures.Generators;
-        using SharpMeasures.Generators.Quantities;
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Vectors;
 
         [IncludeUnits("Kilometre", StackingMode = InclusionStackingMode.Union)]
-        [SpecializedSharpMeasuresVectorGroup(typeof(Position), InheritUnits = {{inherit.ToString().ToLowerInvariant()}})]
+        [SpecializedVectorGroup(typeof(Position), InheritUnits = {{inherit.ToString().ToLowerInvariant()}})]
         public static partial class Displacement { }
 
-        [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
+        [VectorGroup(typeof(UnitOfLength))]
         public static partial class Position { }
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
         
         [FixedUnitInstance("Metre", "Metres")]
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
@@ -235,29 +213,25 @@ public class UnionInclusionStackingModeRedundant
 
     private static string VectorGroupMemberText(bool inheritFromMembers, bool inheritFromGroups) => $$"""
         using SharpMeasures.Generators;
-        using SharpMeasures.Generators.Quantities;
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Vectors;
 
         [IncludeUnits("Kilometre", StackingMode = InclusionStackingMode.Union)]
-        [SharpMeasuresVectorGroupMember(typeof(Displacement), InheritUnits = {{inheritFromGroups.ToString().ToLowerInvariant()}}, InheritUnitsFromMembers = {{inheritFromMembers.ToString().ToLowerInvariant()}})]
+        [VectorGroupMember(typeof(Displacement), InheritUnits = {{inheritFromGroups.ToString().ToLowerInvariant()}}, InheritUnitsFromMembers = {{inheritFromMembers.ToString().ToLowerInvariant()}})]
         public partial class Displacement3 { }
 
-        [SpecializedSharpMeasuresVectorGroup(typeof(Position))]
+        [SpecializedVectorGroup(typeof(Position))]
         public static partial class Displacement { }
 
-        [SharpMeasuresVectorGroupMember(typeof(Position))]
+        [VectorGroupMember(typeof(Position))]
         public partial class Posiiton3 { }
 
-        [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
+        [VectorGroup(typeof(UnitOfLength))]
         public static partial class Position { }
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
         
         [FixedUnitInstance("Metre", "Metres")]
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
@@ -279,136 +253,110 @@ public class UnionInclusionStackingModeRedundant
 
     private static string ScalarIdenticalText => """
         using SharpMeasures.Generators;
-        using SharpMeasures.Generators.Quantities;
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
     private static string SpecializedScalarIdenticalText => """
         using SharpMeasures.Generators;
-        using SharpMeasures.Generators.Quantities;
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
         
-        [SpecializedSharpMeasuresScalar(typeof(Length))]
+        [SpecializedScalarQuantity(typeof(Length))]
         public partial class Distance { }
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
         
         [FixedUnitInstance("Metre", "Metres")]
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
     private static string VectorIdenticalText => """
         using SharpMeasures.Generators;
-        using SharpMeasures.Generators.Quantities;
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Vectors;
 
-        [SharpMeasuresVector(typeof(UnitOfLength))]
+        [VectorQuantity(typeof(UnitOfLength))]
         public partial class Position3 { }
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
         
         [FixedUnitInstance("Metre", "Metres")]
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
     private static string SpecializedVectorIdenticalText => """
         using SharpMeasures.Generators;
-        using SharpMeasures.Generators.Quantities;
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Vectors;
 
-        [SpecializedSharpMeasuresVector(typeof(Position3))]
+        [SpecializedVectorQuantity(typeof(Position3))]
         public partial class Displacement3 { }
 
-        [SharpMeasuresVector(typeof(UnitOfLength))]
+        [VectorQuantity(typeof(UnitOfLength))]
         public partial class Position3 { }
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
         
         [FixedUnitInstance("Metre", "Metres")]
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
     private static string VectorGroupIdenticalText => """
         using SharpMeasures.Generators;
-        using SharpMeasures.Generators.Quantities;
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Vectors;
 
-        [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
+        [VectorGroup(typeof(UnitOfLength))]
         public static partial class Position { }
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
         
         [FixedUnitInstance("Metre", "Metres")]
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
     private static string SpecializedVectorGroupIdenticalText => """
         using SharpMeasures.Generators;
-        using SharpMeasures.Generators.Quantities;
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Vectors;
 
-        [SpecializedSharpMeasuresVectorGroup(typeof(Position))]
+        [SpecializedVectorGroup(typeof(Position))]
         public static partial class Displacement { }
 
-        [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
+        [VectorGroup(typeof(UnitOfLength))]
         public static partial class Position { }
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
         
         [FixedUnitInstance("Metre", "Metres")]
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
     private static string VectorGroupMemberIdenticalText => """
         using SharpMeasures.Generators;
-        using SharpMeasures.Generators.Quantities;
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Vectors;
 
-        [SharpMeasuresVectorGroupMember(typeof(Displacement))]
+        [VectorGroupMember(typeof(Displacement))]
         public partial class Displacement3 { }
 
-        [SpecializedSharpMeasuresVectorGroup(typeof(Position))]
+        [SpecializedVectorGroup(typeof(Position))]
         public static partial class Displacement { }
 
-        [SharpMeasuresVectorGroupMember(typeof(Position))]
+        [VectorGroupMember(typeof(Position))]
         public partial class Posiiton3 { }
 
-        [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
+        [VectorGroup(typeof(UnitOfLength))]
         public static partial class Position { }
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
         
         [FixedUnitInstance("Metre", "Metres")]
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 }

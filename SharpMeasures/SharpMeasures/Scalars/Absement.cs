@@ -1,13 +1,6 @@
 ﻿namespace SharpMeasures;
 
-using SharpMeasures.Generators.Quantities;
-using SharpMeasures.Generators.Scalars;
+using SharpMeasures.Generators;
 
-[SharpMeasuresScalar(typeof(UnitOfAbsement), DefaultUnitInstanceName = "MetreSecond", DefaultUnitInstanceSymbol = "m∙s")]
-public readonly partial record struct Absement { }
-
-[DerivedQuantity("{0} / {1}", typeof(Speed), typeof(FrequencyDrift))]
-[DerivedQuantity("{0} * {1}", typeof(Speed), typeof(TimeSquared), Permutations = true)]
-[DerivedQuantity("{0} / {1}", typeof(Length), typeof(Frequency))]
-[DerivedQuantity("{0} * {1}", typeof(Length), typeof(Time), Permutations = true)]
+[ScalarQuantity(typeof(UnitOfAbsement), DefaultUnitInstanceName = "MetreSecond", DefaultUnitInstanceSymbol = "m∙s")]
 public readonly partial record struct Absement { }

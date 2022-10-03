@@ -33,16 +33,15 @@ public class DuplicateUnitName
     private static IReadOnlyCollection<string> DuplicateUnitNameDiagnostics { get; } = new string[] { DiagnosticIDs.DuplicateUnitInstanceName };
 
     private static string AliasText => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
 
         [FixedUnitInstance("Metre", "Metres")]
         [UnitInstanceAlias("Meter", "Meters", "Metre")]
         [UnitInstanceAlias("Meter", "Meters2", "Metre")]
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
@@ -54,16 +53,15 @@ public class DuplicateUnitName
     }
 
     private static string BiasedText => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
 
-        [SharpMeasuresScalar(typeof(UnitOfTemperature))]
+        [ScalarQuantity(typeof(UnitOfTemperature))]
         public partial class TemperatureDifference { }
 
         [FixedUnitInstance("Kelvin", "Kelvin")]
         [BiasedUnitInstance("Celsius", "Celsius", "Kelvin", -273.15)]
         [BiasedUnitInstance("Celsius", "Celsius2", "Kelvin", -273.15)]
-        [SharpMeasuresUnit(typeof(TemperatureDifference), BiasTerm = true)]
+        [Unit(typeof(TemperatureDifference), BiasTerm = true)]
         public partial class UnitOfTemperature { }
         """;
 
@@ -75,30 +73,29 @@ public class DuplicateUnitName
     }
 
     private static string DerivedText => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [SharpMeasuresScalar(typeof(UnitOfTime))]
+        [ScalarQuantity(typeof(UnitOfTime))]
         public partial class Time { }
 
-        [SharpMeasuresScalar(typeof(UnitOfSpeed))]
+        [ScalarQuantity(typeof(UnitOfSpeed))]
         public partial class Speed { }
 
         [FixedUnitInstance("Metre", "Metres")]
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
 
         [FixedUnitInstance("Second", "Seconds")]
-        [SharpMeasuresUnit(typeof(Time))]
+        [Unit(typeof(Time))]
         public partial class UnitOfTime { }
 
         [DerivableUnit("{0} / {1}", typeof(UnitOfLength), typeof(UnitOfTime))]
         [DerivedUnitInstance("MetrePerSecond", "MetresPerSecond", new[] { "Metre", "Second" })]
         [DerivedUnitInstance("MetrePerSecond", "MetresPerSecond2", new[] { "Metre", "Second" })]
-        [SharpMeasuresUnit(typeof(Speed))]
+        [Unit(typeof(Speed))]
         public partial class UnitOfSpeed { }
         """;
 
@@ -110,16 +107,15 @@ public class DuplicateUnitName
     }
 
     private static string PrefixedText => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
 
         [FixedUnitInstance("Metre", "Metres")]
         [PrefixedUnitInstance("Kilometre", "Kilometres", "Metre", MetricPrefixName.Kilo)]
         [PrefixedUnitInstance("Kilometre", "Kilometres2", "Metre", MetricPrefixName.Kilo)]
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
@@ -131,16 +127,15 @@ public class DuplicateUnitName
     }
 
     private static string ScaledText => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
 
         [FixedUnitInstance("Metre", "Metres")]
         [ScaledUnitInstance("Kilometre", "Kilometres", "Metre", 1000)]
         [ScaledUnitInstance("Kilometre", "Kilometres2", "Metre", 1000)]
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
@@ -158,81 +153,76 @@ public class DuplicateUnitName
     private static GeneratorVerifier ScaledIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(ScaledIdenticalText);
 
     private static string AliasIdenticalText => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
 
         [FixedUnitInstance("Metre", "Metres")]
         [UnitInstanceAlias("Meter", "Meters", "Metre")]
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
     private static string BiasedIdenticalText => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
 
-        [SharpMeasuresScalar(typeof(UnitOfTemperature))]
+        [ScalarQuantity(typeof(UnitOfTemperature))]
         public partial class TemperatureDifference { }
 
         [FixedUnitInstance("Kelvin", "Kelvin")]
         [BiasedUnitInstance("Celsius", "Celsius", "Kelvin", -273.15)]
-        [SharpMeasuresUnit(typeof(TemperatureDifference), BiasTerm = true)]
+        [Unit(typeof(TemperatureDifference), BiasTerm = true)]
         public partial class UnitOfTemperature { }
         """;
 
     private static string DerivedIdenticalText => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [SharpMeasuresScalar(typeof(UnitOfTime))]
+        [ScalarQuantity(typeof(UnitOfTime))]
         public partial class Time { }
 
-        [SharpMeasuresScalar(typeof(UnitOfSpeed))]
+        [ScalarQuantity(typeof(UnitOfSpeed))]
         public partial class Speed { }
 
         [FixedUnitInstance("Metre", "Metres")]
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
 
         [FixedUnitInstance("Second", "Seconds")]
-        [SharpMeasuresUnit(typeof(Time))]
+        [Unit(typeof(Time))]
         public partial class UnitOfTime { }
 
         [DerivableUnit("{0} / {1}", typeof(UnitOfLength), typeof(UnitOfTime))]
         [DerivedUnitInstance("MetrePerSecond", "MetresPerSecond", new[] { "Metre", "Second" })]
-        [SharpMeasuresUnit(typeof(Speed))]
+        [Unit(typeof(Speed))]
         public partial class UnitOfSpeed { }
         """;
 
     private static string PrefixedIdenticalText => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
 
         [FixedUnitInstance("Metre", "Metres")]
         [PrefixedUnitInstance("Kilometre", "Kilometres", "Metre", MetricPrefixName.Kilo)]
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
     private static string ScaledIdenticalText => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
 
         [FixedUnitInstance("Metre", "Metres")]
         [ScaledUnitInstance("Kilometre", "Kilometres", "Metre", 1000)]
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 }

@@ -1,10 +1,10 @@
 ﻿[
   {
     Id: Measures1281,
-    Title: Duplicate name of process,
+    Title: Duplicate name of quantity process,
     Severity: Error,
     WarningLevel: 0,
-    Location: : (5,19)-(5,25),
+    Location: : (3,17)-(3,23),
     Description: ,
     HelpLink: ,
     MessageFormat: {0} already defines a process "{1}",

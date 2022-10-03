@@ -34,26 +34,25 @@ public class InvalidDerivationSignature
     private static IReadOnlyCollection<string> InvalidDerivationSignatureDiagnostics { get; } = new string[] { DiagnosticIDs.InvalidDerivationSignature };
 
     private static string DerivableUnitText(SourceSubtext signature) => $$"""
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
 
         [DerivableUnit("42", {{signature}})]
-        [SharpMeasuresUnit(typeof(Speed))]
+        [Unit(typeof(Speed))]
         public partial class UnitOfSpeed { }
 
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
 
-        [SharpMeasuresUnit(typeof(Time))]
+        [Unit(typeof(Time))]
         public partial class UnitOfTime { }
 
-        [SharpMeasuresScalar(typeof(UnitOfSpeed))]
+        [ScalarQuantity(typeof(UnitOfSpeed))]
         public partial class Speed { }
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [SharpMeasuresScalar(typeof(UnitOfTime))]
+        [ScalarQuantity(typeof(UnitOfTime))]
         public partial class Time { }
         """;
 
@@ -68,25 +67,24 @@ public class InvalidDerivationSignature
     private static GeneratorVerifier DerivableUnitIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(DerivableUnitIdenticalText);
 
     private static string DerivableUnitIdenticalText => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
         
-        [SharpMeasuresUnit(typeof(Speed))]
+        [Unit(typeof(Speed))]
         public partial class UnitOfSpeed { }
 
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
 
-        [SharpMeasuresUnit(typeof(Time))]
+        [Unit(typeof(Time))]
         public partial class UnitOfTime { }
 
-        [SharpMeasuresScalar(typeof(UnitOfSpeed))]
+        [ScalarQuantity(typeof(UnitOfSpeed))]
         public partial class Speed { }
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [SharpMeasuresScalar(typeof(UnitOfTime))]
+        [ScalarQuantity(typeof(UnitOfTime))]
         public partial class Time { }
         """;
 }

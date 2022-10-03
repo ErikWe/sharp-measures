@@ -1,6 +1,6 @@
 ﻿namespace SharpMeasures;
 
-using SharpMeasures.Generators.Scalars;
+using SharpMeasures.Generators;
 
-[SharpMeasuresScalar(typeof(UnitOfYank), DefaultUnitInstanceName = "NewtonPerSecond", DefaultUnitInstanceSymbol = "N∙s⁻¹")]
+[ScalarQuantity(typeof(UnitOfYank), DefaultUnitInstanceName = "NewtonPerSecond", DefaultUnitInstanceSymbol = "N∙s⁻¹")]
 public readonly partial record struct Yank { }

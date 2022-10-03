@@ -1,6 +1,6 @@
 ﻿namespace SharpMeasures;
 
-using SharpMeasures.Generators.Scalars;
+using SharpMeasures.Generators;
 
-[SharpMeasuresScalar(typeof(UnitOfSpecificVolume), DefaultUnitInstanceName = "CubicMetrePerKilogram", DefaultUnitInstanceSymbol = "m³∙kg⁻¹")]
+[ScalarQuantity(typeof(UnitOfSpecificVolume), DefaultUnitInstanceName = "CubicMetrePerKilogram", DefaultUnitInstanceSymbol = "m³∙kg⁻¹")]
 public readonly partial record struct SpecificVolume { }

@@ -1,0 +1,15 @@
+﻿[
+  {
+    Id: Measures1262,
+    Title: Duplicate quantity operation,
+    Severity: Error,
+    WarningLevel: 0,
+    Location: : (3,90)-(3,93),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: {0} already defines a quantity operation "{1}" with the same signature,
+    Message: Distance already defines a quantity operation "A" with the same signature,
+    Category: Usage,
+    CustomTags: []
+  }
+]

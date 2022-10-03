@@ -2,10 +2,10 @@
 
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
-using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
+using SharpMeasures.Generators.Quantities.Parsing.QuantityOperation;
 using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
 using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
-using SharpMeasures.Generators.Quantities.Parsing.ProcessedQuantity;
+using SharpMeasures.Generators.Quantities.Parsing.QuantityProcess;
 using SharpMeasures.Generators.Scalars.Parsing.Abstraction;
 using SharpMeasures.Generators.Scalars.Parsing.ConvertibleScalar;
 using SharpMeasures.Generators.Scalars.Parsing.ExcludeUnitBases;
@@ -19,10 +19,10 @@ internal sealed class ScalarBaseProcesser : AScalarProcesser<RawScalarBaseType, 
 {
     public ScalarBaseProcesser(IScalarProcessingDiagnosticsStrategy diagnosticsStrategy) : base(diagnosticsStrategy) { }
 
-    protected override ScalarBaseType ProduceResult(DefinedType type, SharpMeasuresScalarDefinition definition, IReadOnlyList<DerivedQuantityDefinition> derivations, IReadOnlyList<ProcessedQuantityDefinition> processes, IReadOnlyList<ScalarConstantDefinition> constants,
+    protected override ScalarBaseType ProduceResult(DefinedType type, SharpMeasuresScalarDefinition definition, IReadOnlyList<QuantityOperationDefinition> operations, IReadOnlyList<QuantityProcessDefinition> processes, IReadOnlyList<ScalarConstantDefinition> constants,
         IReadOnlyList<ConvertibleScalarDefinition> conversions, IReadOnlyList<IncludeUnitBasesDefinition> baseInclusions, IReadOnlyList<ExcludeUnitBasesDefinition> baseExclusions, IReadOnlyList<IncludeUnitsDefinition> unitInstanceInclusions, IReadOnlyList<ExcludeUnitsDefinition> unitInstanceExclusions)
     {
-        return new(type, definition, derivations, processes, constants, conversions, baseInclusions, baseExclusions, unitInstanceInclusions, unitInstanceExclusions);
+        return new(type, definition, operations, processes, constants, conversions, baseInclusions, baseExclusions, unitInstanceInclusions, unitInstanceExclusions);
     }
 
     protected override NamedType? GetUnit(SharpMeasuresScalarDefinition scalar) => scalar.Unit;

@@ -71,7 +71,7 @@ internal sealed class SpecializedSharpMeasuresScalarValidator : IProcesser<ISpec
 
     private static SpecializedSharpMeasuresScalarDefinition ProduceResult(SpecializedSharpMeasuresScalarDefinition definition, NamedType? vector, NamedType? difference, string? defaultUnitInstanceName, string? defaultUnitInstanceSymbol)
     {
-        return new(definition.OriginalQuantity, definition.InheritDerivations, definition.InheritProcesses, definition.InheritConstants, definition.InheritConversions, definition.InheritBases, definition.InheritUnits, definition.ForwardsCastOperatorBehaviour, definition.BackwardsCastOperatorBehaviour, vector, definition.ImplementSum,
+        return new(definition.OriginalQuantity, definition.InheritOperations, definition.InheritProcesses, definition.InheritConstants, definition.InheritConversions, definition.InheritBases, definition.InheritUnits, definition.ForwardsCastOperatorBehaviour, definition.BackwardsCastOperatorBehaviour, vector, definition.ImplementSum,
             definition.ImplementDifference, difference, defaultUnitInstanceName, defaultUnitInstanceSymbol, definition.GenerateDocumentation, definition.Locations);
     }
 

@@ -24,20 +24,19 @@ public class DerivationSignatureNotPermutable
     private static IReadOnlyCollection<string> DerivationSignatureNotPermutableDiagnostics { get; } = new string[] { DiagnosticIDs.DerivationSignatureNotPermutable };
 
     private static string OneUnitText => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
 
-        [SharpMeasuresScalar(typeof(UnitOfFrequency))]
+        [ScalarQuantity(typeof(UnitOfFrequency))]
         public partial class Frequency { }
 
-        [SharpMeasuresScalar(typeof(UnitOfTime))]
+        [ScalarQuantity(typeof(UnitOfTime))]
         public partial class Time { }
 
-        [SharpMeasuresUnit(typeof(Frequency))]
+        [Unit(typeof(Frequency))]
         public partial class UnitOfFrequency { }
 
         [DerivableUnit("1 / {0}", typeof(UnitOfFrequency), Permutations = true)]
-        [SharpMeasuresUnit(typeof(Time))]
+        [Unit(typeof(Time))]
         public partial class UnitOfTime { }
         """;
 
@@ -49,20 +48,19 @@ public class DerivationSignatureNotPermutable
     }
 
     private static string AllSameUnitsText => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [SharpMeasuresScalar(typeof(UnitOfArea))]
+        [ScalarQuantity(typeof(UnitOfArea))]
         public partial class Area { }
 
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
 
         [DerivableUnit("{0} * {1}", typeof(UnitOfLength), typeof(UnitOfLength), Permutations = true)]
-        [SharpMeasuresUnit(typeof(Area))]
+        [Unit(typeof(Area))]
         public partial class UnitOfArea { }
         """;
 
@@ -77,38 +75,36 @@ public class DerivationSignatureNotPermutable
     private static GeneratorVerifier AllSameUnitsIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(AllSameUnitsIdenticalText);
 
     private static string OneUnitIdenticalText => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
         
-        [SharpMeasuresScalar(typeof(UnitOfFrequency))]
+        [ScalarQuantity(typeof(UnitOfFrequency))]
         public partial class Frequency { }
         
-        [SharpMeasuresScalar(typeof(UnitOfTime))]
+        [ScalarQuantity(typeof(UnitOfTime))]
         public partial class Time { }
         
-        [SharpMeasuresUnit(typeof(Frequency))]
+        [Unit(typeof(Frequency))]
         public partial class UnitOfFrequency { }
         
         [DerivableUnit("1 / {0}", typeof(UnitOfFrequency))]
-        [SharpMeasuresUnit(typeof(Time))]
+        [Unit(typeof(Time))]
         public partial class UnitOfTime { }
         """;
 
     private static string AllSameUnitsIdenticalText => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [SharpMeasuresScalar(typeof(UnitOfArea))]
+        [ScalarQuantity(typeof(UnitOfArea))]
         public partial class Area { }
 
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
 
         [DerivableUnit("{0} * {1}", typeof(UnitOfLength), typeof(UnitOfLength))]
-        [SharpMeasuresUnit(typeof(Area))]
+        [Unit(typeof(Area))]
         public partial class UnitOfArea { }
         """;
 }

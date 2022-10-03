@@ -27,15 +27,14 @@ public class InvalidBiasedUnitExpression
     private static IReadOnlyCollection<string> InvalidBiasedUnitExpressionDiagnostics { get; } = new string[] { DiagnosticIDs.InvalidBiasedUnitExpression };
 
     private static string Text(SourceSubtext bias) => $$"""
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
 
-        [SharpMeasuresScalar(typeof(UnitOfTemperature))]
+        [ScalarQuantity(typeof(UnitOfTemperature))]
         public partial class TemperatureDifference { }
 
         [FixedUnitInstance("Kelvin", "Kelvin")]
         [BiasedUnitInstance("Celsius", "Celsius", "Kelvin", {{bias}})]
-        [SharpMeasuresUnit(typeof(TemperatureDifference), BiasTerm = true)]
+        [Unit(typeof(TemperatureDifference), BiasTerm = true)]
         public partial class UnitOfTemperature { }
         """;
 
@@ -50,14 +49,13 @@ public class InvalidBiasedUnitExpression
     private static GeneratorVerifier Identical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(IdenticalText);
 
     private static string IdenticalText => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
 
-        [SharpMeasuresScalar(typeof(UnitOfTemperature))]
+        [ScalarQuantity(typeof(UnitOfTemperature))]
         public partial class TemperatureDifference { }
 
         [FixedUnitInstance("Kelvin", "Kelvin")]
-        [SharpMeasuresUnit(typeof(TemperatureDifference), BiasTerm = true)]
+        [Unit(typeof(TemperatureDifference), BiasTerm = true)]
         public partial class UnitOfTemperature { }
         """;
 }

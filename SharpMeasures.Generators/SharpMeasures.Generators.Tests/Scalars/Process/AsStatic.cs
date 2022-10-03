@@ -15,15 +15,13 @@ public class AsStatic
     public Task Verify() => GeneratorVerifier.Construct<SharpMeasuresGenerator>(Text).VerifyMatchingSourceNames("Length.Processes.g.cs");
 
     private static string Text => """
-        using SharpMeasures.Generators.Quantities;
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
 
-        [ProcessedQuantity("Answer", "new(42)", ImplementStatically = true)]
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [QuantityProcess("Answer", "new(42)", ImplementStatically = true)]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
         
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 }

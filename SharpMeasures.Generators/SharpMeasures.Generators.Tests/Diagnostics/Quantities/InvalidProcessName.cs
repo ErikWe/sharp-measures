@@ -50,127 +50,114 @@ public class InvalidProcessName
     private static IReadOnlyCollection<string> InvalidProcessNameDiagnostics { get; } = new string[] { DiagnosticIDs.InvalidProcessName };
 
     private static string ScalarText(SourceSubtext processName) => $$"""
-        using SharpMeasures.Generators.Quantities;
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
 
-        [ProcessedQuantity({{processName}}, "new(Magnitude)")]
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [QuantityProcess({{processName}}, "new(Magnitude)")]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
             
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
     private static GeneratorVerifier AssertScalar(SourceSubtext processName)
     {
         var source = ScalarText(processName);
-        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, processName.Context.With(outerPrefix: "ProcessedQuantity("));
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, processName.Context.With(outerPrefix: "QuantityProcess("));
 
         return AssertExactlyInvalidProcessNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(ScalarIdentical);
     }
 
     private static string SpecializedScalarText(SourceSubtext processName) => $$"""
-        using SharpMeasures.Generators.Quantities;
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
 
-        [ProcessedQuantity({{processName}}, "new(Magnitude)")]
-        [SpecializedSharpMeasuresScalar(typeof(Length))]
+        [QuantityProcess({{processName}}, "new(Magnitude)")]
+        [SpecializedScalarQuantity(typeof(Length))]
         public partial class Distance { }
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
     private static GeneratorVerifier AssertSpecializedScalar(SourceSubtext processName)
     {
         var source = SpecializedScalarText(processName);
-        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, processName.Context.With(outerPrefix: "ProcessedQuantity("));
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, processName.Context.With(outerPrefix: "QuantityProcess("));
 
         return AssertExactlyInvalidProcessNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(SpecializedScalarIdentical);
     }
 
     private static string VectorText(SourceSubtext processName) => $$"""
-        using SharpMeasures.Generators.Quantities;
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Vectors;
+        using SharpMeasures.Generators;
 
-        [ProcessedQuantity({{processName}}, "new(Components)")]
-        [SharpMeasuresVector(typeof(UnitOfLength))]
+        [QuantityProcess({{processName}}, "new(Components)")]
+        [VectorQuantity(typeof(UnitOfLength))]
         public partial class Position3 { }
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
     private static GeneratorVerifier AssertVector(SourceSubtext processName)
     {
         var source = VectorText(processName);
-        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, processName.Context.With(outerPrefix: "ProcessedQuantity("));
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, processName.Context.With(outerPrefix: "QuantityProcess("));
 
         return AssertExactlyInvalidProcessNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(VectorIdentical);
     }
 
     private static string SpecializedVectorText(SourceSubtext processName) => $$"""
-        using SharpMeasures.Generators.Quantities;
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Vectors;
+        using SharpMeasures.Generators;
 
-        [ProcessedQuantity({{processName}}, "new(Components)")]
-        [SpecializedSharpMeasuresVector(typeof(Position3))]
+        [QuantityProcess({{processName}}, "new(Components)")]
+        [SpecializedVectorQuantity(typeof(Position3))]
         public partial class Displacement3 { }
 
-        [SharpMeasuresVector(typeof(UnitOfLength))]
+        [VectorQuantity(typeof(UnitOfLength))]
         public partial class Position3 { }
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
     private static GeneratorVerifier AssertSpecializedVector(SourceSubtext processName)
     {
         var source = SpecializedVectorText(processName);
-        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, processName.Context.With(outerPrefix: "ProcessedQuantity("));
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, processName.Context.With(outerPrefix: "QuantityProcess("));
 
         return AssertExactlyInvalidProcessNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(SpecializedVectorIdentical);
     }
 
     private static string VectorGroupMemberText(SourceSubtext processName) => $$"""
-        using SharpMeasures.Generators.Quantities;
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Vectors;
+        using SharpMeasures.Generators;
 
-        [ProcessedQuantity({{processName}}, "new(Components)")]
-        [SharpMeasuresVectorGroupMember(typeof(Position))]
+        [QuantityProcess({{processName}}, "new(Components)")]
+        [VectorGroupMember(typeof(Position))]
         public partial class Position3 { }
 
-        [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
+        [VectorGroup(typeof(UnitOfLength))]
         public static partial class Position { }
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
     private static GeneratorVerifier AssertVectorGroupMember(SourceSubtext processName)
     {
         var source = VectorGroupMemberText(processName);
-        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, processName.Context.With(outerPrefix: "ProcessedQuantity("));
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, processName.Context.With(outerPrefix: "QuantityProcess("));
 
         return AssertExactlyInvalidProcessNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(VectorGroupMemberIdentical);
     }
@@ -182,78 +169,70 @@ public class InvalidProcessName
     private static GeneratorVerifier VectorGroupMemberIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(VectorGroupMemberIdenticalText);
 
     private static string ScalarIdenticalText => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
     private static string SpecializedScalarIdenticalText => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
 
-        [SpecializedSharpMeasuresScalar(typeof(Length))]
+        [SpecializedScalarQuantity(typeof(Length))]
         public partial class Distance { }
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
     private static string VectorIdenticalText => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Vectors;
+        using SharpMeasures.Generators;
 
-        [SharpMeasuresVector(typeof(UnitOfLength))]
+        [VectorQuantity(typeof(UnitOfLength))]
         public partial class Position3 { }
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
     private static string SpecializedVectorIdenticalText => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Vectors;
+        using SharpMeasures.Generators;
 
-        [SpecializedSharpMeasuresVector(typeof(Position3))]
+        [SpecializedVectorQuantity(typeof(Position3))]
         public partial class Displacement3 { }
 
-        [SharpMeasuresVector(typeof(UnitOfLength))]
+        [VectorQuantity(typeof(UnitOfLength))]
         public partial class Position3 { }
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
     private static string VectorGroupMemberIdenticalText => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Vectors;
+        using SharpMeasures.Generators;
 
-        [SharpMeasuresVectorGroupMember(typeof(Position))]
+        [VectorGroupMember(typeof(Position))]
         public partial class Position3 { }
 
-        [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
+        [VectorGroup(typeof(UnitOfLength))]
         public static partial class Position { }
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 }

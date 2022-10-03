@@ -2,11 +2,12 @@
 
 using SharpMeasures.Equatables;
 using SharpMeasures.Generators.Quantities.Parsing.ConvertibleQuantity;
-using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
+using SharpMeasures.Generators.Quantities.Parsing.QuantityOperation;
 using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
 using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
 
 using System.Collections.Generic;
+using SharpMeasures.Generators.Vectors.Parsing.VectorOperation;
 
 internal record class ARawGroupType<TDefinition>
 {
@@ -14,19 +15,21 @@ internal record class ARawGroupType<TDefinition>
 
     public TDefinition Definition { get; }
 
-    public IEnumerable<RawDerivedQuantityDefinition> Derivations { get; }
+    public IEnumerable<RawQuantityOperationDefinition> Operations { get; }
+    public IEnumerable<RawVectorOperationDefinition> VectorOperations { get; }
     public IEnumerable<RawConvertibleQuantityDefinition> Conversions { get; }
 
     public IEnumerable<RawIncludeUnitsDefinition> UnitInstanceInclusions { get; }
     public IEnumerable<RawExcludeUnitsDefinition> UnitInstanceExclusions { get; }
 
-    protected ARawGroupType(DefinedType type, TDefinition definition, IEnumerable<RawDerivedQuantityDefinition> derivations, IEnumerable<RawConvertibleQuantityDefinition> conversions, IEnumerable<RawIncludeUnitsDefinition> unitInstanceInclusions, IEnumerable<RawExcludeUnitsDefinition> unitInstanceExclusions)
+    protected ARawGroupType(DefinedType type, TDefinition definition, IEnumerable<RawQuantityOperationDefinition> operations, IEnumerable<RawVectorOperationDefinition> vectorOperations, IEnumerable<RawConvertibleQuantityDefinition> conversions, IEnumerable<RawIncludeUnitsDefinition> unitInstanceInclusions, IEnumerable<RawExcludeUnitsDefinition> unitInstanceExclusions)
     {
         Type = type;
 
         Definition = definition;
 
-        Derivations = derivations.AsEquatable();
+        Operations = operations.AsEquatable();
+        VectorOperations = vectorOperations.AsEquatable();
         Conversions = conversions.AsEquatable();
 
         UnitInstanceInclusions = unitInstanceInclusions.AsEquatable();

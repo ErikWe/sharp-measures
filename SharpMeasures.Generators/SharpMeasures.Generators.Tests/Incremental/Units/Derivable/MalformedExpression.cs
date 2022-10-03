@@ -20,38 +20,36 @@ public class MalformedExpression
     }
 
     private static string InitialText { get; } = """
-        using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators;
 
-        [SharpMeasuresScalar(typeof(UnitOfTime))]
+        [ScalarQuantity(typeof(UnitOfTime))]
         public partial class Time { }
 
-        [SharpMeasuresScalar(typeof(UnitOfFrequency))]
+        [ScalarQuantity(typeof(UnitOfFrequency))]
         public partial class Frequency { }
         
-        [SharpMeasuresUnit(typeof(Time))]
+        [Unit(typeof(Time))]
         public partial class UnitOfTime { }
 
         [DerivableUnit("1 / {0} * {}", typeof(UnitOfTime))]
-        [SharpMeasuresUnit(typeof(Frequency))]
+        [Unit(typeof(Frequency))]
         public partial class UnitOfFrequency { }
         """;
 
     private static string FinalText { get; } = """
-        using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators;
         
-        [SharpMeasuresScalar(typeof(UnitOfTime))]
+        [ScalarQuantity(typeof(UnitOfTime))]
         public partial class Time { }
         
-        [SharpMeasuresScalar(typeof(UnitOfFrequency))]
+        [ScalarQuantity(typeof(UnitOfFrequency))]
         public partial class Frequency { }
         
-        [SharpMeasuresUnit(typeof(Time))]
+        [Unit(typeof(Time))]
         public partial class UnitOfTime { }
         
         [DerivableUnit("1 / {0}", typeof(UnitOfTime))]
-        [SharpMeasuresUnit(typeof(Frequency))]
+        [Unit(typeof(Frequency))]
         public partial class UnitOfFrequency { }
         """;
 }

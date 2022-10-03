@@ -4,7 +4,7 @@
     Title: Duplicate unit name,
     Severity: Error,
     WarningLevel: 0,
-    Location: : (8,19)-(8,26),
+    Location: : (7,19)-(7,26),
     Description: ,
     HelpLink: ,
     MessageFormat: {0} already defines a unit with the name "{1}",

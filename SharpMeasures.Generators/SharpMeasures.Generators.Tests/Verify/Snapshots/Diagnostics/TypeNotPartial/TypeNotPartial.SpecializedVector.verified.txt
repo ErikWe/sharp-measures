@@ -4,11 +4,11 @@
     Title: Expected a partial type,
     Severity: Error,
     WarningLevel: 0,
-    Location: : (5,13)-(5,26),
+    Location: : (3,13)-(3,26),
     Description: ,
     HelpLink: ,
     MessageFormat: The source generator associated with the attribute {0} requires {1} to be a partial type,
-    Message: The source generator associated with the attribute SpecializedSharpMeasuresVector requires Displacement3 to be a partial type,
+    Message: The source generator associated with the attribute SpecializedVectorQuantity requires Displacement3 to be a partial type,
     Category: Usage,
     CustomTags: []
   }

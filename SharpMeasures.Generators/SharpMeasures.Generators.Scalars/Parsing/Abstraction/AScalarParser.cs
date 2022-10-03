@@ -3,10 +3,10 @@
 using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Quantities.Parsing.ConvertibleQuantity;
-using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
+using SharpMeasures.Generators.Quantities.Parsing.QuantityOperation;
 using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
 using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
-using SharpMeasures.Generators.Quantities.Parsing.ProcessedQuantity;
+using SharpMeasures.Generators.Quantities.Parsing.QuantityProcess;
 using SharpMeasures.Generators.Scalars.Parsing.ExcludeUnitBases;
 using SharpMeasures.Generators.Scalars.Parsing.IncludeUnitBases;
 using SharpMeasures.Generators.Scalars.Parsing.ScalarConstant;
@@ -37,7 +37,7 @@ internal abstract class AScalarParser<TDefinition, TProduct>
             return (new Optional<TProduct>(), Array.Empty<INamedTypeSymbol>());
         }
 
-        (var derivations, var derivationsForeignSymbols) = ParseDerivations(typeSymbol);
+        (var operations, var operationForeignSymbols) = ParseOperations(typeSymbol);
         var processes = ParseProcesses(typeSymbol);
         var constants = ParseConstants(typeSymbol);
         (var conversions, var conversionsForeignSymbols) = ParseConversions(typeSymbol);
@@ -48,28 +48,28 @@ internal abstract class AScalarParser<TDefinition, TProduct>
         var includeUnitInstances = ParseIncludeUnits(typeSymbol);
         var excludeUnitInstances = ParseExcludeUnits(typeSymbol);
 
-        TProduct product = ProduceResult(typeSymbol.AsDefinedType(), scalar.Value, derivations, processes, constants, conversions, includeUnitInstanceBases, excludeUnitInstanceBases, includeUnitInstances, excludeUnitInstances);
-        var foreignSymbols = scalarForeignSymbols.Concat(derivationsForeignSymbols).Concat(conversionsForeignSymbols);
+        TProduct product = ProduceResult(typeSymbol.AsDefinedType(), scalar.Value, operations, processes, constants, conversions, includeUnitInstanceBases, excludeUnitInstanceBases, includeUnitInstances, excludeUnitInstances);
+        var foreignSymbols = scalarForeignSymbols.Concat(operationForeignSymbols).Concat(conversionsForeignSymbols);
 
         return (product, foreignSymbols);
     }
 
-    protected abstract TProduct ProduceResult(DefinedType type, TDefinition definition, IEnumerable<RawDerivedQuantityDefinition> derivations, IEnumerable<RawProcessedQuantityDefinition> processes, IEnumerable<RawScalarConstantDefinition> constants, IEnumerable<RawConvertibleQuantityDefinition> conversions,
+    protected abstract TProduct ProduceResult(DefinedType type, TDefinition definition, IEnumerable<RawQuantityOperationDefinition> operations, IEnumerable<RawQuantityProcessDefinition> processes, IEnumerable<RawScalarConstantDefinition> constants, IEnumerable<RawConvertibleQuantityDefinition> conversions,
         IEnumerable<RawIncludeUnitBasesDefinition> baseInclusions, IEnumerable<RawExcludeUnitBasesDefinition> baseExclusions, IEnumerable<RawIncludeUnitsDefinition> unitInstanceInclusions, IEnumerable<RawExcludeUnitsDefinition> unitInstanceExclusions);
 
     protected abstract (Optional<TDefinition>, IEnumerable<INamedTypeSymbol>)  ParseScalar(INamedTypeSymbol typeSymbol);
 
-    private static (IEnumerable<RawDerivedQuantityDefinition>, IEnumerable<INamedTypeSymbol>) ParseDerivations(INamedTypeSymbol typeSymbol)
+    private static (IEnumerable<RawQuantityOperationDefinition>, IEnumerable<INamedTypeSymbol>) ParseOperations(INamedTypeSymbol typeSymbol)
     {
-        var symbolicDerivations = DerivedQuantityParser.Parser.ParseAllOccurrences(typeSymbol);
+        var symbolicOperations = QuantityOperationParser.Parser.ParseAllOccurrences(typeSymbol);
 
-        var rawDerivations = symbolicDerivations.Select(static (symbolicDerivation) => RawDerivedQuantityDefinition.FromSymbolic(symbolicDerivation));
-        var foreignSymbols = symbolicDerivations.SelectMany((symbolicDerivation) => symbolicDerivation.ForeignSymbols(typeSymbol.ContainingAssembly.Name, alreadyInForeignAssembly: false));
+        var rawOperations = symbolicOperations.Select(static (symbolicOperation) => RawQuantityOperationDefinition.FromSymbolic(symbolicOperation));
+        var foreignSymbols = symbolicOperations.SelectMany((symbolicOperation) => symbolicOperation.ForeignSymbols(typeSymbol.ContainingAssembly.Name, alreadyInForeignAssembly: false));
 
-        return (rawDerivations, foreignSymbols);
+        return (rawOperations, foreignSymbols);
     }
 
-    private static IEnumerable<RawProcessedQuantityDefinition> ParseProcesses(INamedTypeSymbol typeSymbol) => ProcessedQuantityParser.Parser.ParseAllOccurrences(typeSymbol);
+    private static IEnumerable<RawQuantityProcessDefinition> ParseProcesses(INamedTypeSymbol typeSymbol) => QuantityProcessParser.Parser.ParseAllOccurrences(typeSymbol);
     private static IEnumerable<RawScalarConstantDefinition> ParseConstants(INamedTypeSymbol typeSymbol) => ScalarConstantParser.Parser.ParseAllOccurrences(typeSymbol);
     private static (IEnumerable<RawConvertibleQuantityDefinition> Definitions, IEnumerable<INamedTypeSymbol> ForeignSymbols) ParseConversions(INamedTypeSymbol typeSymbol)
     {

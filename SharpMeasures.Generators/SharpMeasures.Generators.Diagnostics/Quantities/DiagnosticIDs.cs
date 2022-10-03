@@ -17,13 +17,13 @@ public static partial class DiagnosticIDs
     public const string InclusionOrExclusionHadNoEffect = $"{Prefix}{Numbering.Hundreds.Quantities}41";
     public const string UnionInclusionStackingModeRedundant = $"{Prefix}{Numbering.Hundreds.Quantities}42";
 
-    public const string DerivationOperatorsIncompatibleExpression = $"{Prefix}{Numbering.Hundreds.Quantities}60";
-    public const string UnmatchedDerivationExpressionQuantity = $"{Prefix}{Numbering.Hundreds.Quantities}61";
-    public const string ExpressionDoesNotIncludeQuantity = $"{Prefix}{Numbering.Hundreds.Quantities}62";
-    public const string MalformedDerivationExpression = $"{Prefix}{Numbering.Hundreds.Quantities}63";
-    public const string DerivationExpressionContainsConstant = $"{Prefix}{Numbering.Hundreds.Quantities}64";
-    public const string IncompatibleQuantitiesInDerivation = $"{Prefix}{Numbering.Hundreds.Quantities}65";
-    public const string UnexpectedResultFromDerivation = $"{Prefix}{Numbering.Hundreds.Quantities}66";
+    public const string InvalidQuantityOperationName = $"{Prefix}{Numbering.Hundreds.Quantities}60";
+    public const string QuantityOperationMethodDisabledButNameSpecified = $"{Prefix}{Numbering.Hundreds.Quantities}61";
+    public const string DuplicateQuantityOperation = $"{Prefix}{Numbering.Hundreds.Quantities}62";
+    public const string InvalidQuantityOperation = $"{Prefix}{Numbering.Hundreds.Quantities}63";
+    public const string QuantityOperationNotMirrorable = $"{Prefix}{Numbering.Hundreds.Quantities}64";
+    public const string QuantityOperationMethodNotMirrorable = $"{Prefix}{Numbering.Hundreds.Quantities}65";
+    public const string QuantityOperationMirrorDisabledButNameSpecified = $"{Prefix}{Numbering.Hundreds.Quantities}66";
 
     public const string InvalidProcessName = $"{Prefix}{Numbering.Hundreds.Quantities}80";
     public const string DuplicateProcessName = $"{Prefix}{Numbering.Hundreds.Quantities}81";

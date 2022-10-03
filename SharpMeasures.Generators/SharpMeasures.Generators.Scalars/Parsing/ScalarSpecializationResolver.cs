@@ -34,10 +34,9 @@ internal static class ScalarSpecializationResolver
             return new Optional<ResolvedScalarType>();
         }
 
-        var constants = CollectItems(scalarType, scalarPopulation, static (scalar) => scalar.Constants, static (scalar) => scalar.Definition.InheritConstants);
-
-        var inheritedDerivations = CollectItems(scalarType, scalarPopulation, static (scalar) => scalar.Derivations, static (scalar) => scalar.Definition.InheritDerivations, onlyInherited: true);
+        var inheritedOperations = CollectItems(scalarType, scalarPopulation, static (scalar) => scalar.Operations, static (scalar) => scalar.Definition.InheritOperations, onlyInherited: true);
         var inheritedProcesses = CollectItems(scalarType, scalarPopulation, static (scalar) => scalar.Processes, static (scalar) => scalar.Definition.InheritProcesses, onlyInherited: true);
+        var inheritedConstants = CollectItems(scalarType, scalarPopulation, static (scalar) => scalar.Constants, static (scalar) => scalar.Definition.InheritConstants, onlyInherited: true);
         var inheritedConversions = CollectItems(scalarType, scalarPopulation, static (scalar) => scalar.Conversions, static (scalar) => scalar.Definition.InheritConversions, onlyInherited: true);
 
         var includedUnitInstanceBases = ResolveUnitInstanceInclusions(scalarType, scalarPopulation, unit, static (scalar) => scalar.UnitBaseInstanceInclusions, static (scalar) => scalar.UnitBaseInstanceExclusions, static (scalar) => scalar.Definition.InheritBases);
@@ -55,7 +54,7 @@ internal static class ScalarSpecializationResolver
         var generateDocumentation = RecursivelySearchForDefined(scalarType, scalarPopulation, static (scalar) => scalar.Definition.GenerateDocumentation);
 
         return new ResolvedScalarType(scalarType.Type, unit.Type.AsNamedType(), scalarBase.Definition.UseUnitBias, scalarType.Definition.OriginalQuantity, scalarType.Definition.ForwardsCastOperatorBehaviour, scalarType.Definition.BackwardsCastOperatorBehaviour, vector, implementSum!.Value,
-            implementDifference!.Value, difference, defaultUnitInstanceName, defaultUnitInstanceSymbol, scalarType.Derivations, scalarType.Processes, constants, scalarType.Conversions, inheritedDerivations, inheritedProcesses, inheritedConversions, includedUnitInstanceBases, includedUnitInstances, generateDocumentation);
+            implementDifference!.Value, difference, defaultUnitInstanceName, defaultUnitInstanceSymbol, scalarType.Operations, scalarType.Processes, scalarType.Constants, scalarType.Conversions, inheritedOperations, inheritedProcesses, inheritedConstants, inheritedConversions, includedUnitInstanceBases, includedUnitInstances, generateDocumentation);
     }
 
     private static NamedType? ResolveDifference(ScalarSpecializationType scalarType, IScalarPopulation scalarPopulation)

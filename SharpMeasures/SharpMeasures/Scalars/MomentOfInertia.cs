@@ -1,10 +1,6 @@
 ﻿namespace SharpMeasures;
 
-using SharpMeasures.Generators.Quantities;
-using SharpMeasures.Generators.Scalars;
+using SharpMeasures.Generators;
 
-[SharpMeasuresScalar(typeof(UnitOfMomentOfInertia), DefaultUnitInstanceName = "KilogramSquareMetre", DefaultUnitInstanceSymbol = "kg∙m²")]
-public readonly partial record struct MomentOfInertia { }
-
-[DerivedQuantity("{0} / {1}", typeof(AngularMomentum), typeof(AngularSpeed)]
+[ScalarQuantity(typeof(UnitOfMomentOfInertia), DefaultUnitInstanceName = "KilogramSquareMetre", DefaultUnitInstanceSymbol = "kg∙m²")]
 public readonly partial record struct MomentOfInertia { }

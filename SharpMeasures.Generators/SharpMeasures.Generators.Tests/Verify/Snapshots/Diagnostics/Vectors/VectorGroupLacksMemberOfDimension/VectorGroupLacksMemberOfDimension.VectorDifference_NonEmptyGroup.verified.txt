@@ -4,7 +4,7 @@
     Title: No vector of appropiate dimension in group,
     Severity: Error,
     WarningLevel: 0,
-    Location: : (4,63)-(4,75),
+    Location: : (2,58)-(2,70),
     Description: ,
     HelpLink: ,
     MessageFormat: The vector group {0} does not contain a member of dimension {1},

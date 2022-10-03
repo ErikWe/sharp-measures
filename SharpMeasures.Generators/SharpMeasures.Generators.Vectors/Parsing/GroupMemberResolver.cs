@@ -34,10 +34,10 @@ internal static class GroupMemberResolver
             return new Optional<ResolvedVectorType>();
         }
 
-        var constants = CollectItems(vectorType, vectorPopulation, static (vector) => vector.Constants, static (group) => Array.Empty<IVectorConstant>(), static (vector) => vector.Definition.InheritConstantsFromMembers, static (vector) => false, static (group) => false);
-
-        var inheritedDerivations = CollectItems(vectorType, vectorPopulation, static (vector) => vector.Derivations, static (group) => group.Derivations, static (vector) => vector.Definition.InheritDerivationsFromMembers, static (vector) => vector.Definition.InheritDerivations, static (group) => group.Definition.InheritDerivations, onlyInherited: true);
-        var inheritedProcesses = CollectItems(vectorType, vectorPopulation, static (vector) => vector.Processes, static (group) => Array.Empty<IProcessedQuantity>(), static (vector) => vector.Definition.InheritProcessesFromMembers, static (group) => false, static (group) => false, onlyInherited: true);
+        var inheritedOperations = CollectItems(vectorType, vectorPopulation, static (vector) => vector.Operations, static (group) => group.Operations, static (vector) => vector.Definition.InheritOperationsFromMembers, static (vector) => vector.Definition.InheritOperations, static (group) => group.Definition.InheritOperations, onlyInherited: true);
+        var inheritedVectorOperations = CollectItems(vectorType, vectorPopulation, static (vector) => vector.VectorOperations, static (group) => group.VectorOperations, static (vector) => vector.Definition.InheritOperationsFromMembers, static (vector) => vector.Definition.InheritOperations, static (group) => group.Definition.InheritOperations, onlyInherited: true);
+        var inheritedProcesses = CollectItems(vectorType, vectorPopulation, static (vector) => vector.Processes, static (group) => Array.Empty<IQuantityProcess>(), static (vector) => vector.Definition.InheritProcessesFromMembers, static (group) => false, static (group) => false, onlyInherited: true);
+        var inheritedConstants = CollectItems(vectorType, vectorPopulation, static (vector) => vector.Constants, static (group) => Array.Empty<IVectorConstant>(), static (vector) => vector.Definition.InheritConstantsFromMembers, static (vector) => false, static (group) => false, onlyInherited: true);
         var inheritedConversions = CollectItems(vectorType, vectorPopulation, static (vector) => vector.Conversions, static (group) => group.Conversions, static (vector) => vector.Definition.InheritConversionsFromMembers, static (vector) => vector.Definition.InheritConversions, static (group) => group.Definition.InheritConversions, onlyInherited: true);
 
         var includedUnitInstances = ResolveUnitInstanceInclusions(vectorType, vectorPopulation, unit);
@@ -56,7 +56,7 @@ internal static class GroupMemberResolver
         (var forwardsCastBehaviour, var backwardsCastBehaviour) = GetSpecializationCastBehaviour(vectorType.Definition.VectorGroup, vectorPopulation);
 
         return new ResolvedVectorType(vectorType.Type, vectorType.Definition.Dimension, vectorType.Definition.VectorGroup, unit.Type.AsNamedType(), originalQuantity: null, forwardsCastBehaviour, backwardsCastBehaviour, scalar, implementSum!.Value, implementDifference!.Value,
-            difference, defaultUnitInstanceName, defaultUnitInstanceSymbol, vectorType.Derivations, vectorType.Processes, constants, vectorType.Conversions, inheritedDerivations, inheritedProcesses, inheritedConversions, includedUnitInstances, generateDocumentation);
+            difference, defaultUnitInstanceName, defaultUnitInstanceSymbol, vectorType.Operations, vectorType.VectorOperations, vectorType.Processes, vectorType.Constants, vectorType.Conversions, inheritedOperations, inheritedVectorOperations, inheritedProcesses, inheritedConstants, inheritedConversions, includedUnitInstances, generateDocumentation);
     }
 
     private static (ConversionOperatorBehaviour ForwardsCastBehaviour, ConversionOperatorBehaviour BackwardsCastBehaviour) GetSpecializationCastBehaviour(NamedType group, IVectorPopulation vectorPopulation)

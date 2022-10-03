@@ -1,10 +1,7 @@
 ﻿namespace SharpMeasures.Generators.Scalars.Documentation;
 
 using SharpMeasures.Generators.Quantities;
-using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
 using SharpMeasures.Generators.Units;
-
-using System.Collections.Generic;
 
 internal interface IDocumentationStrategy
 {
@@ -29,10 +26,12 @@ internal interface IDocumentationStrategy
     public abstract string CastConversion(NamedType scalar);
     public abstract string AntidirectionalCastConversion(NamedType scalar);
 
-    public abstract string Derivation(DerivedQuantitySignature signature, IReadOnlyList<string> parameterNames);
-    public abstract string OperatorDerivation(OperatorDerivation derivation);
+    public abstract string OperationMethod(IQuantityOperation operation, NamedType other);
+    public abstract string MirroredOperationMethod(IQuantityOperation operation, NamedType other);
+    public abstract string OperationOperator(IQuantityOperation operation, NamedType other);
+    public abstract string MirroredOperationOperator(IQuantityOperation operation, NamedType other);
 
-    public abstract string Process(IProcessedQuantity process);
+    public abstract string Process(IQuantityProcess process);
 
     public abstract string IsNaN();
     public abstract string IsZero();

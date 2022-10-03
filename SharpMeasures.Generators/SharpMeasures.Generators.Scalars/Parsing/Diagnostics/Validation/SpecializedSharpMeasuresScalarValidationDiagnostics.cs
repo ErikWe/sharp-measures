@@ -32,7 +32,7 @@ internal sealed class SpecializedSharpMeasuresScalarValidationDiagnostics : ISpe
 
     public Diagnostic RootScalarNotResolved(ISpecializedSharpMeasuresScalarValidationContext context, SpecializedSharpMeasuresScalarDefinition definition)
     {
-        return DiagnosticConstruction.QuantityGroupMissingRoot<SharpMeasuresScalarAttribute>(definition.Locations.AttributeName.AsRoslynLocation());
+        return DiagnosticConstruction.QuantityGroupMissingRoot<ScalarQuantityAttribute>(definition.Locations.AttributeName.AsRoslynLocation());
     }
 
     public Diagnostic TypeNotVector(ISpecializedSharpMeasuresScalarValidationContext context, SpecializedSharpMeasuresScalarDefinition definition)

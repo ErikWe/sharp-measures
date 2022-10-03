@@ -15,29 +15,27 @@ public class InvalidUseUnitBiasValue
     private static GeneratorVerifier AssertIdentical(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source, GeneratorVerifierSettings.GeneratedCodeAssertions).AssertIdenticalSources(Identical);
 
     private static string FalseeText => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
         
-        [SharpMeasuresScalar(typeof(UnitOfLength), UseUnitBias = falsee, DefaultUnitInstanceName = "Metre", DefaultUnitInstanceSymbol = "m")]
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength), UseUnitBias = falsee, DefaultUnitInstanceName = "Metre", DefaultUnitInstanceSymbol = "m")]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
         
         [FixedUnitInstance("Metre", "Metres")]
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
     private static GeneratorVerifier Identical { get; } = GeneratorVerifier.Construct<SharpMeasuresGenerator>(IdenticalText);
 
     private static string IdenticalText => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
         
-        [SharpMeasuresScalar(typeof(UnitOfLength), DefaultUnitInstanceName = "Metre", DefaultUnitInstanceSymbol = "m")]
+        [ScalarQuantity(typeof(UnitOfLength), DefaultUnitInstanceName = "Metre", DefaultUnitInstanceSymbol = "m")]
         public partial class Length { }
         
         [FixedUnitInstance("Metre", "Metres")]
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 }

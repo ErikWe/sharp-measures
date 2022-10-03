@@ -4,11 +4,11 @@
     Title: Unit not derivable,
     Severity: Error,
     WarningLevel: 0,
-    Location: : (6,1)-(6,20),
+    Location: : (5,1)-(5,20),
     Description: ,
     HelpLink: ,
-    MessageFormat: {0} has no defined derivations. Add a definition using SharpMeasures.Generators.Units.DerivableUnit.,
-    Message: UnitOfLength has no defined derivations. Add a definition using SharpMeasures.Generators.Units.DerivableUnit.,
+    MessageFormat: {0} has no defined derivations. Add a definition using SharpMeasures.Generators.DerivableUnit.,
+    Message: UnitOfLength has no defined derivations. Add a definition using SharpMeasures.Generators.DerivableUnit.,
     Category: Usage,
     CustomTags: []
   }

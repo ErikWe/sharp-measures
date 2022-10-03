@@ -1,8 +1,8 @@
 ﻿namespace SharpMeasures;
 
-using SharpMeasures.Generators.Units;
+using SharpMeasures.Generators;
 
 [DerivedUnitInstance("SquareSecond", "[*]s", new[] { "Second" })]
 [DerivableUnit("{0} * {0}", typeof(UnitOfTime))]
-[SharpMeasuresUnit(typeof(TimeSquared))]
+[Unit(typeof(TimeSquared))]
 public readonly partial record struct UnitOfTimeSquared { }

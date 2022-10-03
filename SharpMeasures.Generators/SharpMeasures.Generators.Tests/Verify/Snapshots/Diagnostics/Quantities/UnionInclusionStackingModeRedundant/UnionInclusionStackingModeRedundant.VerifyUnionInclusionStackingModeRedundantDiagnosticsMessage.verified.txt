@@ -4,7 +4,7 @@
     Title: Union inclusion stacking mode is redundant,
     Severity: Info,
     WarningLevel: 1,
-    Location: : (5,42)-(5,69),
+    Location: : (2,42)-(2,69),
     Description: ,
     HelpLink: ,
     MessageFormat: As {0} includes all units, using SharpMeasures.Generators.InclusionStackingMode.Union is redundant,

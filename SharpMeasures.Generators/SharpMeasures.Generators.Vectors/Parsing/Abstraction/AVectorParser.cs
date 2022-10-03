@@ -3,16 +3,17 @@
 using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Quantities.Parsing.ConvertibleQuantity;
-using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
+using SharpMeasures.Generators.Quantities.Parsing.QuantityOperation;
 using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
 using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
-using SharpMeasures.Generators.Quantities.Parsing.ProcessedQuantity;
+using SharpMeasures.Generators.Quantities.Parsing.QuantityProcess;
 using SharpMeasures.Generators.Vectors.Parsing.VectorConstant;
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using SharpMeasures.Generators.Vectors.Parsing.VectorOperation;
 
 internal abstract class AVectorParser<TDefinition, TProduct>
 {
@@ -35,7 +36,8 @@ internal abstract class AVectorParser<TDefinition, TProduct>
             return (new Optional<TProduct>(), Array.Empty<INamedTypeSymbol>());
         }
 
-        (var derivations, var derivationForeignSymbols) = CommonParsing.ParseDerivations(typeSymbol);
+        (var operations, var operationForeignSymbols) = CommonParsing.ParseOperations(typeSymbol);
+        (var vectorOperations, var vectorOperationForeignSymbols) = CommonParsing.ParseVectorOperations(typeSymbol);
         var processes = CommonParsing.ParseProcesses(typeSymbol);
         var constants = CommonParsing.ParseConstants(typeSymbol);
         (var conversions, var conversionForeignSymbols) = CommonParsing.ParseConversions(typeSymbol);
@@ -43,13 +45,13 @@ internal abstract class AVectorParser<TDefinition, TProduct>
         var includeUnitInstances = CommonParsing.ParseIncludeUnitInstances(typeSymbol);
         var excludeUnitInstances = CommonParsing.ParseExcludeUnitInstances(typeSymbol);
 
-        TProduct product = ProduceResult(typeSymbol.AsDefinedType(), vector.Value, derivations, processes, constants, conversions, includeUnitInstances, excludeUnitInstances);
-        var foreignSymbols = vectorForeignSymbols.Concat(derivationForeignSymbols).Concat(conversionForeignSymbols);
+        TProduct product = ProduceResult(typeSymbol.AsDefinedType(), vector.Value, operations, vectorOperations, processes, constants, conversions, includeUnitInstances, excludeUnitInstances);
+        var foreignSymbols = vectorForeignSymbols.Concat(operationForeignSymbols).Concat(vectorOperationForeignSymbols).Concat(conversionForeignSymbols);
 
         return (product, foreignSymbols);
     }
 
-    protected abstract TProduct ProduceResult(DefinedType type, TDefinition definition, IEnumerable<RawDerivedQuantityDefinition> derivations, IEnumerable<RawProcessedQuantityDefinition> processes, IEnumerable<RawVectorConstantDefinition> constants, IEnumerable<RawConvertibleQuantityDefinition> conversions, IEnumerable<RawIncludeUnitsDefinition> unitInstanceInclusions, IEnumerable<RawExcludeUnitsDefinition> unitInstanceExclusions);
+    protected abstract TProduct ProduceResult(DefinedType type, TDefinition definition, IEnumerable<RawQuantityOperationDefinition> operations, IEnumerable<RawVectorOperationDefinition> vectorOperations, IEnumerable<RawQuantityProcessDefinition> processes, IEnumerable<RawVectorConstantDefinition> constants, IEnumerable<RawConvertibleQuantityDefinition> conversions, IEnumerable<RawIncludeUnitsDefinition> unitInstanceInclusions, IEnumerable<RawExcludeUnitsDefinition> unitInstanceExclusions);
 
     protected abstract (Optional<TDefinition> Definition, IEnumerable<INamedTypeSymbol> ForeignSymbols) ParseVector(INamedTypeSymbol typeSymbol);
 }

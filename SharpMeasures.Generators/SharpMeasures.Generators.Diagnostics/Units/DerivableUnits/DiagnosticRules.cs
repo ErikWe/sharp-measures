@@ -2,8 +2,6 @@
 
 using Microsoft.CodeAnalysis;
 
-using SharpMeasures.Generators.Units;
-
 public static partial class DiagnosticRules
 {
     public static readonly DiagnosticDescriptor MultipleDerivationSignaturesButNotNamed = new DiagnosticDescriptor

@@ -1,6 +1,6 @@
 ﻿namespace SharpMeasures;
 
-using SharpMeasures.Generators.Scalars;
+using SharpMeasures.Generators;
 
-[SharpMeasuresScalar(typeof(UnitOfPressure), DefaultUnitInstanceName = "Pascal", DefaultUnitInstanceSymbol = "Pa")]
+[ScalarQuantity(typeof(UnitOfPressure), DefaultUnitInstanceName = "Pascal", DefaultUnitInstanceSymbol = "Pa")]
 public readonly partial record struct Pressure { }

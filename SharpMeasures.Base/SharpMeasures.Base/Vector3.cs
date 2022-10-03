@@ -92,8 +92,8 @@ public readonly record struct Vector3 : IVector3Quantity<Vector3>
     /// <summary>Computes { <see langword="this"/> ∙ <paramref name="factor"/> }.</summary>
     /// <param name="factor">The second factor of { <see langword="this"/> ∙ <paramref name="factor"/> }.</param>
     public Scalar Dot(Vector3 factor) => ScalarMaths.Dot3(this, factor);
-    /// <summary>Computes { <see langword="this"/> x <paramref name="factor"/> }.</summary>
-    /// <param name="factor">The second factor of { <see langword="this"/> x <paramref name="factor"/> }.</param>
+    /// <summary>Computes { <see langword="this"/> ⨯ <paramref name="factor"/> }.</summary>
+    /// <param name="factor">The second factor of { <see langword="this"/> ⨯ <paramref name="factor"/> }.</param>
     public Vector3 Cross(Vector3 factor) => VectorMaths.Cross(this, factor);
 
     /// <inheritdoc/>

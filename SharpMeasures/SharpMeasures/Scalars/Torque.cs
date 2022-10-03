@@ -1,6 +1,6 @@
 ﻿namespace SharpMeasures;
 
-using SharpMeasures.Generators.Scalars;
+using SharpMeasures.Generators;
 
-[SharpMeasuresScalar(typeof(UnitOfTorque), DefaultUnitInstanceName = "NewtonMetre", DefaultUnitInstanceSymbol = "N∙m")]
+[ScalarQuantity(typeof(UnitOfTorque), DefaultUnitInstanceName = "NewtonMetre", DefaultUnitInstanceSymbol = "N∙m")]
 public readonly partial record struct Torque { }

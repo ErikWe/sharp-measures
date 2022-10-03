@@ -1,11 +1,9 @@
 ﻿namespace SharpMeasures.Generators.Scalars.Documentation;
 
 using SharpMeasures.Generators.Quantities;
-using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
 using SharpMeasures.Generators.Units;
 
 using System;
-using System.Collections.Generic;
 
 internal sealed class EmptyDocumentation : IDocumentationStrategy, IEquatable<EmptyDocumentation>
 {
@@ -28,9 +26,11 @@ internal sealed class EmptyDocumentation : IDocumentationStrategy, IEquatable<Em
     string IDocumentationStrategy.AntidirectionalConversion(NamedType _) => string.Empty;
     string IDocumentationStrategy.CastConversion(NamedType _) => string.Empty;
     string IDocumentationStrategy.AntidirectionalCastConversion(NamedType _) => string.Empty;
-    string IDocumentationStrategy.Derivation(DerivedQuantitySignature _, IReadOnlyList<string> _2) => string.Empty;
-    string IDocumentationStrategy.OperatorDerivation(OperatorDerivation _) => string.Empty;
-    string IDocumentationStrategy.Process(IProcessedQuantity _) => string.Empty;
+    string IDocumentationStrategy.OperationMethod(IQuantityOperation _, NamedType _1) => string.Empty;
+    string IDocumentationStrategy.MirroredOperationMethod(IQuantityOperation _, NamedType _1) => string.Empty;
+    string IDocumentationStrategy.OperationOperator(IQuantityOperation _, NamedType _1) => string.Empty;
+    string IDocumentationStrategy.MirroredOperationOperator(IQuantityOperation _, NamedType _1) => string.Empty;
+    string IDocumentationStrategy.Process(IQuantityProcess _) => string.Empty;
     string IDocumentationStrategy.IsNaN() => string.Empty;
     string IDocumentationStrategy.IsZero() => string.Empty;
     string IDocumentationStrategy.IsPositive() => string.Empty;

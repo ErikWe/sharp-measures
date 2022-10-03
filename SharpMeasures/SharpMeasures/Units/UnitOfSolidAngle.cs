@@ -1,6 +1,6 @@
 ﻿namespace SharpMeasures;
 
-using SharpMeasures.Generators.Units;
+using SharpMeasures.Generators;
 
 [DerivedUnitInstance("SquareRadian", "[*]s", new[] { "Radian" })]
 [UnitInstanceAlias("Steradian", "[*]s", "SquareRadian")]
@@ -10,5 +10,5 @@ using SharpMeasures.Generators.Units;
 [DerivedUnitInstance("SquareMilliarcsecond", "[*]s", new[] { "Milliarcsecond" })]
 [DerivedUnitInstance("SquareMicroarcsecond", "[*]s", new[] { "Microarcsecond" })]
 [DerivableUnit("{0} * {0}", typeof(UnitOfAngle))]
-[SharpMeasuresUnit(typeof(SolidAngle))]
+[Unit(typeof(SolidAngle))]
 public readonly partial record struct UnitOfSolidAngle { }

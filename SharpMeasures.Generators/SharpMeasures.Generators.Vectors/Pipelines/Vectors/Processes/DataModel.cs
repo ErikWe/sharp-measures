@@ -10,11 +10,11 @@ internal readonly record struct DataModel
 {
     public DefinedType Vector { get; }
 
-    public IReadOnlyList<IProcessedQuantity> Processes { get; }
+    public IReadOnlyList<IQuantityProcess> Processes { get; }
 
     public IVectorDocumentationStrategy Documentation { get; }
 
-    public DataModel(DefinedType vector, IReadOnlyList<IProcessedQuantity> processes, IVectorDocumentationStrategy documentation)
+    public DataModel(DefinedType vector, IReadOnlyList<IQuantityProcess> processes, IVectorDocumentationStrategy documentation)
     {
         Vector = vector;
 

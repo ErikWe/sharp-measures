@@ -1,6 +1,6 @@
 ﻿namespace SharpMeasures;
 
-using SharpMeasures.Generators.Scalars;
+using SharpMeasures.Generators;
 
-[SharpMeasuresScalar(typeof(UnitOfVolumetricFrequency), DefaultUnitInstanceName = "PerCubicMetre", DefaultUnitInstanceSymbol = "m⁻³")]
+[ScalarQuantity(typeof(UnitOfVolumetricFrequency), DefaultUnitInstanceName = "PerCubicMetre", DefaultUnitInstanceSymbol = "m⁻³")]
 public readonly partial record struct VolumetricFrequency { }

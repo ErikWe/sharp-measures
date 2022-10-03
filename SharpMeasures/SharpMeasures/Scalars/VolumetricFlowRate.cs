@@ -1,6 +1,6 @@
 ﻿namespace SharpMeasures;
 
-using SharpMeasures.Generators.Scalars;
+using SharpMeasures.Generators;
 
-[SharpMeasuresScalar(typeof(UnitOfVolumetricFlowRate), DefaultUnitInstanceName = "CubicMetrePerSecond", DefaultUnitInstanceSymbol = "m³∙s⁻¹")]
+[ScalarQuantity(typeof(UnitOfVolumetricFlowRate), DefaultUnitInstanceName = "CubicMetrePerSecond", DefaultUnitInstanceSymbol = "m³∙s⁻¹")]
 public readonly partial record struct VolumetricFlowRate { }

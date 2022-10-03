@@ -1,6 +1,6 @@
 ﻿namespace SharpMeasures;
 
-using SharpMeasures.Generators.Units;
+using SharpMeasures.Generators;
 
 [DerivedUnitInstance("PerCubicMetre", "[*]", new[] { "CubicMetre" })]
 [DerivedUnitInstance("PerCubicDecimetre", "[*]", new[] { "CubicDecimetre" })]
@@ -16,5 +16,5 @@ using SharpMeasures.Generators.Units;
 [DerivedUnitInstance("PerCentilitre", "[*]", new[] { "Centilitre" })]
 [DerivedUnitInstance("PerMillilitre", "[*]", new[] { "Millilitre" })]
 [DerivableUnit("1 / {0}", typeof(UnitOfVolume))]
-[SharpMeasuresUnit(typeof(VolumetricFrequency))]
+[Unit(typeof(VolumetricFrequency))]
 public readonly partial record struct UnitOfVolumetricFrequency { }

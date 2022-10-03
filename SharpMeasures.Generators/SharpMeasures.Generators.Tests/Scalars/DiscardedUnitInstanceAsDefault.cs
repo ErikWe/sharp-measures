@@ -15,22 +15,21 @@ public class DiscardedUnitInstanceAsDefault
     private static GeneratorVerifier Assert(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source, GeneratorVerifierSettings.NoAssertions);
 
     private static string UnbiasedText => """
-        using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators;
         
-        [SharpMeasuresScalar(typeof(UnitOfA))]
+        [ScalarQuantity(typeof(UnitOfA))]
         public partial class A { }
         
-        [SharpMeasuresScalar(typeof(UnitOfB), DefaultUnitInstanceName = "d", DefaultUnitInstanceSymbol = "e")]
+        [ScalarQuantity(typeof(UnitOfB), DefaultUnitInstanceName = "d", DefaultUnitInstanceSymbol = "e")]
         public partial class B { }
         
         [FixedUnitInstance("f", "[*]")]
-        [SharpMeasuresUnit(typeof(A))]
+        [Unit(typeof(A))]
         public partial class UnitOfA { }
         
         [DerivedUnitInstance("d", "[*]", new[] { "c" })]
         [DerivableUnit("1 / {0}", typeof(UnitOfA))]
-        [SharpMeasuresUnit(typeof(B))]
+        [Unit(typeof(B))]
         public partial class UnitOfB { }
         """;
 }

@@ -45,14 +45,13 @@ public class CyclicUnitDependency
     private static IReadOnlyCollection<string> TwoCyclicUnitDependencyDiagnostics { get; } = new string[] { DiagnosticIDs.CyclicallyModifiedUnitInstances, DiagnosticIDs.CyclicallyModifiedUnitInstances };
 
     private static string AliasText_Self => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
             
         [UnitInstanceAlias("Metre", "Metres", "Metre")]
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
@@ -64,15 +63,14 @@ public class CyclicUnitDependency
     }
 
     private static string AliasText_Loop => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
             
         [UnitInstanceAlias("Metre", "Metres", "Meter")]
         [UnitInstanceAlias("Meter", "Meters", "Metre")]
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
@@ -88,14 +86,13 @@ public class CyclicUnitDependency
     }
 
     private static string BiasedText_Self => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
 
-        [SharpMeasuresScalar(typeof(UnitOfTemperature))]
+        [ScalarQuantity(typeof(UnitOfTemperature))]
         public partial class TemperatureDifference { }
 
         [BiasedUnitInstance("Kelvin", "Kelvin", "Kelvin", 0)]
-        [SharpMeasuresUnit(typeof(TemperatureDifference), BiasTerm = true)]
+        [Unit(typeof(TemperatureDifference), BiasTerm = true)]
         public partial class UnitOfTemperature { }
         """;
 
@@ -107,15 +104,14 @@ public class CyclicUnitDependency
     }
 
     private static string BiasedText_Loop => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
 
-        [SharpMeasuresScalar(typeof(UnitOfTemperature))]
+        [ScalarQuantity(typeof(UnitOfTemperature))]
         public partial class TemperatureDifference { }
 
         [BiasedUnitInstance("Kelvin", "Kelvin", "Celsius", 273.15)]
         [BiasedUnitInstance("Celsius", "Celsius", "Kelvin", -273.15)]
-        [SharpMeasuresUnit(typeof(TemperatureDifference), BiasTerm = true)]
+        [Unit(typeof(TemperatureDifference), BiasTerm = true)]
         public partial class UnitOfTemperature { }
         """;
 
@@ -131,14 +127,13 @@ public class CyclicUnitDependency
     }
 
     private static string PrefixedText_Self => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
             
         [PrefixedUnitInstance("Metre", "Metres", "Metre", MetricPrefixName.Identity)]
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
@@ -150,15 +145,14 @@ public class CyclicUnitDependency
     }
 
     private static string PrefixedText_Loop => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
             
         [PrefixedUnitInstance("Metre", "Metres", "Kilometre", MetricPrefixName.Milli)]
         [PrefixedUnitInstance("Kilometre", "Kilometres", "Metre", MetricPrefixName.Kilo)]
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
@@ -174,14 +168,13 @@ public class CyclicUnitDependency
     }
 
     private static string ScaledText_Self => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
             
         [ScaledUnitInstance("Metre", "Metres", "Metre", 1)]
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
@@ -193,15 +186,14 @@ public class CyclicUnitDependency
     }
 
     private static string ScaledText_Loop => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
             
         [ScaledUnitInstance("Metre", "Metres", "Kilometre", 0.001)]
         [ScaledUnitInstance("Kilometre", "Kilometres", "Metre", 1000)]
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 

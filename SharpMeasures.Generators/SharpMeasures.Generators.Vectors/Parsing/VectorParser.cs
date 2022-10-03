@@ -16,12 +16,12 @@ public static class VectorParser
 {
     public static (VectorParsingResult ParsingResult, IncrementalValueProvider<ImmutableArray<INamedTypeSymbol>> ForeignSymbols) Attach(IncrementalGeneratorInitializationContext context)
     {
-        var groupBaseSymbols = AttachSymbolProvider<SharpMeasuresVectorGroupAttribute>(context, VectorGroupDeclarationFilters<SharpMeasuresVectorGroupAttribute>());
-        var groupSpecializationSymbols = AttachSymbolProvider<SpecializedSharpMeasuresVectorGroupAttribute>(context, VectorGroupDeclarationFilters<SpecializedSharpMeasuresVectorGroupAttribute>());
-        var groupMemberSymbols = AttachSymbolProvider<SharpMeasuresVectorGroupMemberAttribute>(context, VectorDeclarationFilters<SharpMeasuresVectorGroupMemberAttribute>());
+        var groupBaseSymbols = AttachSymbolProvider<VectorGroupAttribute>(context, VectorGroupDeclarationFilters<VectorGroupAttribute>());
+        var groupSpecializationSymbols = AttachSymbolProvider<SpecializedVectorGroupAttribute>(context, VectorGroupDeclarationFilters<SpecializedVectorGroupAttribute>());
+        var groupMemberSymbols = AttachSymbolProvider<VectorGroupMemberAttribute>(context, VectorDeclarationFilters<VectorGroupMemberAttribute>());
 
-        var vectorBaseSymbols = AttachSymbolProvider<SharpMeasuresVectorAttribute>(context, VectorDeclarationFilters<SharpMeasuresVectorAttribute>());
-        var vectorSpecializationSymbols = AttachSymbolProvider<SpecializedSharpMeasuresVectorAttribute>(context, VectorDeclarationFilters<SpecializedSharpMeasuresVectorAttribute>());
+        var vectorBaseSymbols = AttachSymbolProvider<VectorQuantityAttribute>(context, VectorDeclarationFilters<VectorQuantityAttribute>());
+        var vectorSpecializationSymbols = AttachSymbolProvider<SpecializedVectorQuantityAttribute>(context, VectorDeclarationFilters<SpecializedVectorQuantityAttribute>());
 
         GroupBaseParser groupBaseParser = new();
         GroupSpecializationParser groupSpecializationParser = new();

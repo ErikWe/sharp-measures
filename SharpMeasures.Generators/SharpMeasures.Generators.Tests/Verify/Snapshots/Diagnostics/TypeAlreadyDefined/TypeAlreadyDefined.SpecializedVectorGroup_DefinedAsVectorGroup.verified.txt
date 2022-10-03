@@ -4,7 +4,7 @@
     Title: Type already defined,
     Severity: Error,
     WarningLevel: 0,
-    Location: : (4,1)-(4,36),
+    Location: : (2,1)-(2,23),
     Description: ,
     HelpLink: ,
     MessageFormat: {0} cannot be defined as a {1}, as it was already defined as a {2},

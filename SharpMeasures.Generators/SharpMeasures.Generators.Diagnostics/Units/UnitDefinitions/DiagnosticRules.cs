@@ -2,8 +2,6 @@
 
 using Microsoft.CodeAnalysis;
 
-using SharpMeasures.Generators.Units;
-
 public static partial class DiagnosticRules
 {
     public static readonly DiagnosticDescriptor InvalidUnitInstanceName = new DiagnosticDescriptor
@@ -20,7 +18,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.InvalidUnitInstanceName,
         title: "Invalid unit name",
-        messageFormat: "The name of the unit must be defined",
+        messageFormat: "Expected a name for the unit",
         category: "Naming",
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true

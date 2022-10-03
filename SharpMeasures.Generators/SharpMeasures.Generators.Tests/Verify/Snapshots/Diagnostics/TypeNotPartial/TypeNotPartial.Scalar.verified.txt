@@ -4,11 +4,11 @@
     Title: Expected a partial type,
     Severity: Error,
     WarningLevel: 0,
-    Location: : (4,13)-(4,20),
+    Location: : (3,13)-(3,20),
     Description: ,
     HelpLink: ,
     MessageFormat: The source generator associated with the attribute {0} requires {1} to be a partial type,
-    Message: The source generator associated with the attribute SharpMeasuresScalar requires Length2 to be a partial type,
+    Message: The source generator associated with the attribute ScalarQuantity requires Length2 to be a partial type,
     Category: Usage,
     CustomTags: []
   }

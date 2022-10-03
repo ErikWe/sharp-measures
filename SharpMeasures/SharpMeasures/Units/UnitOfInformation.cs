@@ -1,6 +1,6 @@
 ﻿namespace SharpMeasures;
 
-using SharpMeasures.Generators.Units;
+using SharpMeasures.Generators;
 
 [FixedUnitInstance("Bit", "[*]s")]
 [PrefixedUnitInstance("Kilobit", "[*]s", "Bit", MetricPrefixName.Kilo)]
@@ -20,5 +20,5 @@ using SharpMeasures.Generators.Units;
 [PrefixedUnitInstance("Mebibyte", "[*]s", "Byte", BinaryPrefixName.Mebi)]
 [PrefixedUnitInstance("Gibibyte", "[*]s", "Byte", BinaryPrefixName.Gibi)]
 [PrefixedUnitInstance("Tebibyte", "[*]s", "Byte", BinaryPrefixName.Tebi)]
-[SharpMeasuresUnit(typeof(Information))]
+[Unit(typeof(Information))]
 public readonly partial record struct UnitOfInformation { }

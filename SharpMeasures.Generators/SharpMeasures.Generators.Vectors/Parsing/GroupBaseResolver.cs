@@ -39,7 +39,7 @@ internal static class GroupBaseResolver
         var includedUnitInstances = ResolveUnitInstanceInclusions(unit, groupType.UnitInstanceInclusions, () => groupType.UnitInstanceExclusions);
 
         return new ResolvedGroupType(groupType.Type, groupType.Definition.Unit, originalQuantity: null, ConversionOperatorBehaviour.None, ConversionOperatorBehaviour.None, groupType.Definition.Scalar, groupType.Definition.ImplementSum, groupType.Definition.ImplementDifference, groupType.Definition.Difference, groupType.Definition.DefaultUnitInstanceName,
-            groupType.Definition.DefaultUnitInstanceSymbol, membersByDimension, groupType.Derivations, groupType.Conversions, inheritedDerivations: Array.Empty<IDerivedQuantity>(), inheritedConversions: Array.Empty<IConvertibleQuantity>(), includedUnitInstances, groupType.Definition.GenerateDocumentation);
+            groupType.Definition.DefaultUnitInstanceSymbol, membersByDimension, groupType.Operations, groupType.VectorOperations, groupType.Conversions, inheritedOperations: Array.Empty<IQuantityOperation>(), inheritedVectorOperations: Array.Empty<IVectorOperation>(), inheritedConversions: Array.Empty<IConvertibleQuantity>(), includedUnitInstances, groupType.Definition.GenerateDocumentation);
     }
 
     private static IReadOnlyList<string> ResolveUnitInstanceInclusions(IUnitType unit, IEnumerable<IUnitInstanceList> inclusions, Func<IEnumerable<IUnitInstanceList>> exclusionsDelegate)

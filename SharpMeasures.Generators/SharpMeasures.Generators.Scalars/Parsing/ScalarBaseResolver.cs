@@ -35,8 +35,8 @@ internal static class ScalarBaseResolver
         var includedUnitInstances = ResolveUnitInstanceInclusions(unit, scalarType.UnitInstanceInclusions, () => scalarType.UnitInstanceExclusions);
 
         return new ResolvedScalarType(scalarType.Type, scalarType.Definition.Unit, scalarType.Definition.UseUnitBias, originalQuantity: null, ConversionOperatorBehaviour.None, ConversionOperatorBehaviour.None, scalarType.Definition.Vector, scalarType.Definition.ImplementSum,
-            scalarType.Definition.ImplementDifference, scalarType.Definition.Difference, scalarType.Definition.DefaultUnitInstanceName, scalarType.Definition.DefaultUnitInstanceSymbol, scalarType.Derivations, scalarType.Processes, scalarType.Constants, scalarType.Conversions,
-            inheritedDerivations: Array.Empty<IDerivedQuantity>(), inheritedProcesses: Array.Empty<IProcessedQuantity>(), inheritedConversions: Array.Empty<IConvertibleQuantity>(), includedUnitBaseInstances, includedUnitInstances, scalarType.Definition.GenerateDocumentation);
+            scalarType.Definition.ImplementDifference, scalarType.Definition.Difference, scalarType.Definition.DefaultUnitInstanceName, scalarType.Definition.DefaultUnitInstanceSymbol, scalarType.Operations, scalarType.Processes, scalarType.Constants, scalarType.Conversions,
+            inheritedOperations: Array.Empty<IQuantityOperation>(), inheritedProcesses: Array.Empty<IQuantityProcess>(), inheritedConstants: Array.Empty<IScalarConstant>(), inheritedConversions: Array.Empty<IConvertibleQuantity>(), includedUnitBaseInstances, includedUnitInstances, scalarType.Definition.GenerateDocumentation);
     }
 
     private static IReadOnlyList<string> ResolveUnitInstanceInclusions(IUnitType unit, IEnumerable<IUnitInstanceList> inclusions, Func<IEnumerable<IUnitInstanceList>> exclusionsDelegate)

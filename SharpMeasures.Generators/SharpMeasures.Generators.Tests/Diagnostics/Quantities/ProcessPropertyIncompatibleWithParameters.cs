@@ -36,15 +36,13 @@ public class ProcessPropertyIncompatibleWithParameters
     private static IReadOnlyCollection<string> ProcessPropertyIncompatibleWithParametersDiagnostics { get; } = new string[] { DiagnosticIDs.ProcessPropertyIncompatibleWithParameters };
 
     private static string ScalarText => """
-        using SharpMeasures.Generators.Quantities;
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
 
-        [ProcessedQuantity("Name", "new(Magnitude)", new[] { typeof(int) }, new[] { "x" }, ImplementAsProperty = true)]
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [QuantityProcess("Name", "new(Magnitude)", new[] { typeof(int) }, new[] { "x" }, ImplementAsProperty = true)]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
             
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
@@ -56,18 +54,16 @@ public class ProcessPropertyIncompatibleWithParameters
     }
 
     private static string SpecializedScalarText => """
-        using SharpMeasures.Generators.Quantities;
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
         
-        [ProcessedQuantity("Name", "new(Magnitude)", new[] { typeof(int) }, new[] { "x" }, ImplementAsProperty = true)]
-        [SpecializedSharpMeasuresScalar(typeof(Length))]
+        [QuantityProcess("Name", "new(Magnitude)", new[] { typeof(int) }, new[] { "x" }, ImplementAsProperty = true)]
+        [SpecializedScalarQuantity(typeof(Length))]
         public partial class Distance { }
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
@@ -79,19 +75,16 @@ public class ProcessPropertyIncompatibleWithParameters
     }
 
     private static string VectorText => """
-        using SharpMeasures.Generators.Quantities;
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Vectors;
+        using SharpMeasures.Generators;
         
-        [ProcessedQuantity("Name", "new(Components)", new[] { typeof(int) }, new[] { "x" }, ImplementAsProperty = true)]
-        [SharpMeasuresVector(typeof(UnitOfLength))]
+        [QuantityProcess("Name", "new(Components)", new[] { typeof(int) }, new[] { "x" }, ImplementAsProperty = true)]
+        [VectorQuantity(typeof(UnitOfLength))]
         public partial class Position3 { }
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
@@ -103,22 +96,19 @@ public class ProcessPropertyIncompatibleWithParameters
     }
 
     private static string SpecializedVectorText => """
-        using SharpMeasures.Generators.Quantities;
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Vectors;
+        using SharpMeasures.Generators;
         
-        [ProcessedQuantity("Name", "new(Components)", new[] { typeof(int) }, new[] { "x" }, ImplementAsProperty = true)]
-        [SpecializedSharpMeasuresVector(typeof(Position3))]
+        [QuantityProcess("Name", "new(Components)", new[] { typeof(int) }, new[] { "x" }, ImplementAsProperty = true)]
+        [SpecializedVectorQuantity(typeof(Position3))]
         public partial class Displacement3 { }
 
-        [SharpMeasuresVector(typeof(UnitOfLength))]
+        [VectorQuantity(typeof(UnitOfLength))]
         public partial class Position3 { }
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
@@ -130,22 +120,19 @@ public class ProcessPropertyIncompatibleWithParameters
     }
 
     private static string VectorGroupMemberText => """
-        using SharpMeasures.Generators.Quantities;
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Vectors;
+        using SharpMeasures.Generators;
         
-        [ProcessedQuantity("Name", "new(Components)", new[] { typeof(int) }, new[] { "x" }, ImplementAsProperty = true)]
-        [SharpMeasuresVectorGroupMember(typeof(Position))]
+        [QuantityProcess("Name", "new(Components)", new[] { typeof(int) }, new[] { "x" }, ImplementAsProperty = true)]
+        [VectorGroupMember(typeof(Position))]
         public partial class Position3 { }
 
-        [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
+        [VectorGroup(typeof(UnitOfLength))]
         public static partial class Position { }
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
@@ -163,88 +150,75 @@ public class ProcessPropertyIncompatibleWithParameters
     private static GeneratorVerifier VectorGroupMemberIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(VectorGroupMemberIdenticalText);
 
     private static string ScalarIdenticalText => """
-        using SharpMeasures.Generators.Quantities;
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
         
-        [ProcessedQuantity("Name", "new(Magnitude)", new[] { typeof(int) }, new[] { "x" })]
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [QuantityProcess("Name", "new(Magnitude)", new[] { typeof(int) }, new[] { "x" })]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
     private static string SpecializedScalarIdenticalText => """
-        using SharpMeasures.Generators.Quantities;
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
 
-        [ProcessedQuantity("Name", "new(Magnitude)", new[] { typeof(int) }, new[] { "x" })]
-        [SpecializedSharpMeasuresScalar(typeof(Length))]
+        [QuantityProcess("Name", "new(Magnitude)", new[] { typeof(int) }, new[] { "x" })]
+        [SpecializedScalarQuantity(typeof(Length))]
         public partial class Distance { }
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
     private static string VectorIdenticalText => """
-        using SharpMeasures.Generators.Quantities;
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Vectors;
+        using SharpMeasures.Generators;
 
-        [ProcessedQuantity("Name", "new(Components)", new[] { typeof(int) }, new[] { "x" })]
-        [SharpMeasuresVector(typeof(UnitOfLength))]
+        [QuantityProcess("Name", "new(Components)", new[] { typeof(int) }, new[] { "x" })]
+        [VectorQuantity(typeof(UnitOfLength))]
         public partial class Position3 { }
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
     private static string SpecializedVectorIdenticalText => """
-        using SharpMeasures.Generators.Quantities;
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Vectors;
+        using SharpMeasures.Generators;
 
-        [ProcessedQuantity("Name", "new(Components)", new[] { typeof(int) }, new[] { "x" })]
-        [SpecializedSharpMeasuresVector(typeof(Position3))]
+        [QuantityProcess("Name", "new(Components)", new[] { typeof(int) }, new[] { "x" })]
+        [SpecializedVectorQuantity(typeof(Position3))]
         public partial class Displacement3 { }
 
-        [SharpMeasuresVector(typeof(UnitOfLength))]
+        [VectorQuantity(typeof(UnitOfLength))]
         public partial class Position3 { }
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
     private static string VectorGroupMemberIdenticalText => """
-        using SharpMeasures.Generators.Quantities;
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Vectors;
+        using SharpMeasures.Generators;
 
-        [ProcessedQuantity("Name", "new(Components)", new[] { typeof(int) }, new[] { "x" })]
-        [SharpMeasuresVectorGroupMember(typeof(Position))]
+        [QuantityProcess("Name", "new(Components)", new[] { typeof(int) }, new[] { "x" })]
+        [VectorGroupMember(typeof(Position))]
         public partial class Position3 { }
 
-        [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
+        [VectorGroup(typeof(UnitOfLength))]
         public static partial class Position { }
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 }

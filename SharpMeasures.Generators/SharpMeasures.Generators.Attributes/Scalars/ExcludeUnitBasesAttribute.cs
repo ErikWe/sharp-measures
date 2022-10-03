@@ -1,8 +1,8 @@
-﻿namespace SharpMeasures.Generators.Scalars;
+﻿namespace SharpMeasures.Generators;
 
 using System;
 
-/// <summary>Dictates the set of units for which a static property representing the value { 1 } is <i>not</i> generated.</summary>
+/// <summary>Applied to scalar quantities, dictating the set of units for which a static property representing the value { 1 } is <i>not</i> generated.</summary>
 /// <remarks>If this attribute is absent, all recognized units are included - unless <see cref="IncludeUnitBasesAttribute"/> is used.</remarks>
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, AllowMultiple = true)]
 public sealed class ExcludeUnitBasesAttribute : Attribute

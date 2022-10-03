@@ -1,10 +1,6 @@
 ﻿namespace SharpMeasures;
 
-using SharpMeasures.Generators.Quantities;
-using SharpMeasures.Generators.Scalars;
+using SharpMeasures.Generators;
 
-[SharpMeasuresScalar(typeof(UnitOfImpulse), DefaultUnitInstanceName = "NewtonSecond", DefaultUnitInstanceSymbol = "N∙s")]
-public readonly partial record struct Impulse { }
-
-[DerivedQuantity("{0} * {1}", typeof(Force), typeof(Time), Permutations = true)]
+[ScalarQuantity(typeof(UnitOfImpulse), DefaultUnitInstanceName = "NewtonSecond", DefaultUnitInstanceSymbol = "N∙s")]
 public readonly partial record struct Impulse { }

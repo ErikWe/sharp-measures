@@ -1,6 +1,6 @@
 ﻿namespace SharpMeasures;
 
-using SharpMeasures.Generators.Units;
+using SharpMeasures.Generators;
 
 [FixedUnitInstance("Second", "[*]s")]
 [ScaledUnitInstance("Minute", "[*]s", "Second", 60)]
@@ -14,5 +14,5 @@ using SharpMeasures.Generators.Units;
 [PrefixedUnitInstance("Nanosecond", "[*]s", "Second", MetricPrefixName.Nano)]
 [PrefixedUnitInstance("Microsecond", "[*]s", "Second", MetricPrefixName.Micro)]
 [PrefixedUnitInstance("Millisecond", "[*]s", "Second", MetricPrefixName.Milli)]
-[SharpMeasuresUnit(typeof(Time))]
+[Unit(typeof(Time))]
 public readonly partial record struct UnitOfTime { }

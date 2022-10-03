@@ -1,6 +1,6 @@
 ﻿namespace SharpMeasures;
 
-using SharpMeasures.Generators.Units;
+using SharpMeasures.Generators;
 
 [DerivedUnitInstance("BitPerSecond", "s[Per]", new[] { "Bit", "Second" })]
 [DerivedUnitInstance("KilobitPerSecond", "s[Per]", new[] { "Kilobit", "Second" })]
@@ -21,5 +21,5 @@ using SharpMeasures.Generators.Units;
 [DerivedUnitInstance("GibibytePerSecond", "s[Per]", new[] { "Gibibyte", "Second" })]
 [DerivedUnitInstance("TebibytePerSecond", "s[Per]", new[] { "Tebibyte", "Second" })]
 [DerivableUnit("{0} / {1}", typeof(UnitOfInformation), typeof(UnitOfTime))]
-[SharpMeasuresUnit(typeof(InformationFlowRate))]
+[Unit(typeof(InformationFlowRate))]
 public readonly partial record struct UnitOfInformationFlowRate { }

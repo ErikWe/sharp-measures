@@ -1,6 +1,6 @@
 ﻿namespace SharpMeasures;
 
-using SharpMeasures.Generators.Units;
+using SharpMeasures.Generators;
 
 [FixedUnitInstance("Metre", "[*]s")]
 [PrefixedUnitInstance("Femtometre", "[*]s", "Metre", MetricPrefixName.Femto)]
@@ -23,5 +23,5 @@ using SharpMeasures.Generators.Units;
 [ScaledUnitInstance("Mile", "[*]s", "Yard", 1760)]
 [ScaledUnitInstance("Angstrom", "[*]s", "Nanometre", 0.1)]
 [ScaledUnitInstance("NauticalMile", "[*]s", "Metre", 1852)]
-[SharpMeasuresUnit(typeof(Length))]
+[Unit(typeof(Length))]
 public readonly partial record struct UnitOfLength { }

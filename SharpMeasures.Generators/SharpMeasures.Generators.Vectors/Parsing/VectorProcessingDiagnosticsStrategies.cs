@@ -1,12 +1,12 @@
 ﻿namespace SharpMeasures.Generators.Vectors.Parsing;
 
 using SharpMeasures.Generators.Quantities.Parsing.ConvertibleQuantity;
-using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
+using SharpMeasures.Generators.Quantities.Parsing.QuantityOperation;
 using SharpMeasures.Generators.Quantities.Parsing.Diagnostics.Empty.Processing;
 using SharpMeasures.Generators.Quantities.Parsing.Diagnostics.Processing;
 using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
 using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
-using SharpMeasures.Generators.Quantities.Parsing.ProcessedQuantity;
+using SharpMeasures.Generators.Quantities.Parsing.QuantityProcess;
 using SharpMeasures.Generators.Vectors.Parsing.Abstraction;
 using SharpMeasures.Generators.Vectors.Parsing.Diagnostics.Empty.Processing;
 using SharpMeasures.Generators.Vectors.Parsing.Diagnostics.Processing;
@@ -16,6 +16,7 @@ using SharpMeasures.Generators.Vectors.Parsing.SharpMeasuresVectorGroupMember;
 using SharpMeasures.Generators.Vectors.Parsing.SpecializedSharpMeasuresVector;
 using SharpMeasures.Generators.Vectors.Parsing.SpecializedSharpMeasuresVectorGroup;
 using SharpMeasures.Generators.Vectors.Parsing.VectorConstant;
+using SharpMeasures.Generators.Vectors.Parsing.VectorOperation;
 
 internal interface IVectorProcessingDiagnosticsStrategy
 {
@@ -30,8 +31,9 @@ internal interface IVectorProcessingDiagnosticsStrategy
     public abstract ISharpMeasuresVectorProcessingDiagnostics SharpMeasuresVectorDiagnostics { get; }
     public abstract ISpecializedSharpMeasuresVectorProcessingDiagnostics SpecializedSharpMeasuresVectorDiagnostics { get; }
 
-    public abstract IDerivedQuantityProcessingDiagnostics DerivedQuantityDiagnostics { get; }
-    public abstract IProcessedQuantityProcessingDiagnostics ProcessedQuantityDiagnostics { get; }
+    public abstract IQuantityOperationProcessingDiagnostics QuantityOperationDiagnostics { get; }
+    public abstract IVectorOperationProcessingDiagnostics VectorOperationDiagnostics { get; }
+    public abstract IQuantityProcessProcessingDiagnostics ProcessedQuantityDiagnostics { get; }
     public abstract IVectorConstantProcessingDiagnostics VectorConstantDiagnostics(NamedType unit);
     public abstract IVectorConstantProcessingDiagnostics VectorConstantDiagnosticsForUnknownUnit { get; }
     public abstract IConvertibleQuantityProcessingDiagnostics ConvertibleVectorDiagnostics { get; }
@@ -58,8 +60,9 @@ internal static class VectorProcessingDiagnosticsStrategies
         public ISharpMeasuresVectorProcessingDiagnostics SharpMeasuresVectorDiagnostics { get; } = SharpMeasuresVectorProcessingDiagnostics.Instance;
         public ISpecializedSharpMeasuresVectorProcessingDiagnostics SpecializedSharpMeasuresVectorDiagnostics { get; } = SpecializedSharpMeasuresVectorProcessingDiagnostics.Instance;
 
-        public IDerivedQuantityProcessingDiagnostics DerivedQuantityDiagnostics => DerivedQuantityProcessingDiagnostics.Instance;
-        public IProcessedQuantityProcessingDiagnostics ProcessedQuantityDiagnostics => ProcessedQuantityProcessingDiagnostics.Instance;
+        public IQuantityOperationProcessingDiagnostics QuantityOperationDiagnostics => QuantityOperationProcessingDiagnostics.Instance;
+        public IVectorOperationProcessingDiagnostics VectorOperationDiagnostics => VectorOperationProcessingDiagnostics.Instance;
+        public IQuantityProcessProcessingDiagnostics ProcessedQuantityDiagnostics => QuantityProcessProcessingDiagnostics.Instance;
         public IVectorConstantProcessingDiagnostics VectorConstantDiagnostics(NamedType unit) => new VectorConstantProcessingDiagnostics(unit);
         public IVectorConstantProcessingDiagnostics VectorConstantDiagnosticsForUnknownUnit { get; } = new VectorConstantProcessingDiagnostics();
         public IConvertibleQuantityProcessingDiagnostics ConvertibleVectorDiagnostics => ConvertibleVectorProcessingDiagnostics.Instance;
@@ -81,8 +84,9 @@ internal static class VectorProcessingDiagnosticsStrategies
         public ISharpMeasuresVectorProcessingDiagnostics SharpMeasuresVectorDiagnostics => EmptySharpMeasuresVectorProcessingDiagnostics.Instance;
         public ISpecializedSharpMeasuresVectorProcessingDiagnostics SpecializedSharpMeasuresVectorDiagnostics => EmptySpecializedSharpMeasuresVectorProcessingDiagnostics.Instance;
 
-        public IDerivedQuantityProcessingDiagnostics DerivedQuantityDiagnostics => EmptyDerivedQuantityProcessingDiagnostics.Instance;
-        public IProcessedQuantityProcessingDiagnostics ProcessedQuantityDiagnostics => EmptyProcessedQuantityProcessingDiagnostics.Instance;
+        public IQuantityOperationProcessingDiagnostics QuantityOperationDiagnostics => EmptyQuantityOperationProcessingDiagnostics.Instance;
+        public IVectorOperationProcessingDiagnostics VectorOperationDiagnostics => EmptyVectorOperationProcessingDiagnostics.Instance;
+        public IQuantityProcessProcessingDiagnostics ProcessedQuantityDiagnostics => EmptyQuantityProcessProcessingDiagnostics.Instance;
         public IVectorConstantProcessingDiagnostics VectorConstantDiagnostics(NamedType _) => VectorConstantDiagnosticsForUnknownUnit;
         public IVectorConstantProcessingDiagnostics VectorConstantDiagnosticsForUnknownUnit => EmptyVectorConstantProcessingDiagnostics.Instance;
         public IConvertibleQuantityProcessingDiagnostics ConvertibleVectorDiagnostics => EmptyConvertibleQuantityProcessingDiagnostics.Instance;

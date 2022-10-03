@@ -3,10 +3,9 @@
 using SharpMeasures.Generators;
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
-using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
+using SharpMeasures.Generators.Quantities.Parsing.QuantityOperation;
 using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
 using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
-using SharpMeasures.Generators.Quantities.Parsing.ProcessedQuantity;
 using SharpMeasures.Generators.Scalars.Parsing.Abstraction;
 using SharpMeasures.Generators.Scalars.Parsing.Contexts.Validation;
 using SharpMeasures.Generators.Scalars.Parsing.ConvertibleScalar;
@@ -18,15 +17,16 @@ using SharpMeasures.Generators.Units;
 using SharpMeasures.Generators.Vectors;
 
 using System.Collections.Generic;
+using SharpMeasures.Generators.Quantities.Parsing.QuantityProcess;
 
 internal sealed class ScalarBaseValidator : AScalarValidator<ScalarBaseType, SharpMeasuresScalarDefinition>
 {
     public ScalarBaseValidator(IScalarValidationDiagnosticsStrategy diagnosticsStrategy) : base(diagnosticsStrategy) { }
 
-    protected override ScalarBaseType ProduceResult(DefinedType type, SharpMeasuresScalarDefinition definition, IReadOnlyList<DerivedQuantityDefinition> derivations, IReadOnlyList<ProcessedQuantityDefinition> processes, IReadOnlyList<ScalarConstantDefinition> constants, IReadOnlyList<ConvertibleScalarDefinition> conversions,
+    protected override ScalarBaseType ProduceResult(DefinedType type, SharpMeasuresScalarDefinition definition, IReadOnlyList<QuantityOperationDefinition> operations, IReadOnlyList<QuantityProcessDefinition> processes, IReadOnlyList<ScalarConstantDefinition> constants, IReadOnlyList<ConvertibleScalarDefinition> conversions,
         IReadOnlyList<IncludeUnitBasesDefinition> unitBaseInstanceInclusions, IReadOnlyList<ExcludeUnitBasesDefinition> unitBaseInstanceExclusions, IReadOnlyList<IncludeUnitsDefinition> unitInstanceInclusions, IReadOnlyList<ExcludeUnitsDefinition> unitInstanceExclusions)
     {
-        return new(type, definition, derivations, processes, constants, conversions, unitBaseInstanceInclusions, unitBaseInstanceExclusions, unitInstanceInclusions, unitInstanceExclusions);
+        return new(type, definition, operations, processes, constants, conversions, unitBaseInstanceInclusions, unitBaseInstanceExclusions, unitInstanceInclusions, unitInstanceExclusions);
     }
 
     protected override IOptionalWithDiagnostics<SharpMeasuresScalarDefinition> ValidateScalar(ScalarBaseType scalarType, ScalarProcessingData processingData, IUnitPopulation unitPopulation, IScalarPopulation scalarPopulation, IVectorPopulation vectorPopulation)

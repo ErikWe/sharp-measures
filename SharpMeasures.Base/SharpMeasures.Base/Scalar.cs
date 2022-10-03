@@ -1,4 +1,4 @@
-namespace SharpMeasures;
+﻿namespace SharpMeasures;
 
 using SharpMeasures.Maths;
 
@@ -64,8 +64,6 @@ public readonly record struct Scalar : IScalarQuantity<Scalar>, IComparable<Scal
     /// <summary>Computes { <see langword="this"/> ^ <paramref name="exponent"/> }.</summary>
     /// <param name="exponent">The exponent of { <see langword="this"/> ^ <paramref name="exponent"/> }.</param>
     public Scalar Power(Scalar exponent) => Math.Pow(Value, exponent.Value);
-    /// <summary>Computes { 1 / <see langword="this"/> }.</summary>
-    public Scalar Reciprocal() => ScalarMaths.Reciprocal(this);
     /// <summary>Computes { <see langword="this"/> ² }.</summary>
     public Scalar Square() => ScalarMaths.Square(this);
     /// <summary>Computes { <see langword="this"/> ³ }.</summary>
@@ -106,25 +104,41 @@ public readonly record struct Scalar : IScalarQuantity<Scalar>, IComparable<Scal
     /// <inheritdoc/>
     public Scalar Divide(Scalar divisor) => this / divisor;
 
+    /// <inheritdoc cref="Multiply(Scalar)"/>
+    /// <typeparam name="TScalar">The type of <paramref name="factor"/>.</typeparam>
+    public TScalar Multiply<TScalar>(TScalar factor) where TScalar : IScalarQuantity<TScalar> => TScalar.WithMagnitude(this * factor.Magnitude);
+
+    /// <inheritdoc cref="Divide(Scalar)"/>
+    /// <typeparam name="TScalar">The type of <paramref name="divisor"/>.</typeparam>
+    public Unhandled Divide<TScalar>(TScalar divisor) where TScalar : IScalarQuantity => this / divisor;
+
+    /// <summary>Computes { <paramref name="dividend"/> / <see langword="this"/> }.</summary>
+    /// <typeparam name="TScalar">The type of <paramref name="dividend"/>.</typeparam>
+    /// <param name="dividend">The dividend of { <paramref name="dividend"/> / <see langword="this"/> }.</param>
+    public TScalar DivideInto<TScalar>(TScalar dividend) where TScalar : IScalarQuantity<TScalar> => TScalar.WithMagnitude(dividend.Magnitude / this);
+
     /// <summary>Computes { <see langword="this"/> ∙ <paramref name="factor"/> }.</summary>
     /// <param name="factor">The second factor of { <see langword="this"/> ∙ <paramref name="factor"/> }.</param>
     public Vector2 Multiply(Vector2 factor) => this * factor;
+    /// <summary>Computes { <paramref name="dividend"/> / <see langword="this"/> }.</summary>
+    /// <param name="dividend">The dividend of { <paramref name="dividend"/> / <see langword="this"/> }.</param>
+    public Vector2 DivideInto(Vector2 dividend) => dividend / this;
     /// <summary>Computes { <paramref name="dividend"/> % <see langword="this"/> }.</summary>
     /// <param name="dividend">The dividend of { <paramref name="dividend"/> % <see langword="this"/> }.</param>
     public Vector2 Remainder(Vector2 dividend) => dividend % this;
 
-    /// <summary>Computes { <see langword="this"/> ∙ <paramref name="factor"/> }.</summary>
-    /// <param name="factor">The second factor of { <see langword="this"/> ∙ <paramref name="factor"/> }.</param>
+    /// <inheritdoc cref="Multiply(Vector2)"/>
     public Vector3 Multiply(Vector3 factor) => this * factor;
-    /// <summary>Computes { <paramref name="dividend"/> % <see langword="this"/> }.</summary>
-    /// <param name="dividend">The dividend of { <paramref name="dividend"/> % <see langword="this"/> }.</param>
+    /// <inheritdoc cref="DivideInto(Vector2)"/>
+    public Vector3 DivideInto(Vector3 dividend) => dividend / this;
+    /// <inheritdoc cref="Remainder(Vector2)"/>
     public Vector3 Remainder(Vector3 dividend) => dividend % this;
 
-    /// <summary>Computes { <see langword="this"/> ∙ <paramref name="factor"/> }.</summary>
-    /// <param name="factor">The second factor of { <see langword="this"/> ∙ <paramref name="factor"/> }.</param>
+    /// <inheritdoc cref="Multiply(Vector2)"/>
     public Vector4 Multiply(Vector4 factor) => this * factor;
-    /// <summary>Computes { <paramref name="dividend"/> % <see langword="this"/> }.</summary>
-    /// <param name="dividend">The dividend of { <paramref name="dividend"/> % <see langword="this"/> }.</param>
+    /// <inheritdoc cref="DivideInto(Vector2)"/>
+    public Vector4 DivideInto(Vector4 dividend) => dividend / this;
+    /// <inheritdoc cref="Remainder(Vector2)"/>
     public Vector4 Remainder(Vector4 dividend) => dividend % this;
 
     /// <inheritdoc/>

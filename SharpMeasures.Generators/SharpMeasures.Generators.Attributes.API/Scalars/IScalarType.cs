@@ -8,7 +8,7 @@ public interface IScalarType : IQuantityType
 {
     new public abstract IScalar Definition { get; }
 
-    public abstract IReadOnlyList<IProcessedQuantity> Processes { get; }
+    public abstract IReadOnlyList<IQuantityProcess> Processes { get; }
     public abstract IReadOnlyList<IScalarConstant> Constants { get; }
 
     public abstract IReadOnlyList<IUnitInstanceInclusionList> UnitBaseInstanceInclusions { get; }
