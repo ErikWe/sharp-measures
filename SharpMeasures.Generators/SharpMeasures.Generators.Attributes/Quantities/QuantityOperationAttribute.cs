@@ -16,7 +16,8 @@ public sealed class QuantityOperationAttribute : Attribute
     /// <summary>The position of this quantity in the operation. By default, the position will be <see cref="OperatorPosition.Left"/>.</summary>
     public OperatorPosition Position { get; }
 
-    /// <summary>Dictates whether the mirrored operation is also implemented. The default behaviour is <see langword="true"/> if <see cref="OperatorType"/> is <see cref="OperatorType.Addition"/> or <see cref="OperatorType.Multiplication"/>, and <see langword="false"/> otherwise.</summary>
+    /// <summary>Dictates whether the mirrored operation is also implemented. The default behaviour is <see langword="false"/>, unless <see cref="Other"/> is defined in another assembly and <see cref="OperatorType"/>
+    /// is <see cref="OperatorType.Addition"/> or <see cref="OperatorType.Multiplication"/>.</summary>
     public bool Mirror { get; init; }
 
     /// <summary>Describes how the operator is implemented. The default behaviour is <see cref="QuantityOperationImplementation.OperatorAndMethod"/>.</summary>

@@ -293,7 +293,7 @@ public sealed class QuantityOperationProcesser : AActionableProcesser<IQuantityO
             return true;
         }
 
-        if (definition.OperatorType is OperatorType.Addition or OperatorType.Multiplication)
+        if (selfType.Assembly != definition.Other!.Value.Assembly && definition.OperatorType is OperatorType.Addition or OperatorType.Multiplication)
         {
             return true;
         }
