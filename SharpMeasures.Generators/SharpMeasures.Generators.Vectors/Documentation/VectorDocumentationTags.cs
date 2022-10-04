@@ -1,14 +1,10 @@
 ﻿namespace SharpMeasures.Generators.Vectors.Documentation;
 
 using SharpMeasures.Generators.Quantities;
-using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
 using SharpMeasures.Generators.SourceBuilding;
 using SharpMeasures.Generators.Units;
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 internal sealed class VectorDocumentationTags : IVectorDocumentationStrategy, IEquatable<VectorDocumentationTags>
 {
@@ -49,10 +45,14 @@ internal sealed class VectorDocumentationTags : IVectorDocumentationStrategy, IE
     public string CastConversion(NamedType vector) => $"Operator_CastTo_{vector.Name}";
     public string AntidirectionalCastConversion(NamedType vector) => $"Operator_CastFrom_{vector.Name}";
 
-    public string Derivation(DerivedQuantitySignature signature, IReadOnlyList<string> parameterNames) => $"Derivation_{ParseDerivableSignature(signature)}";
-    public string OperatorDerivation(OperatorDerivation derivation) => $"OperatorDerivationLHS_{derivation.Result.Name}_{derivation.RightHandSide.Name}";
+    public string OperationMethod(IQuantityOperation operation, NamedType other) => $"OperationMethod_{operation.MethodName}_{other.Name}";
+    public string MirroredOperationMethod(IQuantityOperation operation, NamedType other) => $"OperationMethod_{operation.MirroredMethodName}_{other.Name}";
+    public string VectorOperationMethod(IVectorOperation operation, NamedType other) => $"VectorOperationMethod_{operation.Name}_{other.Name}";
+    public string MirroredVectorOperationMethod(IVectorOperation operation, NamedType other) => $"VectorOperationMethod_{operation.MirroredName}_{other.Name}";
+    public string OperationOperator(IQuantityOperation operation, NamedType other) => $"Operation_{(operation.Position is OperatorPosition.Left ? "LHS" : "RHS")}_{operation.OperatorType}_{other.Name}";
+    public string MirroredOperationOperator(IQuantityOperation operation, NamedType other) => $"Operation_{(operation.Position is OperatorPosition.Right ? "LHS" : "RHS")}_{operation.OperatorType}_{other.Name}";
 
-    public string Process(IProcessedQuantity process) => $"Process_{process.Name}";
+    public string Process(IQuantityProcess process) => $"Process_{process.Name}";
 
     public string IsNaN() => "IsNaN";
     public string IsZero() => "IsZero";
@@ -104,15 +104,6 @@ internal sealed class VectorDocumentationTags : IVectorDocumentationStrategy, IE
     public string MultiplyScalarOperatorLHS() => "Operator_Multiply_Scalar_LHS";
     public string MultiplyScalarOperatorRHS() => "Operator_Multiply_Scalar_RHS";
     public string DivideScalarOperatorLHS() => "Operator_Divide_Scalar_LHS";
-
-    private static string ParseDerivableSignature(IReadOnlyList<NamedType> signature)
-    {
-        StringBuilder tag = new();
-
-        IterativeBuilding.AppendEnumerable(tag, signature.Select(static (signatureElement) => signatureElement.Name), "_");
-
-        return tag.ToString();
-    }
 
     public bool Equals(VectorDocumentationTags? other) => other is not null && Dimension == other.Dimension;
     public override bool Equals(object? obj) => obj is VectorDocumentationTags other && Equals(other);

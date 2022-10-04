@@ -16,8 +16,8 @@ public static class ScalarParser
 {
     public static (ScalarParsingResult ParsingResult, IncrementalValueProvider<ImmutableArray<INamedTypeSymbol>> ForeignSymbols) Attach(IncrementalGeneratorInitializationContext context)
     {
-        var scalarBaseSymbols = AttachSymbolProvider<SharpMeasuresScalarAttribute>(context);
-        var scalarSpecializationSymbols = AttachSymbolProvider<SpecializedSharpMeasuresScalarAttribute>(context);
+        var scalarBaseSymbols = AttachSymbolProvider<ScalarQuantityAttribute>(context);
+        var scalarSpecializationSymbols = AttachSymbolProvider<SpecializedScalarQuantityAttribute>(context);
 
         ScalarBaseParser scalarBaseParser = new();
         ScalarSpecializationParser scalarSpecializationParser = new();

@@ -4,10 +4,10 @@ using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Quantities;
-using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
+using SharpMeasures.Generators.Quantities.Parsing.QuantityOperation;
 using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
 using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
-using SharpMeasures.Generators.Quantities.Parsing.ProcessedQuantity;
+using SharpMeasures.Generators.Quantities.Parsing.QuantityProcess;
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 using SharpMeasures.Generators.Vectors.Abstraction;
@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using SharpMeasures.Generators.Vectors.Parsing.VectorOperation;
 
 internal abstract class AVectorValidatorr<TVector, TDefinition>
     where TVector : AVectorType<TDefinition>
@@ -59,6 +60,8 @@ internal abstract class AVectorValidatorr<TVector, TDefinition>
             return vector.AsEmptyOptional<TVector>();
         }
 
+        var dimensions = new[] { vectorBase.Definition.Dimension };
+
         var inheritedUnitInstances = GetUnitInstanceInclusions(vectorType, vectorPopulation, unit.UnitInstancesByName.Values, unit, static (vector) => vector.Definition.InheritUnits, onlyInherited: true);
         var inheritedUnitInstanceNames = new HashSet<string>(inheritedUnitInstances.Select(static (unit) => unit.Name));
 
@@ -71,18 +74,19 @@ internal abstract class AVectorValidatorr<TVector, TDefinition>
 
         var inheritedConstants = CollectInheritedItems(vectorType, vectorPopulation, static (vector) => vector.Constants, static (vector) => vector.Definition.InheritConstants);
 
-        var derivations = CommonValidation.ValidateDerivations(vectorType.Type, vectorType.Derivations, scalarPopulation, vectorPopulation, DiagnosticsStrategy);
+        var operations = CommonValidation.ValidateOperations(vectorType.Type, dimensions, vectorType.Operations, scalarPopulation, vectorPopulation, DiagnosticsStrategy);
+        var vectorOperations = CommonValidation.ValidateVectorOperations(vectorType.Type, dimensions, vectorType.VectorOperations, scalarPopulation, vectorPopulation, DiagnosticsStrategy);
         var constants = CommonValidation.ValidateConstants(vectorType.Type, vectorBase.Definition.Dimension, unit, allUnitInstances, vectorType.Constants, inheritedConstants, DiagnosticsStrategy);
         var conversions = CommonValidation.ValidateConversions(vectorType.Type, vectorBase.Definition.Dimension, vectorType.Conversions, vectorPopulation, DiagnosticsStrategy);
 
-        TVector product = ProduceResult(vectorType.Type, vector.Result, derivations.Result, vectorType.Processes, constants.Result, conversions.Result, unitInstanceInclusions.Result, unitInstanceExclusions.Result);
+        TVector product = ProduceResult(vectorType.Type, vector.Result, operations.Result, vectorOperations.Result, vectorType.Processes, constants.Result, conversions.Result, unitInstanceInclusions.Result, unitInstanceExclusions.Result);
 
-        var allDiagnostics = vector.Concat(derivations).Concat(constants).Concat(conversions).Concat(unitInstanceInclusions).Concat(unitInstanceExclusions);
+        var allDiagnostics = vector.Concat(operations).Concat(vectorOperations).Concat(constants).Concat(conversions).Concat(unitInstanceInclusions).Concat(unitInstanceExclusions);
 
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }
 
-    protected abstract TVector ProduceResult(DefinedType type, TDefinition definition, IReadOnlyList<DerivedQuantityDefinition> derivations, IReadOnlyList<ProcessedQuantityDefinition> processes, IReadOnlyList<VectorConstantDefinition> constants, IReadOnlyList<ConvertibleVectorDefinition> conversion, IReadOnlyList<IncludeUnitsDefinition> unitinstanceInclusions, IReadOnlyList<ExcludeUnitsDefinition> unitInstanceExclusions);
+    protected abstract TVector ProduceResult(DefinedType type, TDefinition definition, IReadOnlyList<QuantityOperationDefinition> operations, IReadOnlyList<VectorOperationDefinition> vectorOperations, IReadOnlyList<QuantityProcessDefinition> processes, IReadOnlyList<VectorConstantDefinition> constants, IReadOnlyList<ConvertibleVectorDefinition> conversion, IReadOnlyList<IncludeUnitsDefinition> unitinstanceInclusions, IReadOnlyList<ExcludeUnitsDefinition> unitInstanceExclusions);
     protected abstract IOptionalWithDiagnostics<TDefinition> ValidateVector(TVector vectorType, VectorProcessingData processingData, IUnitPopulation unitPopulation, IScalarPopulation scalarPopulation, IVectorPopulation vectorPopulation);
 
     private static IEnumerable<T> CollectInheritedItems<T>(TVector vectorType, IVectorPopulation vectorPopulation, Func<IVectorType, IEnumerable<T>> itemsDelegate, Func<IVectorSpecializationType, bool> shouldInherit)

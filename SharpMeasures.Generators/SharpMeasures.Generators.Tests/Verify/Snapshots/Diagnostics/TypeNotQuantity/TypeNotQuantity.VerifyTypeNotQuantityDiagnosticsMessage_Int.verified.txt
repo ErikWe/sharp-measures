@@ -4,11 +4,11 @@
     Title: Expected a SharpMeasures quantity,
     Severity: Error,
     WarningLevel: 0,
-    Location: : (4,31)-(4,34),
+    Location: : (2,26)-(2,29),
     Description: ,
     HelpLink: ,
-    MessageFormat: Expected a quantity. Decorate {0} with an attribute describing a quantity, such as SharpMeasures.Generators.Scalars.SharpMeasuresScalar, or use another type.,
-    Message: Expected a quantity. Decorate Int32 with an attribute describing a quantity, such as SharpMeasures.Generators.Scalars.SharpMeasuresScalar, or use another type.,
+    MessageFormat: Expected a quantity. Decorate {0} with an attribute describing a quantity, such as SharpMeasures.Generators.ScalarQuantity, or use another type.,
+    Message: Expected a quantity. Decorate Int32 with an attribute describing a quantity, such as SharpMeasures.Generators.ScalarQuantity, or use another type.,
     Category: Usage,
     CustomTags: []
   }

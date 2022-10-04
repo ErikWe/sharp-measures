@@ -4,11 +4,11 @@
     Title: Expected a non-static type,
     Severity: Error,
     WarningLevel: 0,
-    Location: : (5,28)-(5,37),
+    Location: : (3,28)-(3,37),
     Description: ,
     HelpLink: ,
     MessageFormat: The source generator associated with the attribute {0} requires {1} to be a non-static type,
-    Message: The source generator associated with the attribute SharpMeasuresVectorGroupMember requires Position3 to be a non-static type,
+    Message: The source generator associated with the attribute VectorGroupMember requires Position3 to be a non-static type,
     Category: Usage,
     CustomTags: []
   }

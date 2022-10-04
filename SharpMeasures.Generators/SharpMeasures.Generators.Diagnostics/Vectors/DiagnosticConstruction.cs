@@ -33,21 +33,31 @@ public static partial class DiagnosticConstruction
 
     public static Diagnostic VectorGroupsLacksMemberOfDimension(Location? location, string vectorGroupType, int expectedDimension)
     {
-        return Diagnostic.Create(DiagnosticRules.VectorGroupLacksMemberOfDimension, location, vectorGroupType, expectedDimension);
+        return Diagnostic.Create(DiagnosticRules.VectorGroupLacksMemberOfDimension, location, vectorGroupType, expectedDimension.ToString(CultureInfo.InvariantCulture));
     }
 
     public static Diagnostic VectorNameAndDimensionConflict(Location? location, string vectorType, int interpretedDimension, int specifiedDimension)
     {
-        return Diagnostic.Create(DiagnosticRules.VectorNameAndDimensionConflict, location, vectorType, interpretedDimension, specifiedDimension);
+        return Diagnostic.Create(DiagnosticRules.VectorNameAndDimensionConflict, location, vectorType, interpretedDimension.ToString(CultureInfo.InvariantCulture), specifiedDimension.ToString(CultureInfo.InvariantCulture));
     }
 
     public static Diagnostic VectorGroupNameSuggestsDimension(Location? location, string vectorGroupType, int interpretedDimension)
     {
-        return Diagnostic.Create(DiagnosticRules.VectorGroupNameSuggestsDimension, location, vectorGroupType, interpretedDimension);
+        return Diagnostic.Create(DiagnosticRules.VectorGroupNameSuggestsDimension, location, vectorGroupType, interpretedDimension.ToString(CultureInfo.InvariantCulture));
+    }
+
+    public static Diagnostic NonOverlappingVectorDimensions(Location? location, string firstVectorType, string secondVectorType)
+    {
+        return Diagnostic.Create(DiagnosticRules.NonOverlappingVectorDimensions, location, firstVectorType, secondVectorType);
     }
 
     public static Diagnostic VectorConstantInvalidDimension(Location? location, int expectedDimension, int constantDimension, string vectorName)
     {
         return Diagnostic.Create(DiagnosticRules.VectorConstantInvalidDimension, location, expectedDimension.ToString(CultureInfo.InvariantCulture), constantDimension, vectorName);
+    }
+
+    public static Diagnostic VectorNotSupportingCrossMultiplication(Location? location, string vectorType)
+    {
+        return Diagnostic.Create(DiagnosticRules.VectorNotSupportingCrossMultiplication, location, vectorType);
     }
 }

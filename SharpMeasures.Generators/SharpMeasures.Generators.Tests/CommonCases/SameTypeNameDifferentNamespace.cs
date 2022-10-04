@@ -13,18 +13,17 @@ public class SameTypeNameDifferentNamespace
     public void AssertSourcesGenerated() => GeneratorVerifier.Construct<SharpMeasuresGenerator>(Text).AssertAllListedSourceNamesGenerated("Length.Common.g.cs", "Test.Length.Common.g.cs");
 
     private static string Text => $$"""
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
         
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
         
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
 
         namespace Test
         {
-            [SharpMeasuresScalar(typeof(UnitOfLength))]
+            [ScalarQuantity(typeof(UnitOfLength))]
             public partial class Length { }
         }
         """;

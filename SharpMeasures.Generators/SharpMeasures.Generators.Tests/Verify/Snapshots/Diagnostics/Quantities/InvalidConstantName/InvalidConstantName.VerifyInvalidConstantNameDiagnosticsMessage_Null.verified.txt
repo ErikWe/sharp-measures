@@ -4,11 +4,11 @@
     Title: Invalid name of constant,
     Severity: Error,
     WarningLevel: 0,
-    Location: : (3,16)-(3,20),
+    Location: : (2,16)-(2,20),
     Description: ,
     HelpLink: ,
-    MessageFormat: The name of the constant must be defined,
-    Message: The name of the constant must be defined,
+    MessageFormat: Expected a name for the constant,
+    Message: Expected a name for the constant,
     Category: Naming,
     CustomTags: []
   }

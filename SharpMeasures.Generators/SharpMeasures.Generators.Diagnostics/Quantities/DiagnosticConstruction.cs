@@ -116,49 +116,44 @@ public static partial class DiagnosticConstruction
         return Diagnostic.Create(DiagnosticRules.UnionInclusionStackingModeRedundant, location, quantityTypeName);
     }
 
-    public static Diagnostic DerivationOperatorsIncompatibleExpression(Location? location)
+    public static Diagnostic InvalidQuantityOperationName(Location? location)
     {
-        return Diagnostic.Create(DiagnosticRules.DerivationOperatorsIncompatibleExpression, location);
+        return Diagnostic.Create(DiagnosticRules.InvalidQuantityOperationName, location);
     }
 
-    public static Diagnostic UnmatchedDerivationExpressionQuantity(Location? location, int index)
+    public static Diagnostic QuantityOperationMethodDisabledButNameSpecified(Location? location)
     {
-        return Diagnostic.Create(DiagnosticRules.UnmatchedDerivationExpressionQuantity, location, index.ToString(CultureInfo.InvariantCulture));
+        return Diagnostic.Create(DiagnosticRules.QuantityOperationMethodDisabledButNameSpecified, location);
     }
 
-    public static Diagnostic ExpressionDoesNotIncludeQuantity(Location? location, int index)
+    public static Diagnostic DuplicateQuantityOperationOperator(Location? location, string quantityType)
     {
-        return Diagnostic.Create(DiagnosticRules.ExpressionDoesNotIncludeQuantity, location, index.ToString(CultureInfo.InvariantCulture));
+        return Diagnostic.Create(DiagnosticRules.DuplicateQuantityOperationOperator, location, quantityType);
     }
 
-    public static Diagnostic MalformedDerivationExpression(Location? location)
+    public static Diagnostic DuplicateQuantityOperationMethod(Location? location, string quantityType, string methodName)
     {
-        return Diagnostic.Create(DiagnosticRules.MalformedDerivationExpression, location);
+        return Diagnostic.Create(DiagnosticRules.DuplicateQuantityOperationMethod, location, quantityType, methodName);
     }
 
-    public static Diagnostic DerivationExpressionContainsConstant(Location? location)
+    public static Diagnostic InvalidQuantityOperation(Location? location)
     {
-        return Diagnostic.Create(DiagnosticRules.DerivationExpressionContainsConstant, location);
+        return Diagnostic.Create(DiagnosticRules.InvalidQuantityOperation, location);
     }
 
-    public static Diagnostic IncompatibleQuantitiesInDerivation(Location? location)
+    public static Diagnostic QuantityOperationNotMirrorable(Location? location)
     {
-        return Diagnostic.Create(DiagnosticRules.IncompatibleQuantitiesInDerivation, location);
+        return Diagnostic.Create(DiagnosticRules.QuantityOperationNotMirrorable, location);
     }
 
-    public static Diagnostic DerivationUnexpectedlyResultInScalar(Location? location)
+    public static Diagnostic QuantityOperationMethodNotMirrorable(Location? location)
     {
-        return Diagnostic.Create(DiagnosticRules.DerivationUnexpectedlyResultInScalar, location);
+        return Diagnostic.Create(DiagnosticRules.QuantityOperationMethodNotMirrorable, location);
     }
 
-    public static Diagnostic DerivationUnexpectedlyResultInVector(Location? location)
+    public static Diagnostic QuantityOperationMirrorDisabledButNameSpecified(Location? location)
     {
-        return Diagnostic.Create(DiagnosticRules.DerivationUnexpectedlyResultInVector, location);
-    }
-
-    public static Diagnostic DerivationResultsInNonOverlappingDimension(Location? location, string quantityType)
-    {
-        return Diagnostic.Create(DiagnosticRules.DerivationResultsInNonOverlappingDimension, location, quantityType);
+        return Diagnostic.Create(DiagnosticRules.QuantityOperationMirrorDisabledButNameSpecified, location);
     }
 
     public static Diagnostic InvalidProcessName(Location? location)

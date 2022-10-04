@@ -13,11 +13,11 @@ internal sealed record class SymbolicSharpMeasuresVectorGroupMemberDefinition : 
 
     public INamedTypeSymbol? VectorGroup { get; init; }
 
-    public bool InheritDerivations { get; init; } = true;
+    public bool InheritOperations { get; init; } = true;
     public bool InheritConversions { get; init; } = true;
     public bool InheritUnits { get; init; } = true;
 
-    public bool? InheritDerivationsFromMembers { get; init; }
+    public bool? InheritOperationsFromMembers { get; init; }
     public bool InheritProcessesFromMembers { get; init; } = true;
     public bool InheritConstantsFromMembers { get; init; } = true;
     public bool? InheritConversionsFromMembers { get; init; }

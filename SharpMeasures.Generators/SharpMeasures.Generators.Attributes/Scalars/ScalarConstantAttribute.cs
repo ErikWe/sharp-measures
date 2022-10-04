@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures.Generators.Scalars;
+﻿namespace SharpMeasures.Generators;
 
 using System;
 

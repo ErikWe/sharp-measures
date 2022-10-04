@@ -4,11 +4,11 @@
     Title: Expected a unit,
     Severity: Error,
     WarningLevel: 0,
-    Location: : (4,34)-(4,38),
+    Location: : (2,29)-(2,33),
     Description: ,
     HelpLink: ,
-    MessageFormat: Expected a type decorated with the attribute SharpMeasures.Generators.Units.SharpMeasuresUnit,
-    Message: Expected a type decorated with the attribute SharpMeasures.Generators.Units.SharpMeasuresUnit,
+    MessageFormat: Expected a type decorated with the attribute SharpMeasures.Generators.Unit,
+    Message: Expected a type decorated with the attribute SharpMeasures.Generators.Unit,
     Category: Usage,
     CustomTags: []
   }

@@ -8,7 +8,7 @@ internal static class SharpMeasuresVectorGroupMemberParser
 
     private static SymbolicSharpMeasuresVectorGroupMemberDefinition DefaultDefiniton() => SymbolicSharpMeasuresVectorGroupMemberDefinition.Empty;
 
-    private sealed class AttributeParser : AAttributeParser<SymbolicSharpMeasuresVectorGroupMemberDefinition, SharpMeasuresVectorGroupMemberLocations, SharpMeasuresVectorGroupMemberAttribute>
+    private sealed class AttributeParser : AAttributeParser<SymbolicSharpMeasuresVectorGroupMemberDefinition, SharpMeasuresVectorGroupMemberLocations, VectorGroupMemberAttribute>
     {
         public AttributeParser() : base(DefaultDefiniton, SharpMeasuresVectorGroupMemberProperties.AllProperties) { }
     }

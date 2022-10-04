@@ -1,7 +1,6 @@
 ﻿namespace SharpMeasures.Generators.Vectors.Documentation;
 
 using SharpMeasures.Generators.Quantities;
-using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
 using SharpMeasures.Generators.SourceBuilding;
 using SharpMeasures.Generators.Units;
 
@@ -246,36 +245,124 @@ internal sealed class DefaultVectorDocumentation : IVectorDocumentationStrategy,
         /// <param name="a">This <see cref="{vector.FullyQualifiedName}"/> is converted to the equivalent {VectorReference}.</param>
         """;
 
-    public string Derivation(DerivedQuantitySignature signature, IReadOnlyList<string> parameterNames)
+    public string OperationMethod(IQuantityOperation operation, NamedType other) => OperationMethod(operation, mirrored: false);
+    public string MirroredOperationMethod(IQuantityOperation operation, NamedType other) => OperationMethod(operation, mirrored: true);
+    private static string OperationMethod(IQuantityOperation operation, bool mirrored)
     {
-        StringBuilder source = new();
-        source.Append($"""/// <summary>Constructs a new {VectorReference}, derived from other quantities.</summary>""");
+        var parameterName = SourceBuildingUtility.ToParameterName(operation.Other.Name);
 
-        for (int i = 0; i < signature.Count; i++)
+        if (operation.OperatorType is OperatorType.Addition)
         {
-            source.AppendLine();
-
-            source.Append($"""
-                /// <param name="{parameterNames[i]}">This <see cref="{signature[i].FullyQualifiedName}"/> is used to derive a {VectorReference}.</param>
-                """);
+            return $$"""
+                /// <summary>Computes { <see langword="this"/> + <paramref name="{{parameterName}}"/> }.</summary>
+                /// <param name="{{parameterName}}">The second term of { <see langword="this"/> + <paramref name="{{parameterName}}"/> }.</param>
+                """;
         }
 
-        return source.ToString();
-    }
+        if (operation.OperatorType is OperatorType.Multiplication)
+        {
+            return $$"""
+                /// <summary>Computes { <see langword="this"/> ∙ <paramref name="{{parameterName}}"/> }.</summary>
+                /// <param name="{{parameterName}}">The second factor of { <see langword="this"/> ∙ <paramref name="{{parameterName}}"/> }.</param>
+                """;
+        }
 
-    public string OperatorDerivation(OperatorDerivation derivation)
-    {
-        var operatorSymbol = GetOperatorSymbol(derivation.OperatorType);
-        (var firstComponentName, var secondComponentName) = GetOperatorComponentNames(derivation.OperatorType);
+        if (operation.OperatorType is OperatorType.Subtraction)
+        {
+            if (operation.Position is OperatorPosition.Left && mirrored is false || operation.Position is OperatorPosition.Right && mirrored)
+            {
+                return $$"""
+                    /// <summary>Computes { <see langword="this"/> - <paramref name="{{parameterName}}"/> }.</summary>
+                    /// <param name="{{parameterName}}">The subtrahend of { <see langword="this"/> - <paramref name="{{parameterName}}"/> }.</param>
+                    """;
+            }
+
+            return $$"""
+                /// <summary>Computes { <paramref name="{{parameterName}}"/> - <see langword="this"/> }.</summary>
+                /// <param name="{{parameterName}}">The minuend of { <paramref name="{{parameterName}}"/> - <see langword="this"/> }.</param>
+                """;
+        }
+
+        if (operation.Position is OperatorPosition.Left && mirrored is false || operation.Position is OperatorPosition.Right && mirrored)
+        {
+            return $$"""
+                /// <summary>Computes { <see langword="this"/> / <paramref name="{{parameterName}}"/> }.</summary>
+                /// <param name="{{parameterName}}">The divisor of { <see langword="this"/> / <paramref name="{{parameterName}}"/> }.</param>
+                """;
+        }
 
         return $$"""
-            /// <summary>Computes { <paramref name="a"/> {{operatorSymbol}} <paramref name="b"/> }, resulting in a <see cref="{{derivation.Result.FullyQualifiedName}}"/>.</summary>
-            /// <param name="a">The {{(firstComponentName == secondComponentName ? string.Empty : "first ")}}{{firstComponentName}} of { <paramref name="a"/> {{operatorSymbol}} <paramref name="b"/> }.</param>
-            /// <param name="b">The {{(firstComponentName == secondComponentName ? string.Empty : "second ")}}{{secondComponentName}} of { <paramref name="a"/> {{operatorSymbol}} <paramref name="b"/> }.</param>
+            /// <summary>Computes { <paramref name="{{parameterName}}"/> / <see langword="this"/> }.</summary>
+            /// <param name="{{parameterName}}">The dividend of { <paramref name="{{parameterName}}"/> / <see langword="this"/> }.</param>
             """;
     }
 
-    public string Process(IProcessedQuantity process) => $"""/// <summary>Processes the {VectorReference}.</summary>""";
+    public string VectorOperationMethod(IVectorOperation operation, NamedType other) => VectorOperationMethod(operation, mirrored: false);
+    public string MirroredVectorOperationMethod(IVectorOperation operation, NamedType other) => VectorOperationMethod(operation, mirrored: true);
+    private static string VectorOperationMethod(IVectorOperation operation, bool mirrored)
+    {
+        var parameterName = SourceBuildingUtility.ToParameterName(operation.Other.Name);
+
+        if (operation.OperatorType is VectorOperatorType.Dot)
+        {
+            return $$"""
+                /// <summary>Computes { <see langword="this"/> ∙ <paramref name="{{parameterName}}"/> }.</summary>
+                /// <param name="{{parameterName}}">The second factor of { <see langword="this"/> ∙ <paramref name="{{parameterName}}"/> }.</param>
+                """;
+        }
+
+        if (operation.Position is OperatorPosition.Left && mirrored is false || operation.Position is OperatorPosition.Right && mirrored)
+        {
+            return $$"""
+                /// <summary>Computes { <see langword="this"/> ⨯ <paramref name="{{parameterName}}"/> }.</summary>
+                /// <param name="{{parameterName}}">The second factor of { <see langword="this"/> ⨯ <paramref name="{{parameterName}}"/> }.</param>
+                """;
+        }
+
+        return $$"""
+                /// <summary>Computes { <paramref name="{{parameterName}}"/> ⨯ <see langword="this"/> }.</summary>
+                /// <param name="{{parameterName}}">The first factor of { <paramref name="{{parameterName}}"/> ⨯ <see langword="this"/> }.</param>
+                """;
+    }
+
+    public string MirroredOperationOperator(IQuantityOperation operation, NamedType other) => OperationOperator(operation, other);
+    public string OperationOperator(IQuantityOperation operation, NamedType other)
+    {
+        if (operation.OperatorType is OperatorType.Addition)
+        {
+            return """
+                /// <summary>Computes { <see langword="a"/> + <paramref name="b"/> }.</summary>
+                /// <param name="a">The first term of { <see langword="a"/> + <paramref name="b"/> }.</param>
+                /// <param name="b">The second term of { <see langword="a"/> + <paramref name="b"/> }.</param>
+                """;
+        }
+
+        if (operation.OperatorType is OperatorType.Multiplication)
+        {
+            return """
+                /// <summary>Computes { <see langword="a"/> * <paramref name="b"/> }.</summary>
+                /// <param name="a">The first factor of { <see langword="a"/> * <paramref name="b"/> }.</param>
+                /// <param name="b">The second factor of { <see langword="a"/> * <paramref name="b"/> }.</param>
+                """;
+        }
+
+        if (operation.OperatorType is OperatorType.Subtraction)
+        {
+            return """
+                /// <summary>Computes { <see langword="a"/> - <paramref name="b"/> }.</summary>
+                /// <param name="a">The minuend of { <see langword="a"/> - <paramref name="b"/> }.</param>
+                /// <param name="b">The subtrahend of { <see langword="a"/> - <paramref name="b"/> }.</param>
+                """;
+        }
+
+        return """
+            /// <summary>Computes { <see langword="a"/> / <paramref name="b"/> }.</summary>
+            /// <param name="a">The dividend of { <see langword="a"/> / <paramref name="b"/> }.</param>
+            /// <param name="b">The divisor of { <see langword="a"/> / <paramref name="b"/> }.</param>
+            """;
+    }
+
+    public string Process(IQuantityProcess process) => $"""/// <summary>Executes a custom process.</summary>""";
 
     public string IsNaN() => $"""/// <inheritdoc cref="global::SharpMeasures.Vector{Dimension}.IsNaN"/>""";
     public string IsZero() => $"""/// <inheritdoc cref="global::SharpMeasures.Vector{Dimension}.IsZero"/>""";
@@ -451,24 +538,6 @@ internal sealed class DefaultVectorDocumentation : IVectorDocumentationStrategy,
             }
         }
     }
-
-    private static string GetOperatorSymbol(OperatorType operatorType) => operatorType switch
-    {
-        OperatorType.Addition => "+",
-        OperatorType.Subtraction => "-",
-        OperatorType.Multiplication => "*",
-        OperatorType.Division => "/",
-        _ => throw new NotSupportedException($"Invalid {typeof(OperatorType).Name}: {operatorType}")
-    };
-
-    private static (string First, string Second) GetOperatorComponentNames(OperatorType operatorType) => operatorType switch
-    {
-        OperatorType.Addition => ("term", "term"),
-        OperatorType.Subtraction => ("term", "term"),
-        OperatorType.Multiplication => ("factor", "factor"),
-        OperatorType.Division => ("dividend", "divisor"),
-        _ => throw new NotSupportedException($"Invalid {typeof(OperatorType).Name}: {operatorType}")
-    };
 
     public bool Equals(DefaultVectorDocumentation? other) => other is not null && Type == other.Type && Dimension == other.Dimension && Unit == other.Unit && Scalar == other.Scalar && DefaultUnitInstance == other.DefaultUnitInstance && DefaultUnitInstanceSymbol == other.DefaultUnitInstanceSymbol;
     public override bool Equals(object? obj) => obj is DefaultVectorDocumentation other && Equals(other);

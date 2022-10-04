@@ -4,7 +4,7 @@
     Title: Missing vector dimension,
     Severity: Error,
     WarningLevel: 0,
-    Location: : (4,1)-(4,20),
+    Location: : (2,1)-(2,15),
     Description: ,
     HelpLink: ,
     MessageFormat: Could not interpret the vector dimension of {0}. Specify the dimension manually, or change the name of the type to "{0}X", where X is the dimension.,

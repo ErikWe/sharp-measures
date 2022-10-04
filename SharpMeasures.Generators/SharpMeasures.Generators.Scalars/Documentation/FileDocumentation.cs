@@ -2,11 +2,9 @@
 
 using SharpMeasures.Generators.Documentation;
 using SharpMeasures.Generators.Quantities;
-using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
 using SharpMeasures.Generators.Units;
 
 using System;
-using System.Collections.Generic;
 
 internal sealed class FileDocumentation : IDocumentationStrategy, IEquatable<FileDocumentation>
 {
@@ -41,10 +39,12 @@ internal sealed class FileDocumentation : IDocumentationStrategy, IEquatable<Fil
     public string CastConversion(NamedType scalar) => FromFileOrDefault((strategy) => strategy.CastConversion(scalar));
     public string AntidirectionalCastConversion(NamedType scalar) => FromFileOrDefault((strategy) => strategy.AntidirectionalCastConversion(scalar));
 
-    public string Derivation(DerivedQuantitySignature signature, IReadOnlyList<string> parameterNames) => FromFileOrDefault((strategy) => strategy.Derivation(signature, parameterNames));
-    public string OperatorDerivation(OperatorDerivation derivation) => FromFileOrDefault((strategy) => strategy.OperatorDerivation(derivation));
+    public string OperationMethod(IQuantityOperation operation, NamedType other) => FromFileOrDefault((strategy) => strategy.OperationMethod(operation, other));
+    public string MirroredOperationMethod(IQuantityOperation operation, NamedType other) => FromFileOrDefault((strategy) => strategy.MirroredOperationMethod(operation, other));
+    public string OperationOperator(IQuantityOperation operation, NamedType other) => FromFileOrDefault((strategy) => strategy.OperationOperator(operation, other));
+    public string MirroredOperationOperator(IQuantityOperation operation, NamedType other) => FromFileOrDefault((strategy) => strategy.MirroredOperationOperator(operation, other));
 
-    public string Process(IProcessedQuantity process) => FromFileOrDefault((strategy) => strategy.Process(process));
+    public string Process(IQuantityProcess process) => FromFileOrDefault((strategy) => strategy.Process(process));
 
     public string IsNaN() => FromFileOrDefault(static (strategy) => strategy.IsNaN());
     public string IsZero() => FromFileOrDefault(static (strategy) => strategy.IsZero());

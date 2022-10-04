@@ -3,7 +3,6 @@
 using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Diagnostics;
-using SharpMeasures.Generators.Quantities;
 
 internal sealed class GroupMemberTypeProcessingDiagnostics : IGroupMemberTypeProcessingDiagnostics
 {

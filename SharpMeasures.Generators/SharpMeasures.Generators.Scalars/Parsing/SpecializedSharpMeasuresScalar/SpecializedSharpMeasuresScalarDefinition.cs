@@ -7,7 +7,7 @@ internal sealed record class SpecializedSharpMeasuresScalarDefinition : AAttribu
 {
     public NamedType OriginalQuantity { get; }
 
-    public bool InheritDerivations { get; }
+    public bool InheritOperations { get; }
     public bool InheritProcesses { get; }
     public bool InheritConstants { get; }
     public bool InheritConversions { get; }
@@ -40,7 +40,7 @@ internal sealed record class SpecializedSharpMeasuresScalarDefinition : AAttribu
     {
         OriginalQuantity = originalScalar;
 
-        InheritDerivations = inheritDerivations;
+        InheritOperations = inheritDerivations;
         InheritProcesses = inheritProcesses;
         InheritConstants = inheritConstants;
         InheritConversions = inheritConversions;

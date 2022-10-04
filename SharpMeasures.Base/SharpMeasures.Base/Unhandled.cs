@@ -49,9 +49,11 @@ public readonly record struct Unhandled : IScalarQuantity<Unhandled>, IComparabl
 
     /// <inheritdoc cref="Scalar.Absolute"/>
     public Unhandled Absolute() => ScalarMaths.Absolute(this);
+    /// <inheritdoc cref="Scalar.Sign"/>
+    public int Sign() => Math.Sign(Magnitude);
 
-    /// <inheritdoc cref="Scalar.Reciprocal"/>
-    public Unhandled Reciprocal() => ScalarMaths.Reciprocal(this);
+    /// <inheritdoc cref="Scalar.Power(Scalar)"/>
+    public Unhandled Power(Scalar exponent) => new(Math.Pow(Magnitude, exponent));
     /// <inheritdoc cref="Scalar.Square"/>
     public Unhandled Square() => ScalarMaths.Square(this);
     /// <inheritdoc cref="Scalar.Cube"/>
@@ -135,30 +137,18 @@ public readonly record struct Unhandled : IScalarQuantity<Unhandled>, IComparabl
     /// <param name="b">The second factor of { <paramref name="a"/> / <paramref name="b"/> }.</param>
     public static Unhandled2 operator /(Vector2 a, Unhandled b) => (a.X / b, a.Y / b);
 
-    /// <summary>Computes { <paramref name="a"/> ∙ <paramref name="b"/> }.</summary>
-    /// <param name="a">The first factor of { <paramref name="a"/> ∙ <paramref name="b"/> }.</param>
-    /// <param name="b">The second factor of { <paramref name="a"/> ∙ <paramref name="b"/> }.</param>
+    /// <inheritdoc cref="operator *(Unhandled, Vector2)"/>
     public static Unhandled3 operator *(Unhandled a, Vector3 b) => (a * b.X, a * b.Y, a * b.Z);
-    /// <summary>Computes { <paramref name="a"/> ∙ <paramref name="b"/> }.</summary>
-    /// <param name="a">The first factor of { <paramref name="a"/> ∙ <paramref name="b"/> }.</param>
-    /// <param name="b">The second factor of { <paramref name="a"/> ∙ <paramref name="b"/> }.</param>
+    /// <inheritdoc cref="operator *(Vector2, Unhandled)"/>
     public static Unhandled3 operator *(Vector3 a, Unhandled b) => (a.X * b, a.Y * b, a.Z * b);
-    /// <summary>Computes { <paramref name="a"/> / <paramref name="b"/> }.</summary>
-    /// <param name="a">The first factor of { <paramref name="a"/> / <paramref name="b"/> }.</param>
-    /// <param name="b">The second factor of { <paramref name="a"/> / <paramref name="b"/> }.</param>
+    /// <inheritdoc cref="operator /(Vector2, Unhandled)"/>
     public static Unhandled3 operator /(Vector3 a, Unhandled b) => (a.X / b, a.Y / b, a.Z / b);
 
-    /// <summary>Computes { <paramref name="a"/> ∙ <paramref name="b"/> }.</summary>
-    /// <param name="a">The first factor of { <paramref name="a"/> ∙ <paramref name="b"/> }.</param>
-    /// <param name="b">The second factor of { <paramref name="a"/> ∙ <paramref name="b"/> }.</param>
+    /// <inheritdoc cref="operator *(Unhandled, Vector2)"/>
     public static Unhandled4 operator *(Unhandled a, Vector4 b) => (a * b.X, a * b.Y, a * b.Z, a * b.W);
-    /// <summary>Computes { <paramref name="a"/> ∙ <paramref name="b"/> }.</summary>
-    /// <param name="a">The first factor of { <paramref name="a"/> ∙ <paramref name="b"/> }.</param>
-    /// <param name="b">The second factor of { <paramref name="a"/> ∙ <paramref name="b"/> }.</param>
+    /// <inheritdoc cref="operator *(Vector2, Unhandled)"/>
     public static Unhandled4 operator *(Vector4 a, Unhandled b) => (a.X * b, a.Y * b, a.Z * b, a.W * b);
-    /// <summary>Computes { <paramref name="a"/> / <paramref name="b"/> }.</summary>
-    /// <param name="a">The first factor of { <paramref name="a"/> / <paramref name="b"/> }.</param>
-    /// <param name="b">The second factor of { <paramref name="a"/> / <paramref name="b"/> }.</param>
+    /// <inheritdoc cref="operator /(Vector2, Unhandled)"/>
     public static Unhandled4 operator /(Vector4 a, Unhandled b) => (a.X / b, a.Y / b, a.Z / b, a.W / b);
 
     /// <inheritdoc cref="operator +(Unhandled, Unhandled)"/>

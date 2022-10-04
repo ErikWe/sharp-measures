@@ -1,6 +1,6 @@
 ﻿namespace SharpMeasures;
 
-using SharpMeasures.Generators.Units;
+using SharpMeasures.Generators;
 
 [DerivedUnitInstance("MetrePerSecond", "MetresPerSecond", new[] { "Metre", "Second" })]
 [DerivedUnitInstance("KilometrePerSecond", "KilometresPerSecond", new[] { "Kilometre", "Second" })]
@@ -9,5 +9,5 @@ using SharpMeasures.Generators.Units;
 [DerivedUnitInstance("YardPerSecond", "YardsPerSecond", new[] { "Yard", "Second" })]
 [DerivedUnitInstance("MilePerHour", "MilesPerHour", new[] { "Mile", "Hour" })]
 [DerivableUnit("{0} / {1}", typeof(UnitOfLength), typeof(UnitOfTime))]
-[SharpMeasuresUnit(typeof(Speed))]
+[Unit(typeof(Speed))]
 public readonly partial record struct UnitOfSpeed { }

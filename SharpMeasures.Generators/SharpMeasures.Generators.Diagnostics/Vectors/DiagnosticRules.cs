@@ -86,11 +86,31 @@ public static partial class DiagnosticRules
         isEnabledByDefault: true
     );
 
+    public static readonly DiagnosticDescriptor NonOverlappingVectorDimensions = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.NonOverlappingVectorDimensions,
+        title: "Non-overlapping vector dimensions",
+        messageFormat: "The dimensions supported by {0} and {1} never overlaps",
+        category: "Usage",
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true
+    );
+
     public static readonly DiagnosticDescriptor VectorConstantInvalidDimension = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.VectorConstantInvalidDimension,
         title: "Invalid dimension of vector constant",
         messageFormat: "Expected {0} elements, as the dimension of {2} is {0} - but received {1} element(s)",
+        category: "Usage",
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true
+    );
+
+    public static readonly DiagnosticDescriptor VectorNotSupportingCrossMultiplication = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.VectorNotSupportingCrossMultiplication,
+        title: "Vector does not support cross product",
+        messageFormat: "{0} does not support cross product, as the dimension is required to be 3",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true

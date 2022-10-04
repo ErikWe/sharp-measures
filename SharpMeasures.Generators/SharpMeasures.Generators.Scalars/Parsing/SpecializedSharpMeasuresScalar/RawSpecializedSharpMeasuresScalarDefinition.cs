@@ -8,7 +8,7 @@ internal sealed record class RawSpecializedSharpMeasuresScalarDefinition : ARawA
     public static RawSpecializedSharpMeasuresScalarDefinition FromSymbolic(SymbolicSpecializedSharpMeasuresScalarDefinition symbolicDefinition) => new RawSpecializedSharpMeasuresScalarDefinition(symbolicDefinition.Locations) with
     {
         OriginalQuantity = symbolicDefinition.OriginalQuantity?.AsNamedType(),
-        InheritDerivations = symbolicDefinition.InheritDerivations,
+        InheritDerivations = symbolicDefinition.InheritOperations,
         InheritProcesses = symbolicDefinition.InheritProcesses,
         InheritConstants = symbolicDefinition.InheritConstants,
         InheritConversions = symbolicDefinition.InheritConversions,

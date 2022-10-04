@@ -4,7 +4,7 @@
     Title: Expected a biased scalar quantity,
     Severity: Error,
     WarningLevel: 0,
-    Location: : (4,28)-(4,49),
+    Location: : (2,28)-(2,49),
     Description: ,
     HelpLink: ,
     MessageFormat: Expected a scalar quantity that considers unit bias. Mark {0} as using unit biases, or choose another quantity.,

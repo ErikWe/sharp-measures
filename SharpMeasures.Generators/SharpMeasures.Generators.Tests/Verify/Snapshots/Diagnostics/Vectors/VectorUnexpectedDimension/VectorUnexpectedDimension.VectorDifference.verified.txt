@@ -4,7 +4,7 @@
     Title: Vector of unexpected dimension,
     Severity: Error,
     WarningLevel: 0,
-    Location: : (4,63)-(4,72),
+    Location: : (2,58)-(2,67),
     Description: ,
     HelpLink: ,
     MessageFormat: Expected a vector of dimension {0}, but {1} is of dimension {2},

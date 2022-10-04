@@ -7,11 +7,11 @@ internal sealed record class SharpMeasuresVectorGroupMemberDefinition : AAttribu
 {
     public NamedType VectorGroup { get; }
 
-    public bool InheritDerivations { get; }
+    public bool InheritOperations { get; }
     public bool InheritConversions { get; }
     public bool InheritUnits { get; }
 
-    public bool InheritDerivationsFromMembers { get; }
+    public bool InheritOperationsFromMembers { get; }
     public bool InheritProcessesFromMembers { get; }
     public bool InheritConstantsFromMembers { get; }
     public bool InheritConversionsFromMembers { get; }
@@ -33,16 +33,16 @@ internal sealed record class SharpMeasuresVectorGroupMemberDefinition : AAttribu
     IVectorGroupMemberLocations IVectorGroupMember.Locations => Locations;
     IDefaultUnitInstanceLocations IDefaultUnitInstanceDefinition.DefaultUnitInstanceLocations => Locations;
 
-    public SharpMeasuresVectorGroupMemberDefinition(NamedType vectorGroup, bool inheritDerivations, bool inheritConversions, bool inheritUnits, bool inheritDerivationsFromMembers, bool inheritProcessesFromMembers, bool inheritConstantsFromMembers,
+    public SharpMeasuresVectorGroupMemberDefinition(NamedType vectorGroup, bool inheritOperations, bool inheritConversions, bool inheritUnits, bool inheritOperationsFromMembers, bool inheritProcessesFromMembers, bool inheritConstantsFromMembers,
         bool inheritConversionsFromMembers, bool inheritUnitsFromMembers, int dimension, bool? generateDocumentation, SharpMeasuresVectorGroupMemberLocations locations) : base(locations)
  {
         VectorGroup = vectorGroup;
 
-        InheritDerivations = inheritDerivations;
+        InheritOperations = inheritOperations;
         InheritConversions = inheritConversions;
         InheritUnits = inheritUnits;
 
-        InheritDerivationsFromMembers = inheritDerivationsFromMembers;
+        InheritOperationsFromMembers = inheritOperationsFromMembers;
         InheritProcessesFromMembers = inheritProcessesFromMembers;
         InheritConstantsFromMembers = inheritConstantsFromMembers;
         InheritConversionsFromMembers = inheritConversionsFromMembers;

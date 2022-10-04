@@ -24,48 +24,44 @@ public class VectorGroupNameSuggestsDimension
     private static IReadOnlyCollection<string> VectorGroupNameSuggestsDimensionDiagnostics { get; } = new string[] { DiagnosticIDs.VectorGroupNameSuggestsDimension };
 
     private static string VectorGroupText => $$"""
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Vectors;
+        using SharpMeasures.Generators;
         
-        [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
+        [VectorGroup(typeof(UnitOfLength))]
         public static partial class Position3 { }
         
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
         
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
     private static GeneratorVerifier AssertVectorGroup()
     {
-        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(VectorGroupText, target: "SharpMeasuresVectorGroup");
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(VectorGroupText, target: "VectorGroup");
 
         return AssertExactlyVectorGroupNameSuggestsDimensionDiagnostics(VectorGroupText).AssertDiagnosticsLocation(expectedLocation);
     }
 
     private static string SpecializedVectorGroupText => $$"""
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Vectors;
+        using SharpMeasures.Generators;
         
-        [SpecializedSharpMeasuresVectorGroup(typeof(Position))]
+        [SpecializedVectorGroup(typeof(Position))]
         public static partial class Displacement3 { }
 
-        [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
+        [VectorGroup(typeof(UnitOfLength))]
         public static partial class Position { }
         
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
         
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
     private static GeneratorVerifier AssertSpecializedVectorGroup()
     {
-        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(SpecializedVectorGroupText, target: "SpecializedSharpMeasuresVectorGroup");
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(SpecializedVectorGroupText, target: "SpecializedVectorGroup");
 
         return AssertExactlyVectorGroupNameSuggestsDimensionDiagnostics(SpecializedVectorGroupText).AssertDiagnosticsLocation(expectedLocation);
     }

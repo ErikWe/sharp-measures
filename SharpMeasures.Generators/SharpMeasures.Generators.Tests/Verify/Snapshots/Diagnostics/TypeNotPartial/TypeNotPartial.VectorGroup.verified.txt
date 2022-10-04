@@ -4,11 +4,11 @@
     Title: Expected a partial type,
     Severity: Error,
     WarningLevel: 0,
-    Location: : (5,20)-(5,28),
+    Location: : (3,20)-(3,28),
     Description: ,
     HelpLink: ,
     MessageFormat: The source generator associated with the attribute {0} requires {1} to be a partial type,
-    Message: The source generator associated with the attribute SharpMeasuresVectorGroup requires Position to be a partial type,
+    Message: The source generator associated with the attribute VectorGroup requires Position to be a partial type,
     Category: Usage,
     CustomTags: []
   }

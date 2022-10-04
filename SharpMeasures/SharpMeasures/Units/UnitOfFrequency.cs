@@ -1,6 +1,6 @@
 ﻿namespace SharpMeasures;
 
-using SharpMeasures.Generators.Units;
+using SharpMeasures.Generators;
 
 [DerivedUnitInstance("PerSecond", "[*]", new[] { "Second" })]
 [DerivedUnitInstance("PerMinute", "[*]", new[] { "Minute" })]
@@ -10,5 +10,5 @@ using SharpMeasures.Generators.Units;
 [PrefixedUnitInstance("Megahertz", "[*]", "Hertz", MetricPrefixName.Mega)]
 [PrefixedUnitInstance("Gigahertz", "[*]", "Hertz", MetricPrefixName.Giga)]
 [DerivableUnit("1 / {0}", typeof(UnitOfTime))]
-[SharpMeasuresUnit(typeof(Frequency))]
+[Unit(typeof(Frequency))]
 public readonly partial record struct UnitOfFrequency { }

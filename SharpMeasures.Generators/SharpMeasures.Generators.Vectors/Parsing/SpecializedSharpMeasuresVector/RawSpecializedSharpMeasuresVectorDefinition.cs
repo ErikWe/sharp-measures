@@ -8,7 +8,7 @@ internal sealed record class RawSpecializedSharpMeasuresVectorDefinition : ARawA
     public static RawSpecializedSharpMeasuresVectorDefinition FromSymbolic(SymbolicSpecializedSharpMeasuresVectorDefinition symbolicDefinition) => new RawSpecializedSharpMeasuresVectorDefinition(symbolicDefinition.Locations) with
     {
         OriginalQuantity = symbolicDefinition.OriginalQuantity?.AsNamedType(),
-        InheritDerivations = symbolicDefinition.InheritDerivations,
+        InheritDerivations = symbolicDefinition.InheritOperations,
         InheritProcesses = symbolicDefinition.InheritProcesses,
         InheritConstants = symbolicDefinition.InheritConstants,
         InheritConversions = symbolicDefinition.InheritConversions,

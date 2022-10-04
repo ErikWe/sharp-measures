@@ -1,6 +1,6 @@
 ﻿namespace SharpMeasures;
 
-using SharpMeasures.Generators.Units;
+using SharpMeasures.Generators;
 
 [FixedUnitInstance("Radian", "[*]s")]
 [PrefixedUnitInstance("Milliradian", "[*]s", "Radian", MetricPrefixName.Milli)]
@@ -16,5 +16,5 @@ using SharpMeasures.Generators.Units;
 [PrefixedUnitInstance("Centiturn", "[*]s", "Turn", MetricPrefixName.Centi)]
 [PrefixedUnitInstance("Milliturn", "[*]s", "Turn", MetricPrefixName.Milli)]
 [ScaledUnitInstance("BinaryDegree", "[*]s", "Turn", 1d / 256)]
-[SharpMeasuresUnit(typeof(Angle))]
+[Unit(typeof(Angle))]
 public readonly partial record struct UnitOfAngle { }

@@ -1,11 +1,9 @@
 ﻿namespace SharpMeasures.Generators.Vectors.Documentation;
 
 using SharpMeasures.Generators.Quantities;
-using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
 using SharpMeasures.Generators.Units;
 
 using System;
-using System.Collections.Generic;
 
 internal sealed class EmptyDocumentation : IGroupDocumentationStrategy, IVectorDocumentationStrategy, IEquatable<EmptyDocumentation>
 {
@@ -34,9 +32,13 @@ internal sealed class EmptyDocumentation : IGroupDocumentationStrategy, IVectorD
     string IVectorDocumentationStrategy.AntidirectionalConversion(NamedType _) => string.Empty;
     string IVectorDocumentationStrategy.CastConversion(NamedType _) => string.Empty;
     string IVectorDocumentationStrategy.AntidirectionalCastConversion(NamedType _) => string.Empty;
-    string IVectorDocumentationStrategy.Derivation(DerivedQuantitySignature _, IReadOnlyList<string> _2) => string.Empty;
-    string IVectorDocumentationStrategy.OperatorDerivation(OperatorDerivation _) => string.Empty;
-    string IVectorDocumentationStrategy.Process(IProcessedQuantity _) => string.Empty;
+    string IVectorDocumentationStrategy.OperationMethod(IQuantityOperation _, NamedType _1) => string.Empty;
+    string IVectorDocumentationStrategy.MirroredOperationMethod(IQuantityOperation _, NamedType _1) => string.Empty;
+    string IVectorDocumentationStrategy.VectorOperationMethod(IVectorOperation _, NamedType _1) => string.Empty;
+    string IVectorDocumentationStrategy.MirroredVectorOperationMethod(IVectorOperation _, NamedType _1) => string.Empty;
+    string IVectorDocumentationStrategy.OperationOperator(IQuantityOperation _, NamedType _1) => string.Empty;
+    string IVectorDocumentationStrategy.MirroredOperationOperator(IQuantityOperation _, NamedType _1) => string.Empty;
+    string IVectorDocumentationStrategy.Process(IQuantityProcess _) => string.Empty;
     string IVectorDocumentationStrategy.IsNaN() => string.Empty;
     string IVectorDocumentationStrategy.IsZero() => string.Empty;
     string IVectorDocumentationStrategy.IsFinite() => string.Empty;

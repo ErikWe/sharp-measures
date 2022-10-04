@@ -18,51 +18,49 @@ public class DiscardedUnitInstanceAsDefault
     private static GeneratorVerifier Assert(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source, GeneratorVerifierSettings.NoAssertions);
 
     private static string VectorText => """
-        using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators;
         
-        [SharpMeasuresScalar(typeof(UnitOfA))]
+        [ScalarQuantity(typeof(UnitOfA))]
         public partial class A { }
         
-        [SharpMeasuresScalar(typeof(UnitOfB)]
+        [ScalarQuantity(typeof(UnitOfB)]
         public partial class B { }
 
-        [SharpMeasuresVector(typeof(UnitOfB), DefaultUnitInstanceName = "e", DefaultUnitInstanceSymbol = "f")]
+        [VectorQuantity(typeof(UnitOfB), DefaultUnitInstanceName = "e", DefaultUnitInstanceSymbol = "f")]
         public partial class C3 { }
         
         [FixedUnitInstance("g", "[*]")]
-        [SharpMeasuresUnit(typeof(A))]
+        [Unit(typeof(A))]
         public partial class UnitOfA { }
         
         [DerivedUnitInstance("e", "[*]", new[] { "d" })]
         [DerivableUnit("1 / {0}", typeof(UnitOfA))]
-        [SharpMeasuresUnit(typeof(B))]
+        [Unit(typeof(B))]
         public partial class UnitOfB { }
         """;
 
     private static string VectorGroupText => """
-        using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators;
         
-        [SharpMeasuresScalar(typeof(UnitOfA))]
+        [ScalarQuantity(typeof(UnitOfA))]
         public partial class A { }
         
-        [SharpMeasuresScalar(typeof(UnitOfB)]
+        [ScalarQuantity(typeof(UnitOfB)]
         public partial class B { }
 
-        [SharpMeasuresVectorGroup(typeof(UnitOfB), DefaultUnitInstanceName = "e", DefaultUnitInstanceSymbol = "f")]
+        [VectorGroup(typeof(UnitOfB), DefaultUnitInstanceName = "e", DefaultUnitInstanceSymbol = "f")]
         public static partial class C { }
         
-        [SharpMeasuresVectorGroupMember(typeof(C))]
+        [VectorGroupMember(typeof(C))]
         public partial class C3 { }
 
         [FixedUnitInstance("g", "[*]")]
-        [SharpMeasuresUnit(typeof(A))]
+        [Unit(typeof(A))]
         public partial class UnitOfA { }
         
         [DerivedUnitInstance("e", "[*]", new[] { "d" })]
         [DerivableUnit("1 / {0}", typeof(UnitOfA))]
-        [SharpMeasuresUnit(typeof(B))]
+        [Unit(typeof(B))]
         public partial class UnitOfB { }
         """;
 }

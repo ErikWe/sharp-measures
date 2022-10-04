@@ -26,13 +26,14 @@ internal sealed record class ResolvedScalarType : IResolvedScalarType
     public string? DefaultUnitInstanceName { get; }
     public string? DefaultUnitInstanceSymbol { get; }
 
-    public IReadOnlyList<IDerivedQuantity> Derivations { get; }
-    public IReadOnlyList<IProcessedQuantity> Processes { get; }
+    public IReadOnlyList<IQuantityOperation> Operations { get; }
+    public IReadOnlyList<IQuantityProcess> Processes { get; }
     public IReadOnlyList<IScalarConstant> Constants { get; }
     public IReadOnlyList<IConvertibleQuantity> Conversions { get; }
 
-    public IReadOnlyList<IDerivedQuantity> InheritedDerivations { get; }
-    public IReadOnlyList<IProcessedQuantity> InheritedProcesses { get; }
+    public IReadOnlyList<IQuantityOperation> InheritedOperations { get; }
+    public IReadOnlyList<IQuantityProcess> InheritedProcesses { get; }
+    public IReadOnlyList<IScalarConstant> InheritedConstants { get; }
     public IReadOnlyList<IConvertibleQuantity> InheritedConversions { get; }
 
     public IReadOnlyList<string> IncludedUnitBaseInstanceNames { get; }
@@ -42,9 +43,9 @@ internal sealed record class ResolvedScalarType : IResolvedScalarType
 
     IReadOnlyList<IConvertibleQuantity> IResolvedQuantityType.Conversions => Conversions;
 
-    public ResolvedScalarType(DefinedType type, NamedType unit, bool useUnitBias, NamedType? originalQuantity, ConversionOperatorBehaviour specializationForwardsConversionBehaviour, ConversionOperatorBehaviour specializationBackwardsConversionBehaviour, NamedType? vector, bool implementSum, bool implementDifference,
-        NamedType? difference, string? defaultUnitInstanceName, string? defaultUnitInstanceSymbol, IReadOnlyList<IDerivedQuantity> derivations, IReadOnlyList<IProcessedQuantity> processes, IReadOnlyList<IScalarConstant> constants, IReadOnlyList<IConvertibleQuantity> conversions,
-        IReadOnlyList<IDerivedQuantity> inheritedDerivations, IReadOnlyList<IProcessedQuantity> inheritedProcesses, IReadOnlyList<IConvertibleQuantity> inheritedConversions, IReadOnlyList<string> includedUnitBaseInstanceNames, IReadOnlyList<string> includedUnitInstanceNames, bool? generateDocumentation)
+    public ResolvedScalarType(DefinedType type, NamedType unit, bool useUnitBias, NamedType? originalQuantity, ConversionOperatorBehaviour specializationForwardsConversionBehaviour, ConversionOperatorBehaviour specializationBackwardsConversionBehaviour, NamedType? vector,
+        bool implementSum, bool implementDifference, NamedType? difference, string? defaultUnitInstanceName, string? defaultUnitInstanceSymbol, IReadOnlyList<IQuantityOperation> operations, IReadOnlyList<IQuantityProcess> processes, IReadOnlyList<IScalarConstant> constants, IReadOnlyList<IConvertibleQuantity> conversions,
+        IReadOnlyList<IQuantityOperation> inheritedOperations, IReadOnlyList<IQuantityProcess> inheritedProcesses, IReadOnlyList<IScalarConstant> inheritedConstants, IReadOnlyList<IConvertibleQuantity> inheritedConversions, IReadOnlyList<string> includedUnitBaseInstanceNames, IReadOnlyList<string> includedUnitInstanceNames, bool? generateDocumentation)
     {
         Type = type;
 
@@ -65,13 +66,14 @@ internal sealed record class ResolvedScalarType : IResolvedScalarType
         DefaultUnitInstanceName = defaultUnitInstanceName;
         DefaultUnitInstanceSymbol = defaultUnitInstanceSymbol;
 
-        Derivations = derivations.AsReadOnlyEquatable();
+        Operations = operations.AsReadOnlyEquatable();
         Processes = processes.AsReadOnlyEquatable();
         Constants = constants.AsReadOnlyEquatable();
         Conversions = conversions.AsReadOnlyEquatable();
 
-        InheritedDerivations = inheritedDerivations.AsReadOnlyEquatable();
+        InheritedOperations = inheritedOperations.AsReadOnlyEquatable();
         InheritedProcesses = inheritedProcesses.AsReadOnlyEquatable();
+        InheritedConstants = inheritedConstants.AsReadOnlyEquatable();
         InheritedConversions = inheritedConversions.AsReadOnlyEquatable();
 
         IncludedUnitBaseInstanceNames = includedUnitBaseInstanceNames.AsReadOnlyEquatable();

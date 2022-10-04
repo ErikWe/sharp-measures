@@ -4,7 +4,7 @@
     Title: Unit is not included in expression,
     Severity: Error,
     WarningLevel: 0,
-    Location: : (18,15)-(18,18),
+    Location: : (17,15)-(17,18),
     Description: ,
     HelpLink: ,
     MessageFormat: The expression does not include the unit with index {0},

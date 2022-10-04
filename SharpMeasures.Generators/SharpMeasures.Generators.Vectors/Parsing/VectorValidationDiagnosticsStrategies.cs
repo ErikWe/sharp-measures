@@ -1,6 +1,6 @@
 ﻿namespace SharpMeasures.Generators.Vectors.Parsing;
 
-using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
+using SharpMeasures.Generators.Quantities.Parsing.QuantityOperation;
 using SharpMeasures.Generators.Quantities.Parsing.Diagnostics.Empty.Validation;
 using SharpMeasures.Generators.Quantities.Parsing.Diagnostics.Validation;
 using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
@@ -14,6 +14,7 @@ using SharpMeasures.Generators.Vectors.Parsing.SharpMeasuresVectorGroupMember;
 using SharpMeasures.Generators.Vectors.Parsing.SpecializedSharpMeasuresVector;
 using SharpMeasures.Generators.Vectors.Parsing.SpecializedSharpMeasuresVectorGroup;
 using SharpMeasures.Generators.Vectors.Parsing.VectorConstant;
+using SharpMeasures.Generators.Vectors.Parsing.VectorOperation;
 
 internal interface IVectorValidationDiagnosticsStrategy
 {
@@ -24,7 +25,8 @@ internal interface IVectorValidationDiagnosticsStrategy
     public abstract ISharpMeasuresVectorValidationDiagnostics SharpMeasuresVectorDiagnostics { get; }
     public abstract ISpecializedSharpMeasuresVectorValidationDiagnostics SpecializedSharpMeasuresVectorDiagnostics { get; }
 
-    public abstract IDerivedQuantityValidationDiagnostics DerivedQuantityDiagnostics { get; }
+    public abstract IQuantityOperationValidationDiagnostics QuantityOperationDiagnostics { get; }
+    public abstract IVectorOperationValidationDiagnostics VectorOperationDiagnostics { get; }
     public abstract IVectorConstantValidationDiagnostics VectorConstantDiagnostics { get; }
     public abstract IConvertibleVectorFilteringDiagnostics ConvertibleVectorDiagnostics { get; }
 
@@ -46,7 +48,8 @@ internal static class VectorValidationDiagnosticsStrategies
         public ISharpMeasuresVectorValidationDiagnostics SharpMeasuresVectorDiagnostics => SharpMeasuresVectorValidationDiagnostics.Instance;
         public ISpecializedSharpMeasuresVectorValidationDiagnostics SpecializedSharpMeasuresVectorDiagnostics => SpecializedSharpMeasuresVectorValidationDiagnostics.Instance;
 
-        public IDerivedQuantityValidationDiagnostics DerivedQuantityDiagnostics => DerivedQuantityValidationDiagnostics.Instance;
+        public IQuantityOperationValidationDiagnostics QuantityOperationDiagnostics => QuantityOperationValidationDiagnostics.Instance;
+        public IVectorOperationValidationDiagnostics VectorOperationDiagnostics => VectorOperationValidationDiagnostics.Instance;
         public IVectorConstantValidationDiagnostics VectorConstantDiagnostics => VectorConstantValidationDiagnostics.Instance;
         public IConvertibleVectorFilteringDiagnostics ConvertibleVectorDiagnostics => ConvertibleVectorFilteringDiagnostics.Instance;
 
@@ -63,7 +66,8 @@ internal static class VectorValidationDiagnosticsStrategies
         public ISharpMeasuresVectorValidationDiagnostics SharpMeasuresVectorDiagnostics => EmptySharpMeasuresVectorValidationDiagnostics.Instance;
         public ISpecializedSharpMeasuresVectorValidationDiagnostics SpecializedSharpMeasuresVectorDiagnostics => EmptySpecializedSharpMeasuresVectorValidationDiagnostics.Instance;
 
-        public IDerivedQuantityValidationDiagnostics DerivedQuantityDiagnostics => EmptyDerivedQuantityValidationDiagnostics.Instance;
+        public IQuantityOperationValidationDiagnostics QuantityOperationDiagnostics => EmptyQuantityOperationValidationDiagnostics.Instance;
+        public IVectorOperationValidationDiagnostics VectorOperationDiagnostics => EmptyVectorOperationValidationDiagnostics.Instance;
         public IVectorConstantValidationDiagnostics VectorConstantDiagnostics => EmptyVectorConstantValidationDiagnostics.Instance;
         public IConvertibleVectorFilteringDiagnostics ConvertibleVectorDiagnostics => EmptyConvertibleVectorFilteringDiagnostics.Instance;
 

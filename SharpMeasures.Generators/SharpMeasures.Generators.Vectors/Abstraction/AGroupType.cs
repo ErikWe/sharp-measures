@@ -2,12 +2,13 @@
 
 using SharpMeasures.Equatables;
 using SharpMeasures.Generators.Quantities;
-using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
+using SharpMeasures.Generators.Quantities.Parsing.QuantityOperation;
 using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
 using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
 using SharpMeasures.Generators.Vectors.Parsing.ConvertibleVector;
 
 using System.Collections.Generic;
+using SharpMeasures.Generators.Vectors.Parsing.VectorOperation;
 
 internal record class AGroupType<TDefinition> : IVectorGroupType where TDefinition : IVectorGroup
 {
@@ -15,7 +16,8 @@ internal record class AGroupType<TDefinition> : IVectorGroupType where TDefiniti
 
     public TDefinition Definition { get; }
 
-    public IReadOnlyList<DerivedQuantityDefinition> Derivations { get; }
+    public IReadOnlyList<QuantityOperationDefinition> Operations { get; }
+    public IReadOnlyList<VectorOperationDefinition> VectorOperations { get; }
     public IReadOnlyList<ConvertibleVectorDefinition> Conversions { get; }
 
     public IReadOnlyList<IncludeUnitsDefinition> UnitInstanceInclusions { get; }
@@ -25,19 +27,21 @@ internal record class AGroupType<TDefinition> : IVectorGroupType where TDefiniti
     IQuantity IQuantityType.Definition => Definition;
     IVectorGroup IVectorGroupType.Definition => Definition;
 
-    IReadOnlyList<IDerivedQuantity> IQuantityType.Derivations => Derivations;
+    IReadOnlyList<IQuantityOperation> IQuantityType.Operations => Operations;
+    IReadOnlyList<IVectorOperation> IVectorGroupType.VectorOperations => VectorOperations;
     IReadOnlyList<IConvertibleQuantity> IQuantityType.Conversions => Conversions;
 
     IReadOnlyList<IUnitInstanceInclusionList> IQuantityType.UnitInstanceInclusions => UnitInstanceInclusions;
     IReadOnlyList<IUnitInstanceList> IQuantityType.UnitInstanceExclusions => UnitInstanceExclusions;
 
-    protected AGroupType(DefinedType type, TDefinition definition, IReadOnlyList<DerivedQuantityDefinition> derivations, IReadOnlyList<ConvertibleVectorDefinition> conversions, IReadOnlyList<IncludeUnitsDefinition> unitInstanceInclusions, IReadOnlyList<ExcludeUnitsDefinition> unitInstanceExclusions)
+    protected AGroupType(DefinedType type, TDefinition definition, IReadOnlyList<QuantityOperationDefinition> operations, IReadOnlyList<VectorOperationDefinition> vectorOperations, IReadOnlyList<ConvertibleVectorDefinition> conversions, IReadOnlyList<IncludeUnitsDefinition> unitInstanceInclusions, IReadOnlyList<ExcludeUnitsDefinition> unitInstanceExclusions)
     {
         Type = type;
 
         Definition = definition;
 
-        Derivations = derivations.AsReadOnlyEquatable();
+        Operations = operations.AsReadOnlyEquatable();
+        VectorOperations = vectorOperations.AsReadOnlyEquatable();
         Conversions = conversions.AsReadOnlyEquatable();
 
         UnitInstanceInclusions = unitInstanceInclusions.AsReadOnlyEquatable();

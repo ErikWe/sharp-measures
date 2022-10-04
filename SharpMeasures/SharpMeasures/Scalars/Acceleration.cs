@@ -1,10 +1,23 @@
 ﻿namespace SharpMeasures;
 
-using SharpMeasures.Generators.Quantities;
-using SharpMeasures.Generators.Scalars;
+using SharpMeasures.Generators;
+
+[ScalarQuantity(typeof(UnitOfAcceleration), DefaultUnitInstanceName = "MetrePerSecondSquared", DefaultUnitInstanceSymbol = "m∙s⁻²")]
+public readonly partial record struct Acceleration { }
+
+[QuantityOperation(typeof(Time), typeof(Jerk), OperatorType.Division)]
+[QuantityOperation(typeof(Speed), typeof(Time), OperatorType.Multiplication)]
+[QuantityOperation(typeof(Speed), typeof(Frequency), OperatorType.Division)]
+[QuantityOperation(typeof(Length), typeof(TimeSquared), OperatorType.Multiplication)]
+[QuantityOperation(typeof(Length), typeof(FrequencyDrift), OperatorType.Division)]
+[QuantityOperation(typeof(Jerk), typeof(Frequency), OperatorType.Multiplication)]
+[QuantityOperation(typeof(Jerk), typeof(Time), OperatorType.Division)]
+[QuantityOperation(typeof(FrequencyDrift), typeof(SpatialFrequency), OperatorType.Multiplication)]
+[QuantityOperation(typeof(FrequencyDrift), typeof(Length), OperatorType.Division)]
+[QuantityOperation(typeof(Frequency), typeof(Pace), OperatorType.Multiplication)]
+[QuantityOperation(typeof(Frequency), typeof(Speed), OperatorType.Division)]
+[QuantityOperation(typeof(Force), typeof(Mass), OperatorType.Multiplication)]
+public readonly partial record struct Acceleration { }
 
 [ScalarConstant("StandardGravity", "MetrePerSecondSquared", 9.81)]
-[DerivedQuantity("{0} / {1}", typeof(Distance), typeof(TimeSquared))]
-[DerivedQuantity("{0} / {1}", typeof(Speed), typeof(Time))]
-[SharpMeasuresScalar(typeof(UnitOfAcceleration), DefaultUnitInstanceName = "MetrePerSecondSquared", DefaultUnitInstanceSymbol = "m∙s⁻²")]
 public readonly partial record struct Acceleration { }

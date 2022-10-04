@@ -4,7 +4,7 @@
     Title: Constant uses same name for multiples,
     Severity: Error,
     WarningLevel: 0,
-    Location: : (4,1)-(4,15),
+    Location: : (3,1)-(3,15),
     Description: ,
     HelpLink: ,
     MessageFormat: "{0}" is used for both the name of a constant and for multiples of that constant,

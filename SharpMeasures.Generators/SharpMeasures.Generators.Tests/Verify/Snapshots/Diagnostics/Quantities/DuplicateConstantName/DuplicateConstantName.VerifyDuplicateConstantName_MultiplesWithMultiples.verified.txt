@@ -4,7 +4,7 @@
     Title: Duplicate name for multiples of constant,
     Severity: Error,
     WarningLevel: 0,
-    Location: : (4,57)-(4,79),
+    Location: : (3,57)-(3,79),
     Description: ,
     HelpLink: ,
     MessageFormat: {0} already defines a constant with multiples "{1}",

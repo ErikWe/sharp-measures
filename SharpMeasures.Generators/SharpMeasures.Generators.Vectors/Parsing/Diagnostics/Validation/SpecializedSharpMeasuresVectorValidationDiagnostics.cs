@@ -37,7 +37,7 @@ internal sealed class SpecializedSharpMeasuresVectorValidationDiagnostics : ISpe
 
     public Diagnostic RootVectorNotResolved(ISpecializedSharpMeasuresVectorValidationContext context, SpecializedSharpMeasuresVectorDefinition definition)
     {
-        return DiagnosticConstruction.QuantityGroupMissingRoot<SharpMeasuresVectorAttribute>(definition.Locations.AttributeName.AsRoslynLocation());
+        return DiagnosticConstruction.QuantityGroupMissingRoot<VectorQuantityAttribute>(definition.Locations.AttributeName.AsRoslynLocation());
     }
 
     public Diagnostic VectorNameAndDimensionConflict(ISpecializedSharpMeasuresVectorValidationContext context, SpecializedSharpMeasuresVectorDefinition definition, int interpretedDimension, int inheritedDimension)

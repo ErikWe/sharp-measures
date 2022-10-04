@@ -15,15 +15,14 @@ public class NormalCases
     public Task SimpleUnitAlias()
     {
         var source = """
-            using SharpMeasures.Generators.Scalars;
-            using SharpMeasures.Generators.Units;
+            using SharpMeasures.Generators;
             
-            [SharpMeasuresScalar(typeof(UnitOfLength))]
+            [ScalarQuantity(typeof(UnitOfLength))]
             public partial class Length { }
             
             [FixedUnitInstance("Metre", "Metres")]
             [UnitInstanceAlias("Meter", "Meters", "Metre")]
-            [SharpMeasuresUnit(typeof(Length))]
+            [Unit(typeof(Length))]
             public partial class UnitOfLength { }
             """;
 

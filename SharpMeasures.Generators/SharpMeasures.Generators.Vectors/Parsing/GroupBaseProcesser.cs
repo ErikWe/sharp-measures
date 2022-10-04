@@ -2,7 +2,7 @@
 
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
-using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
+using SharpMeasures.Generators.Quantities.Parsing.QuantityOperation;
 using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
 using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
 using SharpMeasures.Generators.Vectors.Parsing.Abstraction;
@@ -10,14 +10,15 @@ using SharpMeasures.Generators.Vectors.Parsing.ConvertibleVector;
 using SharpMeasures.Generators.Vectors.Parsing.SharpMeasuresVectorGroup;
 
 using System.Collections.Generic;
+using SharpMeasures.Generators.Vectors.Parsing.VectorOperation;
 
 internal sealed class GroupBaseProcesser : AGroupProcesser<RawGroupBaseType, RawSharpMeasuresVectorGroupDefinition, GroupBaseType, SharpMeasuresVectorGroupDefinition>
 {
     public GroupBaseProcesser(IVectorProcessingDiagnosticsStrategy diagnosticsStrategy) : base(diagnosticsStrategy) { }
 
-    protected override GroupBaseType ProduceResult(DefinedType type, SharpMeasuresVectorGroupDefinition definition, IReadOnlyList<DerivedQuantityDefinition> derivations, IReadOnlyList<ConvertibleVectorDefinition> conversions, IReadOnlyList<IncludeUnitsDefinition> unitInstanceInclusions, IReadOnlyList<ExcludeUnitsDefinition> unitInstanceExclusions)
+    protected override GroupBaseType ProduceResult(DefinedType type, SharpMeasuresVectorGroupDefinition definition, IReadOnlyList<QuantityOperationDefinition> operations, IReadOnlyList<VectorOperationDefinition> vectorOperations, IReadOnlyList<ConvertibleVectorDefinition> conversions, IReadOnlyList<IncludeUnitsDefinition> unitInstanceInclusions, IReadOnlyList<ExcludeUnitsDefinition> unitInstanceExclusions)
     {
-        return new(type, definition, derivations, conversions, unitInstanceInclusions, unitInstanceExclusions);
+        return new(type, definition, operations, vectorOperations, conversions, unitInstanceInclusions, unitInstanceExclusions);
     }
 
     protected override NamedType? GetOriginalQuantity(SharpMeasuresVectorGroupDefinition group) => null;

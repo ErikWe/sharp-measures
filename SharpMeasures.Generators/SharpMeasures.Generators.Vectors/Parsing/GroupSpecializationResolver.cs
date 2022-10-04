@@ -35,7 +35,8 @@ internal static class GroupSpecializationResolver
 
         var membersByDimension = ResolveMembers(groupType, vectorPopulation);
 
-        var inheritedDerivations = CollectItems(groupType, vectorPopulation, static (vector) => vector.Derivations, static (vector) => vector.Definition.InheritDerivations, onlyInherited: true);
+        var inheritedOperations = CollectItems(groupType, vectorPopulation, static (vector) => vector.Operations, static (vector) => vector.Definition.InheritOperations, onlyInherited: true);
+        var inheritedVectorOperations = CollectItems(groupType, vectorPopulation, static (vector) => vector.VectorOperations, static (vector) => vector.Definition.InheritOperations, onlyInherited: true);
         var inheritedConversions = CollectItems(groupType, vectorPopulation, static (vector) => vector.Conversions, static (vector) => vector.Definition.InheritConversions, onlyInherited: true);
 
         var includedUnitInstances = ResolveUnitInstanceInclusions(groupType, vectorPopulation, unit);
@@ -52,7 +53,7 @@ internal static class GroupSpecializationResolver
         var generateDocumentation = RecursivelySearchForDefined(groupType, vectorPopulation, static (vector) => vector.Definition.GenerateDocumentation);
 
         return new ResolvedGroupType(groupType.Type, unit.Type.AsNamedType(), groupType.Definition.OriginalQuantity, groupType.Definition.ForwardsCastOperatorBehaviour, groupType.Definition.BackwardsCastOperatorBehaviour, scalar, implementSum!.Value, implementDifference!.Value,
-            difference, defaultUnitInstanceName, defaultUnitInstanceSymbol, membersByDimension, groupType.Derivations, groupType.Conversions, inheritedDerivations, inheritedConversions, includedUnitInstances, generateDocumentation);
+            difference, defaultUnitInstanceName, defaultUnitInstanceSymbol, membersByDimension, groupType.Operations, groupType.VectorOperations, groupType.Conversions, inheritedOperations, inheritedVectorOperations, inheritedConversions, includedUnitInstances, generateDocumentation);
     }
 
     private static IReadOnlyDictionary<int, NamedType> ResolveMembers(GroupSpecializationType groupType, IVectorPopulation vectorPopulation) => vectorPopulation.GroupMembersByGroup[groupType.Type.AsNamedType()].GroupMembersByDimension.Transform(static (vector) => vector.Type.AsNamedType());

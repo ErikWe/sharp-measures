@@ -119,16 +119,15 @@ public class ConstantSharesNameWithUnit
     };
 
     private static string ScalarText(TextConfig config) => $$"""
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
 
         [ScalarConstant("{{config.ConstantSingular}}", "Metre", 1000{{(config.ConstantMultiples.Length > 0 ? $", Multiples = \"{config.ConstantMultiples}\"" : string.Empty)}})]
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
 
         [FixedUnitInstance("Metre", "Metres")]
         [PrefixedUnitInstance("Kilometre", "{{config.UnitPlural}}", "Metre", MetricPrefixName.Kilo)]
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
@@ -141,19 +140,17 @@ public class ConstantSharesNameWithUnit
     }
 
     private static string ScalarText_ExplicitlyIncluded(TextConfig config) => $$"""
-        using SharpMeasures.Generators.Quantities;
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
 
         [ScalarConstant("{{config.ConstantSingular}}", "Metre", 1000{{(config.ConstantMultiples.Length > 0 ? $", Multiples = \"{config.ConstantMultiples}\"" : string.Empty)}})]
         [IncludeUnits("Metre", "Kilometre")]
         [IncludeUnitBases("Metre", "Kilometre")]
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
             
         [FixedUnitInstance("Metre", "Metres")]
         [PrefixedUnitInstance("Kilometre", "{{config.UnitPlural}}", "Metre", MetricPrefixName.Kilo)]
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
@@ -166,19 +163,18 @@ public class ConstantSharesNameWithUnit
     }
 
     private static string SpecializedScalarText(TextConfig config) => $$"""
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
 
         [ScalarConstant("{{config.ConstantSingular}}", "Metre", 1000{{(config.ConstantMultiples.Length > 0 ? $", Multiples = \"{config.ConstantMultiples}\"" : string.Empty)}})]
-        [SpecializedSharpMeasuresScalar(typeof(Length))]
+        [SpecializedScalarQuantity(typeof(Length))]
         public partial class Distance { }
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
             
         [FixedUnitInstance("Metre", "Metres")]
         [PrefixedUnitInstance("Kilometre", "{{config.UnitPlural}}", "Metre", MetricPrefixName.Kilo)]
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
@@ -191,22 +187,20 @@ public class ConstantSharesNameWithUnit
     }
 
     private static string SpecializedScalarText_ExplicitlyIncluded(TextConfig config) => $$"""
-        using SharpMeasures.Generators.Quantities;
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
 
         [ScalarConstant("{{config.ConstantSingular}}", "Metre", 1000{{(config.ConstantMultiples.Length > 0 ? $", Multiples = \"{config.ConstantMultiples}\"" : string.Empty)}})]
         [IncludeUnits("Metre", "Kilometre")]
         [IncludeUnitBases("Metre", "Kilometre")]
-        [SpecializedSharpMeasuresScalar(typeof(Length))]
+        [SpecializedScalarQuantity(typeof(Length))]
         public partial class Distance { }
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
             
         [FixedUnitInstance("Metre", "Metres")]
         [PrefixedUnitInstance("Kilometre", "{{config.UnitPlural}}", "Metre", MetricPrefixName.Kilo)]
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
@@ -219,22 +213,20 @@ public class ConstantSharesNameWithUnit
     }
 
     private static string SpecializedScalarText_ExplicitlyIncludedInBase(TextConfig config) => $$"""
-        using SharpMeasures.Generators.Quantities;
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
 
         [ScalarConstant("{{config.ConstantSingular}}", "Metre", 1000{{(config.ConstantMultiples.Length > 0 ? $", Multiples = \"{config.ConstantMultiples}\"" : string.Empty)}})]
-        [SpecializedSharpMeasuresScalar(typeof(Length))]
+        [SpecializedScalarQuantity(typeof(Length))]
         public partial class Distance { }
 
         [IncludeUnits("Metre", "Kilometre")]
         [IncludeUnitBases("Metre", "Kilometre")]
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
             
         [FixedUnitInstance("Metre", "Metres")]
         [PrefixedUnitInstance("Kilometre", "{{config.UnitPlural}}", "Metre", MetricPrefixName.Kilo)]
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
@@ -247,20 +239,18 @@ public class ConstantSharesNameWithUnit
     }
 
     private static string VectorText(TextConfig config) => $$"""
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Vectors;
+        using SharpMeasures.Generators;
 
         [VectorConstant("{{config.ConstantSingular}}", "Metre", 1, 1, 1{{(config.ConstantMultiples.Length > 0 ?  $", Multiples = \"{config.ConstantMultiples}\"" : string.Empty)}})]
-        [SharpMeasuresVector(typeof(UnitOfLength))]
+        [VectorQuantity(typeof(UnitOfLength))]
         public partial class Position3 { }
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
 
         [FixedUnitInstance("Metre", "Metres")]
         [PrefixedUnitInstance("Kilometre", "{{config.UnitPlural}}", "Metre", MetricPrefixName.Kilo)]
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
@@ -273,22 +263,19 @@ public class ConstantSharesNameWithUnit
     }
 
     private static string VectorText_ExplicitlyIncluded(TextConfig config) => $$"""
-        using SharpMeasures.Generators.Quantities;
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Vectors;
+        using SharpMeasures.Generators;
 
         [VectorConstant("{{config.ConstantSingular}}", "Metre", 1, 1, 1{{(config.ConstantMultiples.Length > 0 ? $", Multiples = \"{config.ConstantMultiples}\"" : string.Empty)}})]
         [IncludeUnits("Metre", "Kilometre")]
-        [SharpMeasuresVector(typeof(UnitOfLength))]
+        [VectorQuantity(typeof(UnitOfLength))]
         public partial class Position3 { }
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
 
         [FixedUnitInstance("Metre", "Metres")]
         [PrefixedUnitInstance("Kilometre", "{{config.UnitPlural}}", "Metre", MetricPrefixName.Kilo)]
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
@@ -301,23 +288,21 @@ public class ConstantSharesNameWithUnit
     }
 
     private static string SpecializedVectorText(TextConfig config) => $$"""
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Vectors;
+        using SharpMeasures.Generators;
 
         [VectorConstant("{{config.ConstantSingular}}", "Metre", 1, 1, 1{{(config.ConstantMultiples.Length > 0 ? $", Multiples = \"{config.ConstantMultiples}\"" : string.Empty)}})]
-        [SpecializedSharpMeasuresVector(typeof(Position3))]
+        [SpecializedVectorQuantity(typeof(Position3))]
         public partial class Displacement3 { }
 
-        [SharpMeasuresVector(typeof(UnitOfLength))]
+        [VectorQuantity(typeof(UnitOfLength))]
         public partial class Position3 { }
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
 
         [FixedUnitInstance("Metre", "Metres")]
         [PrefixedUnitInstance("Kilometre", "{{config.UnitPlural}}", "Metre", MetricPrefixName.Kilo)]
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
@@ -330,25 +315,22 @@ public class ConstantSharesNameWithUnit
     }
 
     private static string SpecializedVectorText_ExplicitlyIncluded(TextConfig config) => $$"""
-        using SharpMeasures.Generators.Quantities;
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Vectors;
+        using SharpMeasures.Generators;
 
         [VectorConstant("{{config.ConstantSingular}}", "Metre", 1, 1, 1{{(config.ConstantMultiples.Length > 0 ? $", Multiples = \"{config.ConstantMultiples}\"" : string.Empty)}})]
         [IncludeUnits("Metre", "Kilometre")]
-        [SpecializedSharpMeasuresVector(typeof(Position3))]
+        [SpecializedVectorQuantity(typeof(Position3))]
         public partial class Displacement3 { }
 
-        [SharpMeasuresVector(typeof(UnitOfLength))]
+        [VectorQuantity(typeof(UnitOfLength))]
         public partial class Position3 { }
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
 
         [FixedUnitInstance("Metre", "Metres")]
         [PrefixedUnitInstance("Kilometre", "{{config.UnitPlural}}", "Metre", MetricPrefixName.Kilo)]
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
@@ -361,25 +343,22 @@ public class ConstantSharesNameWithUnit
     }
 
     private static string SpecializedVectorText_ExplicitlyIncludedInBase(TextConfig config) => $$"""
-        using SharpMeasures.Generators.Quantities;
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Vectors;
+        using SharpMeasures.Generators;
 
         [VectorConstant("{{config.ConstantSingular}}", "Metre", 1, 1, 1{{(config.ConstantMultiples.Length > 0 ? $", Multiples = \"{config.ConstantMultiples}\"" : string.Empty)}})]
-        [SpecializedSharpMeasuresVector(typeof(Position3))]
+        [SpecializedVectorQuantity(typeof(Position3))]
         public partial class Displacement3 { }
 
         [IncludeUnits("Metre", "Kilometre")]
-        [SharpMeasuresVector(typeof(UnitOfLength))]
+        [VectorQuantity(typeof(UnitOfLength))]
         public partial class Position3 { }
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
 
         [FixedUnitInstance("Metre", "Metres")]
         [PrefixedUnitInstance("Kilometre", "{{config.UnitPlural}}", "Metre", MetricPrefixName.Kilo)]
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
@@ -392,23 +371,21 @@ public class ConstantSharesNameWithUnit
     }
 
     private static string VectorGroupMemberText(TextConfig config) => $$"""
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Vectors;
+        using SharpMeasures.Generators;
 
         [VectorConstant("{{config.ConstantSingular}}", "Metre", 1, 1, 1{{(config.ConstantMultiples.Length > 0 ? $", Multiples = \"{config.ConstantMultiples}\"" : string.Empty)}})]
-        [SharpMeasuresVectorGroupMember(typeof(Position))]
+        [VectorGroupMember(typeof(Position))]
         public partial class Position3 { }
 
-        [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
+        [VectorGroup(typeof(UnitOfLength))]
         public static partial class Position { }
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
 
         [FixedUnitInstance("Metre", "Metres")]
         [PrefixedUnitInstance("Kilometre", "{{config.UnitPlural}}", "Metre", MetricPrefixName.Kilo)]
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
@@ -421,25 +398,22 @@ public class ConstantSharesNameWithUnit
     }
 
     private static string VectorGroupMemberText_ExplicitlyIncluded(TextConfig config) => $$"""
-        using SharpMeasures.Generators.Quantities;
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Vectors;
+        using SharpMeasures.Generators;
 
         [VectorConstant("{{config.ConstantSingular}}", "Metre", 1, 1, 1{{(config.ConstantMultiples.Length > 0 ? $", Multiples = \"{config.ConstantMultiples}\"" : string.Empty)}})]
         [IncludeUnits("Metre", "Kilometre")]
-        [SharpMeasuresVectorGroupMember(typeof(Position))]
+        [VectorGroupMember(typeof(Position))]
         public partial class Position3 { }
 
-        [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
+        [VectorGroup(typeof(UnitOfLength))]
         public static partial class Position { }
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
 
         [FixedUnitInstance("Metre", "Metres")]
         [PrefixedUnitInstance("Kilometre", "{{config.UnitPlural}}", "Metre", MetricPrefixName.Kilo)]
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
@@ -452,25 +426,22 @@ public class ConstantSharesNameWithUnit
     }
 
     private static string VectorGroupMemberText_ExplicitlyIncludedInGroup(TextConfig config) => $$"""
-        using SharpMeasures.Generators.Quantities;
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Vectors;
+        using SharpMeasures.Generators;
 
         [VectorConstant("{{config.ConstantSingular}}", "Metre", 1, 1, 1{{(config.ConstantMultiples.Length > 0 ? $", Multiples = \"{config.ConstantMultiples}\"" : string.Empty)}})]
-        [SharpMeasuresVectorGroupMember(typeof(Position))]
+        [VectorGroupMember(typeof(Position))]
         public partial class Position3 { }
 
         [IncludeUnits("Metre", "Kilometre")]
-        [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
+        [VectorGroup(typeof(UnitOfLength))]
         public static partial class Position { }
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
 
         [FixedUnitInstance("Metre", "Metres")]
         [PrefixedUnitInstance("Kilometre", "{{config.UnitPlural}}", "Metre", MetricPrefixName.Kilo)]
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
@@ -483,31 +454,28 @@ public class ConstantSharesNameWithUnit
     }
 
     private static string VectorGroupMemberText_ExplicitlyIncludedInGroupBase(TextConfig config) => $$"""
-        using SharpMeasures.Generators.Quantities;
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Vectors;
+        using SharpMeasures.Generators;
 
         [VectorConstant("{{config.ConstantSingular}}", "Metre", 1, 1, 1{{(config.ConstantMultiples.Length > 0 ? $", Multiples = \"{config.ConstantMultiples}\"" : string.Empty)}})]
-        [SharpMeasuresVectorGroupMember(typeof(Displacement))]
+        [VectorGroupMember(typeof(Displacement))]
         public partial class Displacement3 { }
 
-        [SpecializedSharpMeasuresVectorGroup(typeof(Position))]
+        [SpecializedVectorGroup(typeof(Position))]
         public static partial class Displacement { }
 
-        [SharpMeasuresVectorGroupMember(typeof(Position))]
+        [VectorGroupMember(typeof(Position))]
         public partial class Position3 { }
 
         [IncludeUnits("Metre", "Kilometre")]
-        [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
+        [VectorGroup(typeof(UnitOfLength))]
         public static partial class Position { }
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
 
         [FixedUnitInstance("Metre", "Metres")]
         [PrefixedUnitInstance("Kilometre", "{{config.UnitPlural}}", "Metre", MetricPrefixName.Kilo)]
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
@@ -520,31 +488,28 @@ public class ConstantSharesNameWithUnit
     }
 
     private static string VectorGroupMemberText_ExplicitlyIncludedInGroupBaseMember(TextConfig config) => $$"""
-        using SharpMeasures.Generators.Quantities;
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Vectors;
+        using SharpMeasures.Generators;
 
         [VectorConstant("{{config.ConstantSingular}}", "Metre", 1, 1, 1{{(config.ConstantMultiples.Length > 0 ? $", Multiples = \"{config.ConstantMultiples}\"" : string.Empty)}})]
-        [SharpMeasuresVectorGroupMember(typeof(Displacement))]
+        [VectorGroupMember(typeof(Displacement))]
         public partial class Displacement3 { }
 
-        [SpecializedSharpMeasuresVectorGroup(typeof(Position))]
+        [SpecializedVectorGroup(typeof(Position))]
         public static partial class Displacement { }
 
         [IncludeUnits("Metre", "Kilometre")]
-        [SharpMeasuresVectorGroupMember(typeof(Position))]
+        [VectorGroupMember(typeof(Position))]
         public partial class Position3 { }
 
-        [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
+        [VectorGroup(typeof(UnitOfLength))]
         public static partial class Position { }
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
 
         [FixedUnitInstance("Metre", "Metres")]
         [PrefixedUnitInstance("Kilometre", "{{config.UnitPlural}}", "Metre", MetricPrefixName.Kilo)]
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
@@ -568,9 +533,7 @@ public class ConstantSharesNameWithUnit
         StringBuilder source = new();
 
         source.AppendLine("""
-            using SharpMeasures.Generators.Quantities;
-            using SharpMeasures.Generators.Scalars;
-            using SharpMeasures.Generators.Units;
+            using SharpMeasures.Generators;
             
             """);
 
@@ -588,12 +551,12 @@ public class ConstantSharesNameWithUnit
         }
 
         source.AppendLine(CultureInfo.InvariantCulture, $$"""
-            [SharpMeasuresScalar(typeof(UnitOfLength))]
+            [ScalarQuantity(typeof(UnitOfLength))]
             public partial class Length { }
                 
             [FixedUnitInstance("Metre", "Metres")]
             [PrefixedUnitInstance("Kilometre", "{{config.UnitPlural}}", "Metre", MetricPrefixName.Kilo)]
-            [SharpMeasuresUnit(typeof(Length))]
+            [Unit(typeof(Length))]
             public partial class UnitOfLength { }
             """);
 
@@ -605,9 +568,7 @@ public class ConstantSharesNameWithUnit
         StringBuilder source = new();
 
         source.AppendLine("""
-            using SharpMeasures.Generators.Quantities;
-            using SharpMeasures.Generators.Scalars;
-            using SharpMeasures.Generators.Units;
+            using SharpMeasures.Generators;
 
         """);
 
@@ -625,7 +586,7 @@ public class ConstantSharesNameWithUnit
         }
 
         source.AppendLine("""
-            [SpecializedSharpMeasuresScalar(typeof(Length))]
+            [SpecializedScalarQuantity(typeof(Length))]
             public partial class Distance { }
             
             """);
@@ -639,12 +600,12 @@ public class ConstantSharesNameWithUnit
         }    
 
         source.AppendLine(CultureInfo.InvariantCulture, $$"""
-            [SharpMeasuresScalar(typeof(UnitOfLength))]
+            [ScalarQuantity(typeof(UnitOfLength))]
             public partial class Length { }
             
             [FixedUnitInstance("Metre", "Metres")]
             [PrefixedUnitInstance("Kilometre", "{{config.UnitPlural}}", "Metre", MetricPrefixName.Kilo)]
-            [SharpMeasuresUnit(typeof(Length))]
+            [Unit(typeof(Length))]
             public partial class UnitOfLength { }
             """);
 
@@ -656,10 +617,7 @@ public class ConstantSharesNameWithUnit
         StringBuilder source = new();
 
         source.AppendLine("""
-            using SharpMeasures.Generators.Quantities;
-            using SharpMeasures.Generators.Scalars;
-            using SharpMeasures.Generators.Units;
-            using SharpMeasures.Generators.Vectors;
+            using SharpMeasures.Generators;
 
             """);
 
@@ -674,15 +632,15 @@ public class ConstantSharesNameWithUnit
         }
 
         source.AppendLine(CultureInfo.InvariantCulture, $$"""
-            [SharpMeasuresVector(typeof(UnitOfLength))]
+            [VectorQuantity(typeof(UnitOfLength))]
             public partial class Position3 { }
 
-            [SharpMeasuresScalar(typeof(UnitOfLength))]
+            [ScalarQuantity(typeof(UnitOfLength))]
             public partial class Length { }
 
             [FixedUnitInstance("Metre", "Metres")]
             [PrefixedUnitInstance("Kilometre", "{{config.UnitPlural}}", "Metre", MetricPrefixName.Kilo)]
-            [SharpMeasuresUnit(typeof(Length))]
+            [Unit(typeof(Length))]
             public partial class UnitOfLength { }
             """);
 
@@ -694,10 +652,7 @@ public class ConstantSharesNameWithUnit
         StringBuilder source = new();
 
         source.AppendLine("""
-            using SharpMeasures.Generators.Quantities;
-            using SharpMeasures.Generators.Scalars;
-            using SharpMeasures.Generators.Units;
-            using SharpMeasures.Generators.Vectors;
+            using SharpMeasures.Generators;
 
             """);
 
@@ -712,7 +667,7 @@ public class ConstantSharesNameWithUnit
         }
 
         source.AppendLine("""
-            [SpecializedSharpMeasuresVector(typeof(Position3))]
+            [SpecializedVectorQuantity(typeof(Position3))]
             public partial class Displacement3 { }
 
 
@@ -724,15 +679,15 @@ public class ConstantSharesNameWithUnit
         }
 
         source.AppendLine(CultureInfo.InvariantCulture, $$"""
-            [SharpMeasuresVector(typeof(UnitOfLength))]
+            [VectorQuantity(typeof(UnitOfLength))]
             public partial class Position3 { }
 
-            [SharpMeasuresScalar(typeof(UnitOfLength))]
+            [ScalarQuantity(typeof(UnitOfLength))]
             public partial class Length { }
 
             [FixedUnitInstance("Metre", "Metres")]
             [PrefixedUnitInstance("Kilometre", "{{config.UnitPlural}}", "Metre", MetricPrefixName.Kilo)]
-            [SharpMeasuresUnit(typeof(Length))]
+            [Unit(typeof(Length))]
             public partial class UnitOfLength { }
             """);
 
@@ -744,10 +699,7 @@ public class ConstantSharesNameWithUnit
         StringBuilder source = new();
 
         source.AppendLine("""
-            using SharpMeasures.Generators.Quantities;
-            using SharpMeasures.Generators.Scalars;
-            using SharpMeasures.Generators.Units;
-            using SharpMeasures.Generators.Vectors;
+            using SharpMeasures.Generators;
 
             """);
 
@@ -762,7 +714,7 @@ public class ConstantSharesNameWithUnit
         }
 
         source.AppendLine("""
-            [SharpMeasuresVectorGroupMember(typeof(Position))]
+            [VectorGroupMember(typeof(Position))]
             public partial class Position3 { }
 
             """);
@@ -773,15 +725,15 @@ public class ConstantSharesNameWithUnit
         }
 
         source.AppendLine(CultureInfo.InvariantCulture, $$"""
-            [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
+            [VectorGroup(typeof(UnitOfLength))]
             public static partial class Position { }
 
-            [SharpMeasuresScalar(typeof(UnitOfLength))]
+            [ScalarQuantity(typeof(UnitOfLength))]
             public partial class Length { }
 
             [FixedUnitInstance("Metre", "Metres")]
             [PrefixedUnitInstance("Kilometre", "{{config.UnitPlural}}", "Metre", MetricPrefixName.Kilo)]
-            [SharpMeasuresUnit(typeof(Length))]
+            [Unit(typeof(Length))]
             public partial class UnitOfLength { }
             """);
 
@@ -793,10 +745,7 @@ public class ConstantSharesNameWithUnit
         StringBuilder source = new();
 
         source.AppendLine("""
-            using SharpMeasures.Generators.Quantities;
-            using SharpMeasures.Generators.Scalars;
-            using SharpMeasures.Generators.Units;
-            using SharpMeasures.Generators.Vectors;
+            using SharpMeasures.Generators;
 
             """);
 
@@ -806,10 +755,10 @@ public class ConstantSharesNameWithUnit
         }
 
         source.AppendLine("""
-            [SharpMeasuresVectorGroupMember(typeof(Displacement))]
+            [VectorGroupMember(typeof(Displacement))]
             public partial class Displacement3 { }
 
-            [SpecializedSharpMeasuresVectorGroup(typeof(Position))]
+            [SpecializedVectorGroup(typeof(Position))]
             public static partial class Displacement { }
 
             """);
@@ -820,7 +769,7 @@ public class ConstantSharesNameWithUnit
         }
 
         source.AppendLine("""
-            [SharpMeasuresVectorGroupMember(typeof(Position))]
+            [VectorGroupMember(typeof(Position))]
             public partial class Position3 { }
 
             """);
@@ -831,15 +780,15 @@ public class ConstantSharesNameWithUnit
         }
 
         source.AppendLine(CultureInfo.InvariantCulture, $$"""
-            [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
+            [VectorGroup(typeof(UnitOfLength))]
             public static partial class Position { }
 
-            [SharpMeasuresScalar(typeof(UnitOfLength))]
+            [ScalarQuantity(typeof(UnitOfLength))]
             public partial class Length { }
 
             [FixedUnitInstance("Metre", "Metres")]
             [PrefixedUnitInstance("Kilometre", "{{config.UnitPlural}}", "Metre", MetricPrefixName.Kilo)]
-            [SharpMeasuresUnit(typeof(Length))]
+            [Unit(typeof(Length))]
             public partial class UnitOfLength { }
             """);
 

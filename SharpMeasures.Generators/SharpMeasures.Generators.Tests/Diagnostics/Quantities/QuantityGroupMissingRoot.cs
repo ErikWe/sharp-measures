@@ -55,43 +55,41 @@ public class QuantityGroupMissingRoot
     }
 
     private static string SpecializedScalarText_Self => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
 
-        [SpecializedSharpMeasuresScalar(typeof(Distance))]
+        [SpecializedScalarQuantity(typeof(Distance))]
         public partial class Distance { }
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
             
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
     private static GeneratorVerifier AssertSpecializedScalar_Self()
     {
-        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(SpecializedScalarText_Self, target: "SpecializedSharpMeasuresScalar");
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(SpecializedScalarText_Self, target: "SpecializedScalarQuantity");
 
         return AssertExactlyQuantityGroupMissingRootDiagnostics(SpecializedScalarText_Self, 1).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(Identical);
     }
 
     private static string SpecializedScalarText_Loop => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
 
-        [SpecializedSharpMeasuresScalar(typeof(Width))]
+        [SpecializedScalarQuantity(typeof(Width))]
         public partial class Depth { }
 
-        [SpecializedSharpMeasuresScalar(typeof(Height))]
+        [SpecializedScalarQuantity(typeof(Height))]
         public partial class Width { }
 
-        [SpecializedSharpMeasuresScalar(typeof(Depth))]
+        [SpecializedScalarQuantity(typeof(Depth))]
         public partial class Height { }
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
             
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
@@ -99,31 +97,30 @@ public class QuantityGroupMissingRoot
     {
         var expectedLocations = new[]
         {
-            ExpectedDiagnosticsLocation.TextSpan(SpecializedScalarText_Loop, target: "SpecializedSharpMeasuresScalar", postfix: "(typeof(Width)"),
-            ExpectedDiagnosticsLocation.TextSpan(SpecializedScalarText_Loop, target: "SpecializedSharpMeasuresScalar", postfix: "(typeof(Height)"),
-            ExpectedDiagnosticsLocation.TextSpan(SpecializedScalarText_Loop, target: "SpecializedSharpMeasuresScalar", postfix: "(typeof(Depth)")
+            ExpectedDiagnosticsLocation.TextSpan(SpecializedScalarText_Loop, target: "SpecializedScalarQuantity", postfix: "(typeof(Width)"),
+            ExpectedDiagnosticsLocation.TextSpan(SpecializedScalarText_Loop, target: "SpecializedScalarQuantity", postfix: "(typeof(Height)"),
+            ExpectedDiagnosticsLocation.TextSpan(SpecializedScalarText_Loop, target: "SpecializedScalarQuantity", postfix: "(typeof(Depth)")
         };
 
         return AssertExactlyQuantityGroupMissingRootDiagnostics(SpecializedScalarText_Loop, 3).AssertDiagnosticsLocation(expectedLocations).AssertIdenticalSources(Identical);
     }
 
     private static string SpecializedScalarText_BranchedLoop => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
 
-        [SpecializedSharpMeasuresScalar(typeof(Width))]
+        [SpecializedScalarQuantity(typeof(Width))]
         public partial class Depth { }
 
-        [SpecializedSharpMeasuresScalar(typeof(Height))]
+        [SpecializedScalarQuantity(typeof(Height))]
         public partial class Width { }
 
-        [SpecializedSharpMeasuresScalar(typeof(Width))] // 2nd
+        [SpecializedScalarQuantity(typeof(Width))] // 2nd
         public partial class Height { }
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
             
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
@@ -131,54 +128,50 @@ public class QuantityGroupMissingRoot
     {
         var expectedLocations = new[]
         {
-            ExpectedDiagnosticsLocation.TextSpan(SpecializedScalarText_BranchedLoop, target: "SpecializedSharpMeasuresScalar", postfix: "(typeof(Width)"),
-            ExpectedDiagnosticsLocation.TextSpan(SpecializedScalarText_BranchedLoop, target: "SpecializedSharpMeasuresScalar", postfix: "(typeof(Height)"),
-            ExpectedDiagnosticsLocation.TextSpan(SpecializedScalarText_BranchedLoop, target: "SpecializedSharpMeasuresScalar", postfix: "(typeof(Width))] // 2nd")
+            ExpectedDiagnosticsLocation.TextSpan(SpecializedScalarText_BranchedLoop, target: "SpecializedScalarQuantity", postfix: "(typeof(Width)"),
+            ExpectedDiagnosticsLocation.TextSpan(SpecializedScalarText_BranchedLoop, target: "SpecializedScalarQuantity", postfix: "(typeof(Height)"),
+            ExpectedDiagnosticsLocation.TextSpan(SpecializedScalarText_BranchedLoop, target: "SpecializedScalarQuantity", postfix: "(typeof(Width))] // 2nd")
         };
 
         return AssertExactlyQuantityGroupMissingRootDiagnostics(SpecializedScalarText_BranchedLoop, 3).AssertDiagnosticsLocation(expectedLocations).AssertIdenticalSources(Identical);
     }
 
     private static string SpecializedVectorText_Self => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Vectors;
+        using SharpMeasures.Generators;
 
-        [SpecializedSharpMeasuresVector(typeof(Position3))]
+        [SpecializedVectorQuantity(typeof(Position3))]
         public partial class Position3 { }
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
             
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
     private static GeneratorVerifier AssertSpecializedVector_Self()
     {
-        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(SpecializedVectorText_Self, target: "SpecializedSharpMeasuresVector");
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(SpecializedVectorText_Self, target: "SpecializedVectorQuantity");
 
         return AssertExactlyQuantityGroupMissingRootDiagnostics(SpecializedVectorText_Self, 1).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(Identical);
     }
 
     private static string SpecializedVectorText_Loop => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Vectors;
+        using SharpMeasures.Generators;
 
-        [SpecializedSharpMeasuresVector(typeof(Displacement3))]
+        [SpecializedVectorQuantity(typeof(Displacement3))]
         public partial class Offset3 { }
 
-        [SpecializedSharpMeasuresVector(typeof(Position3))]
+        [SpecializedVectorQuantity(typeof(Position3))]
         public partial class Displacement3 { }
 
-        [SpecializedSharpMeasuresVector(typeof(Offset3))]
+        [SpecializedVectorQuantity(typeof(Offset3))]
         public partial class Position3 { }
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
             
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
@@ -186,32 +179,30 @@ public class QuantityGroupMissingRoot
     {
         var expectedLocations = new[]
         {
-            ExpectedDiagnosticsLocation.TextSpan(SpecializedVectorText_Loop, target: "SpecializedSharpMeasuresVector", postfix: "(typeof(Displacement3)"),
-            ExpectedDiagnosticsLocation.TextSpan(SpecializedVectorText_Loop, target: "SpecializedSharpMeasuresVector", postfix: "(typeof(Position3)"),
-            ExpectedDiagnosticsLocation.TextSpan(SpecializedVectorText_Loop, target: "SpecializedSharpMeasuresVector", postfix: "(typeof(Offset3)")
+            ExpectedDiagnosticsLocation.TextSpan(SpecializedVectorText_Loop, target: "SpecializedVectorQuantity", postfix: "(typeof(Displacement3)"),
+            ExpectedDiagnosticsLocation.TextSpan(SpecializedVectorText_Loop, target: "SpecializedVectorQuantity", postfix: "(typeof(Position3)"),
+            ExpectedDiagnosticsLocation.TextSpan(SpecializedVectorText_Loop, target: "SpecializedVectorQuantity", postfix: "(typeof(Offset3)")
         };
 
         return AssertExactlyQuantityGroupMissingRootDiagnostics(SpecializedVectorText_Loop, 3).AssertDiagnosticsLocation(expectedLocations).AssertIdenticalSources(Identical);
     }
 
     private static string SpecializedVectorText_BranchedLoop => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Vectors;
+        using SharpMeasures.Generators;
 
-        [SpecializedSharpMeasuresVector(typeof(Displacement3))]
+        [SpecializedVectorQuantity(typeof(Displacement3))]
         public partial class Offset3 { }
 
-        [SpecializedSharpMeasuresVector(typeof(Position3))]
+        [SpecializedVectorQuantity(typeof(Position3))]
         public partial class Displacement3 { }
 
-        [SpecializedSharpMeasuresVector(typeof(Displacement3))] // 2nd
+        [SpecializedVectorQuantity(typeof(Displacement3))] // 2nd
         public partial class Position3 { }
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
             
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
@@ -219,54 +210,50 @@ public class QuantityGroupMissingRoot
     {
         var expectedLocations = new[]
         {
-            ExpectedDiagnosticsLocation.TextSpan(SpecializedVectorText_BranchedLoop, target: "SpecializedSharpMeasuresVector", postfix: "(typeof(Displacement3)"),
-            ExpectedDiagnosticsLocation.TextSpan(SpecializedVectorText_BranchedLoop, target: "SpecializedSharpMeasuresVector", postfix: "(typeof(Position3)"),
-            ExpectedDiagnosticsLocation.TextSpan(SpecializedVectorText_BranchedLoop, target: "SpecializedSharpMeasuresVector", postfix: "(typeof(Displacement3))] // 2nd")
+            ExpectedDiagnosticsLocation.TextSpan(SpecializedVectorText_BranchedLoop, target: "SpecializedVectorQuantity", postfix: "(typeof(Displacement3)"),
+            ExpectedDiagnosticsLocation.TextSpan(SpecializedVectorText_BranchedLoop, target: "SpecializedVectorQuantity", postfix: "(typeof(Position3)"),
+            ExpectedDiagnosticsLocation.TextSpan(SpecializedVectorText_BranchedLoop, target: "SpecializedVectorQuantity", postfix: "(typeof(Displacement3))] // 2nd")
         };
 
         return AssertExactlyQuantityGroupMissingRootDiagnostics(SpecializedVectorText_BranchedLoop, 3).AssertDiagnosticsLocation(expectedLocations).AssertIdenticalSources(Identical);
     }
 
     private static string SpecializedVectorGroupText_Self => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Vectors;
+        using SharpMeasures.Generators;
 
-        [SpecializedSharpMeasuresVectorGroup(typeof(Position))]
+        [SpecializedVectorGroup(typeof(Position))]
         public static partial class Position { }
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
             
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
     private static GeneratorVerifier AssertSpecializedVectorGroup_Self()
     {
-        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(SpecializedVectorGroupText_Self, target: "SpecializedSharpMeasuresVectorGroup");
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(SpecializedVectorGroupText_Self, target: "SpecializedVectorGroup");
 
         return AssertExactlyQuantityGroupMissingRootDiagnostics(SpecializedVectorGroupText_Self, 1).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(Identical);
     }
 
     private static string SpecializedVectorGroupText_Loop => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Vectors;
+        using SharpMeasures.Generators;
 
-        [SpecializedSharpMeasuresVectorGroup(typeof(Displacement))]
+        [SpecializedVectorGroup(typeof(Displacement))]
         public static partial class Offset { }
 
-        [SpecializedSharpMeasuresVectorGroup(typeof(Position))]
+        [SpecializedVectorGroup(typeof(Position))]
         public static partial class Displacement { }
 
-        [SpecializedSharpMeasuresVectorGroup(typeof(Offset))]
+        [SpecializedVectorGroup(typeof(Offset))]
         public static partial class Position { }
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
             
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
@@ -274,32 +261,30 @@ public class QuantityGroupMissingRoot
     {
         var expectedLocations = new[]
         {
-            ExpectedDiagnosticsLocation.TextSpan(SpecializedVectorGroupText_Loop, target: "SpecializedSharpMeasuresVectorGroup", postfix: "(typeof(Displacement)"),
-            ExpectedDiagnosticsLocation.TextSpan(SpecializedVectorGroupText_Loop, target: "SpecializedSharpMeasuresVectorGroup", postfix: "(typeof(Position)"),
-            ExpectedDiagnosticsLocation.TextSpan(SpecializedVectorGroupText_Loop, target: "SpecializedSharpMeasuresVectorGroup", postfix: "(typeof(Offset)")
+            ExpectedDiagnosticsLocation.TextSpan(SpecializedVectorGroupText_Loop, target: "SpecializedVectorGroup", postfix: "(typeof(Displacement)"),
+            ExpectedDiagnosticsLocation.TextSpan(SpecializedVectorGroupText_Loop, target: "SpecializedVectorGroup", postfix: "(typeof(Position)"),
+            ExpectedDiagnosticsLocation.TextSpan(SpecializedVectorGroupText_Loop, target: "SpecializedVectorGroup", postfix: "(typeof(Offset)")
         };
 
         return AssertExactlyQuantityGroupMissingRootDiagnostics(SpecializedVectorGroupText_Loop, 3).AssertDiagnosticsLocation(expectedLocations).AssertIdenticalSources(Identical);
     }
 
     private static string SpecializedVectorGroupText_BranchedLoop => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Vectors;
+        using SharpMeasures.Generators;
 
-        [SpecializedSharpMeasuresVectorGroup(typeof(Displacement))]
+        [SpecializedVectorGroup(typeof(Displacement))]
         public static partial class Offset { }
 
-        [SpecializedSharpMeasuresVectorGroup(typeof(Position))]
+        [SpecializedVectorGroup(typeof(Position))]
         public static partial class Displacement { }
 
-        [SpecializedSharpMeasuresVectorGroup(typeof(Displacement))] // 2nd
+        [SpecializedVectorGroup(typeof(Displacement))] // 2nd
         public static partial class Position { }
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
             
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
@@ -307,9 +292,9 @@ public class QuantityGroupMissingRoot
     {
         var expectedLocations = new[]
         {
-            ExpectedDiagnosticsLocation.TextSpan(SpecializedVectorGroupText_BranchedLoop, target: "SpecializedSharpMeasuresVectorGroup", postfix: "(typeof(Displacement)"),
-            ExpectedDiagnosticsLocation.TextSpan(SpecializedVectorGroupText_BranchedLoop, target: "SpecializedSharpMeasuresVectorGroup", postfix: "(typeof(Position)"),
-            ExpectedDiagnosticsLocation.TextSpan(SpecializedVectorGroupText_BranchedLoop, target: "SpecializedSharpMeasuresVectorGroup", postfix: "(typeof(Displacement))] // 2nd")
+            ExpectedDiagnosticsLocation.TextSpan(SpecializedVectorGroupText_BranchedLoop, target: "SpecializedVectorGroup", postfix: "(typeof(Displacement)"),
+            ExpectedDiagnosticsLocation.TextSpan(SpecializedVectorGroupText_BranchedLoop, target: "SpecializedVectorGroup", postfix: "(typeof(Position)"),
+            ExpectedDiagnosticsLocation.TextSpan(SpecializedVectorGroupText_BranchedLoop, target: "SpecializedVectorGroup", postfix: "(typeof(Displacement))] // 2nd")
         };
 
         return AssertExactlyQuantityGroupMissingRootDiagnostics(SpecializedVectorGroupText_BranchedLoop, 3).AssertDiagnosticsLocation(expectedLocations).AssertIdenticalSources(Identical);
@@ -318,13 +303,12 @@ public class QuantityGroupMissingRoot
     private static GeneratorVerifier Identical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(IdenticalText);
 
     private static string IdenticalText => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
             
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 }

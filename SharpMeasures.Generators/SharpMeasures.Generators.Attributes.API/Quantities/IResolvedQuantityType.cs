@@ -20,10 +20,10 @@ public interface IResolvedQuantityType
     public abstract string? DefaultUnitInstanceName { get; }
     public abstract string? DefaultUnitInstanceSymbol { get; }
 
-    public abstract IReadOnlyList<IDerivedQuantity> Derivations { get; }
+    public abstract IReadOnlyList<IQuantityOperation> Operations { get; }
     public abstract IReadOnlyList<IConvertibleQuantity> Conversions { get; }
 
-    public abstract IReadOnlyList<IDerivedQuantity> InheritedDerivations { get; }
+    public abstract IReadOnlyList<IQuantityOperation> InheritedOperations { get; }
     public abstract IReadOnlyList<IConvertibleQuantity> InheritedConversions { get; }
 
     public abstract IReadOnlyList<string> IncludedUnitInstanceNames { get; }

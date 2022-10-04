@@ -27,10 +27,12 @@ internal sealed record class ResolvedGroupType : IResolvedVectorGroupType
 
     public IReadOnlyDictionary<int, NamedType> MembersByDimension { get; }
 
-    public IReadOnlyList<IDerivedQuantity> Derivations { get; }
+    public IReadOnlyList<IQuantityOperation> Operations { get; }
+    public IReadOnlyList<IVectorOperation> VectorOperations { get; }
     public IReadOnlyList<IConvertibleQuantity> Conversions { get; }
 
-    public IReadOnlyList<IDerivedQuantity> InheritedDerivations { get; }
+    public IReadOnlyList<IQuantityOperation> InheritedOperations { get; }
+    public IReadOnlyList<IVectorOperation> InheritedVectorOperations { get; }
     public IReadOnlyList<IConvertibleQuantity> InheritedConversions { get; }
 
     public IReadOnlyList<string> IncludedUnitInstanceNames { get; }
@@ -40,8 +42,8 @@ internal sealed record class ResolvedGroupType : IResolvedVectorGroupType
     IReadOnlyList<IConvertibleQuantity> IResolvedQuantityType.Conversions => Conversions;
 
     public ResolvedGroupType(DefinedType type, NamedType unit, NamedType? originalQuantity, ConversionOperatorBehaviour specializationForwardsConversionBehaviour, ConversionOperatorBehaviour specializationBackwardsConversionBehaviour, NamedType? scalar, bool implementSum,
-        bool implementDifference, NamedType? difference, string? defaultUnitInstanceName, string? defaultUnitInstanceSymbol, IReadOnlyDictionary<int, NamedType> membersByDimension, IReadOnlyList<IDerivedQuantity> derivations, IReadOnlyList<IConvertibleQuantity> conversions,
-        IReadOnlyList<IDerivedQuantity> inheritedDerivations, IReadOnlyList<IConvertibleQuantity> inheritedConversions, IReadOnlyList<string> includedUnitInstanceNames, bool? generateDocumentation)
+        bool implementDifference, NamedType? difference, string? defaultUnitInstanceName, string? defaultUnitInstanceSymbol, IReadOnlyDictionary<int, NamedType> membersByDimension, IReadOnlyList<IQuantityOperation> operations, IReadOnlyList<IVectorOperation> vectorOperations, IReadOnlyList<IConvertibleQuantity> conversions,
+        IReadOnlyList<IQuantityOperation> inheritedOperations, IReadOnlyList<IVectorOperation> inheritedVectorOperations, IReadOnlyList<IConvertibleQuantity> inheritedConversions, IReadOnlyList<string> includedUnitInstanceNames, bool? generateDocumentation)
     {
         Type = type;
 
@@ -63,10 +65,12 @@ internal sealed record class ResolvedGroupType : IResolvedVectorGroupType
 
         MembersByDimension = membersByDimension.AsReadOnlyEquatable();
 
-        Derivations = derivations.AsReadOnlyEquatable();
+        Operations = operations.AsReadOnlyEquatable();
+        VectorOperations = vectorOperations.AsReadOnlyEquatable();
         Conversions = conversions.AsReadOnlyEquatable();
 
-        InheritedDerivations = inheritedDerivations.AsReadOnlyEquatable();
+        InheritedOperations = inheritedOperations.AsReadOnlyEquatable();
+        InheritedVectorOperations = inheritedVectorOperations.AsReadOnlyEquatable();
         InheritedConversions = inheritedConversions.AsReadOnlyEquatable();
 
         IncludedUnitInstanceNames = includedUnitInstanceNames.AsReadOnlyEquatable();

@@ -4,7 +4,7 @@
     Title: Duplicate process parameter name,
     Severity: Error,
     WarningLevel: 0,
-    Location: : (4,104)-(4,107),
+    Location: : (2,102)-(2,105),
     Description: ,
     HelpLink: ,
     MessageFormat: "{0}" already defines a parameter "{1}",

@@ -9,4 +9,8 @@ public interface IResolvedVectorGroupType : IResolvedQuantityType
     public abstract NamedType? Scalar { get; }
 
     public abstract IReadOnlyDictionary<int, NamedType> MembersByDimension { get; }
+
+    public abstract IReadOnlyList<IVectorOperation> VectorOperations { get; }
+
+    public abstract IReadOnlyList<IVectorOperation> InheritedVectorOperations { get; }
 }

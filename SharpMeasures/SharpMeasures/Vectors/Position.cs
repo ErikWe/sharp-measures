@@ -1,9 +1,9 @@
 ﻿namespace SharpMeasures;
 
-using SharpMeasures.Generators.Vectors;
+using SharpMeasures.Generators;
 
-[SharpMeasuresVectorGroup(typeof(UnitOfLength), DefaultUnitInstanceName = "Metre", DefaultUnitInstanceSymbol = "m")]
+[VectorGroup(typeof(UnitOfLength), DefaultUnitInstanceName = "Metre", DefaultUnitInstanceSymbol = "m")]
 public static partial class Position { }
 
-[SharpMeasuresVectorGroupMember(typeof(Position))]
+[VectorGroupMember(typeof(Position))]
 public readonly partial record struct Position3 { }

@@ -21,16 +21,15 @@ public class UnitNotIncludingBiasTerm
     private static IReadOnlyCollection<string> UnitNotIncludingBiasTermDiagnostics { get; } = new string[] { DiagnosticIDs.UnitNotIncludingBiasTerm };
 
     private static string BiasedScalarText => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
 
-        [SharpMeasuresScalar(typeof(UnitOfLength), UseUnitBias = true)]
+        [ScalarQuantity(typeof(UnitOfLength), UseUnitBias = true)]
         public partial class Temperature { }
             
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
@@ -44,13 +43,12 @@ public class UnitNotIncludingBiasTerm
     private static GeneratorVerifier BiasedScalarIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(BiasedScalarIdenticalText);
 
     private static string BiasedScalarIdenticalText => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
             
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 }

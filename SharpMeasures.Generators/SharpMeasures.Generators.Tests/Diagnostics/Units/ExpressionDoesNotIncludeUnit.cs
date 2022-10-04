@@ -24,26 +24,25 @@ public class ExpressionDoesNotIncludeUnit
     private static IReadOnlyCollection<string> ExpressionDoesNotIncludeUnitDiagnostics { get; } = new string[] { DiagnosticIDs.ExpressionDoesNotIncludeUnit };
 
     private static string OneElementText => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
 
-        [SharpMeasuresScalar(typeof(UnitOfMisc))]
+        [ScalarQuantity(typeof(UnitOfMisc))]
         public partial class Misc { }
         
-        [SharpMeasuresScalar(typeof(UnitOfFrequency))]
+        [ScalarQuantity(typeof(UnitOfFrequency))]
         public partial class Frequency { }
         
-        [SharpMeasuresScalar(typeof(UnitOfTime))]
+        [ScalarQuantity(typeof(UnitOfTime))]
         public partial class Time { }
         
-        [SharpMeasuresUnit(typeof(Misc))]
+        [Unit(typeof(Misc))]
         public partial class UnitOfMisc { }
 
-        [SharpMeasuresUnit(typeof(Frequency))]
+        [Unit(typeof(Frequency))]
         public partial class UnitOfFrequency { }
 
         [DerivableUnit("2", new[] { typeof(UnitOfFrequency) })]
-        [SharpMeasuresUnit(typeof(Time))]
+        [Unit(typeof(Time))]
         public partial class UnitOfTime { }
         """;
 
@@ -55,26 +54,25 @@ public class ExpressionDoesNotIncludeUnit
     }
 
     private static string TwoElementsText => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
 
-        [SharpMeasuresScalar(typeof(UnitOfMisc))]
+        [ScalarQuantity(typeof(UnitOfMisc))]
         public partial class Misc { }
 
-        [SharpMeasuresScalar(typeof(UnitOfFrequency))]
+        [ScalarQuantity(typeof(UnitOfFrequency))]
         public partial class Frequency { }
 
-        [SharpMeasuresScalar(typeof(UnitOfTime))]
+        [ScalarQuantity(typeof(UnitOfTime))]
         public partial class Time { }
 
-        [SharpMeasuresUnit(typeof(Misc))]
+        [Unit(typeof(Misc))]
         public partial class UnitOfMisc { }
 
-        [SharpMeasuresUnit(typeof(Frequency))]
+        [Unit(typeof(Frequency))]
         public partial class UnitOfFrequency { }
 
         [DerivableUnit("2 * {0}", new[] { typeof(UnitOfFrequency), typeof(UnitOfMisc) })]
-        [SharpMeasuresUnit(typeof(Time))]
+        [Unit(typeof(Time))]
         public partial class UnitOfTime { }
         """;
 
@@ -88,25 +86,24 @@ public class ExpressionDoesNotIncludeUnit
     private static GeneratorVerifier Identical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(IdenticalText);
 
     private static string IdenticalText => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
 
-        [SharpMeasuresScalar(typeof(UnitOfMisc))]
+        [ScalarQuantity(typeof(UnitOfMisc))]
         public partial class Misc { }
         
-        [SharpMeasuresScalar(typeof(UnitOfFrequency))]
+        [ScalarQuantity(typeof(UnitOfFrequency))]
         public partial class Frequency { }
         
-        [SharpMeasuresScalar(typeof(UnitOfTime))]
+        [ScalarQuantity(typeof(UnitOfTime))]
         public partial class Time { }
         
-        [SharpMeasuresUnit(typeof(Misc))]
+        [Unit(typeof(Misc))]
         public partial class UnitOfMisc { }
 
-        [SharpMeasuresUnit(typeof(Frequency))]
+        [Unit(typeof(Frequency))]
         public partial class UnitOfFrequency { }
 
-        [SharpMeasuresUnit(typeof(Time))]
+        [Unit(typeof(Time))]
         public partial class UnitOfTime { }
         """;
 }

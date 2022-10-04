@@ -4,7 +4,7 @@
     Title: Constant multiples is disabled,
     Severity: Info,
     WarningLevel: 1,
-    Location: : (3,96)-(3,105),
+    Location: : (2,96)-(2,105),
     Description: ,
     HelpLink: ,
     MessageFormat: The name for multiples of constant "{0}" was specified, but multiples was explicitly disabled. Enable multiples, or do not specify the name.,

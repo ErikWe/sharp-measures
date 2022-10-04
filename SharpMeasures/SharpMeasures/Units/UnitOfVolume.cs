@@ -1,6 +1,6 @@
 ﻿namespace SharpMeasures;
 
-using SharpMeasures.Generators.Units;
+using SharpMeasures.Generators;
 
 [DerivedUnitInstance("CubicMetre", "[*]s", new[] { "Metre" })]
 [DerivedUnitInstance("CubicDecimetre", "[*]s", new[] { "Decimetre" })]
@@ -16,5 +16,5 @@ using SharpMeasures.Generators.Units;
 [PrefixedUnitInstance("Centilitre", "[*]s", "Litre", MetricPrefixName.Centi)]
 [PrefixedUnitInstance("Millilitre", "[*]s", "Litre", MetricPrefixName.Milli)]
 [DerivableUnit("{0} * {0} * {0}", typeof(UnitOfLength))]
-[SharpMeasuresUnit(typeof(Volume))]
+[Unit(typeof(Volume))]
 public readonly partial record struct UnitOfVolume { }

@@ -4,13 +4,12 @@ using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
-using SharpMeasures.Generators.Quantities;
 using SharpMeasures.Generators.Quantities.Parsing.Contexts.Processing;
 using SharpMeasures.Generators.Quantities.Parsing.ConvertibleQuantity;
-using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
 using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
 using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
-using SharpMeasures.Generators.Quantities.Parsing.ProcessedQuantity;
+using SharpMeasures.Generators.Quantities.Parsing.QuantityOperation;
+using SharpMeasures.Generators.Quantities.Parsing.QuantityProcess;
 using SharpMeasures.Generators.Scalars.Parsing.Contexts.Processing;
 using SharpMeasures.Generators.Scalars.Parsing.ConvertibleScalar;
 using SharpMeasures.Generators.Scalars.Parsing.ExcludeUnitBases;
@@ -60,7 +59,7 @@ internal abstract class AScalarProcesser<TRawType, TRawDefinition, TProductType,
 
         var unit = GetUnit(scalar.Result);
 
-        var derivations = ProcessDerivations(rawScalar.Type, rawScalar.Derivations);
+        var operations = ProcessOperations(rawScalar.Type, rawScalar.Operations);
         var processes = ProcessProcesses(rawScalar.Type, rawScalar.Processes);
         var constants = ProcessConstants(rawScalar.Type, rawScalar.Constants, unit);
         var conversions = ProcessConversions(rawScalar.Type, GetOriginalQuantity(scalar.Result), ConversionFromOriginalQuantitySpecified(scalar.Result), ConversionToOriginalQuantitySpecified(scalar.Result), rawScalar.Conversions);
@@ -71,7 +70,7 @@ internal abstract class AScalarProcesser<TRawType, TRawDefinition, TProductType,
         var includeUnitInstances = ProcessIncludeUnits(rawScalar.Type, rawScalar.UnitInstanceInclusions);
         var excludeUnitInstances = ProcessExcludeUnits(rawScalar.Type, rawScalar.UnitInstanceExclusions);
 
-        var allDiagnostics = scalar.Diagnostics.Concat(derivations).Concat(processes).Concat(constants).Concat(conversions).Concat(includeUnitInstanceBases).Concat(excludeUnitInstanceBases).Concat(includeUnitInstances).Concat(excludeUnitInstances);
+        var allDiagnostics = scalar.Diagnostics.Concat(operations).Concat(processes).Concat(constants).Concat(conversions).Concat(includeUnitInstanceBases).Concat(excludeUnitInstanceBases).Concat(includeUnitInstances).Concat(excludeUnitInstances);
 
         if (includeUnitInstanceBases.HasResult && includeUnitInstanceBases.Result.Count > 0 && excludeUnitInstanceBases.HasResult && excludeUnitInstanceBases.Result.Count > 0)
         {
@@ -93,12 +92,12 @@ internal abstract class AScalarProcesser<TRawType, TRawDefinition, TProductType,
             excludeUnitInstances = ResultWithDiagnostics.Construct(Array.Empty<ExcludeUnitsDefinition>() as IReadOnlyList<ExcludeUnitsDefinition>);
         }
 
-        TProductType product = ProduceResult(rawScalar.Type, scalar.Result, derivations.Result, processes.Result, constants.Result, conversions.Result, includeUnitInstanceBases.Result, excludeUnitInstanceBases.Result, includeUnitInstances.Result, excludeUnitInstances.Result);
+        TProductType product = ProduceResult(rawScalar.Type, scalar.Result, operations.Result, processes.Result, constants.Result, conversions.Result, includeUnitInstanceBases.Result, excludeUnitInstanceBases.Result, includeUnitInstances.Result, excludeUnitInstances.Result);
 
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }
 
-    protected abstract TProductType ProduceResult(DefinedType type, TProductDefinition definition, IReadOnlyList<DerivedQuantityDefinition> derivations, IReadOnlyList<ProcessedQuantityDefinition> processes, IReadOnlyList<ScalarConstantDefinition> constants,
+    protected abstract TProductType ProduceResult(DefinedType type, TProductDefinition definition, IReadOnlyList<QuantityOperationDefinition> derivations, IReadOnlyList<QuantityProcessDefinition> processes, IReadOnlyList<ScalarConstantDefinition> constants,
         IReadOnlyList<ConvertibleScalarDefinition> conversions, IReadOnlyList<IncludeUnitBasesDefinition> baseInclusions, IReadOnlyList<ExcludeUnitBasesDefinition> baseExclusions, IReadOnlyList<IncludeUnitsDefinition> unitInstanceInclusions, IReadOnlyList<ExcludeUnitsDefinition> unitInstanceExclusions);
 
     protected abstract IOptionalWithDiagnostics<TProductDefinition> ProcessScalar(DefinedType type, TRawDefinition rawDefinition);
@@ -108,18 +107,18 @@ internal abstract class AScalarProcesser<TRawType, TRawDefinition, TProductType,
     protected abstract bool ConversionFromOriginalQuantitySpecified(TProductDefinition scalar);
     protected abstract bool ConversionToOriginalQuantitySpecified(TProductDefinition scalar);
 
-    private IResultWithDiagnostics<IReadOnlyList<DerivedQuantityDefinition>> ProcessDerivations(DefinedType type, IEnumerable<RawDerivedQuantityDefinition> rawDefinitions)
+    private IResultWithDiagnostics<IReadOnlyList<QuantityOperationDefinition>> ProcessOperations(DefinedType type, IEnumerable<RawQuantityOperationDefinition> rawDefinitions)
     {
-        DerivedQuantityProcessingContext processingContext = new(type, QuantityType.Scalar);
+        QuantityOperationProcessingContext processingContext = new(type);
 
-        return ProcessingFilter.Create(DerivedQuantityProcesser).Filter(processingContext, rawDefinitions);
+        return ProcessingFilter.Create(QuantityOperationProcesser).Filter(processingContext, rawDefinitions);
     }
 
-    private IResultWithDiagnostics<IReadOnlyList<ProcessedQuantityDefinition>> ProcessProcesses(DefinedType type, IEnumerable<RawProcessedQuantityDefinition> rawDefinitions)
+    private IResultWithDiagnostics<IReadOnlyList<QuantityProcessDefinition>> ProcessProcesses(DefinedType type, IEnumerable<RawQuantityProcessDefinition> rawDefinitions)
     {
-        ProcessedQuantityProcessingContext processingContext = new(type);
+        QuantityProcessProcessingContext processingContext = new(type);
 
-        return ProcessingFilter.Create(ProcessedQuantityProcesser).Filter(processingContext, rawDefinitions);
+        return ProcessingFilter.Create(QuantityProcessProcesser).Filter(processingContext, rawDefinitions);
     }
 
     private IResultWithDiagnostics<IReadOnlyList<ScalarConstantDefinition>> ProcessConstants(DefinedType type, IEnumerable<RawScalarConstantDefinition> rawDefinitions, NamedType? unit)
@@ -166,8 +165,8 @@ internal abstract class AScalarProcesser<TRawType, TRawDefinition, TProductType,
         return ProcessingFilter.Create(ExcludeUnitsProcesser).Filter(processingContext, rawDefinitions);
     }
 
-    private DerivedQuantityProcesser DerivedQuantityProcesser => new(DiagnosticsStrategy.DerivedQuantityDiagnostics);
-    private ProcessedQuantityProcesser ProcessedQuantityProcesser => new(DiagnosticsStrategy.ProcessedQuantityDiagnostics);
+    private QuantityOperationProcesser QuantityOperationProcesser => new(DiagnosticsStrategy.QuantityOperationDiagnostics);
+    private QuantityProcessProcesser QuantityProcessProcesser => new(DiagnosticsStrategy.QuantityProcessDiagnostics);
     private ScalarConstantProcesser ScalarConstantProcesser(NamedType unit) => new(DiagnosticsStrategy.ScalarConstantDiagnostics(unit));
     private ScalarConstantProcesser ScalarConstantProcesserForUnknownUnit => new(DiagnosticsStrategy.ScalarConstantDiagnosticsForUnknownUnit);
     private ConvertibleScalarProcesser ConvertibleScalarProcesser => new(DiagnosticsStrategy.ConvertibleScalarDiagnostics);

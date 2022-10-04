@@ -6,7 +6,7 @@ public interface IQuantityType : ISharpMeasuresObjectType
 {
     new public abstract IQuantity Definition { get; }
 
-    public abstract IReadOnlyList<IDerivedQuantity> Derivations { get; }
+    public abstract IReadOnlyList<IQuantityOperation> Operations { get; }
     public abstract IReadOnlyList<IConvertibleQuantity> Conversions { get; }
 
     public abstract IReadOnlyList<IUnitInstanceInclusionList> UnitInstanceInclusions { get; }

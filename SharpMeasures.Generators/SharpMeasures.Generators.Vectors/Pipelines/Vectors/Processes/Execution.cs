@@ -42,7 +42,9 @@ internal static class Execution
 
         private DataModel Data { get; }
 
-        private HashSet<string> ImplementedProcesses { get; } = new();
+        private HashSet<string> ImplementedProperties { get; } = new();
+        private HashSet<string> ImplementedMethodNames { get; } = new();
+        private HashSet<(string, IReadOnlyList<NamedType>)> ImplementedMethodSignatures { get; } = new();
 
         private Composer(DataModel data)
         {
@@ -73,63 +75,112 @@ internal static class Execution
 
             foreach (var process in Data.Processes)
             {
-                if (ImplementedProcesses.Add(process.Name) is false)
-                {
-                    continue;
-                }
-
-                SeparationHandler.AddIfNecessary();
-
-                AppendDocumentation(indentation, Data.Documentation.Process(process));
-
                 if (process.ImplementAsProperty)
                 {
-                    ComposeProperty(indentation, process);
-
-                    continue;
+                    AppendProperty(indentation, process);
                 }
 
-                ComposeMethod(indentation, process);
+                AppendMethod(indentation, process);
             }
         }
 
-        private void ComposeProperty(Indentation indentation, IProcessedQuantity process)
+        private void AppendProperty(Indentation indentation, IQuantityProcess process)
         {
+            if (ImplementedProperties.Add(process.Name) is false || ImplementedMethodNames.Contains(process.Name))
+            {
+                return;
+            }
+
+            SeparationHandler.AddIfNecessary();
+
+            AppendDocumentation(indentation, Data.Documentation.Process(process));
             Builder.AppendLine($"{indentation}public {GetPotentialStaticKeyword(process)}{GetResultingType(process).FullyQualifiedName} {process.Name} => {process.Expression};");
         }
 
-        private void ComposeMethod(Indentation indentation, IProcessedQuantity process)
+        private void AppendMethod(Indentation indentation, IQuantityProcess process)
         {
+            if (ImplementedMethodSignatures.Add((process.Name, process.ParameterTypes)) is false || ImplementedProperties.Contains(process.Name))
+            {
+                return;
+            }
+
+            ImplementedMethodNames.Add(process.Name);
+
             var methodNameAndModifiers = $"public {GetPotentialStaticKeyword(process)}{GetResultingType(process).FullyQualifiedName} {process.Name}";
 
             (NamedType, string)[] parameters = new (NamedType, string)[process.ParameterTypes.Count];
+            var parameterNames = GetParameterNames(process);
 
             for (int i = 0; i < parameters.Length; i++)
             {
-                parameters[i] = (process.ParameterTypes[i], process.ParameterNames[i]);
+                parameters[i] = (process.ParameterTypes[i], parameterNames[i]);
             }
 
+            AppendDocumentation(indentation, Data.Documentation.Process(process));
             StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers, process.Expression, parameters);
         }
 
-        private static string GetPotentialStaticKeyword(IProcessedQuantity process)
+        private static string GetPotentialStaticKeyword(IQuantityProcess process) => process.ImplementStatically ? "static " : string.Empty;
+        private NamedType GetResultingType(IQuantityProcess process) => process.Result is null ? Data.Vector.AsNamedType() : process.Result.Value;
+
+        private static IReadOnlyList<string> GetParameterNames(IQuantityProcess process)
         {
-            if (process.ImplementStatically)
+            if (process.ParameterNames.Count == process.ParameterTypes.Count)
             {
-                return "static ";
+                return process.ParameterNames;
             }
 
-            return string.Empty;
-        }
+            Dictionary<string, int> counts = new();
 
-        private NamedType GetResultingType(IProcessedQuantity process)
-        {
-            if (process.ResultsInCurrentType)
+            foreach (var parameterType in process.ParameterTypes)
             {
-                return Data.Vector.AsNamedType();
+                countParameter(parameterType);
             }
 
-            return process.Result!.Value;
+            var parameterNames = new string[process.ParameterTypes.Count];
+
+            int index = 0;
+            foreach (var parameterType in process.ParameterTypes)
+            {
+                var name = SourceBuildingUtility.ToParameterName(parameterType.Name);
+                name = appendParameterNumber(name, parameterType);
+
+                parameterNames[index] = name;
+                index += 1;
+            }
+
+            return parameterNames;
+
+            void countParameter(NamedType parameterType)
+            {
+                if (counts.TryGetValue(parameterType.Name, out int count))
+                {
+                    counts[parameterType.Name] = count - 1;
+
+                    return;
+                }
+
+                counts[parameterType.Name] = -1;
+            }
+
+            string appendParameterNumber(string text, NamedType parameterType)
+            {
+                var count = counts[parameterType.Name];
+
+                if (count == -1)
+                {
+                    return text;
+                }
+
+                if (count < 0)
+                {
+                    counts[parameterType.Name] = 1;
+                    return $"{text}1";
+                }
+
+                counts[parameterType.Name] += 1;
+                return $"{text}{counts[parameterType.Name]}";
+            }
         }
 
         private void AppendDocumentation(Indentation indentation, string text) => DocumentationBuilding.AppendDocumentation(Builder, indentation, text);

@@ -1,6 +1,6 @@
 ﻿namespace SharpMeasures;
 
-using SharpMeasures.Generators.Units;
+using SharpMeasures.Generators;
 
 [DerivedUnitInstance("SquareMetre", "[*]s", new[] { "Metre" })]
 [DerivedUnitInstance("SquareDecimetre", "[*]s", new[] { "Decimetre" })]
@@ -15,5 +15,5 @@ using SharpMeasures.Generators.Units;
 [PrefixedUnitInstance("Hectare", "[*]s", "Are", MetricPrefixName.Hecto)]
 [ScaledUnitInstance("Acre", "[*]s", "SquareMile", 1d / 640)]
 [DerivableUnit("{0} * {0}", typeof(UnitOfLength))]
-[SharpMeasuresUnit(typeof(Area))]
+[Unit(typeof(Area))]
 public readonly partial record struct UnitOfArea { }

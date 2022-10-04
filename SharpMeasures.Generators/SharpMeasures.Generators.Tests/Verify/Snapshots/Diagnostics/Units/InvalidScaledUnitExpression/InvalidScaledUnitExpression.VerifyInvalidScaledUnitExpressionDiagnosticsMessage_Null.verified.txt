@@ -4,7 +4,7 @@
     Title: Invalid scaled unit expression,
     Severity: Error,
     WarningLevel: 0,
-    Location: : (7,56)-(7,60),
+    Location: : (6,56)-(6,60),
     Description: ,
     HelpLink: ,
     MessageFormat: The expression describing the scaling factor must be defined,

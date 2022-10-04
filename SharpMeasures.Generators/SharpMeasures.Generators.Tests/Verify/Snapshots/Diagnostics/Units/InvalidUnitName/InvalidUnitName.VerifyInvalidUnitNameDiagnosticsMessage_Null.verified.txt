@@ -4,11 +4,11 @@
     Title: Invalid unit name,
     Severity: Error,
     WarningLevel: 0,
-    Location: : (6,19)-(6,23),
+    Location: : (5,19)-(5,23),
     Description: ,
     HelpLink: ,
-    MessageFormat: The name of the unit must be defined,
-    Message: The name of the unit must be defined,
+    MessageFormat: Expected a name for the unit,
+    Message: Expected a name for the unit,
     Category: Naming,
     CustomTags: []
   }

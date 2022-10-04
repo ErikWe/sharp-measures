@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures.Generators.Vectors;
+﻿namespace SharpMeasures.Generators;
 
 using System;
 

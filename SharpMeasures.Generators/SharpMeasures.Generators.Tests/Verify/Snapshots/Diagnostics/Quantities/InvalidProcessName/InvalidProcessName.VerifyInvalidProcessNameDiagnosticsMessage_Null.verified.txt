@@ -1,14 +1,14 @@
 ﻿[
   {
     Id: Measures1280,
-    Title: Invalid name of process,
+    Title: Invalid name of quantity process,
     Severity: Error,
     WarningLevel: 0,
-    Location: : (4,19)-(4,23),
+    Location: : (2,17)-(2,21),
     Description: ,
     HelpLink: ,
-    MessageFormat: The name of the process must be defined,
-    Message: The name of the process must be defined,
+    MessageFormat: Expected a name for the quantity process,
+    Message: Expected a name for the quantity process,
     Category: Naming,
     CustomTags: []
   }

@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures.Generators.Units;
+﻿namespace SharpMeasures.Generators;
 
 /// <summary>Represents the names of available binary prefixes.</summary>
 public enum BinaryPrefixName

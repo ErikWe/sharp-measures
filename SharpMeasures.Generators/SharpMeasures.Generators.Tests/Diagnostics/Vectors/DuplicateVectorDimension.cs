@@ -30,79 +30,73 @@ public class DuplicateVectorDimension
     private static IReadOnlyCollection<string> DuplicateVectorDimensionDiagnostics { get; } = new string[] { DiagnosticIDs.DuplicateVectorDimension };
 
     private static string BothImplicitText => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Vectors;
+        using SharpMeasures.Generators;
 
-        [SharpMeasuresVectorGroupMember(typeof(Position))]
+        [VectorGroupMember(typeof(Position))]
         public partial class Length3 { }
 
-        [SharpMeasuresVectorGroupMember(typeof(Position))] // <-
+        [VectorGroupMember(typeof(Position))] // <-
         public partial class Position3 { }
 
-        [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
+        [VectorGroup(typeof(UnitOfLength))]
         public static partial class Position { }
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
     private static GeneratorVerifier AssertBothImplicit()
     {
-        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(BothImplicitText, target: "SharpMeasuresVectorGroupMember", postfix: "(typeof(Position))] // <-");
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(BothImplicitText, target: "VectorGroupMember", postfix: "(typeof(Position))] // <-");
 
         return AssertExactlyDuplicateVectorDimensionDiagnostics(BothImplicitText).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(Identical("Length3"));
     }
 
     private static string FirstExplicitText => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Vectors;
+        using SharpMeasures.Generators;
         
-        [SharpMeasuresVectorGroupMember(typeof(Position), Dimension = 3)]
+        [VectorGroupMember(typeof(Position), Dimension = 3)]
         public partial class PositionN { }
         
-        [SharpMeasuresVectorGroupMember(typeof(Position))]
+        [VectorGroupMember(typeof(Position))]
         public partial class Position3 { }
         
-        [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
+        [VectorGroup(typeof(UnitOfLength))]
         public static partial class Position { }
         
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
         
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
     private static GeneratorVerifier AssertFirstExplicit()
     {
-        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(FirstExplicitText, target: "SharpMeasuresVectorGroupMember", postfix: "(typeof(Position))]");
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(FirstExplicitText, target: "VectorGroupMember", postfix: "(typeof(Position))]");
 
         return AssertExactlyDuplicateVectorDimensionDiagnostics(FirstExplicitText).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(Identical("PositionN"));
     }
 
     private static string SecondExplicitText => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Vectors;
+        using SharpMeasures.Generators;
         
-        [SharpMeasuresVectorGroupMember(typeof(Position))]
+        [VectorGroupMember(typeof(Position))]
         public partial class Position3 { }
         
-        [SharpMeasuresVectorGroupMember(typeof(Position), Dimension = 3)]
+        [VectorGroupMember(typeof(Position), Dimension = 3)]
         public partial class PositionN { }
         
-        [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
+        [VectorGroup(typeof(UnitOfLength))]
         public static partial class Position { }
         
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
         
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
@@ -114,23 +108,21 @@ public class DuplicateVectorDimension
     }
 
     private static string BothExplicitText => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Vectors;
+        using SharpMeasures.Generators;
         
-        [SharpMeasuresVectorGroupMember(typeof(Position), Dimension = 3)]
+        [VectorGroupMember(typeof(Position), Dimension = 3)]
         public partial class PositionX { }
         
-        [SharpMeasuresVectorGroupMember(typeof(Position), Dimension = 3)] // <-
+        [VectorGroupMember(typeof(Position), Dimension = 3)] // <-
         public partial class PositionN { }
         
-        [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
+        [VectorGroup(typeof(UnitOfLength))]
         public static partial class Position { }
         
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
         
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
@@ -144,20 +136,18 @@ public class DuplicateVectorDimension
     private static GeneratorVerifier Identical(string otherName) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(IdenticalText(otherName));
 
     private static string IdenticalText(string otherName) => $$"""
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Vectors;
+        using SharpMeasures.Generators;
 
-        [SharpMeasuresVectorGroupMember(typeof(Position), Dimension = 3)]
+        [VectorGroupMember(typeof(Position), Dimension = 3)]
         public partial class {{otherName}} { }
 
-        [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
+        [VectorGroup(typeof(UnitOfLength))]
         public static partial class Position { }
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 }

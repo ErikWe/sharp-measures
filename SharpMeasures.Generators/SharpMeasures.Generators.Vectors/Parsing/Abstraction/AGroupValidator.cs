@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Quantities;
-using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
+using SharpMeasures.Generators.Quantities.Parsing.QuantityOperation;
 using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
 using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
 using SharpMeasures.Generators.Scalars;
@@ -16,6 +16,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using SharpMeasures.Generators.Vectors.Parsing.VectorOperation;
 
 internal abstract class AGroupValidator<TGroup, TDefinition>
     where TGroup : AGroupType<TDefinition>
@@ -57,23 +58,31 @@ internal abstract class AGroupValidator<TGroup, TDefinition>
             return group.AsEmptyOptional<TGroup>();
         }
 
+        if (vectorPopulation.GroupMembersByGroup.TryGetValue(groupType.Type.AsNamedType(), out var groupMembers) is false)
+        {
+            return group.AsEmptyOptional<TGroup>();
+        }
+
+        var dimensions = groupMembers.GroupMembersByDimension.Keys.ToList();
+
         var inheritedUnitInstances = GetUnitInstanceInclusions(groupType, vectorPopulation, unit.UnitInstancesByName.Values, unit, static (vector) => vector.Definition.InheritUnits, onlyInherited: true);
         var inheritedUnitInstanceNames = new HashSet<string>(inheritedUnitInstances.Select(static (unit) => unit.Name));
 
         var unitInstanceInclusions = CommonValidation.ValidateIncludeUnitInstances(groupType.Type, unit, groupType.UnitInstanceInclusions, inheritedUnitInstanceNames, DiagnosticsStrategy);
         var unitInstanceExclusions = CommonValidation.ValidateExcludeUnitInstances(groupType.Type, unit, groupType.UnitInstanceExclusions, inheritedUnitInstanceNames, DiagnosticsStrategy);
 
-        var derivations = CommonValidation.ValidateDerivations(groupType.Type, groupType.Derivations, scalarPopulation, vectorPopulation, DiagnosticsStrategy);
+        var operations = CommonValidation.ValidateOperations(groupType.Type, dimensions, groupType.Operations, scalarPopulation, vectorPopulation, DiagnosticsStrategy);
+        var vectorOperations = CommonValidation.ValidateVectorOperations(groupType.Type, dimensions, groupType.VectorOperations, scalarPopulation, vectorPopulation, DiagnosticsStrategy);
         var conversions = CommonValidation.ValidateConversions(groupType.Type, groupType.Conversions, vectorPopulation, DiagnosticsStrategy);
 
-        TGroup product = ProduceResult(groupType.Type, group.Result, derivations.Result, conversions.Result, unitInstanceInclusions.Result, unitInstanceExclusions.Result);
+        TGroup product = ProduceResult(groupType.Type, group.Result, operations.Result, vectorOperations.Result, conversions.Result, unitInstanceInclusions.Result, unitInstanceExclusions.Result);
 
-        var allDiagnostics = group.Concat(derivations).Concat(conversions).Concat(unitInstanceInclusions).Concat(unitInstanceExclusions);
+        var allDiagnostics = group.Concat(operations).Concat(vectorOperations).Concat(conversions).Concat(unitInstanceInclusions).Concat(unitInstanceExclusions);
 
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }
 
-    protected abstract TGroup ProduceResult(DefinedType type, TDefinition definition, IReadOnlyList<DerivedQuantityDefinition> derivations, IReadOnlyList<ConvertibleVectorDefinition> conversion, IReadOnlyList<IncludeUnitsDefinition> unitinstanceInclusions, IReadOnlyList<ExcludeUnitsDefinition> unitInstanceExclusions);
+    protected abstract TGroup ProduceResult(DefinedType type, TDefinition definition, IReadOnlyList<QuantityOperationDefinition> operations, IReadOnlyList<VectorOperationDefinition> vectorOperations, IReadOnlyList<ConvertibleVectorDefinition> conversion, IReadOnlyList<IncludeUnitsDefinition> unitinstanceInclusions, IReadOnlyList<ExcludeUnitsDefinition> unitInstanceExclusions);
     protected abstract IOptionalWithDiagnostics<TDefinition> ValidateGroup(TGroup groupType, VectorProcessingData processingData, IUnitPopulation unitPopulation, IScalarPopulation scalarPopulation, IVectorPopulation vectorPopulation);
 
     private static IEnumerable<IUnitInstance> GetUnitInstanceInclusions(TGroup groupType, IVectorPopulation vectorPopulation, IEnumerable<IUnitInstance> initialUnits, IUnitType unit, Func<IVectorGroupSpecializationType, bool> shouldInherit, bool onlyInherited = false)

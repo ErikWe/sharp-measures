@@ -6,10 +6,10 @@ using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Quantities;
 using SharpMeasures.Generators.Quantities.Parsing.Contexts.Validation;
-using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
+using SharpMeasures.Generators.Quantities.Parsing.QuantityOperation;
 using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
 using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
-using SharpMeasures.Generators.Quantities.Parsing.ProcessedQuantity;
+using SharpMeasures.Generators.Quantities.Parsing.QuantityProcess;
 using SharpMeasures.Generators.Scalars.Abstraction;
 using SharpMeasures.Generators.Scalars.Parsing.Contexts.Validation;
 using SharpMeasures.Generators.Scalars.Parsing.ConvertibleScalar;
@@ -81,26 +81,26 @@ internal abstract class AScalarValidator<TScalar, TDefinition>
         var allUnitBaseInstances = inheritedUnitInstanceBases.Concat(definedUnitInstancesBases).ToList();
         var allUnitInstances = inheritedUnitInstances.Concat(definedUnitInstances).ToList();
 
-        var derivations = ValidateDerivations(scalarType, scalarPopulation, vectorPopulation);
+        var operations = ValidateOperations(scalarType, scalarPopulation, vectorPopulation);
         var constants = ValidateConstants(scalarType, unit, allUnitBaseInstances, allUnitInstances, scalarPopulation);
         var conversions = ValidateConversions(scalarType, scalarPopulation);
 
-        TScalar product = ProduceResult(scalarType.Type, scalar.Result, derivations.Result, scalarType.Processes, constants.Result, conversions.Result, unitBaseInstanceInclusions.Result, unitBaseInstanceExclusions.Result, unitInstanceInclusions.Result, unitInstanceExclusions.Result);
-        var allDiagnostics = scalar.Concat(derivations).Concat(constants).Concat(conversions).Concat(unitBaseInstanceInclusions).Concat(unitBaseInstanceExclusions).Concat(unitInstanceInclusions).Concat(unitInstanceExclusions);
+        TScalar product = ProduceResult(scalarType.Type, scalar.Result, operations.Result, scalarType.Processes, constants.Result, conversions.Result, unitBaseInstanceInclusions.Result, unitBaseInstanceExclusions.Result, unitInstanceInclusions.Result, unitInstanceExclusions.Result);
+        var allDiagnostics = scalar.Concat(operations).Concat(constants).Concat(conversions).Concat(unitBaseInstanceInclusions).Concat(unitBaseInstanceExclusions).Concat(unitInstanceInclusions).Concat(unitInstanceExclusions);
 
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }
 
-    protected abstract TScalar ProduceResult(DefinedType type, TDefinition definition, IReadOnlyList<DerivedQuantityDefinition> derivations, IReadOnlyList<ProcessedQuantityDefinition> processes, IReadOnlyList<ScalarConstantDefinition> constants, IReadOnlyList<ConvertibleScalarDefinition> conversions,
+    protected abstract TScalar ProduceResult(DefinedType type, TDefinition definition, IReadOnlyList<QuantityOperationDefinition> operations, IReadOnlyList<QuantityProcessDefinition> processes, IReadOnlyList<ScalarConstantDefinition> constants, IReadOnlyList<ConvertibleScalarDefinition> conversions,
         IReadOnlyList<IncludeUnitBasesDefinition> unitBaseInstanceInclusions, IReadOnlyList<ExcludeUnitBasesDefinition> unitBaseInstanceExclusions, IReadOnlyList<IncludeUnitsDefinition> unitInstanceInclusions, IReadOnlyList<ExcludeUnitsDefinition> unitInstanceExclusions);
 
     protected abstract IOptionalWithDiagnostics<TDefinition> ValidateScalar(TScalar scalarType, ScalarProcessingData processingData, IUnitPopulation unitPopulation, IScalarPopulation scalarPopulation, IVectorPopulation vectorPopulation);
 
-    private IResultWithDiagnostics<IReadOnlyList<DerivedQuantityDefinition>> ValidateDerivations(TScalar scalarType, IScalarPopulation scalarPopulation, IVectorPopulation vectorPopulation)
+    private IResultWithDiagnostics<IReadOnlyList<QuantityOperationDefinition>> ValidateOperations(TScalar scalarType, IScalarPopulation scalarPopulation, IVectorPopulation vectorPopulation)
     {
-        var validationContext = new DerivedQuantityValidationContext(scalarType.Type, scalarPopulation, vectorPopulation);
+        var validationContext = new QuantityOperationValidationContext(scalarType.Type, QuantityType.Scalar, Array.Empty<int>(), scalarPopulation, vectorPopulation);
 
-        return ProcessingFilter.Create(DerivedQuantityValidator).Filter(validationContext, scalarType.Derivations);
+        return ValidityFilter.Create(QuantityOperationValidator).Filter(validationContext, scalarType.Operations);
     }
 
     private IResultWithDiagnostics<IReadOnlyList<ScalarConstantDefinition>> ValidateConstants(TScalar scalarType, IUnitType unit, IEnumerable<IUnitInstance> includedBases, IEnumerable<IUnitInstance> includedUnits, IScalarPopulation scalarPopulation)
@@ -232,7 +232,7 @@ internal abstract class AScalarValidator<TScalar, TDefinition>
         }
     }
 
-    private DerivedQuantityValidator DerivedQuantityValidator => new(DiagnosticsStrategy.DerivedQuantityDiagnostics);
+    private QuantityOperationValidator QuantityOperationValidator => new(DiagnosticsStrategy.QuantityOperationDiagnostics);
     private ScalarConstantValidator ScalarConstantValidator => new(DiagnosticsStrategy.ScalarConstantDiagnostics);
     private ConvertibleScalarFilterer ConvertibleScalarFilterer => new(DiagnosticsStrategy.ConvertibleScalarDiagnostics);
 

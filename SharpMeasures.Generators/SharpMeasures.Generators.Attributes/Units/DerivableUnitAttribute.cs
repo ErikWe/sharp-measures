@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures.Generators.Units;
+﻿namespace SharpMeasures.Generators;
 
 using System;
 
@@ -15,7 +15,7 @@ public sealed class DerivableUnitAttribute : Attribute
     public string Expression { get; }
     /// <summary>The unit may be derived from instances of these units, according to <see cref="Expression"/>.</summary>
     public Type[] Signature { get; }
-    /// <summary>Whether to also allow derivation using permutations of the signature. The default behaviour is <see langword="false"/>.</summary>
+    /// <summary>Dictates whether to also allow derivation using permutations of the signature. The default behaviour is <see langword="false"/>.</summary>
     /// <remarks>This does not apply to deriving units through <see cref="DerivedUnitInstanceAttribute"/>.</remarks>
     public bool Permutations { get; init; }
 

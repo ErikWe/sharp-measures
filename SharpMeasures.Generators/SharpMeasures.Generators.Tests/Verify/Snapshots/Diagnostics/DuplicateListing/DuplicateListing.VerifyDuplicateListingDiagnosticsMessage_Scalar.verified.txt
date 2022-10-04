@@ -4,7 +4,7 @@
     Title: Item has already been listed,
     Severity: Warning,
     WarningLevel: 1,
-    Location: : (4,44)-(4,50),
+    Location: : (2,44)-(2,50),
     Description: ,
     HelpLink: ,
     MessageFormat: The {0} {1} has already been listed,

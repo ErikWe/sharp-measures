@@ -4,7 +4,7 @@
     Title: Invalid vector dimension,
     Severity: Error,
     WarningLevel: 0,
-    Location: : (4,1)-(4,20),
+    Location: : (2,1)-(2,15),
     Description: ,
     HelpLink: ,
     MessageFormat: Interpreted the dimension of {0} as {1}, which is not a valid dimension - one of [2, 3, 4] was expected,

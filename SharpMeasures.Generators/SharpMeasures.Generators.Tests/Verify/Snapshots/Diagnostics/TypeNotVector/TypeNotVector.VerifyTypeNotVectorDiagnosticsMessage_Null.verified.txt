@@ -4,11 +4,11 @@
     Title: Expected a vector quantity,
     Severity: Error,
     WarningLevel: 0,
-    Location: : (3,65)-(3,69),
+    Location: : (2,60)-(2,64),
     Description: ,
     HelpLink: ,
-    MessageFormat: Expected a type decorated with the attribute SharpMeasures.Generators.Vectors.SharpMeasuresVector,
-    Message: Expected a type decorated with the attribute SharpMeasures.Generators.Vectors.SharpMeasuresVector,
+    MessageFormat: Expected a type decorated with the attribute SharpMeasures.Generators.VectorQuantity,
+    Message: Expected a type decorated with the attribute SharpMeasures.Generators.VectorQuantity,
     Category: Usage,
     CustomTags: []
   }

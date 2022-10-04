@@ -21,20 +21,19 @@ public class UnmatchedDerivationExpressionUnit
     private static IReadOnlyCollection<string> UnmatchedDerivationExpressionUnitDiagnostics { get; } = new string[] { DiagnosticIDs.UnmatchedDerivationExpressionUnit };
 
     private static string Text => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
 
-        [SharpMeasuresScalar(typeof(UnitOfFrequency))]
+        [ScalarQuantity(typeof(UnitOfFrequency))]
         public partial class Frequency { }
 
-        [SharpMeasuresScalar(typeof(UnitOfTime))]
+        [ScalarQuantity(typeof(UnitOfTime))]
         public partial class Time { }
 
-        [SharpMeasuresUnit(typeof(Frequency))]
+        [Unit(typeof(Frequency))]
         public partial class UnitOfFrequency { }
 
         [DerivableUnit("{0} * {1}", new[] { typeof(UnitOfFrequency) })]
-        [SharpMeasuresUnit(typeof(Time))]
+        [Unit(typeof(Time))]
         public partial class UnitOfTime { }
         """;
 
@@ -48,19 +47,18 @@ public class UnmatchedDerivationExpressionUnit
     private static GeneratorVerifier Identical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(IdenticalText);
 
     private static string IdenticalText => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
 
-        [SharpMeasuresScalar(typeof(UnitOfFrequency))]
+        [ScalarQuantity(typeof(UnitOfFrequency))]
         public partial class Frequency { }
 
-        [SharpMeasuresScalar(typeof(UnitOfTime))]
+        [ScalarQuantity(typeof(UnitOfTime))]
         public partial class Time { }
 
-        [SharpMeasuresUnit(typeof(Frequency))]
+        [Unit(typeof(Frequency))]
         public partial class UnitOfFrequency { }
 
-        [SharpMeasuresUnit(typeof(Time))]
+        [Unit(typeof(Time))]
         public partial class UnitOfTime { }
         """;
 }

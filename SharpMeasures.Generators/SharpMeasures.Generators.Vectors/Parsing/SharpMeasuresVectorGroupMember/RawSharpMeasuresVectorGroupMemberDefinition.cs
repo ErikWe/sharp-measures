@@ -8,10 +8,10 @@ internal sealed record class RawSharpMeasuresVectorGroupMemberDefinition : ARawA
     public static RawSharpMeasuresVectorGroupMemberDefinition FromSymbolic(SymbolicSharpMeasuresVectorGroupMemberDefinition symbolicDefinition) => new RawSharpMeasuresVectorGroupMemberDefinition(symbolicDefinition.Locations) with
     {
         VectorGroup = symbolicDefinition.VectorGroup?.AsNamedType(),
-        InheritDerivations = symbolicDefinition.InheritDerivations,
+        InheritDerivations = symbolicDefinition.InheritOperations,
         InheritConversions = symbolicDefinition.InheritConversions,
         InheritUnits = symbolicDefinition.InheritUnits,
-        InheritDerivationsFromMembers = symbolicDefinition.InheritDerivationsFromMembers,
+        InheritDerivationsFromMembers = symbolicDefinition.InheritOperationsFromMembers,
         InheritProcessesFromMembers = symbolicDefinition.InheritProcessesFromMembers,
         InheritConstantsFromMembers = symbolicDefinition.InheritConstantsFromMembers,
         InheritConversionsFromMembers = symbolicDefinition.InheritConversionsFromMembers,

@@ -59,7 +59,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.InvalidConstantName,
         title: "Invalid name of constant",
-        messageFormat: "The name of the constant must be defined",
+        messageFormat: "Expected a name for the constant",
         category: "Naming",
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true
@@ -232,101 +232,93 @@ public static partial class DiagnosticRules
         customTags: WellKnownDiagnosticTags.Unnecessary
     );
 
-    public static readonly DiagnosticDescriptor DerivationOperatorsIncompatibleExpression = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor InvalidQuantityOperationName = new DiagnosticDescriptor
     (
-        id: DiagnosticIDs.DerivationOperatorsIncompatibleExpression,
-        title: "Expression cannot be implemented with operators",
-        messageFormat: "Quantity derivation through operators require the expression to involve at most two quantities, and one of the trivial operators { +, -, *, / }. Modify the expression or disable operator implementation.",
+        id: DiagnosticIDs.InvalidQuantityOperationName,
+        title: "Invalid name of quantity operation",
+        messageFormat: "Expected a name for the quantity operation. Provide a name, or use the default name.",
+        category: "Naming",
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true
+    );
+
+    public static readonly DiagnosticDescriptor QuantityOperationMethodDisabledButNameSpecified = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.QuantityOperationMethodDisabledButNameSpecified,
+        title: "Quantity operation name redundant",
+        messageFormat: "The quantity operation is not implemented as a method, making the name redundant",
+        category: "Naming",
+        defaultSeverity: DiagnosticSeverity.Info,
+        isEnabledByDefault: true,
+        customTags: WellKnownDiagnosticTags.Unnecessary
+    );
+
+    public static readonly DiagnosticDescriptor DuplicateQuantityOperationOperator = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.DuplicateQuantityOperation,
+        title: "Duplicate quantity operation",
+        messageFormat: "{0} already defines an identical operator",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true
     );
 
-    public static readonly DiagnosticDescriptor UnmatchedDerivationExpressionQuantity = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor DuplicateQuantityOperationMethod = new DiagnosticDescriptor
     (
-        id: DiagnosticIDs.UnmatchedDerivationExpressionQuantity,
-        title: "Unmatched derivation expression quantity",
-        messageFormat: "The signature does not contain a quantity with index {0}",
+        id: DiagnosticIDs.DuplicateQuantityOperation,
+        title: "Duplicate quantity operation",
+        messageFormat: "{0} already defines a quantity operation \"{1}\" with the same signature",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true
     );
 
-    public static readonly DiagnosticDescriptor ExpressionDoesNotIncludeQuantity = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor InvalidQuantityOperation = new DiagnosticDescriptor
     (
-        id: DiagnosticIDs.ExpressionDoesNotIncludeQuantity,
-        title: "Quantity is not included in expression",
-        messageFormat: $"The expression does not include the quantity with index {{0}}",
+        id: DiagnosticIDs.InvalidQuantityOperation,
+        title: "Invalid quantity operation",
+        messageFormat: "The operation could not be interpreted. This could be caused by for example trying to add a scalar quantity and a vector quantity.",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true
     );
 
-    public static readonly DiagnosticDescriptor MalformedDerivationExpression = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor QuantityOperationNotMirrorable = new DiagnosticDescriptor
     (
-        id: DiagnosticIDs.MalformedDerivationExpression,
-        title: "Expression could not be interpreted",
-        messageFormat: "The expression could not be interpreted - separate each element by one of the operators { +, -, *, /, ., x }",
+        id: DiagnosticIDs.QuantityOperationNotMirrorable,
+        title: "Quantity operation cannot be mirrored",
+        messageFormat: "The operation cannot be mirrored. This is likely caused by a symmetric operation.",
         category: "Usage",
-        defaultSeverity: DiagnosticSeverity.Error,
+        defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true
     );
 
-    public static readonly DiagnosticDescriptor DerivationExpressionContainsConstant = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor QuantityOperationMethodNotMirrorable = new DiagnosticDescriptor
     (
-        id: DiagnosticIDs.DerivationExpressionContainsConstant,
-        title: "Expression contains constant",
-        messageFormat: "The expression may not contain constants",
+        id: DiagnosticIDs.QuantityOperationMethodNotMirrorable,
+        title: "Quantity operation method cannot be mirrored",
+        messageFormat: "The method describing the operation cannot be mirrored. This is likely caused by a symmetric or cummutative operation.",
         category: "Usage",
-        defaultSeverity: DiagnosticSeverity.Error,
+        defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true
     );
 
-    public static readonly DiagnosticDescriptor IncompatibleQuantitiesInDerivation = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor QuantityOperationMirrorDisabledButNameSpecified = new DiagnosticDescriptor
     (
-        id: DiagnosticIDs.IncompatibleQuantitiesInDerivation,
-        title: "Derivation contains incompatible quantities",
-        messageFormat: "The combination of expression and signature does not yield a valid result",
+        id: DiagnosticIDs.QuantityOperationMirrorDisabledButNameSpecified,
+        title: "Quantity operation not mirrored",
+        messageFormat: "The operation is not mirrored, making the mirrored name redundant",
         category: "Usage",
-        defaultSeverity: DiagnosticSeverity.Error,
-        isEnabledByDefault: true
-    );
-
-    public static readonly DiagnosticDescriptor DerivationUnexpectedlyResultInScalar = new DiagnosticDescriptor
-    (
-        id: DiagnosticIDs.UnexpectedResultFromDerivation,
-        title: "Derivation unexpectedly results in a scalar quantity",
-        messageFormat: "The derivation results in a scalar quantity, but a vector quantity was expected",
-        category: "Usage",
-        defaultSeverity: DiagnosticSeverity.Error,
-        isEnabledByDefault: true
-    );
-
-    public static readonly DiagnosticDescriptor DerivationUnexpectedlyResultInVector = new DiagnosticDescriptor
-    (
-        id: DiagnosticIDs.UnexpectedResultFromDerivation,
-        title: "Derivation unexpectedly results in a vector quantity",
-        messageFormat: "The derivation results in a vector quantity, but a scalar quantity was expected",
-        category: "Usage",
-        defaultSeverity: DiagnosticSeverity.Error,
-        isEnabledByDefault: true
-    );
-
-    public static readonly DiagnosticDescriptor DerivationResultsInNonOverlappingDimension = new DiagnosticDescriptor
-    (
-        id: DiagnosticIDs.UnexpectedResultFromDerivation,
-        title: "Unexpected dimension of result from derivation",
-        messageFormat: "The dimension of the resulting quantity never overlaps with the dimensions supported by {0}",
-        category: "Usage",
-        defaultSeverity: DiagnosticSeverity.Error,
-        isEnabledByDefault: true
+        defaultSeverity: DiagnosticSeverity.Info,
+        isEnabledByDefault: true,
+        customTags: WellKnownDiagnosticTags.Unnecessary
     );
 
     public static readonly DiagnosticDescriptor InvalidProcessName = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.InvalidProcessName,
-        title: "Invalid name of process",
-        messageFormat: "The name of the process must be defined",
+        title: "Invalid name of quantity process",
+        messageFormat: "Expected a name for the quantity process",
         category: "Naming",
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true
@@ -335,7 +327,7 @@ public static partial class DiagnosticRules
     public static readonly DiagnosticDescriptor DuplicateProcessName = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.DuplicateProcessName,
-        title: "Duplicate name of process",
+        title: "Duplicate name of quantity process",
         messageFormat: "{0} already defines a process \"{1}\"",
         category: "Naming",
         defaultSeverity: DiagnosticSeverity.Error,

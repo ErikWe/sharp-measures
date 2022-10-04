@@ -1,6 +1,6 @@
 ﻿namespace SharpMeasures;
 
-using SharpMeasures.Generators.Units;
+using SharpMeasures.Generators;
 
 [DerivedUnitInstance("Joule", "[*]s", "Force * Length", "Newton", "Metre")]
 [PrefixedUnitInstance("Kilojoule", "[*]s", "Joule", MetricPrefixName.Kilo)]
@@ -11,5 +11,5 @@ using SharpMeasures.Generators.Units;
 [PrefixedUnitInstance("Kilocalorie", "[*]s", "Calorie", MetricPrefixName.Kilo)]
 [DerivableUnit("Force * Length", "{0} * {1}", typeof(UnitOfForce), typeof(UnitOfLength), Permutations = true)]
 [DerivableUnit("Power * Time", "{0} * {1}", typeof(UnitOfPower), typeof(UnitOfTime), Permutations = true)]
-[SharpMeasuresUnit(typeof(Energy))]
+[Unit(typeof(Energy))]
 public readonly partial record struct UnitOfEnergy { }

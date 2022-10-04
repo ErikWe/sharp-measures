@@ -4,7 +4,7 @@
     Title: Invalid name for multiples of constant,
     Severity: Error,
     WarningLevel: 0,
-    Location: : (3,61)-(3,65),
+    Location: : (2,61)-(2,65),
     Description: ,
     HelpLink: ,
     MessageFormat: The name for multiples of "{0}" must be defined. Use the default value, write the name in full, or use a suitable notation from SharpMeasures.Generators.CommonPluralNotation.,

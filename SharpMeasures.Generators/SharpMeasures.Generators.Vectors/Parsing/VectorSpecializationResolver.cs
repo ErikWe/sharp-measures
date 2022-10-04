@@ -33,10 +33,10 @@ internal static class VectorSpecializationResolver
             return new Optional<ResolvedVectorType>();
         }
 
-        var allConstants = CollectItems(vectorType, vectorPopulation, static (vector) => vector.Constants, static (vector) => vector.Definition.InheritConstants);
-
-        var inheritedDerivations = CollectItems(vectorType, vectorPopulation, static (vector) => vector.Derivations, static (vector) => vector.Definition.InheritDerivations, onlyInherited: true);
+        var inheritedOperations = CollectItems(vectorType, vectorPopulation, static (vector) => vector.Operations, static (vector) => vector.Definition.InheritOperations, onlyInherited: true);
+        var inheritedVectorOperations = CollectItems(vectorType, vectorPopulation, static (vector) => vector.VectorOperations, static (vector) => vector.Definition.InheritOperations, onlyInherited: true);
         var inheritedProcesses = CollectItems(vectorType, vectorPopulation, static (vector) => vector.Processes, static (vector) => vector.Definition.InheritProcesses, onlyInherited: true);
+        var inheritedConstants = CollectItems(vectorType, vectorPopulation, static (vector) => vector.Constants, static (vector) => vector.Definition.InheritConstants, onlyInherited: true);
         var inheritedConversions = CollectItems(vectorType, vectorPopulation, static (vector) => vector.Conversions, static (vector) => vector.Definition.InheritConversions, onlyInherited: true);
 
         var includedUnitInstances = ResolveUnitInstanceInclusions(vectorType, vectorPopulation, unit);
@@ -52,8 +52,8 @@ internal static class VectorSpecializationResolver
 
         var generateDocumentation = RecursivelySearchForDefined(vectorType, vectorPopulation, static (vector) => vector.Definition.GenerateDocumentation);
 
-        return new ResolvedVectorType(vectorType.Type, vectorBase.Definition.Dimension, group: null, unit.Type.AsNamedType(), vectorType.Definition.OriginalQuantity, vectorType.Definition.ForwardsCastOperatorBehaviour, vectorType.Definition.BackwardsCastOperatorBehaviour, scalar, implementSum!.Value,
-            implementDifference!.Value, difference, defaultUnitInstanceName, defaultUnitInstanceSymbol, vectorType.Derivations, vectorType.Processes, allConstants, vectorType.Conversions, inheritedDerivations, inheritedProcesses, inheritedConversions, includedUnitInstances, generateDocumentation);
+        return new ResolvedVectorType(vectorType.Type, vectorBase.Definition.Dimension, group: null, unit.Type.AsNamedType(), vectorType.Definition.OriginalQuantity, vectorType.Definition.ForwardsCastOperatorBehaviour, vectorType.Definition.BackwardsCastOperatorBehaviour, scalar, implementSum!.Value, implementDifference!.Value, difference,
+            defaultUnitInstanceName, defaultUnitInstanceSymbol, vectorType.Operations, vectorType.VectorOperations, vectorType.Processes, vectorType.Constants, vectorType.Conversions, inheritedOperations, inheritedVectorOperations, inheritedProcesses, inheritedConstants, inheritedConversions, includedUnitInstances, generateDocumentation);
     }
 
     private static NamedType? ResolveDifference(VectorSpecializationType vectorType, IVectorPopulation vectorPopulation)

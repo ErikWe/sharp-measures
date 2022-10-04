@@ -1,6 +1,11 @@
 ﻿namespace SharpMeasures;
 
-using SharpMeasures.Generators.Scalars;
+using SharpMeasures.Generators;
 
-[SharpMeasuresScalar(typeof(UnitOfMassFlowRate))]
+[ScalarQuantity(typeof(UnitOfMassFlowRate))]
+public readonly partial record struct MassFlowRate { }
+
+[QuantityOperation(typeof(Mass), typeof(Time), OperatorType.Multiplication)]
+[QuantityOperation(typeof(Mass), typeof(Frequency), OperatorType.Division)]
+[QuantityOperation(typeof(Frequency), typeof(Mass), OperatorType.Division)]
 public readonly partial record struct MassFlowRate { }

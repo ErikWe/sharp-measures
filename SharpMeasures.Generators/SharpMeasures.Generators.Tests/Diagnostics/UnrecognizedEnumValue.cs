@@ -63,7 +63,23 @@ public class UnrecognizedEnumValue
 
     [Theory]
     [MemberData(nameof(UnrecognizedEnumValues))]
-    public void DerivedQuantity(SourceSubtext operatorImplementation) => AssertDerivedQuantity(operatorImplementation);
+    public void QuantityOperation_Implementation(SourceSubtext implementation) => AssertQuantityOperation_Implementation(implementation);
+
+    [Theory]
+    [MemberData(nameof(UnrecognizedEnumValues))]
+    public void QuantityOperation_OperatorType(SourceSubtext operatorType) => AssertQuantityOperation_OperatorType(operatorType);
+
+    [Theory]
+    [MemberData(nameof(UnrecognizedEnumValues))]
+    public void QuantityOperation_Position(SourceSubtext position) => AssertQuantityOperation_Position(position);
+
+    [Theory]
+    [MemberData(nameof(UnrecognizedEnumValues))]
+    public void VectorOperation_OperatorType(SourceSubtext operatorType) => AssertVectorOperation_OperatorType(operatorType);
+
+    [Theory]
+    [MemberData(nameof(UnrecognizedEnumValues))]
+    public void VectorOperation_Position(SourceSubtext position) => AssertVectorOperation_Position(position);
 
     public static IEnumerable<object[]> UnrecognizedEnumValues => new object[][]
     {
@@ -78,15 +94,14 @@ public class UnrecognizedEnumValue
     private static IReadOnlyCollection<string> UnrecognizedEnumValueDiagnostics { get; } = new string[] { DiagnosticIDs.UnrecognizedEnumValue };
 
     private static string PrefixedUnitText(SourceSubtext prefix, string type) => $$"""
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
             
         [FixedUnitInstance("Metre", "Metres")]
         [PrefixedUnitInstance("Kilometre", "Kilometres", "Metre", ({{type}}){{prefix}})]
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
@@ -100,18 +115,15 @@ public class UnrecognizedEnumValue
 
     private static string CastOperatorBehaviourText(SourceSubtext castOperatorBehaviour) => $$"""
         using SharpMeasures.Generators;
-        using SharpMeasures.Generators.Quantities;
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
 
         [ConvertibleQuantity(typeof(Length), CastOperatorBehaviour = (ConversionOperatorBehaviour){{castOperatorBehaviour}})]
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Distance { }
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
@@ -125,16 +137,14 @@ public class UnrecognizedEnumValue
 
     private static string CastOperatorBehaviourText_SpecializedScalar(SourceSubtext castOperatorBehaviour, string property) => $$"""
         using SharpMeasures.Generators;
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
 
-        [SpecializedSharpMeasuresScalar(typeof(Length), {{property}} = (ConversionOperatorBehaviour){{castOperatorBehaviour}})]
+        [SpecializedScalarQuantity(typeof(Length), {{property}} = (ConversionOperatorBehaviour){{castOperatorBehaviour}})]
         public partial class Distance { }
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
@@ -148,20 +158,17 @@ public class UnrecognizedEnumValue
 
     private static string CastOperatorBehaviourText_SpecializedVector(SourceSubtext castOperatorBehaviour, string property) => $$"""
         using SharpMeasures.Generators;
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Vectors;
 
-        [SpecializedSharpMeasuresVector(typeof(Position3), {{property}} = (ConversionOperatorBehaviour){{castOperatorBehaviour}})]
+        [SpecializedVectorQuantity(typeof(Position3), {{property}} = (ConversionOperatorBehaviour){{castOperatorBehaviour}})]
         public partial class Displacement3 { }
 
-        [SharpMeasuresVector(typeof(UnitOfLength))]
+        [VectorQuantity(typeof(UnitOfLength))]
         public partial class Position3 { }
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
@@ -175,20 +182,17 @@ public class UnrecognizedEnumValue
 
     private static string CastOperatorBehaviourText_SpecializedVectorGroup(SourceSubtext castOperatorBehaviour, string property) => $$"""
         using SharpMeasures.Generators;
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Vectors;
 
-        [SpecializedSharpMeasuresVectorGroup(typeof(Position), {{property}} = (ConversionOperatorBehaviour){{castOperatorBehaviour}})]
+        [SpecializedVectorGroup(typeof(Position), {{property}} = (ConversionOperatorBehaviour){{castOperatorBehaviour}})]
         public static partial class Displacement { }
 
-        [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
+        [VectorGroup(typeof(UnitOfLength))]
         public static partial class Position { }
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
@@ -202,16 +206,13 @@ public class UnrecognizedEnumValue
 
     private static string InclusionStackingModeText_Unit(SourceSubtext inclusionStackingMode) => $$"""
         using SharpMeasures.Generators;
-        using SharpMeasures.Generators.Quantities;
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
 
         [IncludeUnits("Metre", StackingMode = (InclusionStackingMode){{inclusionStackingMode}})]
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
 
         [FixedUnitInstance("Metre", "Metres")]
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
@@ -225,15 +226,13 @@ public class UnrecognizedEnumValue
 
     private static string InclusionStackingModeText_Base(SourceSubtext inclusionStackingMode) => $$"""
         using SharpMeasures.Generators;
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
 
         [IncludeUnitBases("Metre", StackingMode = (InclusionStackingMode){{inclusionStackingMode}})]
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
 
         [FixedUnitInstance("Metre", "Metres")]
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
@@ -245,26 +244,105 @@ public class UnrecognizedEnumValue
         return AssertExactlyUnrecognizedEnumValueDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(InclusionStackingModeIdentical_Base);
     }
 
-    private static string DerivedQuantityText(SourceSubtext operatorImplementation) => $$"""
-        using SharpMeasures.Generators.Quantities;
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+    private static string QuantityOperationText_Implementation(SourceSubtext implementation) => $$"""
+        using SharpMeasures.Generators;
         
-        [DerivedQuantity("{0}", typeof(Length), OperatorImplementation = (DerivationOperatorImplementation){{operatorImplementation}})]
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [QuantityOperation(typeof(Length), typeof(Length), OperatorType.Addition, Implementation = (QuantityOperationImplementation){{implementation}})]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
         
-        [FixedUnitInstance("Metre", "Metres")]
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
-    private static GeneratorVerifier AssertDerivedQuantity(SourceSubtext inclusionStackingMode)
+    private static GeneratorVerifier AssertQuantityOperation_Implementation(SourceSubtext implementation)
     {
-        var source = DerivedQuantityText(inclusionStackingMode);
-        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, inclusionStackingMode.Context.With(outerPrefix: "OperatorImplementation = (DerivationOperatorImplementation)"));
+        var source = QuantityOperationText_Implementation(implementation);
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, implementation.Context.With(outerPrefix: "Implementation = (QuantityOperationImplementation)"));
 
-        return AssertExactlyUnrecognizedEnumValueDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(DerivedQuantityIdentical);
+        return AssertExactlyUnrecognizedEnumValueDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(QuantityOperationIdentical);
+    }
+
+    private static string QuantityOperationText_OperatorType(SourceSubtext operatorType) => $$"""
+        using SharpMeasures.Generators;
+        
+        [QuantityOperation(typeof(Length), typeof(Length), (OperatorType){{operatorType}})]
+        [ScalarQuantity(typeof(UnitOfLength))]
+        public partial class Length { }
+        
+        [Unit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static GeneratorVerifier AssertQuantityOperation_OperatorType(SourceSubtext operatorType)
+    {
+        var source = QuantityOperationText_OperatorType(operatorType);
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, operatorType.Context.With(outerPrefix: "(OperatorType)"));
+
+        return AssertExactlyUnrecognizedEnumValueDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(QuantityOperationIdentical);
+    }
+
+    private static string QuantityOperationText_Position(SourceSubtext position) => $$"""
+        using SharpMeasures.Generators;
+        
+        [QuantityOperation(typeof(Length), typeof(Length), OperatorType.Addition, (OperatorPosition){{position}})]
+        [ScalarQuantity(typeof(UnitOfLength))]
+        public partial class Length { }
+        
+        [Unit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static GeneratorVerifier AssertQuantityOperation_Position(SourceSubtext position)
+    {
+        var source = QuantityOperationText_Position(position);
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, position.Context.With(outerPrefix: "(OperatorPosition)"));
+
+        return AssertExactlyUnrecognizedEnumValueDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(QuantityOperationIdentical);
+    }
+
+    private static string VectorOperationText_OperatorType(SourceSubtext operatorType) => $$"""
+        using SharpMeasures.Generators;
+        
+        [VectorOperation(typeof(Length), typeof(Position3), (VectorOperatorType){{operatorType}})]
+        [VectorQuantity(typeof(UnitOfLength))]
+        public partial class Position3 { }
+        
+        [ScalarQuantity(typeof(UnitOfLength))]
+        public partial class Length { }
+        
+        [Unit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static GeneratorVerifier AssertVectorOperation_OperatorType(SourceSubtext operatorType)
+    {
+        var source = VectorOperationText_OperatorType(operatorType);
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, operatorType.Context.With(outerPrefix: "(VectorOperatorType)"));
+
+        return AssertExactlyUnrecognizedEnumValueDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(VectorOperationIdentical);
+    }
+
+    private static string VectorOperationText_Position(SourceSubtext position) => $$"""
+        using SharpMeasures.Generators;
+        
+        [VectorOperation(typeof(Length), typeof(Position3), VectorOperatorType.Dot, (OperatorPosition){{position}})]
+        [VectorQuantity(typeof(UnitOfLength))]
+        public partial class Position3 { }
+
+        [ScalarQuantity(typeof(UnitOfLength))]
+        public partial class Length { }
+        
+        [Unit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static GeneratorVerifier AssertVectorOperation_Position(SourceSubtext position)
+    {
+        var source = VectorOperationText_Position(position);
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, position.Context.With(outerPrefix: "(OperatorPosition)"));
+
+        return AssertExactlyUnrecognizedEnumValueDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(VectorOperationIdentical);
     }
 
     private static GeneratorVerifier PrefixUnitIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(PrefixedUnitIdenticalText);
@@ -274,113 +352,111 @@ public class UnrecognizedEnumValue
     private static GeneratorVerifier CastOperatorBehaviourIdentical_SpecializedVectorGroup => GeneratorVerifier.Construct<SharpMeasuresGenerator>(CastOperatorBehaviourIdenticalText_SpecializedVectorGroup);
     private static GeneratorVerifier InclusionStackingModeIdentical_Unit => GeneratorVerifier.Construct<SharpMeasuresGenerator>(InclusionStackingModeIdenticalText_Unit);
     private static GeneratorVerifier InclusionStackingModeIdentical_Base => GeneratorVerifier.Construct<SharpMeasuresGenerator>(InclusionStackingModeIdenticalText_Base);
-    private static GeneratorVerifier DerivedQuantityIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(DerivedQuantityIdenticalText);
+    private static GeneratorVerifier QuantityOperationIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(QuantityOperationIdenticalText);
+    private static GeneratorVerifier VectorOperationIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(VectorOperationIdenticalText);
 
     private static string PrefixedUnitIdenticalText => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
             
         [FixedUnitInstance("Metre", "Metres")]
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
     private static string CastOperatorBehaviourIdenticalText => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Distance { }
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
     private static string CastOperatorBehaviourIdenticalText_SpecializedScalar => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators;
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
     private static string CastOperatorBehaviourIdenticalText_SpecializedVector => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Vectors;
+        using SharpMeasures.Generators;
 
-        [SharpMeasuresVector(typeof(UnitOfLength))]
+        [VectorQuantity(typeof(UnitOfLength))]
         public partial class Position3 { }
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
     private static string CastOperatorBehaviourIdenticalText_SpecializedVectorGroup => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Vectors;
+        using SharpMeasures.Generators;
 
-        [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
+        [VectorGroup(typeof(UnitOfLength))]
         public static partial class Position { }
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
     private static string InclusionStackingModeIdenticalText_Unit => """
         using SharpMeasures.Generators;
-        using SharpMeasures.Generators.Quantities;
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
 
         [FixedUnitInstance("Metre", "Metres")]
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
     private static string InclusionStackingModeIdenticalText_Base => """
         using SharpMeasures.Generators;
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
 
         [FixedUnitInstance("Metre", "Metres")]
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
-    private static string DerivedQuantityIdenticalText => """
-        using SharpMeasures.Generators.Quantities;
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+    private static string QuantityOperationIdenticalText => """
+        using SharpMeasures.Generators;
         
-        [DerivedQuantity("{0}", typeof(Length), OperatorImplementation = DerivationOperatorImplementation.None)]
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
         
-        [FixedUnitInstance("Metre", "Metres")]
-        [SharpMeasuresUnit(typeof(Length))]
+        [Unit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static string VectorOperationIdenticalText => """
+        using SharpMeasures.Generators;
+
+        [VectorQuantity(typeof(UnitOfLength))]
+        public partial class Position3 { }
+        
+        [ScalarQuantity(typeof(UnitOfLength))]
+        public partial class Length { }
+        
+        [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 }

@@ -1,6 +1,6 @@
 ﻿namespace SharpMeasures.Generators.Scalars.Parsing;
 
-using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
+using SharpMeasures.Generators.Quantities.Parsing.QuantityOperation;
 using SharpMeasures.Generators.Quantities.Parsing.Diagnostics.Validation;
 using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
 using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
@@ -19,7 +19,7 @@ internal interface IScalarValidationDiagnosticsStrategy
     public abstract ISharpMeasuresScalarValidationDiagnostics SharpMeasuresScalarDiagnostics { get; }
     public abstract ISpecializedSharpMeasuresScalarValidationDiagnostics SpecializedSharpMeasuresScalarDiagnostics { get; }
 
-    public abstract IDerivedQuantityValidationDiagnostics DerivedQuantityDiagnostics { get; }
+    public abstract IQuantityOperationValidationDiagnostics QuantityOperationDiagnostics { get; }
     public abstract IScalarConstantValidationDiagnostics ScalarConstantDiagnostics { get; }
     public abstract IConvertibleScalarFilteringDiagnostics ConvertibleScalarDiagnostics { get; }
 
@@ -39,7 +39,7 @@ internal static class ScalarValidationDiagnosticsStrategies
         public ISharpMeasuresScalarValidationDiagnostics SharpMeasuresScalarDiagnostics => SharpMeasuresScalarValidationDiagnostics.Instance;
         public ISpecializedSharpMeasuresScalarValidationDiagnostics SpecializedSharpMeasuresScalarDiagnostics => SpecializedSharpMeasuresScalarValidationDiagnostics.Instance;
 
-        public IDerivedQuantityValidationDiagnostics DerivedQuantityDiagnostics => DerivedQuantityValidationDiagnostics.Instance;
+        public IQuantityOperationValidationDiagnostics QuantityOperationDiagnostics => QuantityOperationValidationDiagnostics.Instance;
         public IScalarConstantValidationDiagnostics ScalarConstantDiagnostics => ScalarConstantValidationDiagnostics.Instance;
         public IConvertibleScalarFilteringDiagnostics ConvertibleScalarDiagnostics => ConvertibleScalarFilteringDiagnostics.Instance;
 
@@ -54,7 +54,7 @@ internal static class ScalarValidationDiagnosticsStrategies
         public ISharpMeasuresScalarValidationDiagnostics SharpMeasuresScalarDiagnostics => EmptySharpMeasuresScalarValidationDiagnostics.Instance;
         public ISpecializedSharpMeasuresScalarValidationDiagnostics SpecializedSharpMeasuresScalarDiagnostics => SpecializedSharpMeasuresScalarValidationDiagnostics.Instance;
 
-        public IDerivedQuantityValidationDiagnostics DerivedQuantityDiagnostics => EmptyDerivedQuantityValidationDiagnostics.Instance;
+        public IQuantityOperationValidationDiagnostics QuantityOperationDiagnostics => EmptyQuantityOperationValidationDiagnostics.Instance;
         public IScalarConstantValidationDiagnostics ScalarConstantDiagnostics => EmptyScalarConstantValidationDiagnostics.Instance;
         public IConvertibleScalarFilteringDiagnostics ConvertibleScalarDiagnostics => EmptyConvertibleScalarFilteringDiagnostics.Instance;
 

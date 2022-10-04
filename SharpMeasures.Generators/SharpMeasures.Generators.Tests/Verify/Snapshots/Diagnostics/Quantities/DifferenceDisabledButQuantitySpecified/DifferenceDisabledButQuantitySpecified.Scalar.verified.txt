@@ -4,7 +4,7 @@
     Title: Difference is disabled but a quantity was specified,
     Severity: Info,
     WarningLevel: 1,
-    Location: : (3,92)-(3,98),
+    Location: : (2,87)-(2,93),
     Description: ,
     HelpLink: ,
     MessageFormat: {0} does not implement difference, but a quantity representing difference was specified. Enable difference or do not specify the quantity.,

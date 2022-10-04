@@ -4,11 +4,11 @@
     Title: Quantity group missing root quantity,
     Severity: Error,
     WarningLevel: 0,
-    Location: : (3,1)-(3,31),
+    Location: : (2,1)-(2,26),
     Description: ,
     HelpLink: ,
     MessageFormat: Could not identify the root of the group of associated quantities. Exactly one quantity in the group should be decorated with the attribute {0}.,
-    Message: Could not identify the root of the group of associated quantities. Exactly one quantity in the group should be decorated with the attribute SharpMeasures.Generators.Scalars.SharpMeasuresScalar.,
+    Message: Could not identify the root of the group of associated quantities. Exactly one quantity in the group should be decorated with the attribute SharpMeasures.Generators.ScalarQuantity.,
     Category: Usage,
     CustomTags: []
   }
