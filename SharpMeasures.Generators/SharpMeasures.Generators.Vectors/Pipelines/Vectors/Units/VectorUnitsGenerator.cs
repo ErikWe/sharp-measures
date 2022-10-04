@@ -16,7 +16,7 @@ internal static class VectorUnitsGenerator
 
     private static Optional<DataModel> Reduce(Optional<VectorDataModel> model, CancellationToken _)
     {
-        if (model.HasValue is false || model.Value.Vector.IncludedUnitInstanceNames.Count is 0 && model.Value.Vector.Constants.Count is 0)
+        if (model.HasValue is false || model.Value.Vector.IncludedUnitInstanceNames.Count is 0 && model.Value.Vector.Constants.Count is 0 && model.Value.Vector.InheritedConstants.Count is 0)
         {
             return new Optional<DataModel>();
         }
@@ -25,6 +25,6 @@ internal static class VectorUnitsGenerator
 
         var includedUnits = model.Value.Vector.IncludedUnitInstanceNames.Select((unitName) => unit.UnitInstancesByName[unitName]).ToList();
 
-        return new DataModel(model.Value.Vector.Type, model.Value.Vector.Dimension, model.Value.Vector.Scalar, model.Value.Vector.Unit, unit.Definition.Quantity, includedUnits, model.Value.Vector.Constants, model.Value.Documentation);
+        return new DataModel(model.Value.Vector.Type, model.Value.Vector.Dimension, model.Value.Vector.Scalar, model.Value.Vector.Unit, unit.Definition.Quantity, includedUnits, model.Value.Vector.Constants.Concat(model.Value.Vector.InheritedConstants).ToList(), model.Value.Documentation);
     }
 }

@@ -16,7 +16,7 @@ internal static class UnitsGenerator
 
     private static Optional<DataModel> Reduce(Optional<Scalars.DataModel> model, CancellationToken _)
     {
-        if (model.HasValue is false || model.Value.Scalar.IncludedUnitBaseInstanceNames.Count is 0 && model.Value.Scalar.IncludedUnitInstanceNames.Count is 0 && model.Value.Scalar.Constants.Count is 0)
+        if (model.HasValue is false || model.Value.Scalar.IncludedUnitBaseInstanceNames.Count is 0 && model.Value.Scalar.IncludedUnitInstanceNames.Count is 0 && model.Value.Scalar.Constants.Count is 0 && model.Value.Scalar.InheritedConstants.Count is 0)
         {
             return new Optional<DataModel>();
         }
@@ -26,6 +26,6 @@ internal static class UnitsGenerator
         var includedUnitBaseInstances = model.Value.Scalar.IncludedUnitBaseInstanceNames.Select((unitName) => unit.UnitInstancesByName[unitName]).ToList();
         var includedUnitInstances = model.Value.Scalar.IncludedUnitInstanceNames.Select((unitName) => unit.UnitInstancesByName[unitName]).ToList();
 
-        return new DataModel(model.Value.Scalar.Type, model.Value.Scalar.Unit, unit.Definition.Quantity, includedUnitBaseInstances, includedUnitInstances, model.Value.Scalar.Constants, model.Value.Documentation);
+        return new DataModel(model.Value.Scalar.Type, model.Value.Scalar.Unit, unit.Definition.Quantity, includedUnitBaseInstances, includedUnitInstances, model.Value.Scalar.Constants.Concat(model.Value.Scalar.InheritedConstants).ToList(), model.Value.Documentation);
     }
 }
