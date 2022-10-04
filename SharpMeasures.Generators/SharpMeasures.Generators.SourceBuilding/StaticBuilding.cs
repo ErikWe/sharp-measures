@@ -82,7 +82,7 @@ public static class StaticBuilding
         DocumentationBuilding.AppendArgumentNullExceptionTagIfReferenceType(source, indentation, parameters.Select(static (parameter) => parameter.Type));
 
         StringBuilder signature = new();
-        IterativeBuilding.AppendEnumerable(signature, prefix: "(", parameters.Select(static ((NamedType Type, string Name) parameter) => $"{parameter.Type.FullyQualifiedName} {parameter.Name}"), separator: ", ", postfix: ")");
+        IterativeBuilding.AppendEnumerable(signature, prefix: "(", parameters.Select(static ((NamedType Type, string Name) parameter) => $"{parameter.Type.FullyQualifiedName} {parameter.Name}"), separator: ", ", postfix: ")", removeFixedIfEmpty: false);
 
         if (parameters.Any(static (parameter) => parameter.Type.IsReferenceType))
         {
