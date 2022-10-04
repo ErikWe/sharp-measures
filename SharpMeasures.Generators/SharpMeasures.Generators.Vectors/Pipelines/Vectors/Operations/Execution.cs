@@ -45,6 +45,7 @@ internal static class Execution
 
         private InterfaceCollector InterfaceCollector { get; }
 
+        private HashSet<(NamedType, OperatorType, NamedType)> ImplementedOperators { get; } = new();
         private HashSet<(string, NamedType)> ImplementedMethods { get; } = new();
 
         private Composer(DataModel data)
@@ -97,11 +98,19 @@ internal static class Execution
             {
                 AppendMethodVectorOperation(indentation, operation);
             }
+
+            foreach (var operation in Data.Operations)
+            {
+                if (operation.Implementation is QuantityOperationImplementation.OperatorAndMethod or QuantityOperationImplementation.Operator)
+                {
+                    AppendOperatorOperation(indentation, operation);
+                }
+            }
         }
 
         private void AppendMethodOperation(Indentation indentation, IQuantityOperation operation)
         {
-            if (GetQuantityCombinations(operation) is not (NamedType result, NamedType other))
+            if (GetQuantityCombination(operation) is not (NamedType result, NamedType other))
             {
                 return;
             }
@@ -119,7 +128,7 @@ internal static class Execution
                 StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers, fullExpression(), new[] { (other, parameterName) });
             }
 
-            if (operation.Mirror && operation.OperatorType is OperatorType.Subtraction or OperatorType.Division && ImplementedMethods.Add((operation.MirroredMethodName, other)))
+            if (operation.MirrorMethod && operation.OperatorType is OperatorType.Subtraction or OperatorType.Division && ImplementedMethods.Add((operation.MirroredMethodName, other)))
             {
                 SeparationHandler.AddIfNecessary();
 
@@ -167,7 +176,7 @@ internal static class Execution
 
         private void AppendMethodVectorOperation(Indentation indentation, IVectorOperation operation)
         {
-            if (GetVectorCombinations(operation) is not (NamedType result, NamedType other))
+            if (GetVectorCombination(operation) is not (NamedType result, NamedType other))
             {
                 return;
             }
@@ -240,6 +249,70 @@ internal static class Execution
             }
         }
 
+        private void AppendOperatorOperation(Indentation indentation, IQuantityOperation operation)
+        {
+            if (GetQuantityCombination(operation) is not (NamedType result, NamedType other))
+            {
+                return;
+            }
+
+            var operatorSymbol = GetOperatorSymbol(operation.OperatorType);
+
+            var methodNameAndModifiers = $"public static {result.FullyQualifiedName} operator {operatorSymbol}";
+
+            if (operation.Position is OperatorPosition.Left || operation.Mirror && ImplementedOperators.Add((Data.Vector.AsNamedType(), operation.OperatorType, other)))
+            {
+                SeparationHandler.AddIfNecessary();
+
+                var expression = operation.Position is OperatorPosition.Left ? fullExpression() : mirroredExpression();
+                var parameters = new[] { (Data.Vector.AsNamedType(), "a"), (other, "b") };
+
+                AppendDocumentation(indentation, Data.Documentation.OperationOperator(operation, other));
+                StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers, expression, parameters);
+            }
+
+            if (operation.Position is OperatorPosition.Right || operation.Mirror && ImplementedOperators.Add((other, operation.OperatorType, Data.Vector.AsNamedType())))
+            {
+                SeparationHandler.AddIfNecessary();
+
+                var expression = operation.Position is OperatorPosition.Right ? fullExpression() : mirroredExpression();
+                var parameters = new[] { (other, "a"), (Data.Vector.AsNamedType(), "b") };
+
+                AppendDocumentation(indentation, Data.Documentation.MirroredOperationOperator(operation, other));
+                StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers, expression, parameters);
+            }
+
+            string fullExpression()
+            {
+                if (operation.Position is OperatorPosition.Left)
+                {
+                    return $"new(a.Components {operatorSymbol} {otherExpression("b")})";
+                }
+
+                return $"new({otherExpression("a")} {operatorSymbol} b.Components)";
+            }
+
+            string mirroredExpression()
+            {
+                if (operation.Position is OperatorPosition.Right)
+                {
+                    return $"new(a.Components {operatorSymbol} {otherExpression("b")})";
+                }
+
+                return $"new({otherExpression("a")} {operatorSymbol} b.Components)";
+            }
+
+            string otherExpression(string parameterName)
+            {
+                if (other.FullyQualifiedName is "global::SharpMeasures.Scalar")
+                {
+                    return $"{parameterName}";
+                }
+
+                return $"{parameterName}.Magnitude";
+            }
+        }
+
         private static string GetOperatorSymbol(OperatorType operatorType) => operatorType switch
         {
             OperatorType.Addition => "+",
@@ -249,7 +322,7 @@ internal static class Execution
             _ => throw new NotSupportedException($"Invalid {typeof(OperatorType).Name}: {operatorType}")
         };
 
-        private (NamedType Result, NamedType Other)? GetQuantityCombinations(IQuantityOperation operation)
+        private (NamedType Result, NamedType Other)? GetQuantityCombination(IQuantityOperation operation)
         {
             if (Data.VectorPopulation.Vectors.ContainsKey(operation.Result))
             {
@@ -267,7 +340,7 @@ internal static class Execution
             return null;
         }
 
-        private (NamedType Result, NamedType Other)? GetVectorCombinations(IVectorOperation operation)
+        private (NamedType Result, NamedType Other)? GetVectorCombination(IVectorOperation operation)
         {
             if (Data.ScalarPopulation.Scalars.ContainsKey(operation.Result))
             {

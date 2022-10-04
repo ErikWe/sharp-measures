@@ -126,7 +126,7 @@ internal static class Execution
                 StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers, fullExpression(), new[] { (other, parameterName) });
             }
 
-            if (operation.Mirror && operation.OperatorType is OperatorType.Subtraction or OperatorType.Division && ImplementedMethods.Add((operation.MirroredMethodName, other)))
+            if (operation.MirrorMethod && operation.OperatorType is OperatorType.Subtraction or OperatorType.Division && ImplementedMethods.Add((operation.MirroredMethodName, other)))
             {
                 SeparationHandler.AddIfNecessary();
 
@@ -188,18 +188,24 @@ internal static class Execution
 
             if (operation.Position is OperatorPosition.Left || operation.Mirror && ImplementedOperators.Add((Data.Scalar.AsNamedType(), operation.OperatorType, other)))
             {
+                SeparationHandler.AddIfNecessary();
+
+                var expression = operation.Position is OperatorPosition.Left ? fullExpression() : mirroredExpression();
                 var parameters = new[] { (Data.Scalar.AsNamedType(), "a"), (other, "b") };
 
                 AppendDocumentation(indentation, Data.Documentation.OperationOperator(operation, other));
-                StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers, fullExpression(), parameters);
+                StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers, expression, parameters);
             }
 
             if (operation.Position is OperatorPosition.Right || operation.Mirror && ImplementedOperators.Add((other, operation.OperatorType, Data.Scalar.AsNamedType())))
             {
+                SeparationHandler.AddIfNecessary();
+
+                var expression = operation.Position is OperatorPosition.Right ? fullExpression() : mirroredExpression();
                 var parameters = new[] { (other, "a"), (Data.Scalar.AsNamedType(), "b") };
 
                 AppendDocumentation(indentation, Data.Documentation.MirroredOperationOperator(operation, other));
-                StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers, mirroredExpression(), parameters);
+                StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers, expression, parameters);
             }
 
             string fullExpression()

@@ -172,7 +172,7 @@ internal static class Execution
             SeparationHandler.AddIfNecessary();
 
             var methodNameAndModifiers = $"public {Data.Scalar.FullyQualifiedName} Add";
-            var expression = "new(Magnitude.Value + addend.Magnitude.Value";
+            var expression = "new(Magnitude.Value + addend.Magnitude.Value)";
             var parameters = new[] { (Data.Difference!.Value, "addend") };
 
             AppendDocumentation(indentation, Data.Documentation.AddDifferenceMethod());
@@ -184,7 +184,7 @@ internal static class Execution
             SeparationHandler.AddIfNecessary();
 
             var methodNameAndModifiers = $"public {Data.Scalar.FullyQualifiedName} Subtract";
-            var expression = "new(Magnitude.Value - subtrahend.Magnitude.Value";
+            var expression = "new(Magnitude.Value - subtrahend.Magnitude.Value)";
             var parameters = new[] { (Data.Difference!.Value, "subtrahend") };
 
             AppendDocumentation(indentation, Data.Documentation.SubtractDifferenceMethod());
