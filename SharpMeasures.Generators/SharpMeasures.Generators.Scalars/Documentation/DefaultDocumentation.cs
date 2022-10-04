@@ -55,10 +55,10 @@ internal sealed class DefaultDocumentation : IDocumentationStrategy, IEquatable<
             _ => constant.Value.ToString("0.####", CultureInfo.InvariantCulture)
         };
 
-        return $$"""/// <summary>The {{ScalarReference}} representing { {{value}} [<see cref="{{Unit.Type.FullyQualifiedName}}.{{constant.UnitInstanceName}}"/>] }.</summary>""";
+        return $$"""/// <summary>The {{ScalarReference}} representing { {{value}} <see cref="{{Unit.Type.FullyQualifiedName}}.{{constant.UnitInstanceName}}"/> }.</summary>""";
     }
 
-    public string UnitBase(IUnitInstance unitInstance) => $$"""/// <summary>The {{ScalarReference}} representing { 1 [<see cref="{{Unit.Type.FullyQualifiedName}}.{{unitInstance.Name}}"/>] }.</summary>""";
+    public string UnitBase(IUnitInstance unitInstance) => $$"""/// <summary>The {{ScalarReference}} representing { 1 <see cref="{{Unit.Type.FullyQualifiedName}}.{{unitInstance.Name}}"/> }.</summary>""";
 
     public string WithMagnitude() => InheritDoc;
 
@@ -87,7 +87,7 @@ internal sealed class DefaultDocumentation : IDocumentationStrategy, IEquatable<
     public string ScalarAndUnitConstructor()
     {
         var commonText = $$"""
-            /// <summary>Constructs a new {{ScalarReference}} representing { <paramref name="magnitude"/> [<paramref name="{{UnitParameterName}}"/>] }.</summary>
+            /// <summary>Constructs a new {{ScalarReference}} representing { <paramref name="magnitude"/> }, when expressed in <paramref name="{{UnitParameterName}}"/>.</summary>
             /// <param name="magnitude">The magnitude represented by the constructed {{ScalarReference}}, when expressed in <paramref name="{{UnitParameterName}}"/>.</param>
             /// <param name="{{UnitParameterName}}">The {{UnitReference}} in which <paramref name="magnitude"/> is expressed.</param>
             """;

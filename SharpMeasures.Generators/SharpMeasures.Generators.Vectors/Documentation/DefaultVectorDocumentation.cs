@@ -110,7 +110,7 @@ internal sealed class DefaultVectorDocumentation : IVectorDocumentationStrategy,
         StringBuilder componentText = new();
         IterativeBuilding.AppendEnumerable(componentText, components(), ", ");
 
-        return $$"""/// <summary>The {{ScalarReference}} representing { ({{componentText}}) [<see cref="{{Unit.FullyQualifiedName}}.{{constant.UnitInstanceName}}"/>] }.</summary>""";
+        return $$"""/// <summary>The {{ScalarReference}} representing { ({{componentText}}) <see cref="{{Unit.FullyQualifiedName}}.{{constant.UnitInstanceName}}"/> }.</summary>""";
 
         IEnumerable<string> components()
         {
@@ -150,7 +150,7 @@ internal sealed class DefaultVectorDocumentation : IVectorDocumentationStrategy,
     public string ScalarsAndUnitConstructor()
     {
         var commonText = $$"""
-            /// <summary>Constructs a new {{VectorReference}} representing { {{Texts.ParameterTuple()}} <paramref name="{{UnitParameterName}}"/> }.</summary>
+            /// <summary>Constructs a new {{VectorReference}} representing { {{Texts.ParameterTuple()}} }, when expressed in <paramref name="{{UnitParameterName}}"/>.</summary>
             {{Texts.ScalarsAndUnitConstructor()}}
             /// <param name="{{UnitParameterName}}">The {{UnitReference}} in which the magnitudes of the components are expressed.</param>
             """;
@@ -170,7 +170,7 @@ internal sealed class DefaultVectorDocumentation : IVectorDocumentationStrategy,
     public string VectorAndUnitConstructor()
     {
         var commonText = $$"""
-            /// <summary>Constructs a new {{VectorReference}} representing { <paramref name="components"/> [<paramref name="{{UnitParameterName}}"/>] }.</summary>
+            /// <summary>Constructs a new {{VectorReference}} representing { <paramref name="components"/> }, when expressed in <paramref name="{{UnitParameterName}}"/>.</summary>
             /// <param name="components">The magnitudes of the components of the constructed {{VectorReference}}, expressed in <paramref name="{{UnitParameterName}}"/>.</param>
             /// <param name="{{UnitParameterName}}">The {{UnitReference}} in which <paramref name="components"/> is expressed.</param>
             """;
