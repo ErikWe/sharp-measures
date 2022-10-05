@@ -233,7 +233,7 @@ internal sealed class DefaultVectorDocumentation : IVectorDocumentationStrategy,
 
     public string AntidirectionalConversion(NamedType vector) => $"""
         /// <summary>Converts <paramref name="{SourceBuildingUtility.ToParameterName(vector.Name)}"/> to the equivalent {VectorReference}.</summary>
-        /// <param name="a">This <see cref="{vector.FullyQualifiedName}"/> is converted to the equivalent {VectorReference}.</param>
+        /// <param name="{SourceBuildingUtility.ToParameterName(vector.Name)}">This <see cref="{vector.FullyQualifiedName}"/> is converted to the equivalent {VectorReference}.</param>
         """;
     public string CastConversion(NamedType vector) => $"""
         /// <summary>Converts <paramref name="a"/> to the equivalent <see cref="{vector.Name}"/>.</summary>
