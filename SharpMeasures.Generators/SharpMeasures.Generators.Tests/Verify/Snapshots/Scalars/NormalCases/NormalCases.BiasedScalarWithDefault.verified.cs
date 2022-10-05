@@ -28,7 +28,7 @@ public partial class Temperature :
         Magnitude = magnitude;
     }
 
-    /// <summary>Constructs a new <see cref="global::Temperature"/> representing { <paramref name="magnitude"/> [<paramref name="unitOfTemperature"/>] }.</summary>
+    /// <summary>Constructs a new <see cref="global::Temperature"/> representing { <paramref name="magnitude"/> }, when expressed in <paramref name="unitOfTemperature"/>.</summary>
     /// <param name="magnitude">The magnitude represented by the constructed <see cref="global::Temperature"/>, when expressed in <paramref name="unitOfTemperature"/>.</param>
     /// <param name="unitOfTemperature">The <see cref="global::UnitOfTemperature"/> in which <paramref name="magnitude"/> is expressed.</param>
     /// <remarks>A <see cref="global::Temperature"/> may also be constructed as demonstrated below.

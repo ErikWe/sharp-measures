@@ -12,5 +12,5 @@
 public partial class Length
 {
     /// <summary>Executes a custom process.</summary>
-    public global::Length Double => new(2 * Magnitude);
+    public global::Length Double() => new(2 * Magnitude);
 }

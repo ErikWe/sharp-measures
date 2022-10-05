@@ -37,7 +37,7 @@ public class NormalCases
     private static string UnbiasedScalarWithDefaultText => """
         using SharpMeasures.Generators;
         
-        [ScalarQuantity(typeof(UnitOfLength), DefaultUnitInstanceName = "Metre", DefaultUnitInstanceSymbol = "m")]
+        [ScalarQuantity(typeof(UnitOfLength), DefaultUnit = "Metre", DefaultSymbol = "m")]
         public partial class Length { }
         
         [FixedUnitInstance("Metre", "Metres")]
@@ -61,7 +61,7 @@ public class NormalCases
     private static string BiasedScalarWithDefaultText => """
         using SharpMeasures.Generators;
 
-        [ScalarQuantity(typeof(UnitOfTemperature), UseUnitBias = true, DefaultUnitInstanceName = "Kelvin", DefaultUnitInstanceSymbol = "K")]
+        [ScalarQuantity(typeof(UnitOfTemperature), UseUnitBias = true, DefaultUnit = "Kelvin", DefaultSymbol = "K")]
         public partial class Temperature { }
         
         [ScalarQuantity(typeof(UnitOfTemperature))]

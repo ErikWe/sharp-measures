@@ -12,5 +12,5 @@
 public partial class Length
 {
     /// <summary>Executes a custom process.</summary>
-    public static global::Length Answer => new(42);
+    public static global::Length Answer() => new(42);
 }

@@ -279,7 +279,7 @@ public class UnrecognizedUnitName
     private static string ScalarDefaultUnitInstanceNameText(SourceSubtext name) => $$"""
         using SharpMeasures.Generators;
 
-        [ScalarQuantity(typeof(UnitOfLength), DefaultUnitInstanceName = {{name}}, DefaultUnitInstanceSymbol = "m")]
+        [ScalarQuantity(typeof(UnitOfLength), DefaultUnit = {{name}}, DefaultSymbol = "m")]
         public partial class Length { }
             
         [Unit(typeof(Length))]
@@ -289,7 +289,7 @@ public class UnrecognizedUnitName
     private static GeneratorVerifier AssertScalarDefaultUnitInstanceName(SourceSubtext name)
     {
         var source = ScalarDefaultUnitInstanceNameText(name);
-        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, name.Context.With(outerPrefix: "DefaultUnitInstanceName = "));
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, name.Context.With(outerPrefix: "DefaultUnit = "));
 
         return AssertExactlyUnrecognizedUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation);
     }
@@ -297,7 +297,7 @@ public class UnrecognizedUnitName
     private static string SpecializedScalarDefaultUnitInstanceNameText(SourceSubtext name) => $$"""
         using SharpMeasures.Generators;
 
-        [SpecializedScalarQuantity(typeof(Length), DefaultUnitInstanceName = {{name}}, DefaultUnitInstanceSymbol = "m")]
+        [SpecializedScalarQuantity(typeof(Length), DefaultUnit = {{name}}, DefaultSymbol = "m")]
         public partial class Distance { }
 
         [ScalarQuantity(typeof(UnitOfLength))]
@@ -310,7 +310,7 @@ public class UnrecognizedUnitName
     private static GeneratorVerifier AssertSpecializedScalarDefaultUnitInstanceName(SourceSubtext name)
     {
         var source = SpecializedScalarDefaultUnitInstanceNameText(name);
-        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, name.Context.With(outerPrefix: "DefaultUnitInstanceName = "));
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, name.Context.With(outerPrefix: "DefaultUnit = "));
 
         return AssertExactlyUnrecognizedUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation);
     }
@@ -318,7 +318,7 @@ public class UnrecognizedUnitName
     private static string VectorDefaultUnitInstanceNameText(SourceSubtext name) => $$"""
         using SharpMeasures.Generators;
 
-        [VectorQuantity(typeof(UnitOfLength), DefaultUnitInstanceName = {{name}}, DefaultUnitInstanceSymbol = "m")]
+        [VectorQuantity(typeof(UnitOfLength), DefaultUnit = {{name}}, DefaultSymbol = "m")]
         public partial class Position3 { }
 
         [ScalarQuantity(typeof(UnitOfLength))]
@@ -331,7 +331,7 @@ public class UnrecognizedUnitName
     private static GeneratorVerifier AssertVectorDefaultUnitInstanceName(SourceSubtext name)
     {
         var source = VectorDefaultUnitInstanceNameText(name);
-        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, name.Context.With(outerPrefix: "DefaultUnitInstanceName = "));
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, name.Context.With(outerPrefix: "DefaultUnit = "));
 
         return AssertExactlyUnrecognizedUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation);
     }
@@ -339,7 +339,7 @@ public class UnrecognizedUnitName
     private static string SpecializedVectorDefaultUnitInstanceNameText(SourceSubtext name) => $$"""
         using SharpMeasures.Generators;
 
-        [SpecializedVectorQuantity(typeof(Position3), DefaultUnitInstanceName = {{name}}, DefaultUnitInstanceSymbol = "m")]
+        [SpecializedVectorQuantity(typeof(Position3), DefaultUnit = {{name}}, DefaultSymbol = "m")]
         public partial class Displacement3 { }
 
         [VectorQuantity(typeof(UnitOfLength))]
@@ -355,7 +355,7 @@ public class UnrecognizedUnitName
     private static GeneratorVerifier AssertSpecializedVectorDefaultUnitInstanceName(SourceSubtext name)
     {
         var source = SpecializedVectorDefaultUnitInstanceNameText(name);
-        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, name.Context.With(outerPrefix: "DefaultUnitInstanceName = "));
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, name.Context.With(outerPrefix: "DefaultUnit = "));
 
         return AssertExactlyUnrecognizedUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation);
     }
@@ -363,7 +363,7 @@ public class UnrecognizedUnitName
     private static string VectorGroupDefaultUnitInstanceNameText(SourceSubtext name) => $$"""
         using SharpMeasures.Generators;
 
-        [VectorGroup(typeof(UnitOfLength), DefaultUnitInstanceName = {{name}}, DefaultUnitInstanceSymbol = "m")]
+        [VectorGroup(typeof(UnitOfLength), DefaultUnit = {{name}}, DefaultSymbol = "m")]
         public static partial class Position { }
 
         [ScalarQuantity(typeof(UnitOfLength))]
@@ -376,7 +376,7 @@ public class UnrecognizedUnitName
     private static GeneratorVerifier AssertVectorGroupDefaultUnitInstanceName(SourceSubtext name)
     {
         var source = VectorGroupDefaultUnitInstanceNameText(name);
-        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, name.Context.With(outerPrefix: "DefaultUnitInstanceName = "));
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, name.Context.With(outerPrefix: "DefaultUnit = "));
 
         return AssertExactlyUnrecognizedUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation);
     }
@@ -384,7 +384,7 @@ public class UnrecognizedUnitName
     private static string SpecializedVectorGroupDefaultUnitInstanceNameText(SourceSubtext name) => $$"""
         using SharpMeasures.Generators;
 
-        [SpecializedVectorGroup(typeof(Position), DefaultUnitInstanceName = {{name}}, DefaultUnitInstanceSymbol = "m")]
+        [SpecializedVectorGroup(typeof(Position), DefaultUnit = {{name}}, DefaultSymbol = "m")]
         public static partial class Displacement { }
 
         [VectorGroup(typeof(UnitOfLength))]
@@ -400,7 +400,7 @@ public class UnrecognizedUnitName
     private static GeneratorVerifier AssertSpecializedVectorGroupDefaultUnitInstanceName(SourceSubtext name)
     {
         var source = SpecializedVectorGroupDefaultUnitInstanceNameText(name);
-        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, name.Context.With(outerPrefix: "DefaultUnitInstanceName = "));
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, name.Context.With(outerPrefix: "DefaultUnit = "));
 
         return AssertExactlyUnrecognizedUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation);
     }

@@ -12,7 +12,7 @@
 public partial class Displacement3
 {
     /// <summary>Converts <paramref name="position"/> to the equivalent <see cref="global::Displacement3"/>.</summary>
-    /// <param name="a">This <see cref="global::Position3"/> is converted to the equivalent <see cref="global::Displacement3"/>.</param>
+    /// <param name="position">This <see cref="global::Position3"/> is converted to the equivalent <see cref="global::Displacement3"/>.</param>
     /// <exception cref="global::System.ArgumentNullException"/>
     public Displacement3 From(global::Position3 position)
     {

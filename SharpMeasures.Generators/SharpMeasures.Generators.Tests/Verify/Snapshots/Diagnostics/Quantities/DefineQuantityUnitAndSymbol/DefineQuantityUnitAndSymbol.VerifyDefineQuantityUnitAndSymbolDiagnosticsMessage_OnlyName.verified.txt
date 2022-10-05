@@ -4,7 +4,7 @@
     Title: Expected both unit name and symbol,
     Severity: Info,
     WarningLevel: 1,
-    Location: : (2,64)-(2,71),
+    Location: : (2,52)-(2,59),
     Description: ,
     HelpLink: ,
     MessageFormat: The name of the default unit of {0} was specified, but not the associated symbol,

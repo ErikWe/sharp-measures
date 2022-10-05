@@ -50,8 +50,8 @@ public class DefineQuantityUnitAndSymbol
         new object[] { OnlySymbol }
     };
 
-    private static SourceSubtext OnlyName { get; } = SourceSubtext.Covered("\"Metre\"", prefix: "DefaultUnitInstanceName = ");
-    private static SourceSubtext OnlySymbol { get; } = SourceSubtext.Covered("\"m\"", prefix: "DefaultUnitInstanceSymbol = ");
+    private static SourceSubtext OnlyName { get; } = SourceSubtext.Covered("\"Metre\"", prefix: "DefaultUnit = ");
+    private static SourceSubtext OnlySymbol { get; } = SourceSubtext.Covered("\"m\"", prefix: "DefaultSymbol = ");
 
     private static GeneratorVerifier AssertExactlyDefineQuantityUnitAndSymbolDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(DefineQuantityUnitAndSymbolDiagnostics);
     private static IReadOnlyCollection<string> DefineQuantityUnitAndSymbolDiagnostics { get; } = new string[] { DiagnosticIDs.DefineQuantityUnitAndSymbol };

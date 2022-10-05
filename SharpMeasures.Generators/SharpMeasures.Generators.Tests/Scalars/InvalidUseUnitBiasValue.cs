@@ -17,7 +17,7 @@ public class InvalidUseUnitBiasValue
     private static string FalseeText => """
         using SharpMeasures.Generators;
         
-        [ScalarQuantity(typeof(UnitOfLength), UseUnitBias = falsee, DefaultUnitInstanceName = "Metre", DefaultUnitInstanceSymbol = "m")]
+        [ScalarQuantity(typeof(UnitOfLength), UseUnitBias = falsee, DefaultUnit = "Metre", DefaultSymbol = "m")]
         [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
         
@@ -31,7 +31,7 @@ public class InvalidUseUnitBiasValue
     private static string IdenticalText => """
         using SharpMeasures.Generators;
         
-        [ScalarQuantity(typeof(UnitOfLength), DefaultUnitInstanceName = "Metre", DefaultUnitInstanceSymbol = "m")]
+        [ScalarQuantity(typeof(UnitOfLength), DefaultUnit = "Metre", DefaultSymbol = "m")]
         public partial class Length { }
         
         [FixedUnitInstance("Metre", "Metres")]

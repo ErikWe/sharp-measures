@@ -15,7 +15,7 @@ public partial class Displacement3
     public global::Size3 AsSize3 => new(Components);
 
     /// <summary>Converts <paramref name="size"/> to the equivalent <see cref="global::Displacement3"/>.</summary>
-    /// <param name="a">This <see cref="global::Size3"/> is converted to the equivalent <see cref="global::Displacement3"/>.</param>
+    /// <param name="size">This <see cref="global::Size3"/> is converted to the equivalent <see cref="global::Displacement3"/>.</param>
     /// <exception cref="global::System.ArgumentNullException"/>
     public Displacement3 From(global::Size3 size)
     {
@@ -28,7 +28,7 @@ public partial class Displacement3
     public global::Position3 AsPosition3 => new(Components);
 
     /// <summary>Converts <paramref name="position"/> to the equivalent <see cref="global::Displacement3"/>.</summary>
-    /// <param name="a">This <see cref="global::Position3"/> is converted to the equivalent <see cref="global::Displacement3"/>.</param>
+    /// <param name="position">This <see cref="global::Position3"/> is converted to the equivalent <see cref="global::Displacement3"/>.</param>
     /// <exception cref="global::System.ArgumentNullException"/>
     public Displacement3 From(global::Position3 position)
     {

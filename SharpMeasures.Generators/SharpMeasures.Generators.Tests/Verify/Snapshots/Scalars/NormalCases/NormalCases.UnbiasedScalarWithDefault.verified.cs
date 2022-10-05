@@ -31,7 +31,7 @@ public partial class Length :
         Magnitude = magnitude;
     }
 
-    /// <summary>Constructs a new <see cref="global::Length"/> representing { <paramref name="magnitude"/> [<paramref name="unitOfLength"/>] }.</summary>
+    /// <summary>Constructs a new <see cref="global::Length"/> representing { <paramref name="magnitude"/> }, when expressed in <paramref name="unitOfLength"/>.</summary>
     /// <param name="magnitude">The magnitude represented by the constructed <see cref="global::Length"/>, when expressed in <paramref name="unitOfLength"/>.</param>
     /// <param name="unitOfLength">The <see cref="global::UnitOfLength"/> in which <paramref name="magnitude"/> is expressed.</param>
     /// <remarks>A <see cref="global::Length"/> may also be constructed as demonstrated below.
