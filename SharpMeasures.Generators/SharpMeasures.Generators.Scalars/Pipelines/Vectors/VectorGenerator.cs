@@ -2,6 +2,7 @@
 
 using Microsoft.CodeAnalysis;
 
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
@@ -23,14 +24,14 @@ internal static class VectorsGenerator
 
         if (model.Value.VectorPopulation.Vectors.TryGetValue(model.Value.Scalar.Vector.Value, out var vector))
         {
-            return new DataModel(model.Value.Scalar.Type, model.Value.Scalar.Vector.Value, vector.Dimension, model.Value.Documentation);
+            Dictionary<int, NamedType> vectorByDimension = new() { { vector.Dimension, model.Value.Scalar.Vector.Value } };
+
+            return new DataModel(model.Value.Scalar.Type, vectorByDimension, model.Value.Documentation);
         }
 
         if (model.Value.VectorPopulation.Groups.TryGetValue(model.Value.Scalar.Vector.Value, out var group))
         {
-            var dimensions = group.MembersByDimension.Keys;
-
-            return new DataModel(model.Value.Scalar.Type, model.Value.Scalar.Vector.Value, dimensions.ToList(), model.Value.Documentation);
+            return new DataModel(model.Value.Scalar.Type, group.MembersByDimension, model.Value.Documentation);
         }
 
         return new Optional<DataModel>();

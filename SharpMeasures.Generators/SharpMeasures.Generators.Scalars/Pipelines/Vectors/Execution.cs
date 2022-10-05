@@ -59,13 +59,10 @@ internal static class Execution
         {
             SeparationHandler.MarkUnncecessary();
 
-            if (Data.Vector is not null)
+            foreach (var vectorAndDimension in Data.VectorByDimension)
             {
-                foreach (var dimension in Data.Dimensions)
-                {
-                    AppendMultiplyVectorMethod(indentation, Data.Vector.Value, dimension);
-                    AppendMultiplyVectorOperators(indentation, Data.Vector.Value, dimension);
-                }
+                AppendMultiplyVectorMethod(indentation, vectorAndDimension.Value, vectorAndDimension.Key);
+                AppendMultiplyVectorOperators(indentation, vectorAndDimension.Value, vectorAndDimension.Key);
             }
         }
 
@@ -74,7 +71,7 @@ internal static class Execution
             SeparationHandler.AddIfNecessary();
 
             AppendDocumentation(indentation, Data.Documentation.MultiplyVectorMethod(dimension));
-            Builder.AppendLine($"{indentation}public {vector.Name} Multiply(Vector{dimension} factor) => new(Magnitude.Value * factor);");
+            Builder.AppendLine($"{indentation}public {vector.Name} Multiply(global::SharpMeasures.Vector{dimension} factor) => new(Magnitude.Value * factor);");
         }
 
         private void AppendMultiplyVectorOperators(Indentation indentation, NamedType vector, int dimension)
@@ -84,16 +81,20 @@ internal static class Execution
             NamedType vectorType = new($"Vector{dimension}", "SharpMeasures", "SharpMeasures.Base", true);
 
             var methodNameAndModifiers = $"public static {vector.Name} operator *";
-            var expression = "new(x.Magnitude.Value * y)";
+            
+            var lhsExpression = "new(x.Magnitude.Value * y)";
+            var rhsExpression = "new(x * y.Magnitude.Value)";
 
             var lhsParameters = new[] { (Data.Scalar.AsNamedType(), "x"), (vectorType, "y") };
             var rhsParameters = new[] { (vectorType, "x"), (Data.Scalar.AsNamedType(), "y") };
 
             AppendDocumentation(indentation, Data.Documentation.MultiplyVectorOperatorLHS(dimension));
-            StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers, expression, lhsParameters);
+            StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers, lhsExpression, lhsParameters);
+
+            SeparationHandler.Add();
 
             AppendDocumentation(indentation, Data.Documentation.MultiplyVectorOperatorRHS(dimension));
-            StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers, expression, rhsParameters);
+            StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers, rhsExpression, rhsParameters);
         }
 
         private void AppendDocumentation(Indentation indentation, string text) => DocumentationBuilding.AppendDocumentation(Builder, indentation, text);
