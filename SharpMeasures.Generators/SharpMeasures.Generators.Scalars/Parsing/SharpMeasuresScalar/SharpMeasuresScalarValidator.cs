@@ -101,7 +101,7 @@ internal sealed class SharpMeasuresScalarValidator : IProcesser<ISharpMeasuresSc
 
     private IValidityWithDiagnostics ValidateVectorIsVector(ISharpMeasuresScalarValidationContext context, SharpMeasuresScalarDefinition definition)
     {
-        var vectorIsNotVector = definition.Vector is not null && (context.VectorPopulation.Vectors.ContainsKey(definition.Vector.Value) is false || context.VectorPopulation.Groups.ContainsKey(definition.Vector.Value) is false || context.VectorPopulation.GroupMembers.ContainsKey(definition.Vector.Value) is false);
+        var vectorIsNotVector = definition.Vector is not null && context.VectorPopulation.Vectors.ContainsKey(definition.Vector.Value) is false && context.VectorPopulation.Groups.ContainsKey(definition.Vector.Value) is false && context.VectorPopulation.GroupMembers.ContainsKey(definition.Vector.Value) is false;
 
         return ValidityWithDiagnostics.Conditional(vectorIsNotVector is false, () => Diagnostics.TypeNotVector(context, definition));
     }
