@@ -57,14 +57,14 @@ internal static class SharpMeasuresVectorGroupProperties
 
     private static SharpMeasuresVectorGroupProperty<string> DefaultUnitInstanceName { get; } = new
     (
-        name: nameof(VectorGroupAttribute.DefaultUnitInstanceName),
+        name: nameof(VectorGroupAttribute.DefaultUnit),
         setter: static (definition, defaultUnitInstanceName) => definition with { DefaultUnitInstanceName = defaultUnitInstanceName },
         locator: static (locations, defaultUnitInstanceNameLocation) => locations with { DefaultUnitInstanceName = defaultUnitInstanceNameLocation }
     );
 
     private static SharpMeasuresVectorGroupProperty<string> DefaultUnitInstanceSymbol { get; } = new
     (
-        name: nameof(VectorGroupAttribute.DefaultUnitInstanceSymbol),
+        name: nameof(VectorGroupAttribute.DefaultSymbol),
         setter: static (definition, defaultUnitInstanceSymbol) => definition with { DefaultUnitInstanceSymbol = defaultUnitInstanceSymbol },
         locator: static (locations, defaultUnitInstanceSymbolLocation) => locations with { DefaultUnitInstanceSymbol = defaultUnitInstanceSymbolLocation }
     );

@@ -113,14 +113,14 @@ internal static class SpecializedSharpMeasuresScalarProperties
 
     private static SpecializedSharpMeasuresScalarProperty<string> DefaultUnitInstanceName { get; } = new
     (
-        name: nameof(SpecializedScalarQuantityAttribute.DefaultUnitInstanceName),
+        name: nameof(SpecializedScalarQuantityAttribute.DefaultUnit),
         setter: static (definition, defaultUnitInstanceName) => definition with { DefaultUnitInstanceName = defaultUnitInstanceName },
         locator: static (locations, defaultUnitInstanceNameLocation) => locations with { DefaultUnitInstanceName = defaultUnitInstanceNameLocation }
     );
 
     private static SpecializedSharpMeasuresScalarProperty<string> DefaultUnitInstanceSymbol { get; } = new
     (
-        name: nameof(SpecializedScalarQuantityAttribute.DefaultUnitInstanceSymbol),
+        name: nameof(SpecializedScalarQuantityAttribute.DefaultSymbol),
         setter: static (definition, defaultUnitInstanceSymbol) => definition with { DefaultUnitInstanceSymbol = defaultUnitInstanceSymbol },
         locator: static (locations, defaultUnitInstanceSymbolLocation) => locations with { DefaultUnitInstanceSymbol = defaultUnitInstanceSymbolLocation }
     );

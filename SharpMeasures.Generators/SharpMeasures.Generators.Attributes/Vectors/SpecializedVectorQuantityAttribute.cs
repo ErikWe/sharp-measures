@@ -67,13 +67,13 @@ public sealed class SpecializedVectorQuantityAttribute : Attribute
     /// <remarks>To disable support for computing the difference in the first place, use <see cref="ImplementDifference"/>.</remarks>
     public Type? Difference { get; init; }
 
-    /// <summary><inheritdoc cref="VectorQuantityAttribute.DefaultUnitInstanceName" path="/summary"/> By default, the value is inherited from the original quantity.</summary>
-    /// <remarks><inheritdoc cref="VectorQuantityAttribute.DefaultUnitInstanceName" path="/remarks"/></remarks>
-    public string? DefaultUnitInstanceName { get; init; }
+    /// <summary><inheritdoc cref="VectorQuantityAttribute.DefaultUnit" path="/summary"/> By default, the value is inherited from the original quantity.</summary>
+    /// <remarks><inheritdoc cref="VectorQuantityAttribute.DefaultUnit" path="/remarks"/></remarks>
+    public string? DefaultUnit { get; init; }
 
-    /// <summary><inheritdoc cref="VectorQuantityAttribute.DefaultUnitInstanceSymbol" path="/summary"/> By default, the value is inherited from the original quantity.</summary>
-    /// <remarks><inheritdoc cref="VectorQuantityAttribute.DefaultUnitInstanceSymbol" path="/remarks"/></remarks>
-    public string? DefaultUnitInstanceSymbol { get; init; }
+    /// <summary><inheritdoc cref="VectorQuantityAttribute.DefaultSymbol" path="/summary"/> By default, the value is inherited from the original quantity.</summary>
+    /// <remarks><inheritdoc cref="VectorQuantityAttribute.DefaultSymbol" path="/remarks"/></remarks>
+    public string? DefaultSymbol { get; init; }
 
     /// <summary><inheritdoc cref="VectorQuantityAttribute.GenerateDocumentation" path="/summary"/> By default, the behaviour is inherited from the original
     /// quantity.</summary>

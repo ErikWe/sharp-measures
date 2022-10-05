@@ -48,10 +48,10 @@ public sealed class VectorGroupAttribute : Attribute
     public Type? Difference { get; init; }
 
     /// <summary>The name of the default unit instance of the vectors of this group.</summary>
-    public string? DefaultUnitInstanceName { get; init; }
+    public string? DefaultUnit { get; init; }
 
     /// <summary>The symbol of the default unit instance of the vectors of this group.</summary>
-    public string? DefaultUnitInstanceSymbol { get; init; }
+    public string? DefaultSymbol { get; init; }
 
     /// <summary>Dictates whether documentation should be generated for the quantities in this group.</summary>
     /// <remarks>If this property is not explicitly set, the entry [<i>SharpMeasures_GenerateDocumentation</i>] in the global AnalyzerConfig

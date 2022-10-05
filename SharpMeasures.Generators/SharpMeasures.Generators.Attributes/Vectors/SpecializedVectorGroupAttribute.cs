@@ -62,13 +62,13 @@ public sealed class SpecializedVectorGroupAttribute : Attribute
     /// <remarks>To disable support for computing the differences in the first place, use <see cref="ImplementDifference"/>.</remarks>
     public Type? Difference { get; init; }
 
-    /// <summary><inheritdoc cref="VectorGroupAttribute.DefaultUnitInstanceName" path="/summary"/> By default, the value is inherited from the original group.</summary>
-    /// <remarks><inheritdoc cref="VectorGroupAttribute.DefaultUnitInstanceName" path="/remarks"/></remarks>
-    public string? DefaultUnitInstanceName { get; init; }
+    /// <summary><inheritdoc cref="VectorGroupAttribute.DefaultUnit" path="/summary"/> By default, the value is inherited from the original group.</summary>
+    /// <remarks><inheritdoc cref="VectorGroupAttribute.DefaultUnit" path="/remarks"/></remarks>
+    public string? DefaultUnit { get; init; }
 
-    /// <summary><inheritdoc cref="VectorGroupAttribute.DefaultUnitInstanceSymbol" path="/summary"/> By default, the value is inherited from the original group.</summary>
-    /// <remarks><inheritdoc cref="VectorGroupAttribute.DefaultUnitInstanceSymbol" path="/remarks"/></remarks>
-    public string? DefaultUnitInstanceSymbol { get; init; }
+    /// <summary><inheritdoc cref="VectorGroupAttribute.DefaultSymbol" path="/summary"/> By default, the value is inherited from the original group.</summary>
+    /// <remarks><inheritdoc cref="VectorGroupAttribute.DefaultSymbol" path="/remarks"/></remarks>
+    public string? DefaultSymbol { get; init; }
 
     /// <summary><inheritdoc cref="VectorGroupAttribute.GenerateDocumentation" path="/summary"/> By default, the behaviour is inherited from the original
     /// group.</summary>

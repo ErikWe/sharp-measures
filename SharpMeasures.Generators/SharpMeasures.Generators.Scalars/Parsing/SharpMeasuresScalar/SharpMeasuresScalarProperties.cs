@@ -65,14 +65,14 @@ internal static class SharpMeasuresScalarProperties
 
     private static SharpMeasuresScalarProperty<string> DefaultUnitInstanceName { get; } = new
     (
-        name: nameof(ScalarQuantityAttribute.DefaultUnitInstanceName),
+        name: nameof(ScalarQuantityAttribute.DefaultUnit),
         setter: static (definition, defaultUnitInstanceName) => definition with { DefaultUnitInstanceName = defaultUnitInstanceName },
         locator: static (locations, defaultUnitInstanceNameLocation) => locations with { DefaultUnitInstanceName = defaultUnitInstanceNameLocation }
     );
 
     private static SharpMeasuresScalarProperty<string> DefaultUnitInstanceSymbol { get; } = new
     (
-        name: nameof(ScalarQuantityAttribute.DefaultUnitInstanceSymbol),
+        name: nameof(ScalarQuantityAttribute.DefaultSymbol),
         setter: static (definition, defaultUnitInstanceSymbol) => definition with { DefaultUnitInstanceSymbol = defaultUnitInstanceSymbol },
         locator: static (locations, defaultUnitInstanceSymbolLocation) => locations with { DefaultUnitInstanceSymbol = defaultUnitInstanceSymbolLocation }
     );

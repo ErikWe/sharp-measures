@@ -113,14 +113,14 @@ internal static class SpecializedSharpMeasuresVectorProperties
 
     private static SpecializedSharpMeasuresVectorProperty<string> DefaultUnitInstanceName { get; } = new
     (
-        name: nameof(SpecializedVectorQuantityAttribute.DefaultUnitInstanceName),
+        name: nameof(SpecializedVectorQuantityAttribute.DefaultUnit),
         setter: static (definition, defaultUnitInstanceName) => definition with { DefaultUnitInstanceName = defaultUnitInstanceName },
         locator: static (locations, defaultUnitInstanceNameLocation) => locations with { DefaultUnitInstanceName = defaultUnitInstanceNameLocation }
     );
 
     private static SpecializedSharpMeasuresVectorProperty<string> DefaultUnitInstanceSymbol { get; } = new
     (
-        name: nameof(SpecializedVectorQuantityAttribute.DefaultUnitInstanceSymbol),
+        name: nameof(SpecializedVectorQuantityAttribute.DefaultSymbol),
         setter: static (definition, defaultUnitInstanceSymbol) => definition with { DefaultUnitInstanceSymbol = defaultUnitInstanceSymbol },
         locator: static (locations, defaultUnitInstanceSymbolLocation) => locations with { DefaultUnitInstanceSymbol = defaultUnitInstanceSymbolLocation }
     );

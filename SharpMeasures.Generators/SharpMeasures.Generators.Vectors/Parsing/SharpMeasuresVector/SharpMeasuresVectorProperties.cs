@@ -65,14 +65,14 @@ internal static class SharpMeasuresVectorProperties
 
     private static SharpMeasuresVectorProperty<string> DefaultUnitInstanceName { get; } = new
     (
-        name: nameof(VectorQuantityAttribute.DefaultUnitInstanceName),
+        name: nameof(VectorQuantityAttribute.DefaultUnit),
         setter: static (definition, defaultUnitInstanceName) => definition with { DefaultUnitInstanceName = defaultUnitInstanceName },
         locator: static (locations, defaultUnitInstanceNameLocation) => locations with { DefaultUnitInstanceName = defaultUnitInstanceNameLocation }
     );
 
     private static SharpMeasuresVectorProperty<string> DefaultUnitInstanceSymbol { get; } = new
     (
-        name: nameof(VectorQuantityAttribute.DefaultUnitInstanceSymbol),
+        name: nameof(VectorQuantityAttribute.DefaultSymbol),
         setter: static (definition, defaultUnitInstanceSymbol) => definition with { DefaultUnitInstanceSymbol = defaultUnitInstanceSymbol },
         locator: static (locations, defaultUnitInstanceSymbolLocation) => locations with { DefaultUnitInstanceSymbol = defaultUnitInstanceSymbolLocation }
     );

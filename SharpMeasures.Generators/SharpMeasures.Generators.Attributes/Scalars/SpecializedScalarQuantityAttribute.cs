@@ -81,10 +81,10 @@ public sealed class SpecializedScalarQuantityAttribute : Attribute
     public Type? Difference { get; init; }
 
     /// <summary>The name of the default unit instance. By default, the value is inherited from the original quantity.</summary>
-    public string? DefaultUnitInstanceName { get; init; }
+    public string? DefaultUnit { get; init; }
 
     /// <summary>The symbol of the default unit instance. By default, the value is inherited from the original quantity.</summary>
-    public string? DefaultUnitInstanceSymbol { get; init; }
+    public string? DefaultSymbol { get; init; }
 
     /// <summary><inheritdoc cref="ScalarQuantityAttribute.GenerateDocumentation" path="/summary"/> By default, the behaviour is inherited from
     /// the original quantity.</summary>
