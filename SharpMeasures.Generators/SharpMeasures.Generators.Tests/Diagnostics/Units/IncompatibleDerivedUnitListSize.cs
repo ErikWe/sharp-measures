@@ -24,13 +24,11 @@ public class IncompatibleDerivedUnitListSize
     public static IEnumerable<object[]> IncompatibleUnitLists() => new object[][]
     {
         new object[] { OneElement },
-        new object[] { OneElementArray },
         new object[] { ThreeElements }
     };
 
-    private static SourceSubtext OneElement { get; } = SourceSubtext.Covered("\"Metre\"");
-    private static SourceSubtext OneElementArray { get; } = SourceSubtext.Covered("{ \"Metre\" }", prefix: "new[] ");
-    private static SourceSubtext ThreeElements { get; } = SourceSubtext.Covered("\"Metre\", \"Metre\", \"Metre\"");
+    private static SourceSubtext OneElement { get; } = SourceSubtext.Covered("{ \"Metre\" }", prefix: "new[] ");
+    private static SourceSubtext ThreeElements { get; } = SourceSubtext.Covered("{ \"Metre\", \"Metre\", \"Metre\" }", prefix: "new[] ");
 
     private static GeneratorVerifier AssertExactlyIncompatibleDerivedUnitListSizeDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source, GeneratorVerifierSettings.TestCodeAssertions).AssertExactlyListedDiagnosticsIDsReported(IncompatibleDerivedUnitListSizeDiagnostics);
     private static IReadOnlyCollection<string> IncompatibleDerivedUnitListSizeDiagnostics { get; } = new string[] { DiagnosticIDs.IncompatibleDerivedUnitListSize };

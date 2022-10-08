@@ -45,14 +45,14 @@ public class UnrecognizedUnitDerivationID
 
         [DerivableUnit("1", "{0} / {1}", typeof(UnitOfLength), typeof(UnitOfTime))]
         [DerivableUnit("2", "{1} / {0}", typeof(UnitOfTime), typeof(UnitOfLength))]
-        [DerivedUnitInstance("MetrePerSecond", "MetresPerSecond", "3", "Metre", "Second")]
+        [DerivedUnitInstance("MetrePerSecond", "MetresPerSecond", "3", new[] { "Metre", "Second" })]
         [Unit(typeof(Speed))]
         public partial class UnitOfSpeed { }
         """;
 
     private static GeneratorVerifier AssertMultipleDerivations()
     {
-        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(MultipleDerivationsText, target: "\"3\"", postfix: ", \"Metre\", \"Second\")]");
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(MultipleDerivationsText, target: "\"3\"", postfix: ", new[] { \"Metre\", \"Second\" })]");
 
         return AssertExactlyUnrecognizedUnitDerivationIDDiagnostics(MultipleDerivationsText).AssertDiagnosticsLocation(expectedLocation);
     }
@@ -78,14 +78,14 @@ public class UnrecognizedUnitDerivationID
         public partial class UnitOfTime { }
 
         [DerivableUnit("1", "{0} / {1}", typeof(UnitOfLength), typeof(UnitOfTime))]
-        [DerivedUnitInstance("MetrePerSecond", "MetresPerSecond", "2", "Metre", "Second")]
+        [DerivedUnitInstance("MetrePerSecond", "MetresPerSecond", "2", new[] { "Metre", "Second" })]
         [Unit(typeof(Speed))]
         public partial class UnitOfSpeed { }
         """;
 
     private static GeneratorVerifier AssertSingleDerivation()
     {
-        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(SingleDerivationText, target: "\"2\"", postfix: ", \"Metre\", \"Second\")]");
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(SingleDerivationText, target: "\"2\"", postfix: ", new[] { \"Metre\", \"Second\" })]");
 
         return AssertExactlyUnrecognizedUnitDerivationIDDiagnostics(SingleDerivationText).AssertDiagnosticsLocation(expectedLocation);
     }

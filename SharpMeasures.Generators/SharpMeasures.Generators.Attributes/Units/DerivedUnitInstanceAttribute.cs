@@ -27,7 +27,7 @@ public sealed class DerivedUnitInstanceAttribute : Attribute
     /// <param name="pluralForm"><inheritdoc cref="PluralForm" path="/summary"/><para><inheritdoc cref="PluralForm" path="/remarks"/></para></param>
     /// <param name="derivationID"><inheritdoc cref="DerivationID" path="/summary"/><para><inheritdoc cref="DerivationID" path="/remarks"/></para></param>
     /// <param name="units"><inheritdoc cref="Units" path="/summary"/><para><inheritdoc cref="Units" path="/remarks"/></para></param>
-    public DerivedUnitInstanceAttribute(string name, string pluralForm, string derivationID, params string[] units)
+    public DerivedUnitInstanceAttribute(string name, string pluralForm, string derivationID, string[] units)
     {
         Name = name;
         PluralForm = pluralForm;
