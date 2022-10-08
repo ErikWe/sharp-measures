@@ -56,7 +56,15 @@ internal static class GroupSpecializationResolver
             difference, defaultUnitInstanceName, defaultUnitInstanceSymbol, membersByDimension, groupType.Operations, groupType.VectorOperations, groupType.Conversions, inheritedOperations, inheritedVectorOperations, inheritedConversions, includedUnitInstances, generateDocumentation);
     }
 
-    private static IReadOnlyDictionary<int, NamedType> ResolveMembers(GroupSpecializationType groupType, IVectorPopulation vectorPopulation) => vectorPopulation.GroupMembersByGroup[groupType.Type.AsNamedType()].GroupMembersByDimension.Transform(static (vector) => vector.Type.AsNamedType());
+    private static IReadOnlyDictionary<int, NamedType> ResolveMembers(GroupSpecializationType groupType, IVectorPopulation vectorPopulation)
+    {
+        if (vectorPopulation.GroupMembersByGroup.TryGetValue(groupType.Type.AsNamedType(), out var members) is false)
+        {
+            return new Dictionary<int, NamedType>();
+        }
+
+        return members.GroupMembersByDimension.Transform(static (vector) => vector.Type.AsNamedType());
+    }
 
     private static NamedType? ResolveDifference(GroupSpecializationType groupType, IVectorPopulation vectorPopulation)
     {
@@ -85,9 +93,9 @@ internal static class GroupSpecializationResolver
                 items.AddRange(itemsDelegate(vector));
             }
 
-            if (vector is IVectorGroupSpecializationType vectorSpecialization && shouldInherit(vectorSpecialization))
+            if (vector is IVectorGroupSpecializationType groupSpecialization && shouldInherit(groupSpecialization) && vectorPopulation.Groups.TryGetValue(groupSpecialization.Definition.OriginalQuantity, out var originalGroup))
             {
-                recursivelyAddItems(vectorPopulation.Groups[vectorSpecialization.Definition.OriginalQuantity], onlyInherited: false);
+                recursivelyAddItems(originalGroup, onlyInherited: false);
             }
         }
     }
@@ -121,9 +129,9 @@ internal static class GroupSpecializationResolver
 
         void recurse(IVectorGroupType vector)
         {
-            if (vector is IVectorGroupSpecializationType scalarSpecialization && scalarSpecialization.Definition.InheritUnits)
+            if (vector is IVectorGroupSpecializationType groupSpecialization && groupSpecialization.Definition.InheritUnits && vectorPopulation.Groups.TryGetValue(groupSpecialization.Definition.OriginalQuantity, out var originalGroup))
             {
-                recurisvelyModify(vectorPopulation.Groups[scalarSpecialization.Definition.OriginalQuantity]);
+                recurisvelyModify(originalGroup);
             }
         }
     }
@@ -142,9 +150,9 @@ internal static class GroupSpecializationResolver
                 return item;
             }
 
-            if (vector is IVectorGroupSpecializationType groupSpecialization)
+            if (vector is IVectorGroupSpecializationType groupSpecialization && vectorPopulation.Groups.TryGetValue(groupSpecialization.Definition.OriginalQuantity, out var originalGroup))
             {
-                return recursivelySearch(vectorPopulation.Groups[groupSpecialization.Definition.OriginalQuantity]);
+                return recursivelySearch(originalGroup);
             }
 
             return default;

@@ -122,6 +122,18 @@ public readonly record struct Unhandled3 : IVector3Quantity<Unhandled3>
     /// <inheritdoc cref="Cross(Unhandled3)"/>
     public Unhandled3 Cross(Vector3 factor) => VectorMaths.Cross(this, factor);
 
+    /// <inheritdoc cref="Unhandled2.Add{TVector}(TVector)"/>
+    public Unhandled3 Add<TVector>(TVector addend) where TVector : IVector3Quantity => (X + addend.X, Y + addend.Y, Z + addend.Z);
+    /// <inheritdoc cref="Unhandled2.Subtract{TVector}(TVector)"/>
+    public Unhandled3 Subtract<TVector>(TVector subtrahend) where TVector : IVector3Quantity => (X - subtrahend.X, Y - subtrahend.Y, Z - subtrahend.Z);
+    /// <inheritdoc cref="Unhandled2.SubtractFrom{TVector}(TVector)"/>
+    public Unhandled3 SubtractFrom<TVector>(TVector minuend) where TVector : IVector3Quantity => (minuend.X - X, minuend.Y - Y, minuend.Z - Z);
+
+    /// <inheritdoc cref="Unhandled2.Multiply{TScalar}(TScalar)"/>
+    public Unhandled3 Multiply<TScalar>(TScalar factor) where TScalar : IScalarQuantity => (X * factor.Magnitude, Y * factor.Magnitude, Z * factor.Magnitude);
+    /// <inheritdoc cref="Unhandled2.Divide{TScalar}(TScalar)"/>
+    public Unhandled3 Divide<TScalar>(TScalar divisor) where TScalar : IScalarQuantity => (X / divisor.Magnitude, Y / divisor.Magnitude, Z / divisor.Magnitude);
+
     /// <inheritdoc/>
     public static Unhandled3 operator +(Unhandled3 a) => a;
     /// <inheritdoc/>
@@ -146,6 +158,7 @@ public readonly record struct Unhandled3 : IVector3Quantity<Unhandled3>
     public static Unhandled3 operator /(Unhandled3 a, Scalar b) => (a.X / b, a.Y / b, a.Z / b);
 
     /// <inheritdoc cref="Vector3.operator +(Vector3, Vector3)"/>
+    /// <remarks>Consider preferring <see cref="Add{TVector}(TVector)"/>, where boxing is avoided.</remarks>
     /// <exception cref="ArgumentNullException"/>
     public static Unhandled3 operator +(Unhandled3 a, IVector3Quantity b)
     {
@@ -155,6 +168,7 @@ public readonly record struct Unhandled3 : IVector3Quantity<Unhandled3>
     }
 
     /// <inheritdoc cref="Vector3.operator +(Vector3, Vector3)"/>
+    /// <remarks>Consider preferring <see cref="Add{TVector}(TVector)"/>, where boxing is avoided.</remarks>
     /// <exception cref="ArgumentNullException"/>
     public static Unhandled3 operator +(IVector3Quantity a, Unhandled3 b)
     {
@@ -164,6 +178,7 @@ public readonly record struct Unhandled3 : IVector3Quantity<Unhandled3>
     }
 
     /// <inheritdoc cref="Vector3.operator -(Vector3, Vector3)"/>
+    /// <remarks>Consider preferring <see cref="Subtract{TVector}(TVector)"/>, where boxing is avoided.</remarks>
     /// <exception cref="ArgumentNullException"/>
     public static Unhandled3 operator -(Unhandled3 a, IVector3Quantity b)
     {
@@ -173,6 +188,7 @@ public readonly record struct Unhandled3 : IVector3Quantity<Unhandled3>
     }
 
     /// <inheritdoc cref="Vector3.operator -(Vector3, Vector3)"/>
+    /// <remarks>Consider preferring <see cref="SubtractFrom{TVector}(TVector)"/>, where boxing is avoided.</remarks>
     /// <exception cref="ArgumentNullException"/>
     public static Unhandled3 operator -(IVector3Quantity a, Unhandled3 b)
     {
@@ -182,6 +198,7 @@ public readonly record struct Unhandled3 : IVector3Quantity<Unhandled3>
     }
 
     /// <inheritdoc cref="Vector3.operator *(Vector3, Scalar)"/>
+    /// <remarks>Consider preferring <see cref="Multiply{TScalar}(TScalar)"/>, where boxing is avoided.</remarks>
     /// <exception cref="ArgumentNullException"/>
     public static Unhandled3 operator *(Unhandled3 a, IScalarQuantity b)
     {
@@ -191,6 +208,7 @@ public readonly record struct Unhandled3 : IVector3Quantity<Unhandled3>
     }
 
     /// <inheritdoc cref="Vector3.operator *(Scalar, Vector3)"/>
+    /// <remarks>Consider preferring <see cref="Multiply{TScalar}(TScalar)"/>, where boxing is avoided.</remarks>
     /// <exception cref="ArgumentNullException"/>
     public static Unhandled3 operator *(IScalarQuantity a, Unhandled3 b)
     {
@@ -200,6 +218,7 @@ public readonly record struct Unhandled3 : IVector3Quantity<Unhandled3>
     }
 
     /// <inheritdoc cref="Vector3.operator /(Vector3, Scalar)"/>
+    /// <remarks>Consider preferring <see cref="Divide{TScalar}(TScalar)"/>, where boxing is avoided.</remarks>
     /// <exception cref="ArgumentNullException"/>
     public static Unhandled3 operator /(Unhandled3 a, IScalarQuantity b)
     {

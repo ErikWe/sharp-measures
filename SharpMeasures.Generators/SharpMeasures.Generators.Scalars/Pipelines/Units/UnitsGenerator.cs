@@ -2,6 +2,9 @@
 
 using Microsoft.CodeAnalysis;
 
+using SharpMeasures.Generators.Units;
+
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
@@ -21,11 +24,29 @@ internal static class UnitsGenerator
             return new Optional<DataModel>();
         }
 
-        var unit = model.Value.UnitPopulation.Units[model.Value.Scalar.Unit];
+        if (model.Value.UnitPopulation.Units.TryGetValue(model.Value.Scalar.Unit, out var unit) is false)
+        {
+            return new Optional<DataModel>();
+        }
 
-        var includedUnitBaseInstances = model.Value.Scalar.IncludedUnitBaseInstanceNames.Select((unitName) => unit.UnitInstancesByName[unitName]).ToList();
-        var includedUnitInstances = model.Value.Scalar.IncludedUnitInstanceNames.Select((unitName) => unit.UnitInstancesByName[unitName]).ToList();
+        var includedUnitBaseInstances = GetIncludedUnitInstances(unit, model.Value.Scalar.IncludedUnitBaseInstanceNames);
+        var includedUnitInstances = GetIncludedUnitInstances(unit, model.Value.Scalar.IncludedUnitInstanceNames);
 
         return new DataModel(model.Value.Scalar.Type, model.Value.Scalar.Unit, unit.Definition.Quantity, includedUnitBaseInstances, includedUnitInstances, model.Value.Scalar.Constants.Concat(model.Value.Scalar.InheritedConstants).ToList(), model.Value.Documentation);
+    }
+
+    private static List<IUnitInstance> GetIncludedUnitInstances(IUnitType unit, IReadOnlyList<string> includedUnitInstanceNames)
+    {
+        List<IUnitInstance> includedUnits = new();
+
+        foreach (var includedUnitInstanceName in includedUnitInstanceNames)
+        {
+            if (unit.UnitInstancesByName.TryGetValue(includedUnitInstanceName, out var unitInstance))
+            {
+                includedUnits.Add(unitInstance);
+            }
+        }
+
+        return includedUnits;
     }
 }

@@ -260,7 +260,7 @@ internal static class Execution
 
             var methodNameAndModifiers = $"public static {result.FullyQualifiedName} operator {operatorSymbol}";
 
-            if (operation.Position is OperatorPosition.Left || operation.Mirror && ImplementedOperators.Add((Data.Vector.AsNamedType(), operation.OperatorType, other)))
+            if ((operation.Position is OperatorPosition.Left || operation.Mirror) && ImplementedOperators.Add((Data.Vector.AsNamedType(), operation.OperatorType, other)))
             {
                 SeparationHandler.AddIfNecessary();
 
@@ -271,7 +271,7 @@ internal static class Execution
                 StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers, expression, parameters);
             }
 
-            if (operation.Position is OperatorPosition.Right || operation.Mirror && ImplementedOperators.Add((other, operation.OperatorType, Data.Vector.AsNamedType())))
+            if ((operation.Position is OperatorPosition.Right || operation.Mirror) && ImplementedOperators.Add((other, operation.OperatorType, Data.Vector.AsNamedType())))
             {
                 SeparationHandler.AddIfNecessary();
 

@@ -84,6 +84,13 @@ internal sealed class FileDocumentation : IDocumentationStrategy, IEquatable<Fil
 
     public string MultiplyVectorMethod(int dimension) => FromFileOrDefault((strategy) => strategy.MultiplyVectorMethod(dimension));
 
+    public string AddTScalarMethod() => FromFileOrDefault(static (strategy) => strategy.AddTScalarMethod());
+    public string SubtractTScalarMethod() => FromFileOrDefault(static (strategy) => strategy.SubtractTScalarMethod());
+    public string SubtractFromTScalarMethod() => FromFileOrDefault(static (strategy) => strategy.SubtractFromTScalarMethod());
+    public string MultiplyTScalarMethod() => FromFileOrDefault(static (strategy) => strategy.MultiplyTScalarMethod());
+    public string DivideTScalarMethod() => FromFileOrDefault(static (strategy) => strategy.DivideTScalarMethod());
+    public string DivideIntoTScalarMethod() => FromFileOrDefault(static (strategy) => strategy.DivideIntoTScalarMethod());
+
     public string UnaryPlusOperator() => FromFileOrDefault(static (strategy) => strategy.UnaryPlusOperator());
     public string NegateOperator() => FromFileOrDefault(static (strategy) => strategy.NegateOperator());
 
@@ -103,6 +110,20 @@ internal sealed class FileDocumentation : IDocumentationStrategy, IEquatable<Fil
 
     public string MultiplyVectorOperatorLHS(int dimension) => FromFileOrDefault((strategy) => strategy.MultiplyVectorOperatorLHS(dimension));
     public string MultiplyVectorOperatorRHS(int dimension) => FromFileOrDefault((strategy) => strategy.MultiplyVectorOperatorRHS(dimension));
+
+    public string AddIScalarOperator() => FromFileOrDefault(static (strategy) => strategy.AddIScalarOperator());
+    public string SubtractIScalarOperator() => FromFileOrDefault(static (strategy) => strategy.SubtractIScalarOperator());
+    public string MultiplyIScalarOperator() => FromFileOrDefault(static (strategy) => strategy.MultiplyIScalarOperator());
+    public string DivideIScalarOperator() => FromFileOrDefault(static (strategy) => strategy.DivideIScalarOperator());
+
+    public string AddUnhandledOperatorLHS() => FromFileOrDefault(static (strategy) => strategy.AddUnhandledOperatorLHS());
+    public string AddUnhandledOperatorRHS() => FromFileOrDefault(static (strategy) => strategy.AddUnhandledOperatorRHS());
+    public string SubtractUnhandledOperatorLHS() => FromFileOrDefault(static (strategy) => strategy.SubtractUnhandledOperatorLHS());
+    public string SubtractUnhandledOperatorRHS() => FromFileOrDefault(static (strategy) => strategy.SubtractUnhandledOperatorRHS());
+    public string MultiplyUnhandledOperatorLHS() => FromFileOrDefault(static (strategy) => strategy.MultiplyUnhandledOperatorLHS());
+    public string MultiplyUnhandledOperatorRHS() => FromFileOrDefault(static (strategy) => strategy.MultiplyUnhandledOperatorRHS());
+    public string DivideUnhandledOperatorLHS() => FromFileOrDefault(static (strategy) => strategy.DivideUnhandledOperatorLHS());
+    public string DivideUnhandledOperatorRHS() => FromFileOrDefault(static (strategy) => strategy.DivideUnhandledOperatorRHS());
 
     public string CompareToSameType() => FromFileOrDefault(static (strategy) => strategy.CompareToSameType());
 

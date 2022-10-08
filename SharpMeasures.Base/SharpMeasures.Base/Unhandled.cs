@@ -86,18 +86,86 @@ public readonly record struct Unhandled : IScalarQuantity<Unhandled>, IComparabl
     public Unhandled Multiply(Scalar factor) => this * factor;
     /// <inheritdoc/>
     public Unhandled Divide(Scalar divisor) => this / divisor;
+    /// <summary>Computes { <paramref name="dividend"/> / <see langword="this"/> }.</summary>
+    /// <param name="dividend">The dividend of { <paramref name="dividend"/> / <see langword="this"/> }.</param>
+    public Unhandled DivideInto(Scalar dividend) => dividend / this;
 
     /// <summary>Computes { <see langword="this"/> ∙ <paramref name="factor"/> }.</summary>
     /// <param name="factor">The second factor of { <see langword="this"/> ∙ <paramref name="factor"/> }.</param>
     public Unhandled2 Multiply(Vector2 factor) => this * factor;
+    /// <summary>Computes { <paramref name="dividend"/> / <see langword="this"/> }.</summary>
+    /// <param name="dividend">The dividend of { <paramref name="dividend"/> / <see langword="this"/> }.</param>
+    public Unhandled2 DivideInto(Vector2 dividend) => dividend / this;
 
-    /// <summary>Computes { <see langword="this"/> ∙ <paramref name="factor"/> }.</summary>
-    /// <param name="factor">The second factor of { <see langword="this"/> ∙ <paramref name="factor"/> }.</param>
+    /// <inheritdoc cref="Multiply(Vector2)"/>
     public Unhandled3 Multiply(Vector3 factor) => this * factor;
+    /// <inheritdoc cref="DivideInto(Vector2)"/>
+    public Unhandled3 DivideInto(Vector3 dividend) => dividend / this;
+
+    /// <inheritdoc cref="Multiply(Vector2)"/>
+    public Unhandled4 Multiply(Vector4 factor) => this * factor;
+    /// <inheritdoc cref="DivideInto(Vector2)"/>
+    public Unhandled4 DivideInto(Vector4 dividend) => dividend / this;
+
+    /// <summary>Computes { <see langword="this"/> + <paramref name="addend"/> }.</summary>
+    /// <param name="addend">The second term of { <see langword="this"/> + <paramref name="addend"/> }.</param>
+    /// <exception cref="ArgumentNullException"/>
+    public Unhandled Add<TScalar>(TScalar addend) where TScalar : IScalarQuantity
+    {
+        ArgumentNullException.ThrowIfNull(addend);
+
+        return new(Magnitude + addend.Magnitude);
+    }
+
+    /// <summary>Computes { <see langword="this"/> - <paramref name="subtrahend"/> }.</summary>
+    /// <param name="subtrahend">The second term of { <see langword="this"/> - <paramref name="subtrahend"/> }.</param>
+    /// <exception cref="ArgumentNullException"/>
+    public Unhandled Subtract<TScalar>(TScalar subtrahend) where TScalar : IScalarQuantity
+    {
+        ArgumentNullException.ThrowIfNull(subtrahend);
+
+        return new(Magnitude - subtrahend.Magnitude);
+    }
+
+    /// <summary>Computes { <paramref name="minuend"/> - <see langword="this"/> }.</summary>
+    /// <param name="minuend">The first term of { <paramref name="minuend"/> - <see langword="this"/> }.</param>
+    /// <exception cref="ArgumentNullException"/>
+    public Unhandled SubtractFrom<TScalar>(TScalar minuend) where TScalar : IScalarQuantity
+    {
+        ArgumentNullException.ThrowIfNull(minuend);
+
+        return new(minuend.Magnitude - Magnitude);
+    }
 
     /// <summary>Computes { <see langword="this"/> ∙ <paramref name="factor"/> }.</summary>
     /// <param name="factor">The second factor of { <see langword="this"/> ∙ <paramref name="factor"/> }.</param>
-    public Unhandled4 Multiply(Vector4 factor) => this * factor;
+    /// <exception cref="ArgumentNullException"/>
+    public Unhandled Multiply<TScalar>(TScalar factor) where TScalar : IScalarQuantity
+    {
+        ArgumentNullException.ThrowIfNull(factor);
+
+        return new(Magnitude * factor.Magnitude);
+    }
+
+    /// <summary>Computes { <see langword="this"/> / <paramref name="divisor"/> }.</summary>
+    /// <param name="divisor">The divisor of { <see langword="this"/> / <paramref name="divisor"/> }.</param>
+    /// <exception cref="ArgumentNullException"/>
+    public Unhandled Divide<TScalar>(TScalar divisor) where TScalar : IScalarQuantity
+    {
+        ArgumentNullException.ThrowIfNull(divisor);
+
+        return new(Magnitude / divisor.Magnitude);
+    }
+
+    /// <summary>Computes { <paramref name="dividend"/> / <see langword="this"/> }.</summary>
+    /// <param name="dividend">The divisor of { <paramref name="dividend"/> / <see langword="this"/> }.</param>
+    /// <exception cref="ArgumentNullException"/>
+    public Unhandled DivideInto<TScalar>(TScalar dividend) where TScalar : IScalarQuantity
+    {
+        ArgumentNullException.ThrowIfNull(dividend);
+
+        return new(dividend.Magnitude / Magnitude);
+    }
 
     /// <inheritdoc/>
     public static Unhandled operator +(Unhandled x) => x;
@@ -152,6 +220,7 @@ public readonly record struct Unhandled : IScalarQuantity<Unhandled>, IComparabl
     public static Unhandled4 operator /(Vector4 a, Unhandled b) => (a.X / b, a.Y / b, a.Z / b, a.W / b);
 
     /// <inheritdoc cref="operator +(Unhandled, Unhandled)"/>
+    /// <remarks>Consider preferring <see cref="Add{TScalar}(TScalar)"/>, where boxing is avoided.</remarks>
     /// <exception cref="ArgumentNullException"/>
     public static Unhandled operator +(Unhandled x, IScalarQuantity y)
     {
@@ -161,6 +230,7 @@ public readonly record struct Unhandled : IScalarQuantity<Unhandled>, IComparabl
     }
 
     /// <inheritdoc cref="operator +(Unhandled, Unhandled)"/>
+    /// <remarks>Consider preferring <see cref="Add{TScalar}(TScalar)"/>, where boxing is avoided.</remarks>
     /// <exception cref="ArgumentNullException"/>
     public static Unhandled operator +(IScalarQuantity x, Unhandled y)
     {
@@ -170,6 +240,7 @@ public readonly record struct Unhandled : IScalarQuantity<Unhandled>, IComparabl
     }
 
     /// <inheritdoc cref="operator -(Unhandled, Unhandled)"/>
+    /// <remarks>Consider preferring <see cref="Subtract{TScalar}(TScalar)"/>, where boxing is avoided.</remarks>
     /// <exception cref="ArgumentNullException"/>
     public static Unhandled operator -(Unhandled x, IScalarQuantity y)
     {
@@ -179,6 +250,7 @@ public readonly record struct Unhandled : IScalarQuantity<Unhandled>, IComparabl
     }
 
     /// <inheritdoc cref="operator -(Unhandled, Unhandled)"/>
+    /// <remarks>Consider preferring <see cref="SubtractFrom{TScalar}(TScalar)"/>, where boxing is avoided.</remarks>
     /// <exception cref="ArgumentNullException"/>
     public static Unhandled operator -(IScalarQuantity x, Unhandled y)
     {
@@ -188,6 +260,7 @@ public readonly record struct Unhandled : IScalarQuantity<Unhandled>, IComparabl
     }
 
     /// <inheritdoc cref="operator *(Unhandled, Unhandled)"/>
+    /// <remarks>Consider preferring <see cref="Multiply{TScalar}(TScalar)"/>, where boxing is avoided.</remarks>
     /// <exception cref="ArgumentNullException"/>
     public static Unhandled operator *(Unhandled x, IScalarQuantity y)
     {
@@ -197,6 +270,7 @@ public readonly record struct Unhandled : IScalarQuantity<Unhandled>, IComparabl
     }
 
     /// <inheritdoc cref="operator *(Unhandled, IScalarQuantity)"/>
+    /// <remarks>Consider preferring <see cref="Multiply{TScalar}(TScalar)"/>, where boxing is avoided.</remarks>
     /// <exception cref="ArgumentNullException"/>
     public static Unhandled operator *(IScalarQuantity x, Unhandled y)
     {
@@ -206,6 +280,7 @@ public readonly record struct Unhandled : IScalarQuantity<Unhandled>, IComparabl
     }
 
     /// <inheritdoc cref="operator /(Unhandled, Unhandled)"/>
+    /// <remarks>Consider preferring <see cref="Divide{TScalar}(TScalar)"/>, where boxing is avoided.</remarks>
     /// <exception cref="ArgumentNullException"/>
     public static Unhandled operator /(Unhandled x, IScalarQuantity y)
     {
@@ -215,6 +290,7 @@ public readonly record struct Unhandled : IScalarQuantity<Unhandled>, IComparabl
     }
 
     /// <inheritdoc cref="operator /(Unhandled, Unhandled)"/>
+    /// <remarks>Consider preferring <see cref="DivideInto{TScalar}(TScalar)"/>, where boxing is avoided.</remarks>
     /// <exception cref="ArgumentNullException"/>
     public static Unhandled operator /(IScalarQuantity x, Unhandled y)
     {

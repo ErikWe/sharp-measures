@@ -20,8 +20,31 @@ internal static class VectorMathsGenerator
             return new Optional<DataModel>();
         }
 
-        var unit = model.Value.UnitPopulation.Units[model.Value.Vector.Unit];
+        if (model.Value.UnitPopulation.Units.TryGetValue(model.Value.Vector.Unit, out var unit) is false)
+        {
+            return new Optional<DataModel>();
+        }
 
-        return new DataModel(model.Value.Vector.Type, model.Value.Vector.Dimension, model.Value.Vector.ImplementSum, model.Value.Vector.ImplementDifference, model.Value.Vector.Difference, model.Value.Vector.Scalar, model.Value.Vector.Unit, unit.Definition.Quantity, model.Value.Documentation);
+        return new DataModel(model.Value.Vector.Type, model.Value.Vector.Dimension, model.Value.Vector.ImplementSum, model.Value.Vector.ImplementDifference, model.Value.Vector.Difference, GetDifferenceScalar(model.Value), model.Value.Vector.Scalar, model.Value.Vector.Unit, unit.Definition.Quantity, model.Value.Documentation);
+    }
+
+    private static NamedType? GetDifferenceScalar(VectorDataModel model)
+    {
+        if (model.Vector.Difference is null)
+        {
+            return null;
+        }
+
+        if (model.VectorPopulation.Vectors.TryGetValue(model.Vector.Difference.Value, out var differenceVector))
+        {
+            return differenceVector.Scalar;
+        }
+
+        if (model.VectorPopulation.Groups.TryGetValue(model.Vector.Difference.Value, out var differenceGroup))
+        {
+            return differenceGroup.Scalar;
+        }
+
+        return null;
     }
 }

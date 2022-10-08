@@ -80,6 +80,12 @@ internal interface IVectorDocumentationStrategy
     public abstract string MultiplyScalarMethod();
     public abstract string DivideScalarMethod();
 
+    public abstract string AddTVectorMethod();
+    public abstract string SubtractTVectorMethod();
+    public abstract string SubtractFromTVectorMethod();
+    public abstract string MultiplyTScalarMethod();
+    public abstract string DivideTScalarMethod();
+
     public abstract string UnaryPlusOperator();
     public abstract string NegateOperator();
 
@@ -93,4 +99,18 @@ internal interface IVectorDocumentationStrategy
     public abstract string MultiplyScalarOperatorLHS();
     public abstract string MultiplyScalarOperatorRHS();
     public abstract string DivideScalarOperatorLHS();
+
+    public abstract string AddIVectorOperator();
+    public abstract string SubtractIVectorOperator();
+    public abstract string MultiplyIScalarOperatorLHS();
+    public abstract string MultiplyIScalarOperatorRHS();
+    public abstract string DivideIScalarOperatorLHS();
+
+    public abstract string AddUnhandledOperatorLHS();
+    public abstract string AddUnhandledOperatorRHS();
+    public abstract string SubtractUnhandledOperatorLHS();
+    public abstract string SubtractUnhandledOperatorRHS();
+    public abstract string MultiplyUnhandledOperatorLHS();
+    public abstract string MultiplyUnhandledOperatorRHS();
+    public abstract string DivideUnhandledOperatorLHS();
 }

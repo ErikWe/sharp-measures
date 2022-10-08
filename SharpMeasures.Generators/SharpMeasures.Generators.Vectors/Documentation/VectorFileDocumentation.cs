@@ -97,6 +97,12 @@ internal sealed class VectorFileDocumentation : IVectorDocumentationStrategy, IE
     public string MultiplyScalarMethod() => FromFileOrDefault(static (strategy) => strategy.MultiplyScalarMethod());
     public string DivideScalarMethod() => FromFileOrDefault(static (strategy) => strategy.DivideScalarMethod());
 
+    public string AddTVectorMethod() => FromFileOrDefault(static (strategy) => strategy.AddTVectorMethod());
+    public string SubtractTVectorMethod() => FromFileOrDefault(static (strategy) => strategy.SubtractTVectorMethod());
+    public string SubtractFromTVectorMethod() => FromFileOrDefault(static (strategy) => strategy.SubtractFromTVectorMethod());
+    public string MultiplyTScalarMethod() => FromFileOrDefault(static (strategy) => strategy.MultiplyTScalarMethod());
+    public string DivideTScalarMethod() => FromFileOrDefault(static (strategy) => strategy.DivideTScalarMethod());
+
     public string UnaryPlusOperator() => FromFileOrDefault(static (strategy) => strategy.UnaryPlusOperator());
     public string NegateOperator() => FromFileOrDefault(static (strategy) => strategy.NegateOperator());
 
@@ -110,6 +116,20 @@ internal sealed class VectorFileDocumentation : IVectorDocumentationStrategy, IE
     public string MultiplyScalarOperatorLHS() => FromFileOrDefault(static (strategy) => strategy.MultiplyScalarOperatorLHS());
     public string MultiplyScalarOperatorRHS() => FromFileOrDefault(static (strategy) => strategy.MultiplyScalarOperatorRHS());
     public string DivideScalarOperatorLHS() => FromFileOrDefault(static (strategy) => strategy.DivideScalarOperatorLHS());
+
+    public string AddIVectorOperator() => FromFileOrDefault(static (strategy) => strategy.AddIVectorOperator());
+    public string SubtractIVectorOperator() => FromFileOrDefault(static (strategy) => strategy.SubtractIVectorOperator());
+    public string MultiplyIScalarOperatorLHS() => FromFileOrDefault(static (strategy) => strategy.MultiplyIScalarOperatorLHS());
+    public string MultiplyIScalarOperatorRHS() => FromFileOrDefault(static (strategy) => strategy.MultiplyIScalarOperatorRHS());
+    public string DivideIScalarOperatorLHS() => FromFileOrDefault(static (strategy) => strategy.DivideIScalarOperatorLHS());
+
+    public string AddUnhandledOperatorLHS() => FromFileOrDefault(static (strategy) => strategy.AddUnhandledOperatorLHS());
+    public string AddUnhandledOperatorRHS() => FromFileOrDefault(static (strategy) => strategy.AddUnhandledOperatorRHS());
+    public string SubtractUnhandledOperatorLHS() => FromFileOrDefault(static (strategy) => strategy.SubtractUnhandledOperatorLHS());
+    public string SubtractUnhandledOperatorRHS() => FromFileOrDefault(static (strategy) => strategy.SubtractUnhandledOperatorRHS());
+    public string MultiplyUnhandledOperatorLHS() => FromFileOrDefault(static (strategy) => strategy.MultiplyUnhandledOperatorLHS());
+    public string MultiplyUnhandledOperatorRHS() => FromFileOrDefault(static (strategy) => strategy.MultiplyUnhandledOperatorRHS());
+    public string DivideUnhandledOperatorLHS() => FromFileOrDefault(static (strategy) => strategy.DivideUnhandledOperatorLHS());
 
     private string FromFileOrDefault(Func<IVectorDocumentationStrategy, string> defaultDelegate)
     {

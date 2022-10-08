@@ -286,7 +286,7 @@ internal static class Execution
             if (Data.Scalar is null)
             {
                 AppendDocumentation(indentation, Data.Documentation.ScalarMagnitude());
-                Builder.AppendLine($"{indentation}public global::SharpMeasures.Scalar Magnitude() => ScalarMaths.Magnitude{Data.Dimension}(this);");
+                Builder.AppendLine($"{indentation}public global::SharpMeasures.Scalar Magnitude() => PureScalarMaths.Magnitude{Data.Dimension}(this);");
             }
             else
             {
@@ -296,13 +296,13 @@ internal static class Execution
                 SeparationHandler.Add();
 
                 AppendDocumentation(indentation, Data.Documentation.ScalarMagnitude());
-                Builder.AppendLine($"{indentation}global::SharpMeasures.Scalar global::SharpMeasures.IVector{Data.Dimension}.Magnitude() => PureScalarMaths.Magnitude{Data.Dimension}(this);");
+                Builder.AppendLine($"{indentation}global::SharpMeasures.Scalar global::SharpMeasures.IVector{Data.Dimension}Quantity.Magnitude() => PureScalarMaths.Magnitude{Data.Dimension}(this);");
             }
 
             SeparationHandler.Add();
 
             AppendDocumentation(indentation, Data.Documentation.ScalarSquaredMagnitude());
-            Builder.AppendLine($"{indentation}public global::SharpMeasures.Scalar SquaredMagnitude() => ScalarMaths.SquaredMagnitude{Data.Dimension}(this);");
+            Builder.AppendLine($"{indentation}public global::SharpMeasures.Scalar SquaredMagnitude() => PureScalarMaths.SquaredMagnitude{Data.Dimension}(this);");
         }
 
         private void AppendInUnit(Indentation indentation)
@@ -510,12 +510,14 @@ internal static class Execution
             }
 
             Builder.Append($$"""
-                [SuppressMessage("Usage", "CA2225", Justification = "Behaviour can be achived through a constructor")]
-                public static implicit operator {{Data.Vector.FullyQualifiedName}}(({{Texts.Upper.Component}}) components)
+                {{indentation}}[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2225", Justification = "Behaviour can be achived through a constructor")]
+                {{indentation}}public static implicit operator {{Data.Vector.FullyQualifiedName}}(({{Texts.Upper.Component}}) components)
                 """);
 
             if (Data.Scalar!.Value.IsReferenceType)
             {
+                Builder.AppendLine();
+
                 Builder.AppendLine($$"""{{indentation}}{""");
 
                 for (int i = 0; i < Data.Dimension; i++)

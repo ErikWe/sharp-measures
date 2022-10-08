@@ -84,6 +84,8 @@ internal static class Execution
 
             AppendDivideSameTypeMethod(indentation);
 
+            AppendGenericMethods(indentation);
+
             AppendUnaryOperators(indentation);
 
             if (Data.ImplementSum)
@@ -98,6 +100,9 @@ internal static class Execution
 
             AppendDivideSameTypeOperator(indentation);
             AppendMultiplyAndDivideScalarOperators(indentation);
+
+            AppendGenericOperators(indentation);
+            AppendUnhandledOperators(indentation);
         }
 
         private void AppendCommonProperties(Indentation indentation)
@@ -223,6 +228,87 @@ internal static class Execution
             StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers, expression, parameters);
         }
 
+        private void AppendGenericMethods(Indentation indentation)
+        {
+            SeparationHandler.AddIfNecessary();
+
+            AppendDocumentation(indentation, Data.Documentation.AddTScalarMethod());
+            DocumentationBuilding.AppendArgumentNullExceptionTag(Builder, indentation);
+            Builder.AppendLine($$"""
+                {{indentation}}public global::SharpMeasures.Unhandled Add<TScalar>(TScalar addend) where TScalar : global::SharpMeasures.IScalarQuantity
+                {{indentation}}{
+                {{indentation.Increased}}global::System.ArgumentNullException.ThrowIfNull(addend);
+
+                {{indentation.Increased}}return new(Magnitude + addend.Magnitude);
+                {{indentation}}}
+                """);
+
+            SeparationHandler.Add();
+
+            AppendDocumentation(indentation, Data.Documentation.SubtractTScalarMethod());
+            DocumentationBuilding.AppendArgumentNullExceptionTag(Builder, indentation);
+            Builder.AppendLine($$"""
+                {{indentation}}public global::SharpMeasures.Unhandled Subtract<TScalar>(TScalar subtrahend) where TScalar : global::SharpMeasures.IScalarQuantity
+                {{indentation}}{
+                {{indentation.Increased}}global::System.ArgumentNullException.ThrowIfNull(subtrahend);
+
+                {{indentation.Increased}}return new(Magnitude - subtrahend.Magnitude);
+                {{indentation}}}
+                """);
+
+            SeparationHandler.Add();
+
+            AppendDocumentation(indentation, Data.Documentation.SubtractFromTScalarMethod());
+            DocumentationBuilding.AppendArgumentNullExceptionTag(Builder, indentation);
+            Builder.AppendLine($$"""
+                {{indentation}}public global::SharpMeasures.Unhandled SubtractFrom<TScalar>(TScalar minuend) where TScalar : global::SharpMeasures.IScalarQuantity
+                {{indentation}}{
+                {{indentation.Increased}}global::System.ArgumentNullException.ThrowIfNull(minuend);
+
+                {{indentation.Increased}}return new(minuend.Magnitude - Magnitude);
+                {{indentation}}}
+                """);
+
+            SeparationHandler.Add();
+
+            AppendDocumentation(indentation, Data.Documentation.MultiplyTScalarMethod());
+            DocumentationBuilding.AppendArgumentNullExceptionTag(Builder, indentation);
+            Builder.AppendLine($$"""
+                {{indentation}}public global::SharpMeasures.Unhandled Multiply<TScalar>(TScalar factor) where TScalar : global::SharpMeasures.IScalarQuantity
+                {{indentation}}{
+                {{indentation.Increased}}global::System.ArgumentNullException.ThrowIfNull(factor);
+
+                {{indentation.Increased}}return new(Magnitude * factor.Magnitude);
+                {{indentation}}}
+                """);
+
+            SeparationHandler.Add();
+
+            AppendDocumentation(indentation, Data.Documentation.DivideTScalarMethod());
+            DocumentationBuilding.AppendArgumentNullExceptionTag(Builder, indentation);
+            Builder.AppendLine($$"""
+                {{indentation}}public global::SharpMeasures.Unhandled Divide<TScalar>(TScalar divisor) where TScalar : global::SharpMeasures.IScalarQuantity
+                {{indentation}}{
+                {{indentation.Increased}}global::System.ArgumentNullException.ThrowIfNull(divisor);
+
+                {{indentation.Increased}}return new(Magnitude / divisor.Magnitude);
+                {{indentation}}}
+                """);
+
+            SeparationHandler.Add();
+
+            AppendDocumentation(indentation, Data.Documentation.DivideIntoTScalarMethod());
+            DocumentationBuilding.AppendArgumentNullExceptionTag(Builder, indentation);
+            Builder.AppendLine($$"""
+                {{indentation}}public global::SharpMeasures.Unhandled DivideInto<TScalar>(TScalar dividend) where TScalar : global::SharpMeasures.IScalarQuantity
+                {{indentation}}{
+                {{indentation.Increased}}global::System.ArgumentNullException.ThrowIfNull(dividend);
+
+                {{indentation.Increased}}return new(dividend.Magnitude / Magnitude);
+                {{indentation}}}
+                """);
+        }
+
         private void AppendUnaryOperators(Indentation indentation)
         {
             SeparationHandler.AddIfNecessary();
@@ -335,11 +421,11 @@ internal static class Execution
             var multiplyRHSExpression = "new(x.Value * y.Magnitude.Value)";
             var divideExpression = "new(x.Magnitude.Value / y.Value)";
 
-            var LHSParameters = new[] { (Data.Scalar.AsNamedType(), "x"), (new NamedType("Scalar", "SharpMeasures", "SharpMeasures.Base", true), "y") };
-            var RHSParameters = new[] { (new NamedType("Scalar", "SharpMeasures", "SharpMeasures.Base", true), "x"), (Data.Scalar.AsNamedType(), "y") };
+            var lhsParameters = new[] { (Data.Scalar.AsNamedType(), "x"), (new NamedType("Scalar", "SharpMeasures", "SharpMeasures.Base", true), "y") };
+            var rhsParameters = new[] { (new NamedType("Scalar", "SharpMeasures", "SharpMeasures.Base", true), "x"), (Data.Scalar.AsNamedType(), "y") };
 
             AppendDocumentation(indentation, Data.Documentation.MultiplyScalarOperatorLHS());
-            StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, multiplyMethodNameAndModifiers, multiplyLHSExpression, LHSParameters);
+            StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, multiplyMethodNameAndModifiers, multiplyLHSExpression, lhsParameters);
 
             if (Data.Scalar.IsReferenceType)
             {
@@ -347,7 +433,7 @@ internal static class Execution
             }
 
             AppendDocumentation(indentation, Data.Documentation.MultiplyScalarOperatorRHS());
-            StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, multiplyMethodNameAndModifiers, multiplyRHSExpression, RHSParameters);
+            StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, multiplyMethodNameAndModifiers, multiplyRHSExpression, rhsParameters);
             
             if (Data.Scalar.IsReferenceType)
             {
@@ -355,7 +441,87 @@ internal static class Execution
             }
 
             AppendDocumentation(indentation, Data.Documentation.DivideScalarOperatorLHS());
-            StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, divideMethodNameAndModifiers, divideExpression, LHSParameters);
+            StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, divideMethodNameAndModifiers, divideExpression, lhsParameters);
+        }
+
+        private void AppendGenericOperators(Indentation indentation)
+        {
+            NamedType iScalarQuantity = new("IScalarQuantity", "SharpMeasures", "SharpMeasures.Base", false);
+
+            var methodNameAndModifiers = (string symbol) => $"public static global::SharpMeasures.Unhandled operator {symbol}";
+            var expression = (string symbol) => $"new(x.Magnitude {symbol} y.Magnitude)";
+            var parameters = new[] { (Data.Scalar.AsNamedType(), "x"), (iScalarQuantity, "y") };
+
+            SeparationHandler.AddIfNecessary();
+
+            AppendDocumentation(indentation, Data.Documentation.AddIScalarOperator());
+            StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers("+"), expression("+"), parameters);
+
+            SeparationHandler.Add();
+
+            AppendDocumentation(indentation, Data.Documentation.SubtractIScalarOperator());
+            StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers("-"), expression("-"), parameters);
+
+            SeparationHandler.Add();
+
+            AppendDocumentation(indentation, Data.Documentation.MultiplyIScalarOperator());
+            StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers("*"), expression("*"), parameters);
+
+            SeparationHandler.Add();
+
+            AppendDocumentation(indentation, Data.Documentation.DivideIScalarOperator());
+            StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers("/"), expression("/"), parameters);
+        }
+
+        private void AppendUnhandledOperators(Indentation indentation)
+        {
+            NamedType unhandled = new("Unhandled", "SharpMeasures", "SharpMeasures.Base", true);
+
+            var methodNameAndModifiers = (string symbol) => $"public static {unhandled.FullyQualifiedName} operator {symbol}";
+            var expression = (string symbol) => $"new(x.Magnitude {symbol} y.Magnitude)";
+
+            var lhsParameters = new[] { (Data.Scalar.AsNamedType(), "x"), (unhandled, "y") };
+            var rhsParameters = new[] { (unhandled, "x"), (Data.Scalar.AsNamedType(), "y") };
+
+            SeparationHandler.AddIfNecessary();
+
+            AppendDocumentation(indentation, Data.Documentation.AddUnhandledOperatorLHS());
+            StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers("+"), expression("+"), lhsParameters);
+
+            SeparationHandler.Add();
+
+            AppendDocumentation(indentation, Data.Documentation.AddUnhandledOperatorRHS());
+            StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers("+"), expression("+"), rhsParameters);
+
+            SeparationHandler.Add();
+
+            AppendDocumentation(indentation, Data.Documentation.SubtractUnhandledOperatorLHS());
+            StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers("-"), expression("-"), lhsParameters);
+
+            SeparationHandler.Add();
+
+            AppendDocumentation(indentation, Data.Documentation.SubtractUnhandledOperatorRHS());
+            StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers("-"), expression("-"), rhsParameters);
+
+            SeparationHandler.Add();
+
+            AppendDocumentation(indentation, Data.Documentation.MultiplyUnhandledOperatorLHS());
+            StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers("*"), expression("*"), lhsParameters);
+
+            SeparationHandler.Add();
+
+            AppendDocumentation(indentation, Data.Documentation.MultiplyUnhandledOperatorRHS());
+            StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers("*"), expression("*"), rhsParameters);
+
+            SeparationHandler.Add();
+
+            AppendDocumentation(indentation, Data.Documentation.DivideUnhandledOperatorLHS());
+            StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers("/"), expression("/"), lhsParameters);
+
+            SeparationHandler.Add();
+
+            AppendDocumentation(indentation, Data.Documentation.DivideUnhandledOperatorRHS());
+            StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers("/"), expression("/"), rhsParameters);
         }
 
         private void AppendDocumentation(Indentation indentation, string text) => DocumentationBuilding.AppendDocumentation(Builder, indentation, text);

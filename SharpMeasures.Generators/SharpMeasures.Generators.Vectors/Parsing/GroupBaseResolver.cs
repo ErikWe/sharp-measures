@@ -56,5 +56,13 @@ internal static class GroupBaseResolver
         return includedUnits.ToList();
     }
 
-    private static IReadOnlyDictionary<int, NamedType> ResolveMembers(GroupBaseType groupType, IVectorPopulation vectorPopulation) => vectorPopulation.GroupMembersByGroup[groupType.Type.AsNamedType()].GroupMembersByDimension.Transform(static (vector) => vector.Type.AsNamedType());
+    private static IReadOnlyDictionary<int, NamedType> ResolveMembers(GroupBaseType groupType, IVectorPopulation vectorPopulation)
+    {
+        if (vectorPopulation.GroupMembersByGroup.TryGetValue(groupType.Type.AsNamedType(), out var members) is false)
+        {
+            return new Dictionary<int, NamedType>();
+        }
+
+        return members.GroupMembersByDimension.Transform(static (vector) => vector.Type.AsNamedType());
+    }
 }

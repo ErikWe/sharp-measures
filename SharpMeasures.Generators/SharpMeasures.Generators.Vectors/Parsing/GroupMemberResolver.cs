@@ -53,15 +53,15 @@ internal static class GroupMemberResolver
 
         var generateDocumentation = RecursivelySearchForDefined(vectorType, vectorPopulation, static (vector) => vector.Definition.GenerateDocumentation, static (vector) => vector.Definition.GenerateDocumentation);
 
-        (var forwardsCastBehaviour, var backwardsCastBehaviour) = GetSpecializationCastBehaviour(vectorType.Definition.VectorGroup, vectorPopulation);
+        (var forwardsCastBehaviour, var backwardsCastBehaviour) = GetSpecializationCastBehaviour(vectorType, vectorPopulation);
 
         return new ResolvedVectorType(vectorType.Type, vectorType.Definition.Dimension, vectorType.Definition.VectorGroup, unit.Type.AsNamedType(), originalQuantity: null, forwardsCastBehaviour, backwardsCastBehaviour, scalar, implementSum!.Value, implementDifference!.Value,
             difference, defaultUnitInstanceName, defaultUnitInstanceSymbol, vectorType.Operations, vectorType.VectorOperations, vectorType.Processes, vectorType.Constants, vectorType.Conversions, inheritedOperations, inheritedVectorOperations, inheritedProcesses, inheritedConstants, inheritedConversions, includedUnitInstances, generateDocumentation);
     }
 
-    private static (ConversionOperatorBehaviour ForwardsCastBehaviour, ConversionOperatorBehaviour BackwardsCastBehaviour) GetSpecializationCastBehaviour(NamedType group, IVectorPopulation vectorPopulation)
+    private static (ConversionOperatorBehaviour ForwardsCastBehaviour, ConversionOperatorBehaviour BackwardsCastBehaviour) GetSpecializationCastBehaviour(GroupMemberType vectorType, IVectorPopulation vectorPopulation)
     {
-        if (vectorPopulation.Groups[group] is IVectorGroupSpecializationType groupSpecialization)
+        if (vectorPopulation.Groups.TryGetValue(vectorType.Definition.VectorGroup, out var group) && group is IVectorGroupSpecializationType groupSpecialization)
         {
             return (groupSpecialization.Definition.ForwardsCastOperatorBehaviour, groupSpecialization.Definition.BackwardsCastOperatorBehaviour);
         }
@@ -78,7 +78,7 @@ internal static class GroupMemberResolver
             return difference;
         }
 
-        if (vectorPopulation.GroupMembersByGroup[difference.Value].GroupMembersByDimension.TryGetValue(vectorType.Definition.Dimension, out var correspondingMember))
+        if (vectorPopulation.GroupMembersByGroup.TryGetValue(difference.Value, out var groupMembers) && groupMembers.GroupMembersByDimension.TryGetValue(vectorType.Definition.Dimension, out var correspondingMember))
         {
             return correspondingMember.Type.AsNamedType();
         }
@@ -89,9 +89,14 @@ internal static class GroupMemberResolver
     private static IReadOnlyList<T> CollectItems<T>(GroupMemberType vectorType, IVectorPopulation vectorPopulation, Func<IVectorGroupMemberType, IEnumerable<T>> memberItemsDelegate, Func<IVectorGroupType, IEnumerable<T>> groupItemsDelegate,
         Func<IVectorGroupMemberType, bool> shouldMemberInheritFromMembers, Func<IVectorGroupMemberType, bool> shouldMemberInheritFromGroup, Func<IVectorGroupSpecializationType, bool> shouldGroupInherit, bool onlyInherited = false)
     {
+        if (vectorPopulation.Groups.TryGetValue(vectorType.Definition.VectorGroup, out var group) is false)
+        {
+            return Array.Empty<T>();
+        }
+
         List<T> items = new();
 
-        recursivelyAddItems(vectorPopulation.Groups[vectorType.Definition.VectorGroup], vectorType, shouldMemberInheritFromMembers(vectorType), shouldMemberInheritFromGroup(vectorType), onlyInherited);
+        recursivelyAddItems(group, vectorType, shouldMemberInheritFromMembers(vectorType), shouldMemberInheritFromGroup(vectorType), onlyInherited);
 
         return items;
 
@@ -114,9 +119,20 @@ internal static class GroupMemberResolver
         {
             if (vectorGroup is IVectorGroupSpecializationType vectorGroupSpecialization)
             {
-                var originalVectorGroup = vectorPopulation.Groups[vectorGroupSpecialization.Definition.OriginalQuantity];
+                if (vectorPopulation.Groups.TryGetValue(vectorGroupSpecialization.Definition.OriginalQuantity, out var originalVectorGroup) is false)
+                {
+                    return;
+                }
 
-                vectorPopulation.GroupMembersByGroup[originalVectorGroup.Type.AsNamedType()].GroupMembersByDimension.TryGetValue(vectorType.Definition.Dimension, out var originalCorrespondingMember);
+                if (vectorPopulation.GroupMembersByGroup.TryGetValue(originalVectorGroup.Type.AsNamedType(), out var originalGroup) is false)
+                {
+                    return;
+                }
+
+                if (originalGroup.GroupMembersByDimension.TryGetValue(vectorType.Definition.Dimension, out var originalCorrespondingMember) is false)
+                {
+                    return;
+                }
 
                 bool shouldInheritFromMember = inheritedFromMember && (originalCorrespondingMember is null || shouldMemberInheritFromMembers(originalCorrespondingMember));
                 bool shouldInheritFromGroup = originalCorrespondingMember is not null && shouldMemberInheritFromGroup(originalCorrespondingMember) || shouldGroupInherit(vectorGroupSpecialization);
@@ -128,9 +144,14 @@ internal static class GroupMemberResolver
 
     private static IReadOnlyList<string> ResolveUnitInstanceInclusions(GroupMemberType vectorType, IVectorPopulation vectorPopulation, IUnitType unit)
     {
+        if (vectorPopulation.Groups.TryGetValue(vectorType.Definition.VectorGroup, out var group) is false)
+        {
+            return Array.Empty<string>();
+        }
+
         HashSet<string> includedUnits = new(unit.UnitInstancesByName.Keys);
 
-        recursivelyModify(vectorPopulation.Groups[vectorType.Definition.VectorGroup], vectorType, vectorType.Definition.InheritUnitsFromMembers, vectorType.Definition.InheritUnits);
+        recursivelyModify(group, vectorType, vectorType.Definition.InheritUnitsFromMembers, vectorType.Definition.InheritUnits);
 
         return includedUnits.ToList();
 
@@ -165,9 +186,20 @@ internal static class GroupMemberResolver
         {
             if (vectorGroup is IVectorGroupSpecializationType vectorGroupSpecialization)
             {
-                var originalVectorGroup = vectorPopulation.Groups[vectorGroupSpecialization.Definition.OriginalQuantity];
+                if (vectorPopulation.Groups.TryGetValue(vectorGroupSpecialization.Definition.OriginalQuantity, out var originalVectorGroup) is false)
+                {
+                    return;
+                }
 
-                vectorPopulation.GroupMembersByGroup[originalVectorGroup.Type.AsNamedType()].GroupMembersByDimension.TryGetValue(vectorType.Definition.Dimension, out var originalCorrespondingMember);
+                if (vectorPopulation.GroupMembersByGroup.TryGetValue(originalVectorGroup.Type.AsNamedType(), out var originalGroup) is false)
+                {
+                    return;
+                }
+
+                if (originalGroup.GroupMembersByDimension.TryGetValue(vectorType.Definition.Dimension, out var originalCorrespondingMember) is false)
+                {
+                    return;
+                }
 
                 bool shouldInheritFromMember = inheritedFromMember && (originalCorrespondingMember is null || originalCorrespondingMember.Definition.InheritUnitsFromMembers);
                 bool shouldInheritFromGroup = originalCorrespondingMember is not null && originalCorrespondingMember.Definition.InheritUnits || vectorGroupSpecialization.Definition.InheritUnits;
@@ -185,18 +217,26 @@ internal static class GroupMemberResolver
             return item;
         }
 
-        return recursivelySearch(vectorPopulation.Groups[vectorType.Definition.VectorGroup]);
-
-        T? recursivelySearch(IVectorGroupType vector)
+        if (vectorPopulation.Groups.TryGetValue(vectorType.Definition.VectorGroup, out var group) is false)
         {
-            if (groupItemDelegate(vector) is T item)
+            return default;
+        }
+
+        return recursivelySearch(group);
+
+        T? recursivelySearch(IVectorGroupType vectorGroup)
+        {
+            if (groupItemDelegate(vectorGroup) is T item)
             {
                 return item;
             }
 
-            if (vector is IVectorGroupSpecializationType vectorSpecialization)
+            if (vectorGroup is IVectorGroupSpecializationType vectorGroupSpecialization)
             {
-                return recursivelySearch(vectorPopulation.Groups[vectorSpecialization.Definition.OriginalQuantity]);
+                if (vectorPopulation.Groups.TryGetValue(vectorGroupSpecialization.Definition.OriginalQuantity, out var originalGroup))
+                {
+                    return recursivelySearch(originalGroup);
+                }
             }
 
             return default;

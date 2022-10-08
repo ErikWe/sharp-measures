@@ -89,6 +89,13 @@ internal sealed class DocumentationTags : IDocumentationStrategy, IEquatable<Doc
 
     public string MultiplyVectorMethod(int dimension) => $"Method_Multiply_Vector_{dimension}";
 
+    public string AddTScalarMethod() => "Method_Add_TScalar";
+    public string SubtractTScalarMethod() => "Method_Subtract_TScalar";
+    public string SubtractFromTScalarMethod() => "Method_SubtractFrom_TScalar";
+    public string MultiplyTScalarMethod() => "Method_Multiply_TScalar";
+    public string DivideTScalarMethod() => "Method_Divide_TScalar";
+    public string DivideIntoTScalarMethod() => "Method_DivideInto_TScalar";
+
     public string UnaryPlusOperator() => "Operator_UnaryPlus";
     public string NegateOperator() => "Operator_negate";
 
@@ -107,6 +114,20 @@ internal sealed class DocumentationTags : IDocumentationStrategy, IEquatable<Doc
 
     public string MultiplyVectorOperatorLHS(int dimension) => $"Operator_MultiplyVector_LHS_{dimension}";
     public string MultiplyVectorOperatorRHS(int dimension) => $"Operator_MultiplyVector_RHS_{dimension}";
+
+    public string AddIScalarOperator() => "Operator_Add_IScalarQuantity";
+    public string SubtractIScalarOperator() => "Operator_Subtract_IScalarQuantity";
+    public string MultiplyIScalarOperator() => "Operator_Multiply_IScalarQuantity";
+    public string DivideIScalarOperator() => "Operator_Divide_IScalarQuantity";
+
+    public string AddUnhandledOperatorLHS() => "Operator_Add_Unhandled_LHS";
+    public string AddUnhandledOperatorRHS() => "Operator_Add_Unhandled_RHS";
+    public string SubtractUnhandledOperatorLHS() => "Operator_Subtract_Unhandled_LHS";
+    public string SubtractUnhandledOperatorRHS() => "Operator_Subtract_Unhandled_RHS";
+    public string MultiplyUnhandledOperatorLHS() => "Operator_Multiply_Unhandled_LHS";
+    public string MultiplyUnhandledOperatorRHS() => "Operator_Multiply_Unhandled_RHS";
+    public string DivideUnhandledOperatorLHS() => "Operator_Divide_Unhandled_LHS";
+    public string DivideUnhandledOperatorRHS() => "Operator_Divide_Unhandled_RHS";
 
     public string CompareToSameType() => "CompareTo_SameType";
 

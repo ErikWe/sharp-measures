@@ -29,7 +29,7 @@ internal static class VectorsGenerator
             return new DataModel(model.Value.Scalar.Type, vectorByDimension, model.Value.Documentation);
         }
 
-        if (model.Value.VectorPopulation.Groups.TryGetValue(model.Value.Scalar.Vector.Value, out var group))
+        if (model.Value.VectorPopulation.Groups.TryGetValue(model.Value.Scalar.Vector.Value, out var group) && group.MembersByDimension.Count > 0)
         {
             return new DataModel(model.Value.Scalar.Type, group.MembersByDimension, model.Value.Documentation);
         }

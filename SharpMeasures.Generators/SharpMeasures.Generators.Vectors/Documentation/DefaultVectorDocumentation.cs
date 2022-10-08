@@ -25,8 +25,6 @@ internal sealed class DefaultVectorDocumentation : IVectorDocumentationStrategy,
     private IUnitInstance? ExampleScalarUnitBaseInstance { get; }
     private IUnitInstance? ExampleUnitInstance { get; }
 
-    private bool HasComponent => Scalar is not null;
-
     private SpecificTexts Texts { get; }
 
     public DefaultVectorDocumentation(VectorDataModel model)
@@ -90,19 +88,7 @@ internal sealed class DefaultVectorDocumentation : IVectorDocumentationStrategy,
         return null;
     }
 
-    public string Header() => HasComponent switch
-    {
-        true => ComponentedHeader(),
-        false => UncomponentedHeader()
-    };
-
-    private string ComponentedHeader() => $"""
-        /// <summary>A measure of the {Dimension}-dimensional vector quantity {Type.Name}, composed of {ScalarReference} and expressed in {UnitReference}.</summary>
-        """;
-
-    private string UncomponentedHeader() => $"""
-        /// <summary>A measure of the {Dimension}-dimensional vector quantity {Type.Name}, expressed in {UnitReference}.</summary>
-        """;
+    public string Header() => $"""/// <summary>A measure of the {Dimension}-dimensional vector quantity {Type.Name}, expressed in {UnitReference}.</summary>""";
 
     public string Zero() => $$"""/// <summary>The {{VectorReference}} representing { {{ConstantVectorTexts.Zeros(Dimension)}} }.</summary>""";
     public string Constant(IVectorConstant constant)
@@ -369,7 +355,7 @@ internal sealed class DefaultVectorDocumentation : IVectorDocumentationStrategy,
     public string IsFinite() => $"""/// <inheritdoc cref="global::SharpMeasures.Vector{Dimension}.IsFinite"/>""";
     public string IsInfinite() => $"""/// <inheritdoc cref="global::SharpMeasures.Vector{Dimension}.IsInfinite"/>""";
 
-    public string Magnitude() => $$"""/// <inheritdoc cref="global::SharpMeasures.IVector{{Dimension}}.Magnitude()"/>""";
+    public string Magnitude() => $$"""/// <inheritdoc cref="global::SharpMeasures.IVector{{Dimension}}Quantity.Magnitude()"/>""";
 
     public string ScalarMagnitude() => InheritDoc;
     public string ScalarSquaredMagnitude() => InheritDoc;
@@ -428,6 +414,34 @@ internal sealed class DefaultVectorDocumentation : IVectorDocumentationStrategy,
     public string MultiplyScalarMethod() => InheritDoc;
     public string DivideScalarMethod() => InheritDoc;
 
+    public string AddTVectorMethod() => """
+        /// <summary>Computes { <see langword="this"/> + <paramref name="addend"/> }.</summary>
+        /// <typeparam name="TVector">The type of <paramref name="addend"/>.</typeparam>
+        /// <param name="addend">The second term of { <see langword="this"/> + <paramref name="addend"/> }.</param>
+        """;
+
+    public string SubtractTVectorMethod() => """
+        /// <summary>Computes { <see langword="this"/> - <paramref name="subtrahend"/> }.</summary>
+        /// <typeparam name="TVector">The type of <paramref name="subtrahend"/>.</typeparam>
+        /// <param name="subtrahend">The second term of { <see langword="this"/> - <paramref name="subtrahend"/> }.</param>
+        """;
+
+    public string SubtractFromTVectorMethod() => """
+        /// <summary>Computes { <paramref name="minuend"/> - <see langword="this"/> }.</summary>
+        /// <typeparam name="TVector">The type of <paramref name="minuend"/>.</typeparam>
+        /// <param name="minuend">The first term of { <paramref name="minuend"/> - <see langword="this"/> }.</param>
+        """;
+    public string MultiplyTScalarMethod() => """
+        /// <summary>Computes { <see langword="this"/> * <paramref name="factor"/> }.</summary>
+        /// <typeparam name="TScalar">The type of <paramref name="factor"/>.</typeparam>
+        /// <param name="factor">The second factor of { <see langword="this"/> * <paramref name="factor"/> }.</param>
+        """;
+    public string DivideTScalarMethod() => """
+        /// <summary>Computes { <see langword="this"/> / <paramref name="divisor"/> }.</summary>
+        /// <typeparam name="TScalar">The type of <paramref name="divisor"/>.</typeparam>
+        /// <param name="divisor">The divisor of { <see langword="this"/> / <paramref name="divisor"/> }.</param>
+        """;
+
     public string UnaryPlusOperator() => InheritDoc;
     public string NegateOperator() => InheritDoc;
 
@@ -441,6 +455,44 @@ internal sealed class DefaultVectorDocumentation : IVectorDocumentationStrategy,
     public string MultiplyScalarOperatorLHS() => InheritDoc;
     public string MultiplyScalarOperatorRHS() => InheritDoc;
     public string DivideScalarOperatorLHS() => InheritDoc;
+
+    public string AddIVectorOperator() => """
+        /// <summary>Computes { <paramref name="a"/> + <paramref name="b"/> }.</summary>
+        /// <param name="a">The first term of { <paramref name="a"/> + <paramref name="b"/> }.</param>
+        /// <param name="b">The second term of { <paramref name="a"/> + <paramref name="b"/> }.</param>
+        /// <remarks>Consider preferring <see cref="Add{TVector}(TVector)"/>, where boxing is avoided.</remarks>
+        """;
+
+    public string SubtractIVectorOperator() => """
+        /// <summary>Computes { <paramref name="a"/> - <paramref name="b"/> }.</summary>
+        /// <param name="a">The first term of { <paramref name="a"/> - <paramref name="b"/> }.</param>
+        /// <param name="b">The second term of { <paramref name="a"/> - <paramref name="b"/> }.</param>
+        /// <remarks>Consider preferring <see cref="Subtract{TVector}(TVector)"/>, where boxing is avoided.</remarks>
+        """;
+
+    public string MultiplyIScalarOperatorLHS() => """
+        /// <summary>Computes { <paramref name="a"/> * <paramref name="b"/> }.</summary>
+        /// <param name="a">The first factor of { <paramref name="a"/> * <paramref name="b"/> }.</param>
+        /// <param name="b">The second factor of { <paramref name="a"/> * <paramref name="b"/> }.</param>
+        /// <remarks>Consider preferring <see cref="Multiply{TScalar}(TScalar)"/>, where boxing is avoided.</remarks>
+        """;
+
+    public string MultiplyIScalarOperatorRHS() => MultiplyIScalarOperatorLHS();
+
+    public string DivideIScalarOperatorLHS() => """
+        /// <summary>Computes { <paramref name="a"/> / <paramref name="b"/> }.</summary>
+        /// <param name="a">The dividend of { <paramref name="a"/> / <paramref name="b"/> }.</param>
+        /// <param name="b">The divisor of { <paramref name="a"/> / <paramref name="b"/> }.</param>
+        /// <remarks>Consider preferring <see cref="Divide{TScalar}(TScalar)"/>, where boxing is avoided.</remarks>
+        """;
+
+    public string AddUnhandledOperatorLHS() => $$"""/// <inheritdoc cref="global::SharpMeasures.Vector{{Dimension}}.operator +(global::SharpMeasures.Vector{{Dimension}}, global::SharpMeasures.Vector{{Dimension}})"/>""";
+    public string AddUnhandledOperatorRHS() => $$"""/// <inheritdoc cref="global::SharpMeasures.Vector{{Dimension}}.operator +(global::SharpMeasures.Vector{{Dimension}}, global::SharpMeasures.Vector{{Dimension}})"/>""";
+    public string SubtractUnhandledOperatorLHS() => $$"""/// <inheritdoc cref="global::SharpMeasures.Vector{{Dimension}}.operator -(global::SharpMeasures.Vector{{Dimension}}, global::SharpMeasures.Vector{{Dimension}})"/>""";
+    public string SubtractUnhandledOperatorRHS() => $$"""/// <inheritdoc cref="global::SharpMeasures.Vector{{Dimension}}.operator -(global::SharpMeasures.Vector{{Dimension}}, global::SharpMeasures.Vector{{Dimension}})"/>""";
+    public string MultiplyUnhandledOperatorLHS() => $$"""/// <inheritdoc cref="global::SharpMeasures.Vector{{Dimension}}.operator *(global::SharpMeasures.Vector{{Dimension}}, global::SharpMeasures.Scalar)"/>""";
+    public string MultiplyUnhandledOperatorRHS() => $$"""/// <inheritdoc cref="global::SharpMeasures.Vector{{Dimension}}.operator *(global::SharpMeasures.Scalar, global::SharpMeasures.Vector{{Dimension}})"/>""";
+    public string DivideUnhandledOperatorLHS() => $$"""/// <inheritdoc cref="global::SharpMeasures.Vector{{Dimension}}.operator /(global::SharpMeasures.Vector{{Dimension}}, global::SharpMeasures.Scalar)"/>""";
 
     private string VectorReference => $"""<see cref="{Type.FullyQualifiedName}"/>""";
     private string UnitReference => $"""<see cref="{Unit.FullyQualifiedName}"/>""";

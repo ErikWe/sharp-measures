@@ -105,6 +105,28 @@ public readonly record struct Unhandled2 : IVector2Quantity<Unhandled2>
     /// <inheritdoc/>
     public Unhandled2 Divide(Scalar divisor) => this / divisor;
 
+    /// <summary>Computes { <see langword="this"/> + <paramref name="addend"/> }.</summary>
+    /// <typeparam name="TVector">The type of <paramref name="addend"/>.</typeparam>
+    /// <param name="addend">The second term of { <see langword="this"/> + <paramref name="addend"/> }.</param>
+    public Unhandled2 Add<TVector>(TVector addend) where TVector : IVector2Quantity => (X + addend.X, Y + addend.Y);
+    /// <summary>Computes { <see langword="this"/> - <paramref name="subtrahend"/> }.</summary>
+    /// <typeparam name="TVector">The type of <paramref name="subtrahend"/>.</typeparam>
+    /// <param name="subtrahend">The second term of { <see langword="this"/> - <paramref name="subtrahend"/> }.</param>
+    public Unhandled2 Subtract<TVector>(TVector subtrahend) where TVector : IVector2Quantity => (X - subtrahend.X, Y - subtrahend.Y);
+    /// <summary>Computes { <paramref name="minuend"/> - <see langword="this"/> }.</summary>
+    /// <typeparam name="TVector">The type of <paramref name="minuend"/>.</typeparam>
+    /// <param name="minuend">The first term of { <paramref name="minuend"/> - <see langword="this"/> }.</param>
+    public Unhandled2 SubtractFrom<TVector>(TVector minuend) where TVector : IVector2Quantity => (minuend.X - X, minuend.Y - Y);
+
+    /// <summary>Computes { <see langword="this"/> ∙ <paramref name="factor"/> }.</summary>
+    /// <typeparam name="TScalar">The type of <paramref name="factor"/>.</typeparam>
+    /// <param name="factor">The second term of { <see langword="this"/> ∙ <paramref name="factor"/> }.</param>
+    public Unhandled2 Multiply<TScalar>(TScalar factor) where TScalar : IScalarQuantity => (X * factor.Magnitude, Y * factor.Magnitude);
+    /// <summary>Computes { <see langword="this"/> / <paramref name="divisor"/> }.</summary>
+    /// <typeparam name="TScalar">The type of <paramref name="divisor"/>.</typeparam>
+    /// <param name="divisor">The divisor of { <see langword="this"/> / <paramref name="divisor"/> }.</param>
+    public Unhandled2 Divide<TScalar>(TScalar divisor) where TScalar : IScalarQuantity => (X / divisor.Magnitude, Y / divisor.Magnitude);
+
     /// <inheritdoc/>
     public static Unhandled2 operator +(Unhandled2 a) => a;
     /// <inheritdoc/>
@@ -129,6 +151,7 @@ public readonly record struct Unhandled2 : IVector2Quantity<Unhandled2>
     public static Unhandled2 operator /(Unhandled2 a, Scalar b) => (a.X / b, a.Y / b);
 
     /// <inheritdoc cref="Vector2.operator +(Vector2, Vector2)"/>
+    /// <remarks>Consider preferring <see cref="Add{TVector}(TVector)"/>, where boxing is avoided.</remarks>
     /// <exception cref="ArgumentNullException"/>
     public static Unhandled2 operator +(Unhandled2 a, IVector2Quantity b)
     {
@@ -138,6 +161,7 @@ public readonly record struct Unhandled2 : IVector2Quantity<Unhandled2>
     }
 
     /// <inheritdoc cref="Vector2.operator +(Vector2, Vector2)"/>
+    /// <remarks>Consider preferring <see cref="Add{TVector}(TVector)"/>, where boxing is avoided.</remarks>
     /// <exception cref="ArgumentNullException"/>
     public static Unhandled2 operator +(IVector2Quantity a, Unhandled2 b)
     {
@@ -147,6 +171,7 @@ public readonly record struct Unhandled2 : IVector2Quantity<Unhandled2>
     }
 
     /// <inheritdoc cref="Vector2.operator -(Vector2, Vector2)"/>
+    /// <remarks>Consider preferring <see cref="Subtract{TVector}(TVector)"/>, where boxing is avoided.</remarks>
     /// <exception cref="ArgumentNullException"/>
     public static Unhandled2 operator -(Unhandled2 a, IVector2Quantity b)
     {
@@ -156,6 +181,7 @@ public readonly record struct Unhandled2 : IVector2Quantity<Unhandled2>
     }
 
     /// <inheritdoc cref="Vector2.operator -(Vector2, Vector2)"/>
+    /// <remarks>Consider preferring <see cref="SubtractFrom{TVector}(TVector)"/>, where boxing is avoided.</remarks>
     /// <exception cref="ArgumentNullException"/>
     public static Unhandled2 operator -(IVector2Quantity a, Unhandled2 b)
     {
@@ -165,6 +191,7 @@ public readonly record struct Unhandled2 : IVector2Quantity<Unhandled2>
     }
 
     /// <inheritdoc cref="Vector2.operator *(Vector2, Scalar)"/>
+    /// <remarks>Consider preferring <see cref="Multiply{TScalar}(TScalar)"/>, where boxing is avoided.</remarks>
     /// <exception cref="ArgumentNullException"/>
     public static Unhandled2 operator *(Unhandled2 a, IScalarQuantity b)
     {
@@ -174,6 +201,7 @@ public readonly record struct Unhandled2 : IVector2Quantity<Unhandled2>
     }
 
     /// <inheritdoc cref="Vector2.operator *(Scalar, Vector2)"/>
+    /// <remarks>Consider preferring <see cref="Multiply{TScalar}(TScalar)"/>, where boxing is avoided.</remarks>
     /// <exception cref="ArgumentNullException"/>
     public static Unhandled2 operator *(IScalarQuantity a, Unhandled2 b)
     {
@@ -183,6 +211,7 @@ public readonly record struct Unhandled2 : IVector2Quantity<Unhandled2>
     }
 
     /// <inheritdoc cref="Vector2.operator /(Vector2, Scalar)"/>
+    /// <remarks>Consider preferring <see cref="Divide{TScalar}(TScalar)"/>, where boxing is avoided.</remarks>
     /// <exception cref="ArgumentNullException"/>
     public static Unhandled2 operator /(Unhandled2 a, IScalarQuantity b)
     {

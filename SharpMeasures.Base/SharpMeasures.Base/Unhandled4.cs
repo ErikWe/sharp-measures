@@ -123,6 +123,18 @@ public readonly record struct Unhandled4 : IVector4Quantity<Unhandled4>
     /// <inheritdoc/>
     public Unhandled4 Divide(Scalar divisor) => this / divisor;
 
+    /// <inheritdoc cref="Unhandled2.Add{TVector}(TVector)"/>
+    public Unhandled4 Add<TVector>(TVector addend) where TVector : IVector4Quantity => (X + addend.X, Y + addend.Y, Z + addend.Z, W + addend.W);
+    /// <inheritdoc cref="Unhandled2.Subtract{TVector}(TVector)"/>
+    public Unhandled4 Subtract<TVector>(TVector subtrahend) where TVector : IVector4Quantity => (X - subtrahend.X, Y - subtrahend.Y, Z - subtrahend.Z, W - subtrahend.W);
+    /// <inheritdoc cref="Unhandled2.SubtractFrom{TVector}(TVector)"/>
+    public Unhandled4 SubtractFrom<TVector>(TVector minuend) where TVector : IVector4Quantity => (minuend.X - X, minuend.Y - Y, minuend.Z - Z, minuend.W - W);
+
+    /// <inheritdoc cref="Unhandled2.Multiply{TScalar}(TScalar)"/>
+    public Unhandled4 Multiply<TScalar>(TScalar factor) where TScalar : IScalarQuantity => (X * factor.Magnitude, Y * factor.Magnitude, Z * factor.Magnitude, W * factor.Magnitude);
+    /// <inheritdoc cref="Unhandled2.Divide{TScalar}(TScalar)"/>
+    public Unhandled4 Divide<TScalar>(TScalar divisor) where TScalar : IScalarQuantity => (X / divisor.Magnitude, Y / divisor.Magnitude, Z / divisor.Magnitude, W / divisor.Magnitude);
+
     /// <inheritdoc/>
     public static Unhandled4 operator +(Unhandled4 a) => a;
     /// <inheritdoc/>

@@ -91,6 +91,12 @@ internal sealed class VectorDocumentationTags : IVectorDocumentationStrategy, IE
     public string MultiplyScalarMethod() => "Method_Multiply_Scalar";
     public string DivideScalarMethod() => "Method_Divide_Scalar";
 
+    public string AddTVectorMethod() => "Method_Add_TVector";
+    public string SubtractTVectorMethod() => "Method_Subtract_TVector";
+    public string SubtractFromTVectorMethod() => "Method_SubtractFrom_TVector";
+    public string MultiplyTScalarMethod() => "Method_Multiply_TScalar";
+    public string DivideTScalarMethod() => "Method_Divide_TScalar";
+
     public string UnaryPlusOperator() => "Operator_UnaryPlus";
     public string NegateOperator() => "Operator_Negate";
 
@@ -104,6 +110,20 @@ internal sealed class VectorDocumentationTags : IVectorDocumentationStrategy, IE
     public string MultiplyScalarOperatorLHS() => "Operator_Multiply_Scalar_LHS";
     public string MultiplyScalarOperatorRHS() => "Operator_Multiply_Scalar_RHS";
     public string DivideScalarOperatorLHS() => "Operator_Divide_Scalar_LHS";
+
+    public string AddIVectorOperator() => "Operator_Add_IVector";
+    public string SubtractIVectorOperator() => "Operator_Subtract_IVector";
+    public string MultiplyIScalarOperatorLHS() => "Operator_Multiply_IScalar_LHS";
+    public string MultiplyIScalarOperatorRHS() => "Operator_Multiply_IScalar_RHS";
+    public string DivideIScalarOperatorLHS() => "Operator_Divide_IScalar_LHS";
+
+    public string AddUnhandledOperatorLHS() => "Operator_Add_Unhandled_LHS";
+    public string AddUnhandledOperatorRHS() => "Operator_Add_Unhandled_RHS";
+    public string SubtractUnhandledOperatorLHS() => "Operator_Subtract_Unhandled_LHS";
+    public string SubtractUnhandledOperatorRHS() => "Operator_Subtract_Unhandled_RHS";
+    public string MultiplyUnhandledOperatorLHS() => "Operator_Multiply_Unhandled_LHS";
+    public string MultiplyUnhandledOperatorRHS() => "Operator_Multiply_Unhandled_RHS";
+    public string DivideUnhandledOperatorLHS() => "Operator_Divide_Unhandled_LHS";
 
     public bool Equals(VectorDocumentationTags? other) => other is not null && Dimension == other.Dimension;
     public override bool Equals(object? obj) => obj is VectorDocumentationTags other && Equals(other);

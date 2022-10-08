@@ -11,6 +11,7 @@ internal readonly record struct DataModel
     public bool ImplementDifference { get; }
 
     public NamedType? Difference { get; }
+    public NamedType? DifferenceScalar { get; }
 
     public NamedType? Scalar { get; }
 
@@ -19,7 +20,7 @@ internal readonly record struct DataModel
 
     public IVectorDocumentationStrategy Documentation { get; }
 
-    public DataModel(DefinedType vector, int dimension, bool implementSum, bool implementDifference, NamedType? difference, NamedType? scalar, NamedType unit, NamedType unitQuantity, IVectorDocumentationStrategy documentation)
+    public DataModel(DefinedType vector, int dimension, bool implementSum, bool implementDifference, NamedType? difference, NamedType? differenceScalar, NamedType? scalar, NamedType unit, NamedType unitQuantity, IVectorDocumentationStrategy documentation)
     {
         Vector = vector;
         Dimension = dimension;
@@ -28,6 +29,7 @@ internal readonly record struct DataModel
         ImplementDifference = implementDifference;
 
         Difference = difference;
+        DifferenceScalar = differenceScalar;
 
         Scalar = scalar;
 

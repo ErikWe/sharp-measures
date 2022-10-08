@@ -22,7 +22,10 @@ internal static class CommonGenerator
             return new Optional<DataModel>();
         }
 
-        var unit = model.Value.UnitPopulation.Units[model.Value.Scalar.Unit];
+        if (model.Value.UnitPopulation.Units.TryGetValue(model.Value.Scalar.Unit, out var unit) is false)
+        {
+            return new Optional<DataModel>();
+        }
 
         var unitParameterName = SourceBuildingUtility.ToParameterName(model.Value.Scalar.Unit.Name);
 

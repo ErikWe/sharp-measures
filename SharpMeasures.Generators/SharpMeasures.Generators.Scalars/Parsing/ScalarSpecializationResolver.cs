@@ -84,9 +84,9 @@ internal static class ScalarSpecializationResolver
                 items.AddRange(itemsDelegate(scalar));
             }
 
-            if (scalar is IScalarSpecializationType scalarSpecialization && shouldInherit(scalarSpecialization))
+            if (scalar is IScalarSpecializationType scalarSpecialization && shouldInherit(scalarSpecialization) && scalarPopulation.Scalars.TryGetValue(scalarSpecialization.Definition.OriginalQuantity, out var originalScalar))
             {
-                recursivelyAddItems(scalarPopulation.Scalars[scalarSpecialization.Definition.OriginalQuantity], onlyInherited: false);
+                recursivelyAddItems(originalScalar, onlyInherited: false);
             }
         }
     }
@@ -122,9 +122,9 @@ internal static class ScalarSpecializationResolver
 
         void recurse(IScalarType scalar)
         {
-            if (scalar is IScalarSpecializationType scalarSpecialization && shouldInherit(scalarSpecialization))
+            if (scalar is IScalarSpecializationType scalarSpecialization && shouldInherit(scalarSpecialization) && scalarPopulation.Scalars.TryGetValue(scalarSpecialization.Definition.OriginalQuantity, out var originalScalar))
             {
-                recursivelyModify(scalarPopulation.Scalars[scalarSpecialization.Definition.OriginalQuantity]);
+                recursivelyModify(originalScalar);
             }
         }
     }
@@ -143,9 +143,9 @@ internal static class ScalarSpecializationResolver
                 return item;
             }
 
-            if (scalar is IScalarSpecializationType scalarSpecialization)
+            if (scalar is IScalarSpecializationType scalarSpecialization && scalarPopulation.Scalars.TryGetValue(scalarSpecialization.Definition.OriginalQuantity, out var originalScalar))
             {
-                return recursivelySearch(scalarPopulation.Scalars[scalarSpecialization.Definition.OriginalQuantity]);
+                return recursivelySearch(originalScalar);
             }
 
             return default;

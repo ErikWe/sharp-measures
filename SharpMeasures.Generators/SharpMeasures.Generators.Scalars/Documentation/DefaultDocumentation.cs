@@ -290,6 +290,42 @@ internal sealed class DefaultDocumentation : IDocumentationStrategy, IEquatable<
 
     public string MultiplyVectorMethod(int dimension) => $$"""/// <inheritdoc cref="Scalar.Multiply(global::SharpMeasures.Vector{{dimension}})"/>""";
 
+    public string AddTScalarMethod() => """
+        /// <summary>Computes { <see langword="this"/> + <paramref name="addend"/> }.</summary>
+        /// <typeparam name="TScalar">The type of <paramref name="addend"/>.</typeparam>
+        /// <param name="addend">The second term of { <see langword="this"/> + <paramref name="addend"/> }.</param>
+        """;
+
+    public string SubtractTScalarMethod() => """
+        /// <summary>Computes { <see langword="this"/> - <paramref name="subtrahend"/> }.</summary>
+        /// <typeparam name="TScalar">The type of <paramref name="subtrahend"/>.</typeparam>
+        /// <param name="subtrahend">The second term of { <see langword="this"/> - <paramref name="subtrahend"/> }.</param>
+        """;
+
+    public string SubtractFromTScalarMethod() => """
+        /// <summary>Computes { <paramref name="minuend"/> - <see langword="this"/> }.</summary>
+        /// <typeparam name="TScalar">The type of <paramref name="minuend"/>.</typeparam>
+        /// <param name="minuend">The first term of { <paramref name="minuend"/> - <see langword="this"/> }.</param>
+        """;
+
+    public string MultiplyTScalarMethod() => """
+        /// <summary>Computes { <see langword="this"/> * <paramref name="factor"/> }.</summary>
+        /// <typeparam name="TScalar">The type of <paramref name="factor"/>.</typeparam>
+        /// <param name="factor">The second factor of { <see langword="this"/> * <paramref name="factor"/> }.</param>
+        """;
+
+    public string DivideTScalarMethod() => """
+        /// <summary>Computes { <see langword="this"/> / <paramref name="divisor"/> }.</summary>
+        /// <typeparam name="TScalar">The type of <paramref name="divisor"/>.</typeparam>
+        /// <param name="divisor">The divisor of { <see langword="this"/> / <paramref name="divisor"/> }.</param>
+        """;
+
+    public string DivideIntoTScalarMethod() => """
+        /// <summary>Computes { <paramref name="dividend"/> / <see langword="this"/> }.</summary>
+        /// <typeparam name="TScalar">The type of <paramref name="dividend"/>.</typeparam>
+        /// <param name="dividend">The dividend of { <paramref name="dividend"/> / <see langword="this"/> }.</param>
+        """;
+
     public string UnaryPlusOperator() => InheritDoc;
     public string NegateOperator() => InheritDoc;
 
@@ -308,6 +344,43 @@ internal sealed class DefaultDocumentation : IDocumentationStrategy, IEquatable<
 
     public string MultiplyVectorOperatorLHS(int dimension) => $$"""/// <inheritdoc cref="global::SharpMeasures.Vector{{dimension}}.operator *(global::SharpMeasures.Scalar, global::SharpMeasures.Vector{{dimension}})"/>""";
     public string MultiplyVectorOperatorRHS(int dimension) => $$"""/// <inheritdoc cref="global::SharpMeasures.Vector{{dimension}}.operator *(global::SharpMeasures.Vector{{dimension}}, global::SharpMeasures.Scalar)"/>""";
+
+    public string AddIScalarOperator() => """
+        /// <summary>Computes { <paramref name="x"/> + <paramref name="y"/> }.</summary>
+        /// <param name="x">The first term of { <paramref name="x"/> + <paramref name="y"/> }.</param>
+        /// <param name="y">The second term of { <paramref name="x"/> + <paramref name="y"/> }.</param>
+        /// <remarks>Consider preferring <see cref="Add{TScalar}(TScalar)"/>, where boxing is avoided.</remarks>
+        """;
+
+    public string SubtractIScalarOperator() => """
+        /// <summary>Computes { <paramref name="x"/> - <paramref name="y"/> }.</summary>
+        /// <param name="x">The first term of { <paramref name="x"/> - <paramref name="y"/> }.</param>
+        /// <param name="y">The second term of { <paramref name="x"/> - <paramref name="y"/> }.</param>
+        /// <remarks>Consider preferring <see cref="Subtract{TScalar}(TScalar)"/>, where boxing is avoided.</remarks>
+        """;
+
+    public string MultiplyIScalarOperator() => """
+        /// <summary>Computes { <paramref name="x"/> * <paramref name="y"/> }.</summary>
+        /// <param name="x">The first factor of { <paramref name="x"/> * <paramref name="y"/> }.</param>
+        /// <param name="y">The second factor of { <paramref name="x"/> * <paramref name="y"/> }.</param>
+        /// <remarks>Consider preferring <see cref="Multiply{TScalar}(TScalar)"/>, where boxing is avoided.</remarks>
+        """;
+
+    public string DivideIScalarOperator() => """
+        /// <summary>Computes { <paramref name="x"/> / <paramref name="y"/> }.</summary>
+        /// <param name="x">The dividend of { <paramref name="x"/> / <paramref name="y"/> }.</param>
+        /// <param name="y">The divisor of { <paramref name="x"/> / <paramref name="y"/> }.</param>
+        /// <remarks>Consider preferring <see cref="Divide{TScalar}(TScalar)"/>, where boxing is avoided.</remarks>
+        """;
+
+    public string AddUnhandledOperatorLHS() => """/// <inheritdoc cref="global::SharpMeasures.Scalar.operator +(global::SharpMeasures.Scalar, global::SharpMeasures.Scalar)"/>""";
+    public string AddUnhandledOperatorRHS() => """/// <inheritdoc cref="global::SharpMeasures.Scalar.operator +(global::SharpMeasures.Scalar, global::SharpMeasures.Scalar)"/>""";
+    public string SubtractUnhandledOperatorLHS() => """/// <inheritdoc cref="global::SharpMeasures.Scalar.operator -(global::SharpMeasures.Scalar, global::SharpMeasures.Scalar)"/>""";
+    public string SubtractUnhandledOperatorRHS() => """/// <inheritdoc cref="global::SharpMeasures.Scalar.operator -(global::SharpMeasures.Scalar, global::SharpMeasures.Scalar)"/>""";
+    public string MultiplyUnhandledOperatorLHS() => """/// <inheritdoc cref="global::SharpMeasures.Scalar.operator *(global::SharpMeasures.Scalar, global::SharpMeasures.Scalar)"/>""";
+    public string MultiplyUnhandledOperatorRHS() => """/// <inheritdoc cref="global::SharpMeasures.Scalar.operator *(global::SharpMeasures.Scalar, global::SharpMeasures.Scalar)"/>""";
+    public string DivideUnhandledOperatorLHS() => """/// <inheritdoc cref="global::SharpMeasures.Scalar.operator /(global::SharpMeasures.Scalar, global::SharpMeasures.Scalar)"/>""";
+    public string DivideUnhandledOperatorRHS() => """/// <inheritdoc cref="global::SharpMeasures.Scalar.operator /(global::SharpMeasures.Scalar, global::SharpMeasures.Scalar)"/>""";
 
     public string CompareToSameType() => """/// <inheritdoc cref="global::SharpMeasures.Scalar.CompareTo(global::SharpMeasures.Scalar)"/>""";
 

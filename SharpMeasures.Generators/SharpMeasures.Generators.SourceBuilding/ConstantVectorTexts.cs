@@ -19,18 +19,18 @@ public static class ConstantVectorTexts
         public static string ComponentsPropertyAccess(int dimension) => Builders.Upper.ComponentsPropertyAccess.GetText(dimension);
         public static string Scalar(int dimension) => Builders.Upper.Scalar.GetText(dimension);
         public static string Magnitude(int dimension) => Builders.Upper.Magnitude.GetText(dimension);
-        public static string AddAddendVector(int dimension) => Builders.Upper.AddAddendVector.GetText(dimension);
-        public static string SubtractSubtrahendVector(int dimension) => Builders.Upper.SubtractSubtrahendVector.GetText(dimension);
-        public static string SubtractFromMinuendVector(int dimension) => Builders.Upper.SubtractFromMinuendVector.GetText(dimension);
-        public static string MultiplyFactorScalar(int dimension) => Builders.Upper.MultiplyFactorScalar.GetText(dimension);
-        public static string DivideDivisorScalar(int dimension) => Builders.Upper.DivideDivisorScalar.GetText(dimension);
+        public static string AddAddendVector(int dimension, bool lhsComponent, bool rhsComponent) => Builders.Upper.AddAddendVector(lhsComponent, rhsComponent).GetText(dimension);
+        public static string SubtractSubtrahendVector(int dimension, bool lhsComponent, bool rhsComponent) => Builders.Upper.SubtractSubtrahendVector(lhsComponent, rhsComponent).GetText(dimension);
+        public static string SubtractFromMinuendVector(int dimension, bool lhsComponent, bool rhsComponent) => Builders.Upper.SubtractFromMinuendVector(lhsComponent, rhsComponent).GetText(dimension);
+        public static string MultiplyFactorScalar(int dimension, bool component, bool magnitude) => Builders.Upper.MultiplyFactorScalar(component, magnitude).GetText(dimension);
+        public static string DivideDivisorScalar(int dimension, bool component, bool magnitude) => Builders.Upper.DivideDivisorScalar(component, magnitude).GetText(dimension);
         public static string Negate(int dimension) => Builders.Upper.Negate.GetText(dimension);
         public static string NegateA(int dimension) => Builders.Upper.NegateA.GetText(dimension);
-        public static string AddBVector(int dimension) => Builders.Upper.AddBVector.GetText(dimension);
-        public static string SubtractBVector(int dimension) => Builders.Upper.SubtractBVector.GetText(dimension);
-        public static string MultiplyAScalar(int dimension) => Builders.Upper.MultiplyAScalar.GetText(dimension);
-        public static string MultiplyBScalar(int dimension) => Builders.Upper.MultiplyBScalar.GetText(dimension);
-        public static string DivideAScalar(int dimension) => Builders.Upper.DivideAScalar.GetText(dimension);
+        public static string AddBVector(int dimension, bool lhsComponent, bool rhsComponent) => Builders.Upper.AddBVector(lhsComponent, rhsComponent).GetText(dimension);
+        public static string SubtractBVector(int dimension, bool lhsComponent, bool rhsComponent) => Builders.Upper.SubtractBVector(lhsComponent, rhsComponent).GetText(dimension);
+        public static string MultiplyAByScalarB(int dimension, bool component, bool magnitude) => Builders.Upper.MultiplyAByScalarB(component, magnitude).GetText(dimension);
+        public static string MultiplyScalarAByB(int dimension, bool component, bool magnitude) => Builders.Upper.MultiplyScalarAByB(component, magnitude).GetText(dimension);
+        public static string DivideAByScalarB(int dimension, bool component, bool magnitude) => Builders.Upper.DivideAByScalarB(component, magnitude).GetText(dimension);
     }
 
     [SuppressMessage("Design", "CA1034", Justification = "Static")]
@@ -60,18 +60,18 @@ public static class ConstantVectorTexts
             public static VectorTextBuilder ComponentsPropertyAccess { get; } = new(ComponentsPropertyAccessDelegate, ", ");
             public static VectorTextBuilder Scalar { get; } = new(ScalarDelegate, ", ");
             public static VectorTextBuilder Magnitude { get; } = new(MagnitudeDelegate, ", ");
-            public static VectorTextBuilder AddAddendVector { get; } = new(AddAddendVectorDelegate, ", ");
-            public static VectorTextBuilder SubtractSubtrahendVector { get; } = new(SubtractSubtrahendVectorDelegate, ", ");
-            public static VectorTextBuilder SubtractFromMinuendVector { get; } = new(SubtractFromMinuendVectorDelegate, ", ");
-            public static VectorTextBuilder MultiplyFactorScalar { get; } = new(MultiplyFactorScalarDelegate, ", ");
-            public static VectorTextBuilder DivideDivisorScalar { get; } = new(DivideDivisorScalarDelegate, ", ");
+            public static VectorTextBuilder AddAddendVector(bool lhsComponent, bool rhsComponent) => new(AddAddendVectorDelegate(lhsComponent, rhsComponent), ", ");
+            public static VectorTextBuilder SubtractSubtrahendVector(bool lhsComponent, bool rhsComponent) => new(SubtractSubtrahendVectorDelegate(lhsComponent, rhsComponent), ", ");
+            public static VectorTextBuilder SubtractFromMinuendVector(bool lhsComponent, bool rhsComponent) => new(SubtractFromMinuendVectorDelegate(lhsComponent, rhsComponent), ", ");
+            public static VectorTextBuilder MultiplyFactorScalar(bool component, bool magnitude) => new(MultiplyFactorScalarDelegate(component, magnitude), ", ");
+            public static VectorTextBuilder DivideDivisorScalar(bool component, bool magnitude) => new(DivideDivisorScalarDelegate(component, magnitude), ", ");
             public static VectorTextBuilder Negate { get; } = new(NegateDelegate, ", ");
             public static VectorTextBuilder NegateA { get; } = new(NegateADelegate, ", ");
-            public static VectorTextBuilder AddBVector { get; } = new(AddBVectorDelegate, ", ");
-            public static VectorTextBuilder SubtractBVector { get; } = new(SubtractBVectorDelegate, ", ");
-            public static VectorTextBuilder MultiplyAScalar { get; } = new(MultiplyAScalarDelegate, ", ");
-            public static VectorTextBuilder MultiplyBScalar { get; } = new(MultiplyBScalarDelegate, ", ");
-            public static VectorTextBuilder DivideAScalar { get; } = new(DivideAScalarDelegate, ", ");
+            public static VectorTextBuilder AddBVector(bool lhsComponent, bool rhsComponent) => new(AddBVectorDelegate(lhsComponent, rhsComponent), ", ");
+            public static VectorTextBuilder SubtractBVector(bool lhsComponent, bool rhsComponent) => new(SubtractBVectorDelegate(lhsComponent, rhsComponent), ", ");
+            public static VectorTextBuilder MultiplyAByScalarB(bool component, bool magnitude) => new(MultiplyAByScalarBDelegate(component, magnitude), ", ");
+            public static VectorTextBuilder MultiplyScalarAByB(bool component, bool magnitude) => new(MultiplyScalarAByBDelegate(component, magnitude), ", ");
+            public static VectorTextBuilder DivideAByScalarB(bool component, bool magnitude) => new(DivideAByScalarBDelegate(component, magnitude), ", ");
 
             private static string NameDelegate(int componentIndex, int dimension) => $"{GetComponentName(componentIndex, dimension)}";
             private static string ComponentsAccessDelegate(int componentIndex, int dimension) => $"components.{GetComponentName(componentIndex, dimension)}";
@@ -79,49 +79,74 @@ public static class ConstantVectorTexts
             private static string ScalarDelegate(int componentIndex, int dimension) => $"global::SharpMeasures.Scalar {GetComponentName(componentIndex, dimension)}";
             private static string MagnitudeDelegate(int componentIndex, int dimension) => $"{GetComponentName(componentIndex, dimension)}.Magnitude";
 
-            private static string AddAddendVectorDelegate(int componentIndex, int dimension)
+            private static Func<int, int, string> AddAddendVectorDelegate(bool lhsComponent, bool rhsComponent)
             {
-                string componentName = GetComponentName(componentIndex, dimension);
+                return addAddendVector;
 
-                return $"{componentName} + addend.{componentName}";
+                string addAddendVector(int componentIndex, int dimension)
+                {
+                    string componentName = GetComponentName(componentIndex, dimension);
+
+                    return $"{componentName}{(lhsComponent ? ".Magnitude" : string.Empty)} + addend.{componentName}{(rhsComponent ? ".Magnitude" : string.Empty)}";
+                }
             }
 
-            private static string SubtractSubtrahendVectorDelegate(int componentIndex, int dimension)
+            private static Func<int, int, string> SubtractSubtrahendVectorDelegate(bool lhsComponent, bool rhsComponent)
             {
-                string componentName = GetComponentName(componentIndex, dimension);
+                return subtractSubtrahendVector;
 
-                return $"{componentName} - subtrahend.{componentName}";
+                string subtractSubtrahendVector(int componentIndex, int dimension)
+                {
+                    string componentName = GetComponentName(componentIndex, dimension);
+
+                    return $"{componentName}{(lhsComponent ? ".Magnitude" : string.Empty)} - subtrahend.{componentName}{(rhsComponent ? ".Magnitude" : string.Empty)}";
+                }
             }
 
-            private static string SubtractFromMinuendVectorDelegate(int componentIndex, int dimension)
+            private static Func<int, int, string> SubtractFromMinuendVectorDelegate(bool lhsComponent, bool rhsComponent)
             {
-                string componentName = GetComponentName(componentIndex, dimension);
+                return subtractFromMinuendVector;
 
-                return $"minuend.{componentName} - {componentName}";
+                string subtractFromMinuendVector(int componentIndex, int dimension)
+                {
+                    string componentName = GetComponentName(componentIndex, dimension);
+
+                    return $"minuend.{componentName}{(lhsComponent ? ".Magnitude" : string.Empty)} - {componentName}{(rhsComponent ? ".Magnitude" : string.Empty)}";
+                }
             }
 
-            private static string MultiplyFactorScalarDelegate(int componentIndex, int dimension) => $"{GetComponentName(componentIndex, dimension)} * factor";
-            private static string DivideDivisorScalarDelegate(int componentIndex, int dimension) => $"{GetComponentName(componentIndex, dimension)} / divisor";
+            private static Func<int, int, string> MultiplyFactorScalarDelegate(bool component, bool magnitude) => (componentIndex, dimension) => $"{GetComponentName(componentIndex, dimension)}{(component ? ".Magnitude" : string.Empty)} * factor{(magnitude ? ".Magnitude" : string.Empty)}";
+            private static Func<int, int, string> DivideDivisorScalarDelegate(bool component, bool magnitude) => (componentIndex, dimension) => $"{GetComponentName(componentIndex, dimension)}{(component ? ".Magnitude" : string.Empty)} / divisor{(magnitude ? ".Magnitude" : string.Empty)}";
             private static string NegateDelegate(int componentIndex, int dimension) => $"-{GetComponentName(componentIndex, dimension)}";
             private static string NegateADelegate(int componentIndex, int dimension) => $"-a.{GetComponentName(componentIndex, dimension)}";
 
-            private static string AddBVectorDelegate(int componentIndex, int dimension)
+            private static Func<int, int, string> AddBVectorDelegate(bool lhsComponent, bool rhsComponent)
             {
-                string componentName = GetComponentName(componentIndex, dimension);
+                return addBVector;
 
-                return $"a.{componentName} + b.{componentName}";
+                string addBVector(int componentIndex, int dimension)
+                {
+                    string componentName = GetComponentName(componentIndex, dimension);
+
+                    return $"a.{componentName}{(lhsComponent ? ".Magnitude" : string.Empty)} + b.{componentName}{(rhsComponent ? ".Magnitude" : string.Empty)}";
+                }
             }
 
-            private static string SubtractBVectorDelegate(int componentIndex, int dimension)
+            private static Func<int, int, string> SubtractBVectorDelegate(bool lhsComponent, bool rhsComponent)
             {
-                string componentName = GetComponentName(componentIndex, dimension);
+                return subtractBVectorDelegate;
 
-                return $"a.{componentName} - b.{componentName}";
+                string subtractBVectorDelegate(int componentIndex, int dimension)
+                {
+                    string componentName = GetComponentName(componentIndex, dimension);
+
+                    return $"a.{componentName}{(lhsComponent ? ".Magnitude" : string.Empty)} - b.{componentName}{(rhsComponent ? ".Magnitude" : string.Empty)}";
+                }
             }
 
-            private static string MultiplyAScalarDelegate(int componentIndex, int dimension) => $"a.{GetComponentName(componentIndex, dimension)} * b";
-            private static string MultiplyBScalarDelegate(int componentIndex, int dimension) => $"a * b.{GetComponentName(componentIndex, dimension)}";
-            private static string DivideAScalarDelegate(int componentIndex, int dimension) => $"a.{GetComponentName(componentIndex, dimension)} / b";
+            private static Func<int, int, string> MultiplyAByScalarBDelegate(bool component, bool magnitude) => (componentIndex, dimension) => $"a.{GetComponentName(componentIndex, dimension)}{(component ? ".Magnitude" : string.Empty)} * b{(magnitude ? ".Magnitude" : string.Empty)}";
+            private static Func<int, int, string> MultiplyScalarAByBDelegate(bool component, bool magnitude) => (componentIndex, dimension) => $"a{(magnitude ? ".Magnitude" : string.Empty)} * b.{GetComponentName(componentIndex, dimension)}{(component ? ".Magnitude" : string.Empty)}";
+            private static Func<int, int, string> DivideAByScalarBDelegate(bool component, bool magnitude) => (componentIndex, dimension) => $"a.{GetComponentName(componentIndex, dimension)}{(component ? ".Magnitude" : string.Empty)} / b{(magnitude ? ".Magnitude" : string.Empty)}";
 
             private static string GetComponentName(int componentIndex, int dimension) => VectorTextBuilder.GetUpperCasedComponentName(componentIndex, dimension);
         }

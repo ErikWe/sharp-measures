@@ -83,9 +83,9 @@ internal static class VectorSpecializationResolver
                 items.AddRange(itemsDelegate(vector));
             }
 
-            if (vector is IVectorSpecializationType vectorSpecialization && shouldInherit(vectorSpecialization))
+            if (vector is IVectorSpecializationType vectorSpecialization && shouldInherit(vectorSpecialization) && vectorPopulation.Vectors.TryGetValue(vectorSpecialization.Definition.OriginalQuantity, out var originalVector))
             {
-                recursivelyAddItems(vectorPopulation.Vectors[vectorSpecialization.Definition.OriginalQuantity], onlyInherited: false);
+                recursivelyAddItems(originalVector, onlyInherited: false);
             }
         }
     }
@@ -119,9 +119,9 @@ internal static class VectorSpecializationResolver
 
         void recurse(IVectorType vector)
         {
-            if (vector is IVectorSpecializationType scalarSpecialization && scalarSpecialization.Definition.InheritUnits)
+            if (vector is IVectorSpecializationType vectorSpecialization && vectorSpecialization.Definition.InheritUnits && vectorPopulation.Vectors.TryGetValue(vectorSpecialization.Definition.OriginalQuantity, out var originalVector))
             {
-                recurisvelyModify(vectorPopulation.Vectors[scalarSpecialization.Definition.OriginalQuantity]);
+                recurisvelyModify(originalVector);
             }
         }
     }
@@ -140,9 +140,9 @@ internal static class VectorSpecializationResolver
                 return item;
             }
 
-            if (vector is IVectorSpecializationType vectorSpecialization)
+            if (vector is IVectorSpecializationType vectorSpecialization && vectorPopulation.Vectors.TryGetValue(vectorSpecialization.Definition.OriginalQuantity, out var originalVector))
             {
-                return recursivelySearch(vectorPopulation.Vectors[vectorSpecialization.Definition.OriginalQuantity]);
+                return recursivelySearch(originalVector);
             }
 
             return default;

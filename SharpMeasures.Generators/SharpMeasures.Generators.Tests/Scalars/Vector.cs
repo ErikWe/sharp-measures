@@ -17,6 +17,9 @@ public class Vector
     [Fact]
     public Task VerifyGroup() => GeneratorVerifier.Construct<SharpMeasuresGenerator>(GroupText).AssertNoDiagnosticsReported().VerifyMatchingSourceNames("Length.Vectors.g.cs");
 
+    [Fact]
+    public void EmptyGroup() => GeneratorVerifier.Construct<SharpMeasuresGenerator>(EmptyGroupText).AssertNoListedSourceNameGenerated("Length.Vectors.g.cs");
+
     private static string VectorText => """
         using SharpMeasures.Generators;
 
@@ -45,6 +48,19 @@ public class Vector
         [ScalarQuantity(typeof(UnitOfLength), Vector = typeof(Position))]
         public partial class Length { }
 
+        [Unit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static string EmptyGroupText => """
+        using SharpMeasures.Generators;
+        
+        [VectorGroup(typeof(UnitOfLength))]
+        public static partial class Position { }
+        
+        [ScalarQuantity(typeof(UnitOfLength), Vector = typeof(Position))]
+        public partial class Length { }
+        
         [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;

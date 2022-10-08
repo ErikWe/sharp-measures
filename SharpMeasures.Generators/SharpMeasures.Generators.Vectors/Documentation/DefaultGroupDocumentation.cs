@@ -19,8 +19,6 @@ internal sealed class DefaultGroupDocumentation : IGroupDocumentationStrategy, I
 
     private IUnitInstance? ExampleScalarUnitBaseInstance { get; }
 
-    private bool HasComponent => Scalar is not null;
-
     public DefaultGroupDocumentation(GroupDataModel model)
     {
         Type = model.Group.Type;
@@ -51,19 +49,7 @@ internal sealed class DefaultGroupDocumentation : IGroupDocumentationStrategy, I
         return null;
     }
 
-    public string Header() => HasComponent switch
-    {
-        true => ComponentedHeader(),
-        false => UncomponentedHeader()
-    };
-
-    private string ComponentedHeader() => $"""
-        /// <summary>Root of a group of vector quantities, each composed of {ScalarReference} and expressed in {UnitReference}.</summary>
-        """;
-
-    private string UncomponentedHeader() => $"""
-        /// <summary>Root of a group of vector quantities, each expressed in {UnitReference}.</summary>
-        """;
+    public string Header() => $"""/// <summary>Root of a group of vector quantities, each expressed in {UnitReference}.</summary>""";
 
     public string ScalarFactoryMethod(int dimension)
     {
@@ -117,7 +103,6 @@ internal sealed class DefaultGroupDocumentation : IGroupDocumentationStrategy, I
         """;
 
     private string UnitReference => $"""<see cref="{Unit.FullyQualifiedName}"/>""";
-    private string ScalarReference => $"""<see cref="{Scalar?.FullyQualifiedName}"/>""";
     private string MemberReference(int dimension) => $"""<see cref="{MembersByDimension[dimension].FullyQualifiedName}"/>""";
 
     private static class Texts
