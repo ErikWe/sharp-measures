@@ -11,6 +11,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\SharpMeasures.Generators.Configuration\SharpMeasures.Generators.Configuration.csproj" PrivateAssete="all" />
         <ProjectReference Include="..\SharpMeasures.Generators.RoslynUtility\SharpMeasures.Generators.RoslynUtility.csproj" PrivateAssete="all" />
     </ItemGroup>
 

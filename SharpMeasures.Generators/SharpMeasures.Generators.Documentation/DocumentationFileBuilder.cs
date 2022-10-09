@@ -89,7 +89,7 @@ internal sealed class DocumentationFileBuilder
         File = file;
         FileText = fileText;
 
-        string text = fileText.ToString();
+        var text = fileText.ToString();
 
         Name = DocumentationParsing.ReadName(file);
         IsUtility = DocumentationParsing.ReadUtilityState(text);
@@ -104,7 +104,7 @@ internal sealed class DocumentationFileBuilder
 
     private void ResolveDependencies(Dictionary<string, DocumentationFileBuilder> documentationFiles)
     {
-        foreach (string dependency in Dependencies)
+        foreach (var dependency in Dependencies)
         {
             if (documentationFiles.TryGetValue(dependency, out DocumentationFileBuilder file))
             {
@@ -123,7 +123,7 @@ internal sealed class DocumentationFileBuilder
     {
         foreach (DocumentationFileBuilder dependency in ResolvedDependencies)
         {
-            foreach (KeyValuePair<string, string> tag in dependency.Content)
+            foreach (var tag in dependency.Content)
             {
                 if (Content.ContainsKey(tag.Key) is false)
                 {
@@ -137,7 +137,7 @@ internal sealed class DocumentationFileBuilder
     {
         List<string> keys = new(Content.Keys);
 
-        foreach (string tag in keys)
+        foreach (var tag in keys)
         {
             if (ResolvedTags.Contains(tag) is false)
             {
@@ -150,7 +150,7 @@ internal sealed class DocumentationFileBuilder
     {
         List<string> keys = new(Content.Keys);
 
-        foreach (string tag in keys)
+        foreach (var tag in keys)
         {
             Content[tag] = DocumentationParsing.CommentText(Content[tag]);
         }
@@ -164,11 +164,11 @@ internal sealed class DocumentationFileBuilder
 
     private string ResolveText(string text)
     {
-        MatchCollection matches = DocumentationParsing.MatchInvokations(text);
+        var matches = DocumentationParsing.MatchInvokations(text);
 
         foreach (Match match in matches)
         {
-            string tag = match.Groups["tag"].Value;
+            var tag = match.Groups["tag"].Value;
 
             if (ReadTag(tag) is not string tagText)
             {
@@ -215,16 +215,16 @@ internal sealed class DocumentationFileBuilder
         {
             if (match.Groups["dependency"].Value == dependency)
             {
-                int line = FileText.ToString().Take(match.Index).Count(static (character) => character is '\n');
+                var line = FileText.ToString().Take(match.Index).Count(static (character) => character is '\n');
 
                 if (line is 0)
                 {
                     line = FileText.ToString().Take(match.Index).Count(static (character) => character is '\r');
                 }
 
-                TextSpan textSpan = FileText.Lines[line].Span;
+                var textSpan = FileText.Lines[line].Span;
                 LinePositionSpan lineSpan = new(new LinePosition(line, 0), new LinePosition(line, textSpan.Length - 1));
-                Location location = Location.Create(File.Path, new TextSpan(match.Index, match.Length), lineSpan);
+                var location = Location.Create(File.Path, new TextSpan(match.Index, match.Length), lineSpan);
 
                 HasReportedOneUnresolvedDependency = true;
                 return DiagnosticsStrategy.UnresolvedDocumentationDependency(location, Name, dependency);
@@ -248,9 +248,9 @@ internal sealed class DocumentationFileBuilder
             return DiagnosticsStrategy.DocumentationFileMissingRequestedTag(Location.None, Name, tag);
         }
 
-        TextSpan textSpan = FileText.Lines[0].Span;
+        var textSpan = FileText.Lines[0].Span;
         LinePositionSpan lineSpan = new(new LinePosition(0, 0), new LinePosition(0, textSpan.Length - 1));
-        Location location = Location.Create(File.Path, textSpan, lineSpan);
+        var location = Location.Create(File.Path, textSpan, lineSpan);
 
         return DiagnosticsStrategy.DocumentationFileMissingRequestedTag(location, Name, tag);
     }

@@ -1,19 +1,19 @@
 ﻿namespace SharpMeasures.Generators.Units;
 
-using SharpMeasures.Generators.Units.Documentation;
-
 internal sealed record class DataModel
 {
     public UnitType Unit { get; }
 
     public IUnitPopulation UnitPopulation { get; }
 
-    public IDocumentationStrategy Documentation { get; init; } = EmptyDocumentation.Instance;
+    public SourceBuildingContext SourceBuildingContext { get; }
 
-    public DataModel(UnitType unit, IUnitPopulation unitPopulation)
+    public DataModel(UnitType unit, IUnitPopulation unitPopulation, SourceBuildingContext sourceBuildingContext)
     {
         Unit = unit;
 
         UnitPopulation = unitPopulation;
+
+        SourceBuildingContext = sourceBuildingContext;
     }
 }

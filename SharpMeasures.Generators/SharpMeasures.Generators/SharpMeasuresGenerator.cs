@@ -2,9 +2,9 @@
 
 using Microsoft.CodeAnalysis;
 
+using SharpMeasures.Generators.Configuration;
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Documentation;
-using SharpMeasures.Generators.Providers.AnalyzerConfig;
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Scalars.Parsing;
 using SharpMeasures.Generators.Units;
@@ -50,8 +50,8 @@ public sealed class SharpMeasuresGenerator : IIncrementalGenerator
         var extendedResolvedScalarPopulation = ForeignTypeResolver.Resolve(foreignScalarValidationResult, extendedValidatedUnitPopulation, extendedUnresolvedScalarPopulation, resolvedScalarPopulation);
         var extendedResolvedVectorPopulation = ForeignTypeResolver.Resolve(foreignVectorValidationResult, extendedValidatedUnitPopulation, extendedUnresolvedVectorPopulation, resolvedVectorPopulation);
 
-        UnitGenerator.Generate(context, unitValidationResult, extendedValidatedUnitPopulation, extendedResolvedScalarPopulation, globalAnalyzerConfig, documentationDictionary);
-        ScalarGenerator.Generate(context, scalarResolutionResult, extendedValidatedUnitPopulation, extendedResolvedScalarPopulation, extendedResolvedVectorPopulation, globalAnalyzerConfig, documentationDictionary);
-        VectorGenerator.Generate(context, vectorResulutionResult, extendedValidatedUnitPopulation, extendedResolvedScalarPopulation, extendedResolvedVectorPopulation, globalAnalyzerConfig, documentationDictionary);
+        UnitGenerator.Generate(context, unitValidationResult, extendedValidatedUnitPopulation, documentationDictionary, globalAnalyzerConfig);
+        ScalarGenerator.Generate(context, scalarResolutionResult, extendedValidatedUnitPopulation, extendedResolvedScalarPopulation, extendedResolvedVectorPopulation, documentationDictionary, globalAnalyzerConfig);
+        VectorGenerator.Generate(context, vectorResulutionResult, extendedValidatedUnitPopulation, extendedResolvedScalarPopulation, extendedResolvedVectorPopulation, documentationDictionary, globalAnalyzerConfig);
     }
 }

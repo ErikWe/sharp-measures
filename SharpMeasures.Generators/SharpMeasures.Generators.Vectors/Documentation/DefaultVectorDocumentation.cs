@@ -1,6 +1,7 @@
 ﻿namespace SharpMeasures.Generators.Vectors.Documentation;
 
 using SharpMeasures.Generators.Quantities;
+using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.SourceBuilding;
 using SharpMeasures.Generators.Units;
 using SharpMeasures.Generators.Vectors.Parsing;
@@ -18,46 +19,36 @@ internal sealed class DefaultVectorDocumentation : IVectorDocumentationStrategy,
 
     private NamedType? Scalar { get; }
 
-    private IUnitInstance? DefaultUnitInstance { get; }
+    private string? DefaultUnitInstanceName { get; }
     private string? DefaultUnitInstanceSymbol { get; }
 
     private string UnitParameterName { get; }
 
-    private IUnitInstance? ExampleScalarUnitBaseInstance { get; }
-    private IUnitInstance? ExampleUnitInstance { get; }
+    private string? ExampleScalarUnitBaseInstanceName { get; }
+    private string? ExampleUnitInstancePluralForm { get; }
 
     private SpecificTexts Texts { get; }
 
-    public DefaultVectorDocumentation(VectorDataModel model)
+    public DefaultVectorDocumentation(ResolvedVectorType vector, IUnitPopulation unitPopulation, IResolvedScalarPopulation scalarPopulation)
     {
-        Type = model.Vector.Type;
-        Dimension = model.Vector.Dimension;
-        Unit = model.Vector.Unit;
+        Type = vector.Type;
+        Dimension = vector.Dimension;
+        Unit = vector.Unit;
 
-        DefaultUnitInstance = GetDefaultUnitInstance(model);
-        DefaultUnitInstanceSymbol = model.Vector.DefaultUnitInstanceSymbol;
+        DefaultUnitInstanceName = vector.DefaultUnitInstanceName;
+        DefaultUnitInstanceSymbol = vector.DefaultUnitInstanceSymbol;
 
         UnitParameterName = SourceBuildingUtility.ToParameterName(Unit.Name);
 
-        ExampleScalarUnitBaseInstance = GetExampleScalarBase(model);
-        ExampleUnitInstance = GetExampleUnit(model);
+        ExampleScalarUnitBaseInstanceName = GetExampleScalarBase(vector, unitPopulation, scalarPopulation)?.Name;
+        ExampleUnitInstancePluralForm = GetExampleUnit(vector, unitPopulation)?.PluralForm;
 
         Texts = new(Dimension, VectorReference, UnitParameterName);
     }
 
-    private static IUnitInstance? GetDefaultUnitInstance(VectorDataModel model)
+    private static IUnitInstance? GetExampleScalarBase(ResolvedVectorType vector, IUnitPopulation unitPopulation, IResolvedScalarPopulation scalarPopulation)
     {
-        if (model.Vector.DefaultUnitInstanceName is not null && model.UnitPopulation.Units.TryGetValue(model.Vector.Unit, out var unit) && unit.UnitInstancesByName.TryGetValue(model.Vector.DefaultUnitInstanceName, out var defaultUnitInstance))
-        {
-            return defaultUnitInstance;
-        }
-
-        return null;
-    }
-
-    private static IUnitInstance? GetExampleScalarBase(VectorDataModel model)
-    {
-        if (model.Vector.Scalar is not null && model.ScalarPopulation.Scalars.TryGetValue(model.Vector.Scalar.Value, out var scalar) && model.UnitPopulation.Units.TryGetValue(scalar.Unit, out var scalarUnit))
+        if (vector.Scalar is not null && scalarPopulation.Scalars.TryGetValue(vector.Scalar.Value, out var scalar) && unitPopulation.Units.TryGetValue(scalar.Unit, out var scalarUnit))
         {
             foreach (var includedBaseName in scalar.IncludedUnitBaseInstanceNames)
             {
@@ -71,14 +62,14 @@ internal sealed class DefaultVectorDocumentation : IVectorDocumentationStrategy,
         return null;
     }
 
-    private static IUnitInstance? GetExampleUnit(VectorDataModel model)
+    private static IUnitInstance? GetExampleUnit(ResolvedVectorType vector, IUnitPopulation unitPopulation)
     {
-        if (model.UnitPopulation.Units.TryGetValue(model.Vector.Unit, out var unit) is false)
+        if (unitPopulation.Units.TryGetValue(vector.Unit, out var unit) is false)
         {
             return null;
         }
 
-        foreach (var includedUnitName in model.Vector.IncludedUnitInstanceNames)
+        foreach (var includedUnitName in vector.IncludedUnitInstanceNames)
         {
             if (unit.UnitInstancesByName.TryGetValue(includedUnitName, out var includedUnit))
             {
@@ -142,12 +133,12 @@ internal sealed class DefaultVectorDocumentation : IVectorDocumentationStrategy,
             /// <param name="{{UnitParameterName}}">The {{UnitReference}} in which the magnitudes of the components are expressed.</param>
             """;
 
-        if (Scalar is not null && ExampleScalarUnitBaseInstance is not null)
+        if (Scalar is not null && ExampleScalarUnitBaseInstanceName is not null)
         {
             commonText = $"""
                 {commonText}
                 /// <remarks>A {VectorReference} may also be constructed as demonstrated below.
-                /// <code>{VectorReference} x = ({ConstantVectorTexts.SampleValues(Dimension)}) * <see cref="{Scalar.Value.FullyQualifiedName}.{InterpretUnitBaseInstanceName(ExampleScalarUnitBaseInstance.Name)}"/>;</code>
+                /// <code>{VectorReference} x = ({ConstantVectorTexts.SampleValues(Dimension)}) * <see cref="{Scalar.Value.FullyQualifiedName}.{InterpretUnitBaseInstanceName(ExampleScalarUnitBaseInstanceName)}"/>;</code>
                 /// </remarks>
                 """;
         }
@@ -162,12 +153,12 @@ internal sealed class DefaultVectorDocumentation : IVectorDocumentationStrategy,
             /// <param name="{{UnitParameterName}}">The {{UnitReference}} in which <paramref name="components"/> is expressed.</param>
             """;
 
-        if (Scalar is not null && ExampleScalarUnitBaseInstance is not null)
+        if (Scalar is not null && ExampleScalarUnitBaseInstanceName is not null)
         {
             commonText = $"""
                 {commonText}
                 /// <remarks>A {VectorReference} may also be constructed as demonstrated below.
-                /// <code>{VectorReference} x = ({ConstantVectorTexts.SampleValues(Dimension)}) * <see cref="{Scalar.Value.FullyQualifiedName}.{InterpretUnitBaseInstanceName(ExampleScalarUnitBaseInstance.Name)}"/>;</code>
+                /// <code>{VectorReference} x = ({ConstantVectorTexts.SampleValues(Dimension)}) * <see cref="{Scalar.Value.FullyQualifiedName}.{InterpretUnitBaseInstanceName(ExampleScalarUnitBaseInstanceName)}"/>;</code>
                 /// </remarks>
                 """;
         }
@@ -195,9 +186,9 @@ internal sealed class DefaultVectorDocumentation : IVectorDocumentationStrategy,
             /// <see cref="InUnit({Unit.FullyQualifiedName})"/>
             """;
 
-        if (ExampleUnitInstance is not null)
+        if (ExampleUnitInstancePluralForm is not null)
         {
-            return $"""{commonText} or an associated property - such as <see cref="{ExampleUnitInstance.PluralForm}"/>.</remarks>""";
+            return $"""{commonText} or an associated property - such as <see cref="{ExampleUnitInstancePluralForm}"/>.</remarks>""";
         }
 
         return $"{commonText}.</remarks>";
@@ -368,14 +359,14 @@ internal sealed class DefaultVectorDocumentation : IVectorDocumentationStrategy,
     {
         var commonText = $"""/// <summary>Produces a description of <see langword="this"/> containing the""";
 
-        if (DefaultUnitInstance is not null && DefaultUnitInstanceSymbol is not null)
+        if (DefaultUnitInstanceName is not null && DefaultUnitInstanceSymbol is not null)
         {
-            return $"""{commonText} components expressed in <see cref="{Unit.FullyQualifiedName}.{DefaultUnitInstance.Name}"/>, followed by the symbol [{DefaultUnitInstanceSymbol}].</summary>""";
+            return $"""{commonText} components expressed in <see cref="{Unit.FullyQualifiedName}.{DefaultUnitInstanceName}"/>, followed by the symbol [{DefaultUnitInstanceSymbol}].</summary>""";
         }
 
-        if (DefaultUnitInstance is not null)
+        if (DefaultUnitInstanceName is not null)
         {
-            return $"""{commonText} components expressed in <see cref="{Unit.FullyQualifiedName}.{DefaultUnitInstance.Name}"/>.</summary>""";
+            return $"""{commonText} components expressed in <see cref="{Unit.FullyQualifiedName}.{DefaultUnitInstanceName}"/>.</summary>""";
         }
 
         return $"""{commonText} components expressed in an arbitrary unit.</summary>""";
@@ -602,11 +593,11 @@ internal sealed class DefaultVectorDocumentation : IVectorDocumentationStrategy,
         return $"One{name}";
     }
 
-    public bool Equals(DefaultVectorDocumentation? other) => other is not null && Type == other.Type && Dimension == other.Dimension && Unit == other.Unit && Scalar == other.Scalar && DefaultUnitInstance == other.DefaultUnitInstance && DefaultUnitInstanceSymbol == other.DefaultUnitInstanceSymbol;
+    public bool Equals(DefaultVectorDocumentation? other) => other is not null && Type == other.Type && Dimension == other.Dimension && Unit == other.Unit && Scalar == other.Scalar && DefaultUnitInstanceName == other.DefaultUnitInstanceName && DefaultUnitInstanceSymbol == other.DefaultUnitInstanceSymbol;
     public override bool Equals(object? obj) => obj is DefaultVectorDocumentation other && Equals(other);
     
     public static bool operator ==(DefaultVectorDocumentation? lhs, DefaultVectorDocumentation? rhs) => lhs?.Equals(rhs) ?? rhs is null;
     public static bool operator !=(DefaultVectorDocumentation? lhs, DefaultVectorDocumentation? rhs) => (lhs == rhs) is false;
 
-    public override int GetHashCode() => (Type, Dimension, Unit, Scalar, DefaultUnitInstance, DefaultUnitInstanceSymbol).GetHashCode();
+    public override int GetHashCode() => (Type, Dimension, Unit, Scalar, DefaultUnitInstanceName, DefaultUnitInstanceSymbol).GetHashCode();
 }

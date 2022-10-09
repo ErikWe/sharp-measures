@@ -13,9 +13,9 @@ internal sealed class VectorFileDocumentation : IVectorDocumentationStrategy, IE
     private DocumentationFile DocumentationFile { get; }
     private IVectorDocumentationStrategy DefaultDocumentationStrategy { get; }
 
-    public VectorFileDocumentation(VectorDataModel model, DocumentationFile documentationFile, IVectorDocumentationStrategy defaultDocumentationStrategy)
+    public VectorFileDocumentation(int dimension, DocumentationFile documentationFile, IVectorDocumentationStrategy defaultDocumentationStrategy)
     {
-        DocumentationTags = new(model.Vector.Dimension);
+        DocumentationTags = new(dimension);
 
         DocumentationFile = documentationFile;
         DefaultDocumentationStrategy = defaultDocumentationStrategy;

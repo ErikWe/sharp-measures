@@ -5,40 +5,49 @@ using SharpMeasures.Generators.SourceBuilding;
 using SharpMeasures.Generators.Units;
 
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 
 internal sealed class DefaultDocumentation : IDocumentationStrategy, IEquatable<DefaultDocumentation>
 {
     private DefinedType Type { get; }
-    private IUnitType Unit { get; }
+    private NamedType Unit { get; }
 
-    private IUnitInstance? DefaultUnitInstance { get; }
+    private string? DefaultUnitInstanceName { get; }
     private string? DefaultUnitInstanceSymbol { get; }
 
     private string UnitParameterName { get; }
 
-    private IUnitInstance? ExampleUnitBaseInstance { get; }
-    private IUnitInstance? ExampleUnitInstance { get; }
+    private string? ExampleUnitBaseInstanceName { get; }
+    private string? ExampleUnitInstancePluralForm { get; }
 
-    public DefaultDocumentation(DataModel model)
+    public DefaultDocumentation(ResolvedScalarType scalar, IUnitPopulation unitPopulation)
     {
-        Type = model.Scalar.Type;
-        Unit = model.UnitPopulation.Units[model.Scalar.Unit];
+        Type = scalar.Type;
+        Unit = scalar.Unit;
 
-        DefaultUnitInstance = GetDefaultUnitInstance(model);
-        DefaultUnitInstanceSymbol = model.Scalar.DefaultUnitInstanceSymbol;
+        DefaultUnitInstanceName = scalar.DefaultUnitInstanceName;
+        DefaultUnitInstanceSymbol = scalar.DefaultUnitInstanceSymbol;
 
-        UnitParameterName = SourceBuildingUtility.ToParameterName(Unit.Type.Name);
+        UnitParameterName = SourceBuildingUtility.ToParameterName(Unit.Name);
 
-        ExampleUnitBaseInstance = model.Scalar.IncludedUnitBaseInstanceNames.Count > 0 ? Unit.UnitInstancesByName[model.Scalar.IncludedUnitBaseInstanceNames[0]] : null;
-        ExampleUnitInstance = model.Scalar.IncludedUnitInstanceNames.Count > 0 ? Unit.UnitInstancesByName[model.Scalar.IncludedUnitInstanceNames[0]] : null;
+        ExampleUnitBaseInstanceName = GetExampleUnitInstance(scalar, unitPopulation, scalar.IncludedUnitBaseInstanceNames)?.Name;
+        ExampleUnitInstancePluralForm = GetExampleUnitInstance(scalar, unitPopulation, scalar.IncludedUnitInstanceNames)?.PluralForm;
     }
 
-    private IUnitInstance? GetDefaultUnitInstance(DataModel model)
+    private static IUnitInstance? GetExampleUnitInstance(ResolvedScalarType scalar, IUnitPopulation unitPopulation, IReadOnlyList<string> includedUnitInstanceNames)
     {
-        if (model.Scalar.DefaultUnitInstanceName is not null && Unit.UnitInstancesByName.TryGetValue(model.Scalar.DefaultUnitInstanceName, out var defaultUnitInstance))
+        if (unitPopulation.Units.TryGetValue(scalar.Unit, out var unit) is false)
         {
-            return defaultUnitInstance;
+            return null;
+        }
+
+        foreach (var includedUnitInstanceName in includedUnitInstanceNames)
+        {
+            if (unit.UnitInstancesByName.TryGetValue(includedUnitInstanceName, out var unitInstance))
+            {
+                return unitInstance;
+            }
         }
 
         return null;
@@ -55,10 +64,10 @@ internal sealed class DefaultDocumentation : IDocumentationStrategy, IEquatable<
             _ => constant.Value.ToString("0.####", CultureInfo.InvariantCulture)
         };
 
-        return $$"""/// <summary>The {{ScalarReference}} representing { {{value}} <see cref="{{Unit.Type.FullyQualifiedName}}.{{constant.UnitInstanceName}}"/> }.</summary>""";
+        return $$"""/// <summary>The {{ScalarReference}} representing { {{value}} <see cref="{{Unit.FullyQualifiedName}}.{{constant.UnitInstanceName}}"/> }.</summary>""";
     }
 
-    public string UnitBase(IUnitInstance unitInstance) => $$"""/// <summary>The {{ScalarReference}} representing { 1 <see cref="{{Unit.Type.FullyQualifiedName}}.{{unitInstance.Name}}"/> }.</summary>""";
+    public string UnitBase(IUnitInstance unitInstance) => $$"""/// <summary>The {{ScalarReference}} representing { 1 <see cref="{{Unit.FullyQualifiedName}}.{{unitInstance.Name}}"/> }.</summary>""";
 
     public string WithMagnitude() => InheritDoc;
 
@@ -66,12 +75,12 @@ internal sealed class DefaultDocumentation : IDocumentationStrategy, IEquatable<
     {
         var commonText = $"""
             /// <summary>The magnitude of <see langword="this"/>, expressed in an arbitrary unit.</summary>
-            /// <remarks>In most cases, expressing the magnitude in a specified {UnitReference} should be preferred. This is achieved through <see cref="InUnit({Unit.Type.FullyQualifiedName})"/>
+            /// <remarks>In most cases, expressing the magnitude in a specified {UnitReference} should be preferred. This is achieved through <see cref="InUnit({Unit.FullyQualifiedName})"/>
             """;
 
-        if (ExampleUnitInstance is not null)
+        if (ExampleUnitInstancePluralForm is not null)
         {
-            commonText = $"""{commonText} or an associated property - for example, <see cref="{ExampleUnitInstance.PluralForm}"/>""";
+            commonText = $"""{commonText} or an associated property - for example, <see cref="{ExampleUnitInstancePluralForm}"/>""";
         }
 
         return $"{commonText}.</remarks>";
@@ -80,7 +89,7 @@ internal sealed class DefaultDocumentation : IDocumentationStrategy, IEquatable<
     public string ScalarConstructor() => $$"""
         /// <summary>Constructs a new {{ScalarReference}} representing { <paramref name="magnitude"/> }, expressed in an arbitrary unit.</summary>
         /// <param name="magnitude">The magnitude represented by the constructed {{ScalarReference}}, expressed in an arbitrary unit.</param>
-        /// <remarks>Consider preferring construction through <see cref="{{Type.FullyQualifiedName}}(global::SharpMeasures.Scalar, {{Unit.Type.FullyQualifiedName}})"/>, where the magnitude is expressed in
+        /// <remarks>Consider preferring construction through <see cref="{{Type.FullyQualifiedName}}(global::SharpMeasures.Scalar, {{Unit.FullyQualifiedName}})"/>, where the magnitude is expressed in
         /// a specified {{UnitReference}}.</remarks>
         """;
 
@@ -92,12 +101,12 @@ internal sealed class DefaultDocumentation : IDocumentationStrategy, IEquatable<
             /// <param name="{{UnitParameterName}}">The {{UnitReference}} in which <paramref name="magnitude"/> is expressed.</param>
             """;
 
-        if (ExampleUnitBaseInstance is not null)
+        if (ExampleUnitBaseInstanceName is not null)
         {
             return $"""
                 {commonText}
                 /// <remarks>A {ScalarReference} may also be constructed as demonstrated below.
-                /// <code>{ScalarReference} x = 2.3 * <see cref="{Type.FullyQualifiedName}.{UnitBaseInstanceNameInterpreter.InterpretName(ExampleUnitBaseInstance.Name)}"/>;</code>
+                /// <code>{ScalarReference} x = 2.3 * <see cref="{Type.FullyQualifiedName}.{UnitBaseInstanceNameInterpreter.InterpretName(ExampleUnitBaseInstanceName)}"/>;</code>
                 /// </remarks>
                 """;
         }
@@ -115,7 +124,7 @@ internal sealed class DefaultDocumentation : IDocumentationStrategy, IEquatable<
         """;
 
     public string InSpecifiedUnit(IUnitInstance unitInstance) => $"""
-        /// <summary>The magnitude of <see langword="this"/>, expressed in <see cref="{Unit.Type.FullyQualifiedName}.{unitInstance.Name}"/>.</summary>
+        /// <summary>The magnitude of <see langword="this"/>, expressed in <see cref="{Unit.FullyQualifiedName}.{unitInstance.Name}"/>.</summary>
         """;
 
     public string Conversion(NamedType scalar) => $"""
@@ -244,14 +253,14 @@ internal sealed class DefaultDocumentation : IDocumentationStrategy, IEquatable<
     {
         var commonText = $"""/// <summary>Produces a description of <see langword="this"/> containing the""";
 
-        if (DefaultUnitInstance is not null && DefaultUnitInstanceSymbol is not null)
+        if (DefaultUnitInstanceName is not null && DefaultUnitInstanceSymbol is not null)
         {
-            return $"""{commonText} magnitude expressed in <see cref="{Unit.Type.FullyQualifiedName}.{DefaultUnitInstance.Name}"/>, followed by the symbol [{DefaultUnitInstanceSymbol}].</summary>""";
+            return $"""{commonText} magnitude expressed in <see cref="{Unit.FullyQualifiedName}.{DefaultUnitInstanceName}"/>, followed by the symbol [{DefaultUnitInstanceSymbol}].</summary>""";
         }
 
-        if (DefaultUnitInstance is not null)
+        if (DefaultUnitInstanceName is not null)
         {
-            return $"""{commonText} magnitude expressed in <see cref="{Unit.Type.FullyQualifiedName}.{DefaultUnitInstance.Name}"/>.</summary>""";
+            return $"""{commonText} magnitude expressed in <see cref="{Unit.FullyQualifiedName}.{DefaultUnitInstanceName}"/>.</summary>""";
         }
 
         return $"""{commonText} magnitude expressed in an arbitrary unit.</summary>""";
@@ -390,17 +399,17 @@ internal sealed class DefaultDocumentation : IDocumentationStrategy, IEquatable<
     public string GreaterThanOrEqualSameType() => $$"""/// <inheritdoc cref="global::SharpMeasures.Scalar.operator &gt;=(global::SharpMeasures.Scalar, global::SharpMeasures.Scalar)"/>""";
 
     private string ScalarReference => $"""<see cref="{Type.FullyQualifiedName}"/>""";
-    private string UnitReference => $"""<see cref="{Unit.Type.FullyQualifiedName}"/>""";
+    private string UnitReference => $"""<see cref="{Unit.FullyQualifiedName}"/>""";
 
     private static string InheritDoc => "/// <inheritdoc/>";
 
-    public bool Equals(DefaultDocumentation? other) => other is not null && Type == other.Type && Unit == other.Unit && DefaultUnitInstance == other.DefaultUnitInstance && DefaultUnitInstanceSymbol == other.DefaultUnitInstanceSymbol && UnitParameterName == other.UnitParameterName
-        && ExampleUnitBaseInstance == other.ExampleUnitBaseInstance && ExampleUnitInstance == other.ExampleUnitInstance;
+    public bool Equals(DefaultDocumentation? other) => other is not null && Type == other.Type && Unit == other.Unit && DefaultUnitInstanceName == other.DefaultUnitInstanceName && DefaultUnitInstanceSymbol == other.DefaultUnitInstanceSymbol && UnitParameterName == other.UnitParameterName
+        && ExampleUnitBaseInstanceName == other.ExampleUnitBaseInstanceName && ExampleUnitInstancePluralForm == other.ExampleUnitInstancePluralForm;
 
     public override bool Equals(object? obj) => obj is DefaultDocumentation other && Equals(other);
 
     public static bool operator ==(DefaultDocumentation? lhs, DefaultDocumentation? rhs) => lhs?.Equals(rhs) ?? rhs is null;
     public static bool operator !=(DefaultDocumentation? lhs, DefaultDocumentation? rhs) => (lhs == rhs) is false;
 
-    public override int GetHashCode() => (Type, Unit, DefaultUnitInstance, DefaultUnitInstanceSymbol, UnitParameterName, ExampleUnitBaseInstance, ExampleUnitInstance).GetHashCode();
+    public override int GetHashCode() => (Type, Unit, DefaultUnitInstanceName, DefaultUnitInstanceSymbol, UnitParameterName, ExampleUnitBaseInstanceName, ExampleUnitInstancePluralForm).GetHashCode();
 }

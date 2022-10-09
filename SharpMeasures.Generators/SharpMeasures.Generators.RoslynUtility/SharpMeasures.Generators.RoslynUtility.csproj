@@ -10,8 +10,4 @@
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp" PrivateAssets="all" />
     </ItemGroup>
 
-    <ItemGroup>
-        <ProjectReference Include="..\SharpMeasures.Generators.Configuration\SharpMeasures.Generators.Configuration.csproj" PrivateAssets="all" />
-    </ItemGroup>
-
 </Project>

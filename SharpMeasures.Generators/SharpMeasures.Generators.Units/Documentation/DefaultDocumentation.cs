@@ -15,12 +15,12 @@ internal sealed class DefaultDocumentation : IDocumentationStrategy, IEquatable<
 
     private string QuantityParameterName { get; }
 
-    public DefaultDocumentation(DataModel model)
+    public DefaultDocumentation(UnitType unit)
     {
-        UnitType = model.Unit.Type;
-        Quantity = model.Unit.Definition.Quantity;
+        UnitType = unit.Type;
+        Quantity = unit.Definition.Quantity;
 
-        BiasTerm = model.Unit.Definition.BiasTerm;
+        BiasTerm = unit.Definition.BiasTerm;
 
         QuantityParameterName = SourceBuildingUtility.ToParameterName(Quantity.Name);
     }

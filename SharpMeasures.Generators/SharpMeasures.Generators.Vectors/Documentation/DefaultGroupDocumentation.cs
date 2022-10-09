@@ -1,5 +1,6 @@
 ﻿namespace SharpMeasures.Generators.Vectors.Documentation;
 
+using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.SourceBuilding;
 using SharpMeasures.Generators.Units;
 
@@ -17,25 +18,25 @@ internal sealed class DefaultGroupDocumentation : IGroupDocumentationStrategy, I
 
     private string UnitParameterName { get; }
 
-    private IUnitInstance? ExampleScalarUnitBaseInstance { get; }
+    private string? ExampleScalarUnitBaseInstanceName { get; }
 
-    public DefaultGroupDocumentation(GroupDataModel model)
+    public DefaultGroupDocumentation(ResolvedGroupType group, IUnitPopulation unitPopulation, IResolvedScalarPopulation scalarPopulation)
     {
-        Type = model.Group.Type;
-        Unit = model.Group.Unit;
+        Type = group.Type;
+        Unit = group.Unit;
 
-        Scalar = model.Group.Scalar;
+        Scalar = group.Scalar;
 
-        MembersByDimension = model.Group.MembersByDimension;
+        MembersByDimension = group.MembersByDimension;
 
         UnitParameterName = SourceBuildingUtility.ToParameterName(Unit.Name);
 
-        ExampleScalarUnitBaseInstance = GetExampleScalarBase(model);
+        ExampleScalarUnitBaseInstanceName = GetExampleScalarBase(group, unitPopulation, scalarPopulation)?.Name;
     }
 
-    private static IUnitInstance? GetExampleScalarBase(GroupDataModel model)
+    private static IUnitInstance? GetExampleScalarBase(ResolvedGroupType group, IUnitPopulation unitPopulation, IResolvedScalarPopulation scalarPopulation)
     {
-        if (model.Group.Scalar is not null && model.ScalarPopulation.Scalars.TryGetValue(model.Group.Scalar.Value, out var scalar) && model.UnitPopulation.Units.TryGetValue(scalar.Unit, out var scalarUnit))
+        if (group.Scalar is not null && scalarPopulation.Scalars.TryGetValue(group.Scalar.Value, out var scalar) && unitPopulation.Units.TryGetValue(scalar.Unit, out var scalarUnit))
         {
             foreach (var includedBaseName in scalar.IncludedUnitBaseInstanceNames)
             {
@@ -61,12 +62,12 @@ internal sealed class DefaultGroupDocumentation : IGroupDocumentationStrategy, I
             /// <param name="{{UnitParameterName}}">The {{UnitReference}} in which the magnitudes of the components are expressed.</param>
             """;
 
-        if (Scalar is not null && ExampleScalarUnitBaseInstance is not null)
+        if (Scalar is not null && ExampleScalarUnitBaseInstanceName is not null)
         {
             commonText = $"""
                 {commonText}
                 /// <remarks>A {memberReference} may also be constructed as demonstrated below.
-                /// <code>{memberReference} x = ({ConstantVectorTexts.SampleValues(dimension)}) * <see cref="{Scalar.Value.FullyQualifiedName}.One{ExampleScalarUnitBaseInstance.Name}"/>;</code>
+                /// <code>{memberReference} x = ({ConstantVectorTexts.SampleValues(dimension)}) * <see cref="{Scalar.Value.FullyQualifiedName}.One{ExampleScalarUnitBaseInstanceName}"/>;</code>
                 /// </remarks>
                 """;
         }
@@ -84,12 +85,12 @@ internal sealed class DefaultGroupDocumentation : IGroupDocumentationStrategy, I
             /// <param name="{{UnitParameterName}}">The {{UnitReference}} in which <paramref name="components"/> is expressed.</param>
             """;
 
-        if (Scalar is not null && ExampleScalarUnitBaseInstance is not null)
+        if (Scalar is not null && ExampleScalarUnitBaseInstanceName is not null)
         {
             commonText = $"""
                 {commonText}
                 /// <remarks>A {memberReference} may also be constructed as demonstrated below.
-                /// <code>{memberReference} x = ({ConstantVectorTexts.SampleValues(dimension)}) * <see cref="{Scalar.Value.FullyQualifiedName}.One{ExampleScalarUnitBaseInstance.Name}"/>;</code>
+                /// <code>{memberReference} x = ({ConstantVectorTexts.SampleValues(dimension)}) * <see cref="{Scalar.Value.FullyQualifiedName}.One{ExampleScalarUnitBaseInstanceName}"/>;</code>
                 /// </remarks>
                 """;
         }

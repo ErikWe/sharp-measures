@@ -3,16 +3,17 @@
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 using SharpMeasures.Generators.Vectors.Abstraction;
-using SharpMeasures.Generators.Vectors.Documentation;
 
 internal sealed record class VectorDataModel : ADataModel
 {
     public ResolvedVectorType Vector { get; }
 
-    public IVectorDocumentationStrategy Documentation { get; init; } = EmptyDocumentation.Instance;
+    public VectorSourceBuildingContext SourceBuildingContext { get; }
 
-    public VectorDataModel(ResolvedVectorType vector, IUnitPopulation unitPopulation, IResolvedScalarPopulation scalarPopulation, IResolvedVectorPopulation vectorPopulation) : base(unitPopulation, scalarPopulation, vectorPopulation)
+    public VectorDataModel(ResolvedVectorType vector, IUnitPopulation unitPopulation, IResolvedScalarPopulation scalarPopulation, IResolvedVectorPopulation vectorPopulation, VectorSourceBuildingContext sourceBuildingContext) : base(unitPopulation, scalarPopulation, vectorPopulation)
     {
         Vector = vector;
+
+        SourceBuildingContext = sourceBuildingContext;
     }
 }

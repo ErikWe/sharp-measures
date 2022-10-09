@@ -6,13 +6,13 @@ using SharpMeasures.Generators.Configuration;
 using SharpMeasures.Generators.Documentation;
 using SharpMeasures.Generators.Scalars.Documentation;
 using SharpMeasures.Generators.Scalars.Parsing;
-using SharpMeasures.Generators.Scalars.Pipelines.Common;
-using SharpMeasures.Generators.Scalars.Pipelines.Conversions;
-using SharpMeasures.Generators.Scalars.Pipelines.Operations;
-using SharpMeasures.Generators.Scalars.Pipelines.Maths;
-using SharpMeasures.Generators.Scalars.Pipelines.Processes;
-using SharpMeasures.Generators.Scalars.Pipelines.Units;
-using SharpMeasures.Generators.Scalars.Pipelines.Vectors;
+using SharpMeasures.Generators.Scalars.SourceBuilding.Common;
+using SharpMeasures.Generators.Scalars.SourceBuilding.Conversions;
+using SharpMeasures.Generators.Scalars.SourceBuilding.Maths;
+using SharpMeasures.Generators.Scalars.SourceBuilding.Operations;
+using SharpMeasures.Generators.Scalars.SourceBuilding.Processes;
+using SharpMeasures.Generators.Scalars.SourceBuilding.Units;
+using SharpMeasures.Generators.Scalars.SourceBuilding.Vectors;
 using SharpMeasures.Generators.Units;
 using SharpMeasures.Generators.Vectors;
 
@@ -21,71 +21,53 @@ using System.Threading;
 public static class ScalarGenerator
 {
     public static void Generate(IncrementalGeneratorInitializationContext context, ScalarResolutionResult resolutionResult, IncrementalValueProvider<IUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IResolvedScalarPopulation> scalarPopulationProvider,
-        IncrementalValueProvider<IResolvedVectorPopulation> vectorPopulationProvider, IncrementalValueProvider<GlobalAnalyzerConfig> globalAnalyzerConfigProvider, IncrementalValueProvider<DocumentationDictionary> documentationDictionaryProvider)
+        IncrementalValueProvider<IResolvedVectorPopulation> vectorPopulationProvider, IncrementalValueProvider<DocumentationDictionary> documentationDictionaryProvider, IncrementalValueProvider<GlobalAnalyzerConfig> globalAnalyzerConfigProvider)
     {
-        Generate(context, resolutionResult.ScalarBaseProvider, unitPopulationProvider, scalarPopulationProvider, vectorPopulationProvider, globalAnalyzerConfigProvider, documentationDictionaryProvider);
-        Generate(context, resolutionResult.ScalarSpecializationProvider, unitPopulationProvider, scalarPopulationProvider, vectorPopulationProvider, globalAnalyzerConfigProvider, documentationDictionaryProvider);
+        Generate(context, resolutionResult.ScalarBaseProvider, unitPopulationProvider, scalarPopulationProvider, vectorPopulationProvider, documentationDictionaryProvider, globalAnalyzerConfigProvider);
+        Generate(context, resolutionResult.ScalarSpecializationProvider, unitPopulationProvider, scalarPopulationProvider, vectorPopulationProvider, documentationDictionaryProvider, globalAnalyzerConfigProvider);
     }
 
     private static void Generate(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Optional<ResolvedScalarType>> scalars, IncrementalValueProvider<IUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IResolvedScalarPopulation> scalarPopulationProvider,
-        IncrementalValueProvider<IResolvedVectorPopulation> vectorPopulationProvider, IncrementalValueProvider<GlobalAnalyzerConfig> globalAnalyzerConfigProvider, IncrementalValueProvider<DocumentationDictionary> documentationDictionaryProvider)
+        IncrementalValueProvider<IResolvedVectorPopulation> vectorPopulationProvider, IncrementalValueProvider<DocumentationDictionary> documentationDictionaryProvider, IncrementalValueProvider<GlobalAnalyzerConfig> globalAnalyzerConfigProvider)
     {
-        var defaultGenerateDocumentation = globalAnalyzerConfigProvider.Select(ExtractDefaultGenerateDocumentation);
+        var reduced = scalars.Combine(unitPopulationProvider, scalarPopulationProvider, vectorPopulationProvider, documentationDictionaryProvider, globalAnalyzerConfigProvider).Select(ReduceToDataModel);
 
-        var reducedScalars = scalars.Combine(unitPopulationProvider, scalarPopulationProvider, vectorPopulationProvider).Select(ReduceToDataModel)
-            .Combine(defaultGenerateDocumentation).Select(InterpretGenerateDocumentation).Combine(documentationDictionaryProvider).Flatten().Select(AppendDocumentation);
-
-        CommonGenerator.Initialize(context, reducedScalars);
-        ConversionsGenerator.Initialize(context, reducedScalars);
-        OperationsGenerator.Initialize(context, reducedScalars);
-        MathsGenerator.Initialize(context, reducedScalars);
-        ProcessesGenerator.Initialize(context, reducedScalars);
-        UnitsGenerator.Initialize(context, reducedScalars);
-        VectorsGenerator.Initialize(context, reducedScalars);
+        CommonGenerator.Initialize(context, reduced);
+        ConversionsGenerator.Initialize(context, reduced);
+        OperationsGenerator.Initialize(context, reduced);
+        MathsGenerator.Initialize(context, reduced);
+        ProcessesGenerator.Initialize(context, reduced);
+        UnitsGenerator.Initialize(context, reduced);
+        VectorsGenerator.Initialize(context, reduced);
     }
 
-    private static Optional<DataModel> ReduceToDataModel((Optional<ResolvedScalarType> Scalar, IUnitPopulation UnitPopulation, IResolvedScalarPopulation ScalarPopulation, IResolvedVectorPopulation VectorPopulation) input, CancellationToken _)
+    private static Optional<DataModel> ReduceToDataModel((Optional<ResolvedScalarType> Scalar, IUnitPopulation UnitPopulation, IResolvedScalarPopulation ScalarPopulation, IResolvedVectorPopulation VectorPopulation, DocumentationDictionary DocumentationDictionary, GlobalAnalyzerConfig Config) input, CancellationToken token)
     {
-        if (input.Scalar.HasValue is false)
+        if (token.IsCancellationRequested || input.Scalar.HasValue is false)
         {
             return new Optional<DataModel>();
         }
 
-        return new DataModel(input.Scalar.Value, input.UnitPopulation, input.ScalarPopulation, input.VectorPopulation);
+        SourceBuildingContext sourceBuildingContext = new(input.Config.GeneratedFileHeaderContent, GetDocumentationStrategy(input.Scalar.Value, input.UnitPopulation, input.DocumentationDictionary, input.Config));
+        return new DataModel(input.Scalar.Value, input.UnitPopulation, input.ScalarPopulation, input.VectorPopulation, sourceBuildingContext);
     }
 
-    private static (Optional<DataModel> Model, bool GenerateDocumentation) InterpretGenerateDocumentation((Optional<DataModel> Model, bool Default) data, CancellationToken _)
+    private static IDocumentationStrategy GetDocumentationStrategy(ResolvedScalarType scalar, IUnitPopulation unitPopulation, DocumentationDictionary documentationDictionary, GlobalAnalyzerConfig config)
     {
-        if (data.Model.HasValue is false)
+        var generateDocumentation = scalar.GenerateDocumentation ?? config.GenerateDocumentationByDefault;
+
+        if (generateDocumentation is false)
         {
-            return (data.Model, false);
+            return EmptyDocumentation.Instance;
         }
 
-        return (data.Model, data.Model.Value.Scalar.GenerateDocumentation ?? data.Default);
+        DefaultDocumentation defaultDocumentation = new(scalar, unitPopulation);
+
+        if (documentationDictionary.TryGetValue(scalar.Type.Name, out DocumentationFile documentationFile))
+        {
+            return new FileDocumentation(documentationFile, defaultDocumentation);
+        }
+
+        return defaultDocumentation;
     }
-
-    private static Optional<DataModel> AppendDocumentation((Optional<DataModel> Model, bool GenerateDocumentation, DocumentationDictionary DocumentationDictionary) input, CancellationToken _)
-    {
-        if (input.GenerateDocumentation is false || input.Model.HasValue is false)
-        {
-            return input.Model;
-        }
-
-        DefaultDocumentation defaultDocumentation = new(input.Model.Value);
-
-        if (input.DocumentationDictionary.TryGetValue(input.Model.Value.Scalar.Type.Name, out DocumentationFile documentationFile))
-        {
-            return input.Model.Value with
-            {
-                Documentation = new FileDocumentation(documentationFile, defaultDocumentation)
-            };
-        }
-
-        return input.Model.Value with
-        {
-            Documentation = defaultDocumentation
-        };
-    }
-
-    private static bool ExtractDefaultGenerateDocumentation(GlobalAnalyzerConfig config, CancellationToken _) => config.GenerateDocumentationByDefault;
 }

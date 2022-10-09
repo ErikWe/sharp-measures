@@ -10,22 +10,24 @@ using System.Threading;
 
 public static partial class RoslynUtilityExtensions
 {
-    public static IncrementalValuesProvider<(T1, T2, T3)> Combine<T1, T2, T3>(this IncrementalValuesProvider<T1> provider1, IncrementalValueProvider<T2> provider2,
-        IncrementalValueProvider<T3> provider3)
+    public static IncrementalValuesProvider<(T1, T2, T3)> Combine<T1, T2, T3>(this IncrementalValuesProvider<T1> provider1, IncrementalValueProvider<T2> provider2, IncrementalValueProvider<T3> provider3)
     {
         return provider1.Combine(provider2).Combine(provider3).Flatten();
     }
 
-    public static IncrementalValuesProvider<(T1, T2, T3, T4)> Combine<T1, T2, T3, T4>(this IncrementalValuesProvider<T1> provider1, IncrementalValueProvider<T2> provider2,
-        IncrementalValueProvider<T3> provider3, IncrementalValueProvider<T4> provider4)
+    public static IncrementalValuesProvider<(T1, T2, T3, T4)> Combine<T1, T2, T3, T4>(this IncrementalValuesProvider<T1> provider1, IncrementalValueProvider<T2> provider2, IncrementalValueProvider<T3> provider3, IncrementalValueProvider<T4> provider4)
     {
         return provider1.Combine(provider2).Combine(provider3).Combine(provider4).Flatten();
     }
 
-    public static IncrementalValuesProvider<(T1, T2, T3, T4, T5)> Combine<T1, T2, T3, T4, T5>(this IncrementalValuesProvider<T1> provider1,
-        IncrementalValueProvider<T2> provider2, IncrementalValueProvider<T3> provider3, IncrementalValueProvider<T4> provider4, IncrementalValueProvider<T5> provider5)
+    public static IncrementalValuesProvider<(T1, T2, T3, T4, T5)> Combine<T1, T2, T3, T4, T5>(this IncrementalValuesProvider<T1> provider1, IncrementalValueProvider<T2> provider2, IncrementalValueProvider<T3> provider3, IncrementalValueProvider<T4> provider4, IncrementalValueProvider<T5> provider5)
     {
         return provider1.Combine(provider2).Combine(provider3).Combine(provider4).Combine(provider5).Flatten();
+    }
+
+    public static IncrementalValuesProvider<(T1, T2, T3, T4, T5, T6)> Combine<T1, T2, T3, T4, T5, T6>(this IncrementalValuesProvider<T1> provider1, IncrementalValueProvider<T2> provider2, IncrementalValueProvider<T3> provider3, IncrementalValueProvider<T4> provider4, IncrementalValueProvider<T5> provider5, IncrementalValueProvider<T6> provider6)
+    {
+        return provider1.Combine(provider2).Combine(provider3).Combine(provider4).Combine(provider5).Combine(provider6).Flatten();
     }
 
     public static IncrementalValuesProvider<(T1, T2, T3)> Flatten<T1, T2, T3>(this IncrementalValuesProvider<((T1, T2), T3)> provider)
@@ -54,8 +56,17 @@ public static partial class RoslynUtilityExtensions
 
         static (T1, T2, T3, T4, T5) flatten(((((T1, T2), T3), T4), T5) tupleHierarchy, CancellationToken _)
         {
-            return (tupleHierarchy.Item1.Item1.Item1.Item1, tupleHierarchy.Item1.Item1.Item1.Item2, tupleHierarchy.Item1.Item1.Item2,
-                tupleHierarchy.Item1.Item2, tupleHierarchy.Item2);
+            return (tupleHierarchy.Item1.Item1.Item1.Item1, tupleHierarchy.Item1.Item1.Item1.Item2, tupleHierarchy.Item1.Item1.Item2, tupleHierarchy.Item1.Item2, tupleHierarchy.Item2);
+        }
+    }
+
+    public static IncrementalValuesProvider<(T1, T2, T3, T4, T5, T6)> Flatten<T1, T2, T3, T4, T5, T6>(this IncrementalValuesProvider<(((((T1, T2), T3), T4), T5), T6)> provider)
+    {
+        return provider.Select(flatten);
+
+        static (T1, T2, T3, T4, T5, T6) flatten((((((T1, T2), T3), T4), T5), T6) tupleHierarchy, CancellationToken _)
+        {
+            return (tupleHierarchy.Item1.Item1.Item1.Item1.Item1, tupleHierarchy.Item1.Item1.Item1.Item1.Item2, tupleHierarchy.Item1.Item1.Item1.Item2, tupleHierarchy.Item1.Item1.Item2, tupleHierarchy.Item1.Item2, tupleHierarchy.Item2);
         }
     }
 

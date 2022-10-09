@@ -4,72 +4,52 @@ using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Configuration;
 using SharpMeasures.Generators.Documentation;
-using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units.Documentation;
 using SharpMeasures.Generators.Units.Parsing;
-using SharpMeasures.Generators.Units.Pipelines.Common;
-using SharpMeasures.Generators.Units.Pipelines.Derivable;
-using SharpMeasures.Generators.Units.Pipelines.UnitInstances;
+using SharpMeasures.Generators.Units.SourceBuilding.Common;
+using SharpMeasures.Generators.Units.SourceBuilding.Derivable;
+using SharpMeasures.Generators.Units.SourceBuilding.UnitInstances;
 
 using System.Threading;
 
 public static class UnitGenerator
 {
-    public static void Generate(IncrementalGeneratorInitializationContext context, UnitValidationResult validationResult, IncrementalValueProvider<IUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IResolvedScalarPopulation> scalarPopulationProvider,
-        IncrementalValueProvider<GlobalAnalyzerConfig> globalAnalyzerConfigProvider, IncrementalValueProvider<DocumentationDictionary> documentationDictionaryProvider)
+    public static void Generate(IncrementalGeneratorInitializationContext context, UnitValidationResult validationResult, IncrementalValueProvider<IUnitPopulation> unitPopulationProvider, IncrementalValueProvider<DocumentationDictionary> documentationDictionaryProvider, IncrementalValueProvider<GlobalAnalyzerConfig> globalAnalyzerConfigProvider)
     {
-        var defaultGenerateDocumentation = globalAnalyzerConfigProvider.Select(ExtractDefaultGenerateDocumentation);
+        var reduced = validationResult.UnitProvider.Combine(unitPopulationProvider, documentationDictionaryProvider, globalAnalyzerConfigProvider).Select(ReduceToDataModel);
 
-        var minimized = validationResult.UnitProvider.Combine(unitPopulationProvider, scalarPopulationProvider).Select(ReduceToDataModel)
-            .Combine(defaultGenerateDocumentation).Select(InterpretGenerateDocumentation).Combine(documentationDictionaryProvider).Flatten().Select(AppendDocumentationFile);
-
-        CommonGenerator.Initialize(context, minimized);
-        DerivableUnitGenerator.Initialize(context, minimized);
-        UnitInstancesGenerator.Initialize(context, minimized);
+        CommonGenerator.Initialize(context, reduced);
+        DerivableUnitGenerator.Initialize(context, reduced);
+        UnitInstancesGenerator.Initialize(context, reduced);
     }
 
-    private static Optional<DataModel> ReduceToDataModel((Optional<UnitType> Unit, IUnitPopulation UnitPopulation, IResolvedScalarPopulation ScalarPopulation) input, CancellationToken _)
+    private static Optional<DataModel> ReduceToDataModel((Optional<UnitType> Unit, IUnitPopulation UnitPopulation, DocumentationDictionary DocumentationDictionary, GlobalAnalyzerConfig Config) input, CancellationToken token)
     {
-        if (input.Unit.HasValue is false)
+        if (token.IsCancellationRequested || input.Unit.HasValue is false)
         {
             return new Optional<DataModel>();
         }
 
-        return new DataModel(input.Unit.Value, input.UnitPopulation);
+        SourceBuildingContext sourceBuildingContext = new(input.Config.GeneratedFileHeaderContent, GetDocumentationStrategy(input.Unit.Value, input.DocumentationDictionary, input.Config));
+        return new DataModel(input.Unit.Value, input.UnitPopulation, sourceBuildingContext);
     }
 
-    private static (Optional<DataModel> Model, bool GenerateDocumentation) InterpretGenerateDocumentation((Optional<DataModel> Model, bool Default) data, CancellationToken _)
+    private static IDocumentationStrategy GetDocumentationStrategy(UnitType unit, DocumentationDictionary documentationDictionary, GlobalAnalyzerConfig config)
     {
-        if (data.Model.HasValue is false)
+        var generateDocumentation = unit.Definition.GenerateDocumentation ?? config.GenerateDocumentationByDefault;
+
+        if (generateDocumentation is false)
         {
-            return (new Optional<DataModel>(), false);
+            return EmptyDocumentation.Instance;
         }
 
-        return (data.Model, data.Model.Value.Unit.Definition.GenerateDocumentation ?? data.Default);
+        DefaultDocumentation defaultDocumentation = new(unit);
+
+        if (documentationDictionary.TryGetValue(unit.Type.Name, out DocumentationFile documentationFile))
+        {
+            return new FileDocumentation(documentationFile, defaultDocumentation);
+        }
+
+        return defaultDocumentation;
     }
-
-    private static Optional<DataModel> AppendDocumentationFile((Optional<DataModel> Model, bool GenerateDocumentation, DocumentationDictionary DocumentationDictionary) input, CancellationToken _)
-    {
-        if (input.GenerateDocumentation is false || input.Model.HasValue is false)
-        {
-            return input.Model;
-        }
-
-        DefaultDocumentation defaultDocumentation = new(input.Model.Value);
-
-        if (input.DocumentationDictionary.TryGetValue(input.Model.Value.Unit.Type.Name, out DocumentationFile documentationFile))
-        {
-            return input.Model.Value with
-            {
-                Documentation = new FileDocumentation(documentationFile, defaultDocumentation)
-            };
-        }
-
-        return input.Model.Value with
-        {
-            Documentation = defaultDocumentation
-        };
-    }
-
-    private static bool ExtractDefaultGenerateDocumentation(GlobalAnalyzerConfig config, CancellationToken _) => config.GenerateDocumentationByDefault;
 }
