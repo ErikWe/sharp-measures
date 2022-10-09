@@ -102,6 +102,11 @@ internal sealed class SharpMeasuresVectorValidator : IProcesser<ISharpMeasuresVe
 
     private IValidityWithDiagnostics ValidateScalarIsScalar(ISharpMeasuresVectorValidationContext context, SharpMeasuresVectorDefinition definition)
     {
+        if (definition.Scalar is not null && definition.Scalar.Value == NamedType.Empty)
+        {
+            return ValidityWithDiagnostics.InvalidWithoutDiagnostics;
+        }
+
         var scalarIsNotScalar = definition.Scalar is not null && context.ScalarPopulation.Scalars.ContainsKey(definition.Scalar.Value) is false;
 
         return ValidityWithDiagnostics.Conditional(scalarIsNotScalar is false, () => Diagnostics.TypeNotScalar(context, definition));
@@ -129,6 +134,11 @@ internal sealed class SharpMeasuresVectorValidator : IProcesser<ISharpMeasuresVe
         if (context.VectorPopulation.GroupMembers.TryGetValue(definition.Difference.Value, out var groupMember))
         {
             return OptionalWithDiagnostics.Conditional(groupMember.Definition.Dimension == definition.Dimension, definition.Difference.Value, () => Diagnostics.DifferenceVectorInvalidDimension(context, definition, groupMember.Definition.Dimension));
+        }
+
+        if (definition.Difference.Value == NamedType.Empty)
+        {
+            return OptionalWithDiagnostics.Empty<NamedType>();
         }
 
         return OptionalWithDiagnostics.Empty<NamedType>(Diagnostics.DifferenceNotVector(context, definition));

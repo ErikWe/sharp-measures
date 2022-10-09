@@ -31,6 +31,7 @@ internal sealed class SharpMeasuresVectorGroupProcesser : AProcesser<IProcessing
         return VerifyRequiredPropertiesSet(definition)
             .Validate(() => ValidateNameNotSuggestingDimension(context, definition))
             .Validate(() => ValidateUnitNotNull(context, definition))
+            .Validate(() => ValidateUnitNotUndefined(definition))
             .Validate(() => ValidateScalarNotNull(context, definition))
             .Validate(() => ValidateDifferenceNotNull(context, definition))
             .Validate(() => ValidateDifferenceNotUnexpectedlySpecified(context, definition))
@@ -66,6 +67,11 @@ internal sealed class SharpMeasuresVectorGroupProcesser : AProcesser<IProcessing
     private IValidityWithDiagnostics ValidateUnitNotNull(IProcessingContext context, RawSharpMeasuresVectorGroupDefinition definition)
     {
         return ValidityWithDiagnostics.Conditional(definition.Unit is not null, () => Diagnostics.NullUnit(context, definition));
+    }
+
+    private static IValidityWithDiagnostics ValidateUnitNotUndefined(RawSharpMeasuresVectorGroupDefinition definition)
+    {
+        return ValidityWithDiagnostics.ConditionalWithoutDiagnostics(definition.Unit!.Value != NamedType.Empty);
     }
 
     private IValidityWithDiagnostics ValidateScalarNotNull(IProcessingContext context, RawSharpMeasuresVectorGroupDefinition definition)

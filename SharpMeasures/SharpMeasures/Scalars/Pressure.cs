@@ -2,7 +2,7 @@
 
 using SharpMeasures.Generators;
 
-[ScalarQuantity(typeof(UnitOfPressure), DefaultUnitInstanceName = "Pascal", DefaultUnitInstanceSymbol = "Pa")]
+[ScalarQuantity(typeof(UnitOfPressure), DefaultUnit = "Pascal", DefaultSymbol = "Pa")]
 public readonly partial record struct Pressure { }
 
 [QuantityOperation(typeof(Force), typeof(Area), OperatorType.Multiplication)]

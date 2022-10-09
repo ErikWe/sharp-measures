@@ -267,34 +267,32 @@ internal static class Execution
                     return new[] { (operation.Result, operation.Other) };
                 }
 
-                if (Data.VectorPopulation.Groups.TryGetValue(operation.Other, out var otherGroup))
+                if (Data.VectorPopulation.Groups.TryGetValue(operation.Other, out var otherGroup) && otherGroup.MembersByDimension.TryGetValue(resultVector.Dimension, out var otherMember))
                 {
-                    if (otherGroup.MembersByDimension.TryGetValue(resultVector.Dimension, out var otherMember))
-                    {
-                        return new[] { (operation.Result, otherMember) };
-                    }
+                    return new[] { (operation.Result, otherMember) };
                 }
             }
 
             if (Data.VectorPopulation.Groups.TryGetValue(operation.Result, out var resultGroup))
             {
-                if (Data.VectorPopulation.Vectors.TryGetValue(operation.Other, out var otherVector))
+                if (Data.VectorPopulation.Vectors.TryGetValue(operation.Other, out var otherVector) && resultGroup.MembersByDimension.TryGetValue(otherVector.Dimension, out var resultMember))
                 {
-                    if (resultGroup.MembersByDimension.TryGetValue(otherVector.Dimension, out var resultMember))
-                    {
-                        return new[] { (resultMember, operation.Other) };
-                    }
+                    return new[] { (resultMember, operation.Other) };
                 }
 
                 if (Data.VectorPopulation.Groups.TryGetValue(operation.Other, out var otherGroup))
                 {
+                    List<(NamedType, NamedType)> combinations = new(Math.Min(resultGroup.MembersByDimension.Count, otherGroup.MembersByDimension.Count));
+
                     foreach (var dimension in resultGroup.MembersByDimension.Keys)
                     {
                         if (otherGroup.MembersByDimension.TryGetValue(dimension, out var otherMember))
                         {
-                            return new[] { (resultGroup.MembersByDimension[dimension], otherMember) };
+                            combinations.Add((resultGroup.MembersByDimension[dimension], otherMember));
                         }
                     }
+
+                    return combinations;
                 }
             }
 

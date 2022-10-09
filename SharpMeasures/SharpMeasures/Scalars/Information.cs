@@ -2,7 +2,7 @@
 
 using SharpMeasures.Generators;
 
-[ScalarQuantity(typeof(UnitOfInformation), DefaultUnitInstanceName = "Bit", DefaultUnitInstanceSymbol = "b")]
+[ScalarQuantity(typeof(UnitOfInformation), DefaultUnit = "Bit", DefaultSymbol = "b")]
 public readonly partial record struct Information { }
 
 [QuantityOperation(typeof(Time), typeof(InformationFlowRate), OperatorType.Division)]

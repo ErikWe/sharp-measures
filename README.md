@@ -53,7 +53,7 @@ using SharpMeasures.Generators.Units;
 public partial class Time { }
 
 [DerivedQuantity("1 / {0}", typeof(Time))]
-[SharpMeasuresScalar(typeof(UnitOfFrequency), DefaultUnitInstanceName = "Hertz", DefaultUnitInstanceSymbol = "Hz")]
+[SharpMeasuresScalar(typeof(UnitOfFrequency), DefaultUnit = "Hertz", DefaultSymbol = "Hz")]
 public partial class Frequency { }
 
 [FixedUnitInstance("Second", "[*]s")]

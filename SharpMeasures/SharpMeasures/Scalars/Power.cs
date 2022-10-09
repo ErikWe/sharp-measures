@@ -2,7 +2,7 @@
 
 using SharpMeasures.Generators;
 
-[ScalarQuantity(typeof(UnitOfPower), DefaultUnitInstanceName = "Watt", DefaultUnitInstanceSymbol = "W")]
+[ScalarQuantity(typeof(UnitOfPower), DefaultUnit = "Watt", DefaultSymbol = "W")]
 public readonly partial record struct Power { }
 
 [QuantityOperation(typeof(Speed), typeof(Force), OperatorType.Division)]

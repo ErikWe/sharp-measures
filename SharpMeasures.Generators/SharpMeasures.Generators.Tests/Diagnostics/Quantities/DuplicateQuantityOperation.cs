@@ -120,13 +120,16 @@ public class DuplicateQuantityOperation
     private static string QuantityOperationNameText_Scalar(Names names) => $$"""
         using SharpMeasures.Generators;
 
-        [QuantityOperation(typeof(Length), typeof(Length), OperatorType.Division, MethodName = "{{names.FirstName}}", MirroredMethodName = "{{names.FirstMirroredName}}")]
-        [QuantityOperation(typeof(Length), typeof(Length), OperatorType.Subtraction, MethodName = "{{names.SecondName}}", MirroredMethodName = "{{names.SecondMirroredName}}")] // <-
+        [QuantityOperation(typeof(Other), typeof(Other), OperatorType.Division, MethodName = "{{names.FirstName}}", MirroredMethodName = "{{names.FirstMirroredName}}")]
+        [QuantityOperation(typeof(Other), typeof(Other), OperatorType.Subtraction, MethodName = "{{names.SecondName}}", MirroredMethodName = "{{names.SecondMirroredName}}")] // <-
         [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Distance { }
             
         [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
+
+        [ScalarQuantity(typeof(UnitOfLength))]
+        public partial class Other { }
 
         [Unit(typeof(Length))]
         public partial class UnitOfLength { }
@@ -143,13 +146,16 @@ public class DuplicateQuantityOperation
     private static string QuantityOperationOperatorText_Scalar(Names names) => $$"""
         using SharpMeasures.Generators;
         
-        [QuantityOperation(typeof(Length), typeof(Length), OperatorType.Division, MethodName = "{{names.FirstName}}", MirroredMethodName = "{{names.FirstMirroredName}}")]
-        [QuantityOperation(typeof(Length), typeof(Length), OperatorType.Division)]
+        [QuantityOperation(typeof(Other), typeof(Other), OperatorType.Division, MethodName = "{{names.FirstName}}", MirroredMethodName = "{{names.FirstMirroredName}}")]
+        [QuantityOperation(typeof(Other), typeof(Other), OperatorType.Division)]
         [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Distance { }
             
         [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
+        
+        [ScalarQuantity(typeof(UnitOfLength))]
+        public partial class Other { }
 
         [Unit(typeof(Length))]
         public partial class UnitOfLength { }
@@ -158,7 +164,7 @@ public class DuplicateQuantityOperation
     private static GeneratorVerifier AssertQuantityOperationOperator_Scalar(Names names)
     {
         var source = QuantityOperationOperatorText_Scalar(names);
-        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, target: "QuantityOperation", postfix: "(typeof(Length), typeof(Length), OperatorType.Division)]");
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, target: "QuantityOperation", postfix: "(typeof(Other), typeof(Other), OperatorType.Division)]");
 
         return AssertDuplicateQuantityOperationDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(ScalarIdentical(names));
     }
@@ -166,13 +172,16 @@ public class DuplicateQuantityOperation
     private static string QuantityOperationNameText_SpecializedScalar(Names names) => $$"""
         using SharpMeasures.Generators;
         
-        [QuantityOperation(typeof(Length), typeof(Length), OperatorType.Division, MethodName = "{{names.FirstName}}", MirroredMethodName = "{{names.FirstMirroredName}}")]
-        [QuantityOperation(typeof(Length), typeof(Length), OperatorType.Subtraction, MethodName = "{{names.SecondName}}", MirroredMethodName = "{{names.SecondMirroredName}}")] // <-
+        [QuantityOperation(typeof(Other), typeof(Other), OperatorType.Division, MethodName = "{{names.FirstName}}", MirroredMethodName = "{{names.FirstMirroredName}}")]
+        [QuantityOperation(typeof(Other), typeof(Other), OperatorType.Subtraction, MethodName = "{{names.SecondName}}", MirroredMethodName = "{{names.SecondMirroredName}}")] // <-
         [SpecializedScalarQuantity(typeof(Length))]
         public partial class Distance { }
 
         [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
+        
+        [ScalarQuantity(typeof(UnitOfLength))]
+        public partial class Other { }
 
         [Unit(typeof(Length))]
         public partial class UnitOfLength { }
@@ -189,13 +198,16 @@ public class DuplicateQuantityOperation
     private static string QuantityOperationOperatorText_SpecializedScalar(Names names) => $$"""
         using SharpMeasures.Generators;
         
-        [QuantityOperation(typeof(Length), typeof(Length), OperatorType.Division, MethodName = "{{names.FirstName}}", MirroredMethodName = "{{names.FirstMirroredName}}")]
-        [QuantityOperation(typeof(Length), typeof(Length), OperatorType.Division)]
+        [QuantityOperation(typeof(Other), typeof(Other), OperatorType.Division, MethodName = "{{names.FirstName}}", MirroredMethodName = "{{names.FirstMirroredName}}")]
+        [QuantityOperation(typeof(Other), typeof(Other), OperatorType.Division)]
         [SpecializedScalarQuantity(typeof(Length))]
         public partial class Distance { }
 
         [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
+        
+        [ScalarQuantity(typeof(UnitOfLength))]
+        public partial class Other { }
 
         [Unit(typeof(Length))]
         public partial class UnitOfLength { }
@@ -204,7 +216,7 @@ public class DuplicateQuantityOperation
     private static GeneratorVerifier AssertQuantityOperationOperator_SpecializedScalar(Names names)
     {
         var source = QuantityOperationOperatorText_SpecializedScalar(names);
-        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, target: "QuantityOperation", postfix: "(typeof(Length), typeof(Length), OperatorType.Division)]");
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, target: "QuantityOperation", postfix: "(typeof(Other), typeof(Other), OperatorType.Division)]");
 
         return AssertDuplicateQuantityOperationDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(SpecializedScalarIdentical(names));
     }
@@ -212,13 +224,16 @@ public class DuplicateQuantityOperation
     private static string VectorOperationText_Vector(Names names) => $$"""
         using SharpMeasures.Generators;
         
-        [VectorOperation(typeof(Position3), typeof(Position3), VectorOperatorType.Cross, Name = "{{names.FirstName}}", MirroredName = "{{names.FirstMirroredName}}")]
-        [VectorOperation(typeof(Position3), typeof(Position3), VectorOperatorType.Cross, Name = "{{names.SecondName}}", MirroredName = "{{names.SecondMirroredName}}")] // <-
+        [VectorOperation(typeof(Other3), typeof(Other3), VectorOperatorType.Cross, Name = "{{names.FirstName}}", MirroredName = "{{names.FirstMirroredName}}")]
+        [VectorOperation(typeof(Other3), typeof(Other3), VectorOperatorType.Cross, Name = "{{names.SecondName}}", MirroredName = "{{names.SecondMirroredName}}")] // <-
         [VectorQuantity(typeof(UnitOfLength))]
         public partial class Displacement3 { }
 
         [VectorQuantity(typeof(UnitOfLength))]
         public partial class Position3 { }
+        
+        [VectorQuantity(typeof(UnitOfLength))]
+        public partial class Other3 { }
 
         [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
@@ -238,13 +253,16 @@ public class DuplicateQuantityOperation
     private static string SharedOperationText_Vector(Names names) => $$"""
         using SharpMeasures.Generators;
         
-        [QuantityOperation(typeof(Position3), typeof(Position3), OperatorType.Subtraction, MethodName = "{{names.FirstName}}", MirroredMethodName = "{{names.FirstMirroredName}}")]
-        [VectorOperation(typeof(Position3), typeof(Position3), VectorOperatorType.Cross, Name = "{{names.SecondName}}", MirroredName = "{{names.SecondMirroredName}}")] // <-
+        [QuantityOperation(typeof(Other3), typeof(Other3), OperatorType.Subtraction, MethodName = "{{names.FirstName}}", MirroredMethodName = "{{names.FirstMirroredName}}")]
+        [VectorOperation(typeof(Other3), typeof(Other3), VectorOperatorType.Cross, Name = "{{names.SecondName}}", MirroredName = "{{names.SecondMirroredName}}")] // <-
         [VectorQuantity(typeof(UnitOfLength))]
         public partial class Displacement3 { }
 
         [VectorQuantity(typeof(UnitOfLength))]
         public partial class Position3 { }
+        
+        [VectorQuantity(typeof(UnitOfLength))]
+        public partial class Other3 { }
 
         [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
@@ -264,13 +282,16 @@ public class DuplicateQuantityOperation
     private static string VectorOperationText_SpecializedVector(Names names) => $$"""
         using SharpMeasures.Generators;
         
-        [VectorOperation(typeof(Position3), typeof(Position3), VectorOperatorType.Cross, Name = "{{names.FirstName}}", MirroredName = "{{names.FirstMirroredName}}")]
-        [VectorOperation(typeof(Position3), typeof(Position3), VectorOperatorType.Cross, Name = "{{names.SecondName}}", MirroredName = "{{names.SecondMirroredName}}")] // <-
+        [VectorOperation(typeof(Other3), typeof(Other3), VectorOperatorType.Cross, Name = "{{names.FirstName}}", MirroredName = "{{names.FirstMirroredName}}")]
+        [VectorOperation(typeof(Other3), typeof(Other3), VectorOperatorType.Cross, Name = "{{names.SecondName}}", MirroredName = "{{names.SecondMirroredName}}")] // <-
         [SpecializedVectorQuantity(typeof(Position3))]
         public partial class Displacement3 { }
 
         [VectorQuantity(typeof(UnitOfLength))]
         public partial class Position3 { }
+        
+        [VectorQuantity(typeof(UnitOfLength))]
+        public partial class Other3 { }
 
         [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
@@ -290,13 +311,16 @@ public class DuplicateQuantityOperation
     private static string SharedOperationText_SpecializedVector(Names names) => $$"""
         using SharpMeasures.Generators;
         
-        [QuantityOperation(typeof(Position3), typeof(Position3), OperatorType.Subtraction, MethodName = "{{names.FirstName}}", MirroredMethodName = "{{names.FirstMirroredName}}")]
-        [VectorOperation(typeof(Position3), typeof(Position3), VectorOperatorType.Cross, Name = "{{names.SecondName}}", MirroredName = "{{names.SecondMirroredName}}")] // <-
+        [QuantityOperation(typeof(Other3), typeof(Other3), OperatorType.Subtraction, MethodName = "{{names.FirstName}}", MirroredMethodName = "{{names.FirstMirroredName}}")]
+        [VectorOperation(typeof(Other3), typeof(Other3), VectorOperatorType.Cross, Name = "{{names.SecondName}}", MirroredName = "{{names.SecondMirroredName}}")] // <-
         [SpecializedVectorQuantity(typeof(Position3))]
         public partial class Displacement3 { }
 
         [VectorQuantity(typeof(UnitOfLength))]
         public partial class Position3 { }
+        
+        [VectorQuantity(typeof(UnitOfLength))]
+        public partial class Other3 { }
 
         [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
@@ -316,8 +340,8 @@ public class DuplicateQuantityOperation
     private static string VectorOperationText_VectorGroup(Names names) => $$"""
         using SharpMeasures.Generators;
         
-        [VectorOperation(typeof(Position), typeof(Position), VectorOperatorType.Cross, Name = "{{names.FirstName}}", MirroredName = "{{names.FirstMirroredName}}")]
-        [VectorOperation(typeof(Position), typeof(Position), VectorOperatorType.Cross, Name = "{{names.SecondName}}", MirroredName = "{{names.SecondMirroredName}}")] // <-
+        [VectorOperation(typeof(Other), typeof(Other), VectorOperatorType.Cross, Name = "{{names.FirstName}}", MirroredName = "{{names.FirstMirroredName}}")]
+        [VectorOperation(typeof(Other), typeof(Other), VectorOperatorType.Cross, Name = "{{names.SecondName}}", MirroredName = "{{names.SecondMirroredName}}")] // <-
         [VectorGroup(typeof(UnitOfLength))]
         public static partial class Displacement { }
 
@@ -329,6 +353,12 @@ public class DuplicateQuantityOperation
         
         [VectorGroupMember(typeof(Position))]
         public partial class Position3 { }
+        
+        [VectorGroup(typeof(UnitOfLength))]
+        public static partial class Other { }
+
+        [VectorGroupMember(typeof(Other))]
+        public partial class Other3 { }
 
         [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
@@ -348,8 +378,8 @@ public class DuplicateQuantityOperation
     private static string SharedOperationText_VectorGroup(Names names) => $$"""
         using SharpMeasures.Generators;
         
-        [QuantityOperation(typeof(Position), typeof(Position), OperatorType.Subtraction, MethodName = "{{names.FirstName}}", MirroredMethodName = "{{names.FirstMirroredName}}")]
-        [VectorOperation(typeof(Position), typeof(Position), VectorOperatorType.Cross, Name = "{{names.SecondName}}", MirroredName = "{{names.SecondMirroredName}}")] // <-
+        [QuantityOperation(typeof(Other), typeof(Other), OperatorType.Subtraction, MethodName = "{{names.FirstName}}", MirroredMethodName = "{{names.FirstMirroredName}}")]
+        [VectorOperation(typeof(Other), typeof(Other), VectorOperatorType.Cross, Name = "{{names.SecondName}}", MirroredName = "{{names.SecondMirroredName}}")] // <-
         [VectorGroup(typeof(UnitOfLength))]
         public static partial class Displacement { }
 
@@ -361,6 +391,12 @@ public class DuplicateQuantityOperation
         
         [VectorGroupMember(typeof(Position))]
         public partial class Position3 { }
+        
+        [VectorGroup(typeof(UnitOfLength))]
+        public static partial class Other { }
+        
+        [VectorGroupMember(typeof(Other))]
+        public partial class Other3 { }
 
         [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
@@ -380,8 +416,8 @@ public class DuplicateQuantityOperation
     private static string VectorOperationText_SpecializedVectorGroup(Names names) => $$"""
         using SharpMeasures.Generators;
         
-        [VectorOperation(typeof(Position), typeof(Position), VectorOperatorType.Cross, Name = "{{names.FirstName}}", MirroredName = "{{names.FirstMirroredName}}")]
-        [VectorOperation(typeof(Position), typeof(Position), VectorOperatorType.Cross, Name = "{{names.SecondName}}", MirroredName = "{{names.SecondMirroredName}}")] // <-
+        [VectorOperation(typeof(Other), typeof(Other), VectorOperatorType.Cross, Name = "{{names.FirstName}}", MirroredName = "{{names.FirstMirroredName}}")]
+        [VectorOperation(typeof(Other), typeof(Other), VectorOperatorType.Cross, Name = "{{names.SecondName}}", MirroredName = "{{names.SecondMirroredName}}")] // <-
         [SpecializedVectorGroup(typeof(Position))]
         public static partial class Displacement { }
 
@@ -393,6 +429,12 @@ public class DuplicateQuantityOperation
         
         [VectorGroupMember(typeof(Position))]
         public partial class Position3 { }
+        
+        [VectorGroup(typeof(UnitOfLength))]
+        public static partial class Other { }
+        
+        [VectorGroupMember(typeof(Other))]
+        public partial class Other3 { }
 
         [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
@@ -412,8 +454,8 @@ public class DuplicateQuantityOperation
     private static string SharedOperationText_SpecializedVectorGroup(Names names) => $$"""
         using SharpMeasures.Generators;
         
-        [QuantityOperation(typeof(Position), typeof(Position), OperatorType.Subtraction, MethodName = "{{names.FirstName}}", MirroredMethodName = "{{names.FirstMirroredName}}")]
-        [VectorOperation(typeof(Position), typeof(Position), VectorOperatorType.Cross, Name = "{{names.SecondName}}", MirroredName = "{{names.SecondMirroredName}}")] // <-
+        [QuantityOperation(typeof(Other), typeof(Other), OperatorType.Subtraction, MethodName = "{{names.FirstName}}", MirroredMethodName = "{{names.FirstMirroredName}}")]
+        [VectorOperation(typeof(Other), typeof(Other), VectorOperatorType.Cross, Name = "{{names.SecondName}}", MirroredName = "{{names.SecondMirroredName}}")] // <-
         [SpecializedVectorGroup(typeof(Position))]
         public static partial class Displacement { }
 
@@ -425,6 +467,12 @@ public class DuplicateQuantityOperation
         
         [VectorGroupMember(typeof(Position))]
         public partial class Position3 { }
+        
+        [VectorGroup(typeof(UnitOfLength))]
+        public static partial class Other { }
+        
+        [VectorGroupMember(typeof(Other))]
+        public partial class Other3 { }
 
         [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
@@ -444,8 +492,8 @@ public class DuplicateQuantityOperation
     private static string VectorOperationText_VectorGroupMember(Names names) => $$"""
         using SharpMeasures.Generators;
         
-        [VectorOperation(typeof(Position3), typeof(Position3), VectorOperatorType.Cross, Name = "{{names.FirstName}}", MirroredName = "{{names.FirstMirroredName}}")]
-        [VectorOperation(typeof(Position3), typeof(Position3), VectorOperatorType.Cross, Name = "{{names.SecondName}}", MirroredName = "{{names.SecondMirroredName}}")] // <-
+        [VectorOperation(typeof(Other3), typeof(Other3), VectorOperatorType.Cross, Name = "{{names.FirstName}}", MirroredName = "{{names.FirstMirroredName}}")]
+        [VectorOperation(typeof(Other3), typeof(Other3), VectorOperatorType.Cross, Name = "{{names.SecondName}}", MirroredName = "{{names.SecondMirroredName}}")] // <-
         [VectorGroupMember(typeof(Displacement))]
         public partial class Displacement3 { }
         
@@ -454,6 +502,9 @@ public class DuplicateQuantityOperation
         
         [VectorQuantity(typeof(UnitOfLength))]
         public partial class Position3 { }
+        
+        [VectorQuantity(typeof(UnitOfLength))]
+        public partial class Other3 { }
 
         [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
@@ -473,8 +524,8 @@ public class DuplicateQuantityOperation
     private static string SharedOperationText_VectorGroupMember(Names names) => $$"""
         using SharpMeasures.Generators;
         
-        [QuantityOperation(typeof(Position3), typeof(Position3), OperatorType.Subtraction, MethodName = "{{names.FirstName}}", MirroredMethodName = "{{names.FirstMirroredName}}")]
-        [VectorOperation(typeof(Position3), typeof(Position3), VectorOperatorType.Cross, Name = "{{names.SecondName}}", MirroredName = "{{names.SecondMirroredName}}")] // <-
+        [QuantityOperation(typeof(Other3), typeof(Other3), OperatorType.Subtraction, MethodName = "{{names.FirstName}}", MirroredMethodName = "{{names.FirstMirroredName}}")]
+        [VectorOperation(typeof(Other3), typeof(Other3), VectorOperatorType.Cross, Name = "{{names.SecondName}}", MirroredName = "{{names.SecondMirroredName}}")] // <-
         [VectorGroupMember(typeof(Displacement))]
         public partial class Displacement3 { }
         
@@ -483,6 +534,9 @@ public class DuplicateQuantityOperation
         
         [VectorQuantity(typeof(UnitOfLength))]
         public partial class Position3 { }
+        
+        [VectorQuantity(typeof(UnitOfLength))]
+        public partial class Other3 { }
 
         [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
@@ -515,12 +569,15 @@ public class DuplicateQuantityOperation
     private static string ScalarIdenticalText(Names names) => $$"""
         using SharpMeasures.Generators;
         
-        [QuantityOperation(typeof(Length), typeof(Length), OperatorType.Division, MethodName = "{{names.FirstName}}", MirroredMethodName = "{{names.FirstMirroredName}}")]
+        [QuantityOperation(typeof(Other), typeof(Other), OperatorType.Division, MethodName = "{{names.FirstName}}", MirroredMethodName = "{{names.FirstMirroredName}}")]
         [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Distance { }
             
         [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
+        
+        [ScalarQuantity(typeof(UnitOfLength))]
+        public partial class Other { }
         
         [Unit(typeof(Length))]
         public partial class UnitOfLength { }
@@ -529,12 +586,15 @@ public class DuplicateQuantityOperation
     private static string SpecializedScalarIdenticalText(Names names) => $$"""
         using SharpMeasures.Generators;
         
-        [QuantityOperation(typeof(Length), typeof(Length), OperatorType.Division, MethodName = "{{names.FirstName}}", MirroredMethodName = "{{names.FirstMirroredName}}")]
+        [QuantityOperation(typeof(Other), typeof(Other), OperatorType.Division, MethodName = "{{names.FirstName}}", MirroredMethodName = "{{names.FirstMirroredName}}")]
         [SpecializedScalarQuantity(typeof(Length))]
         public partial class Distance { }
         
         [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
+        
+        [ScalarQuantity(typeof(UnitOfLength))]
+        public partial class Other { }
         
         [Unit(typeof(Length))]
         public partial class UnitOfLength { }
@@ -543,12 +603,15 @@ public class DuplicateQuantityOperation
     private static string VectorIdenticalText_QuantityOperation(Names names) => $$"""
         using SharpMeasures.Generators;
         
-        [QuantityOperation(typeof(Position3), typeof(Position3), OperatorType.Subtraction, MethodName = "{{names.FirstName}}", MirroredMethodName = "{{names.FirstMirroredName}}")]
+        [QuantityOperation(typeof(Other3), typeof(Other3), OperatorType.Subtraction, MethodName = "{{names.FirstName}}", MirroredMethodName = "{{names.FirstMirroredName}}")]
         [VectorQuantity(typeof(UnitOfLength))]
         public partial class Displacement3 { }
         
         [VectorQuantity(typeof(UnitOfLength))]
         public partial class Position3 { }
+        
+        [VectorQuantity(typeof(UnitOfLength))]
+        public partial class Other3 { }
         
         [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
@@ -560,12 +623,15 @@ public class DuplicateQuantityOperation
     private static string VectorIdenticalText_VectorOperation(Names names) => $$"""
         using SharpMeasures.Generators;
         
-        [VectorOperation(typeof(Position3), typeof(Position3), VectorOperatorType.Cross, Name = "{{names.FirstName}}", MirroredName = "{{names.FirstMirroredName}}")]
+        [VectorOperation(typeof(Other3), typeof(Other3), VectorOperatorType.Cross, Name = "{{names.FirstName}}", MirroredName = "{{names.FirstMirroredName}}")]
         [VectorQuantity(typeof(UnitOfLength))]
         public partial class Displacement3 { }
         
         [VectorQuantity(typeof(UnitOfLength))]
         public partial class Position3 { }
+        
+        [VectorQuantity(typeof(UnitOfLength))]
+        public partial class Other3 { }
         
         [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
@@ -577,12 +643,15 @@ public class DuplicateQuantityOperation
     private static string SpecializedVectorIdenticalText_QuantityOperation(Names names) => $$"""
         using SharpMeasures.Generators;
         
-        [QuantityOperation(typeof(Position3), typeof(Position3), OperatorType.Subtraction, MethodName = "{{names.FirstName}}", MirroredMethodName = "{{names.FirstMirroredName}}")]
+        [QuantityOperation(typeof(Other3), typeof(Other3), OperatorType.Subtraction, MethodName = "{{names.FirstName}}", MirroredMethodName = "{{names.FirstMirroredName}}")]
         [SpecializedVectorQuantity(typeof(Position3))]
         public partial class Displacement3 { }
         
         [VectorQuantity(typeof(UnitOfLength))]
         public partial class Position3 { }
+        
+        [VectorQuantity(typeof(UnitOfLength))]
+        public partial class Other3 { }
         
         [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
@@ -594,12 +663,15 @@ public class DuplicateQuantityOperation
     private static string SpecializedVectorIdenticalText_VectorOperation(Names names) => $$"""
         using SharpMeasures.Generators;
 
-        [VectorOperation(typeof(Position3), typeof(Position3), VectorOperatorType.Cross, Name = "{{names.FirstName}}", MirroredName = "{{names.FirstMirroredName}}")]
+        [VectorOperation(typeof(Other3), typeof(Other3), VectorOperatorType.Cross, Name = "{{names.FirstName}}", MirroredName = "{{names.FirstMirroredName}}")]
         [SpecializedVectorQuantity(typeof(Position3))]
         public partial class Displacement3 { }
 
         [VectorQuantity(typeof(UnitOfLength))]
         public partial class Position3 { }
+        
+        [VectorQuantity(typeof(UnitOfLength))]
+        public partial class Other3 { }
 
         [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
@@ -611,7 +683,7 @@ public class DuplicateQuantityOperation
     private static string VectorGroupIdenticalText_QuantityOperation(Names names) => $$"""
         using SharpMeasures.Generators;
         
-        [QuantityOperation(typeof(Position), typeof(Position), OperatorType.Subtraction, MethodName = "{{names.FirstName}}", MirroredMethodName = "{{names.FirstMirroredName}}")]
+        [QuantityOperation(typeof(Other), typeof(Other), OperatorType.Subtraction, MethodName = "{{names.FirstName}}", MirroredMethodName = "{{names.FirstMirroredName}}")]
         [VectorGroup(typeof(UnitOfLength))]
         public static partial class Displacement { }
         
@@ -623,6 +695,12 @@ public class DuplicateQuantityOperation
         
         [VectorGroupMember(typeof(Position))]
         public partial class Position3 { }
+
+        [VectorGroup(typeof(UnitOfLength))]
+        public static partial class Other { }
+        
+        [VectorGroupMember(typeof(Other))]
+        public partial class Other3 { }
         
         [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
@@ -634,7 +712,7 @@ public class DuplicateQuantityOperation
     private static string VectorGroupIdenticalText_VectorOperation(Names names) => $$"""
         using SharpMeasures.Generators;
         
-        [VectorOperation(typeof(Position), typeof(Position), VectorOperatorType.Cross, Name = "{{names.FirstName}}", MirroredName = "{{names.FirstMirroredName}}")]
+        [VectorOperation(typeof(Other), typeof(Other), VectorOperatorType.Cross, Name = "{{names.FirstName}}", MirroredName = "{{names.FirstMirroredName}}")]
         [VectorGroup(typeof(UnitOfLength))]
         public static partial class Displacement { }
         
@@ -646,6 +724,12 @@ public class DuplicateQuantityOperation
         
         [VectorGroupMember(typeof(Position))]
         public partial class Position3 { }
+        
+        [VectorGroup(typeof(UnitOfLength))]
+        public static partial class Other { }
+        
+        [VectorGroupMember(typeof(Other))]
+        public partial class Other3 { }
         
         [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
@@ -657,7 +741,7 @@ public class DuplicateQuantityOperation
     private static string SpecializedVectorGroupIdenticalText_QuantityOperator(Names names) => $$"""
         using SharpMeasures.Generators;
         
-        [QuantityOperation(typeof(Position), typeof(Position), OperatorType.Subtraction, MethodName = "{{names.FirstName}}", MirroredMethodName = "{{names.FirstMirroredName}}")]
+        [QuantityOperation(typeof(Other), typeof(Other), OperatorType.Subtraction, MethodName = "{{names.FirstName}}", MirroredMethodName = "{{names.FirstMirroredName}}")]
         [SpecializedVectorGroup(typeof(Position))]
         public static partial class Displacement { }
         
@@ -669,6 +753,12 @@ public class DuplicateQuantityOperation
         
         [VectorGroupMember(typeof(Position))]
         public partial class Position3 { }
+        
+        [VectorGroup(typeof(UnitOfLength))]
+        public static partial class Other { }
+        
+        [VectorGroupMember(typeof(Other))]
+        public partial class Other3 { }
         
         [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
@@ -680,7 +770,7 @@ public class DuplicateQuantityOperation
     private static string SpecializedVectorGroupIdenticalText_VectorOperator(Names names) => $$"""
         using SharpMeasures.Generators;
         
-        [VectorOperation(typeof(Position), typeof(Position), VectorOperatorType.Cross, Name = "{{names.FirstName}}", MirroredName = "{{names.FirstMirroredName}}")]
+        [VectorOperation(typeof(Other), typeof(Other), VectorOperatorType.Cross, Name = "{{names.FirstName}}", MirroredName = "{{names.FirstMirroredName}}")]
         [SpecializedVectorGroup(typeof(Position))]
         public static partial class Displacement { }
         
@@ -693,6 +783,12 @@ public class DuplicateQuantityOperation
         [VectorGroupMember(typeof(Position))]
         public partial class Position3 { }
         
+        [VectorGroup(typeof(UnitOfLength))]
+        public static partial class Other { }
+        
+        [VectorGroupMember(typeof(Other))]
+        public partial class Other3 { }
+        
         [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
         
@@ -703,7 +799,7 @@ public class DuplicateQuantityOperation
     private static string VectorGroupMemberIdenticalText_QuantityOperator(Names names) => $$"""
         using SharpMeasures.Generators;
         
-        [QuantityOperation(typeof(Position3), typeof(Position3), OperatorType.Subtraction, MethodName = "{{names.FirstName}}", MirroredMethodName = "{{names.FirstMirroredName}}")]
+        [QuantityOperation(typeof(Other3), typeof(Other3), OperatorType.Subtraction, MethodName = "{{names.FirstName}}", MirroredMethodName = "{{names.FirstMirroredName}}")]
         [VectorGroupMember(typeof(Displacement))]
         public partial class Displacement3 { }
         
@@ -712,6 +808,9 @@ public class DuplicateQuantityOperation
         
         [VectorQuantity(typeof(UnitOfLength))]
         public partial class Position3 { }
+        
+        [VectorQuantity(typeof(UnitOfLength))]
+        public partial class Other3 { }
         
         [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }
@@ -723,7 +822,7 @@ public class DuplicateQuantityOperation
     private static string VectorGroupMemberIdenticalText_VectorOperator(Names names) => $$"""
         using SharpMeasures.Generators;
         
-        [VectorOperation(typeof(Position3), typeof(Position3), VectorOperatorType.Cross, Name = "{{names.FirstName}}", MirroredName = "{{names.FirstMirroredName}}")]
+        [VectorOperation(typeof(Other3), typeof(Other3), VectorOperatorType.Cross, Name = "{{names.FirstName}}", MirroredName = "{{names.FirstMirroredName}}")]
         [VectorGroupMember(typeof(Displacement))]
         public partial class Displacement3 { }
         
@@ -732,6 +831,9 @@ public class DuplicateQuantityOperation
         
         [VectorQuantity(typeof(UnitOfLength))]
         public partial class Position3 { }
+        
+        [VectorQuantity(typeof(UnitOfLength))]
+        public partial class Other3 { }
         
         [ScalarQuantity(typeof(UnitOfLength))]
         public partial class Length { }

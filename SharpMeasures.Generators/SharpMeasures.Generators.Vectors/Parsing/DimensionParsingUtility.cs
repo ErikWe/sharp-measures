@@ -18,4 +18,16 @@ internal static class DimensionParsingUtility
 
         return null;
     }
+
+    public static string InterpretNameWithoutDimension(string name)
+    {
+        var trailingNumber = Regex.Match(name, @"\d+$", RegexOptions.RightToLeft);
+
+        if (trailingNumber.Success)
+        {
+            return name.Substring(0, name.Length - trailingNumber.Value.Length);
+        }
+
+        return name;
+    }
 }

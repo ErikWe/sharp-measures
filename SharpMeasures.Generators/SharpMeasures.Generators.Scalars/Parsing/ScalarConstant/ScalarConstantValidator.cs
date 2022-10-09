@@ -44,9 +44,19 @@ internal sealed class ScalarConstantValidator : AQuantityConstantValidator<IScal
 
     private IValidityWithDiagnostics ValidateNameNotReservedByUnit(IScalarConstantValidationContext context, ScalarConstantDefinition definition)
     {
-        var nameReservedByUnitInstanceName = definition.Name.StartsWith("One", StringComparison.InvariantCulture) && context.IncludedUnitInstanceNames.Contains(definition.Name.Substring(3));
+        var nameReservedByUnitInstanceName = reservedWithPrefix("One") || reservedWithPrefix("Once");
 
         return ValidityWithDiagnostics.Conditional(nameReservedByUnitInstanceName is false, () => Diagnostics.NameReservedByUnitInstanceName(context, definition));
+    
+        bool reservedWithPrefix(string prefix)
+        {
+            if (definition.Name.StartsWith(prefix, StringComparison.InvariantCulture) is false || UnitBaseInstanceNameInterpreter.InterpretName(definition.Name) != $"{prefix}{definition.Name}")
+            {
+                return false;
+            }
+
+            return context.IncludedUnitInstanceNames.Contains(definition.Name.Substring(prefix.Length));
+        }
     }
 
     private IValidityWithDiagnostics ValidateMultiplesNotReservedByUnit(IScalarConstantValidationContext context, ScalarConstantDefinition definition)

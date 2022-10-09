@@ -81,7 +81,9 @@ public sealed class QuantityOperationProcesser : AActionableProcesser<IQuantityO
     public override IOptionalWithDiagnostics<QuantityOperationDefinition> Process(IQuantityOperationProcessingContext context, RawQuantityOperationDefinition definition)
     {
         return ValidateResultNotNull(context, definition)
+            .Validate(() => ValidateResultNotUndefined(definition))
             .Validate(() => ValidateOtherNotNull(context, definition))
+            .Validate(() => ValidateOtherNotUndefined(definition))
             .Validate(() => ValidateOperatorTypeRecognized(context, definition))
             .Validate(() => ValidatePositionRecognized(context, definition))
             .Validate(() => ValidateImplementationRecognized(context, definition))
@@ -112,9 +114,19 @@ public sealed class QuantityOperationProcesser : AActionableProcesser<IQuantityO
         return ValidityWithDiagnostics.Conditional(definition.Result is not null, () => Diagnostics.NullResult(context, definition));
     }
 
+    private static IValidityWithDiagnostics ValidateResultNotUndefined(RawQuantityOperationDefinition definition)
+    {
+        return ValidityWithDiagnostics.ConditionalWithoutDiagnostics(definition.Result!.Value != NamedType.Empty);
+    }
+
     private IValidityWithDiagnostics ValidateOtherNotNull(IQuantityOperationProcessingContext context, RawQuantityOperationDefinition definition)
     {
         return ValidityWithDiagnostics.Conditional(definition.Other is not null, () => Diagnostics.NullOther(context, definition));
+    }
+
+    private static IValidityWithDiagnostics ValidateOtherNotUndefined(RawQuantityOperationDefinition definition)
+    {
+        return ValidityWithDiagnostics.ConditionalWithoutDiagnostics(definition.Other!.Value != NamedType.Empty);
     }
 
     private IValidityWithDiagnostics ValidateOperatorTypeRecognized(IQuantityOperationProcessingContext context, RawQuantityOperationDefinition definition)

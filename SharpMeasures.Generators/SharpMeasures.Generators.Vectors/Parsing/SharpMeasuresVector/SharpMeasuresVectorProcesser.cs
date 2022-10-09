@@ -45,6 +45,7 @@ internal sealed class SharpMeasuresVectorProcesser : AProcesser<IProcessingConte
         return dimension
             .Reduce()
             .Validate(() => ValidateUnitNotNull(context, definition))
+            .Validate(() => ValidateUnitNotUndefined(definition))
             .Validate(() => ValidateScalarNotNull(context, definition))
             .Validate(() => ValidateDifferenceNotNull(context, definition))
             .Validate(() => ValidateDifferenceNotUnexpectedlySpecified(context, definition))
@@ -101,6 +102,11 @@ internal sealed class SharpMeasuresVectorProcesser : AProcesser<IProcessingConte
     private IValidityWithDiagnostics ValidateUnitNotNull(IProcessingContext context, RawSharpMeasuresVectorDefinition definition)
     {
         return ValidityWithDiagnostics.Conditional(definition.Unit is not null, () => Diagnostics.NullUnit(context, definition));
+    }
+
+    private static IValidityWithDiagnostics ValidateUnitNotUndefined(RawSharpMeasuresVectorDefinition definition)
+    {
+        return ValidityWithDiagnostics.ConditionalWithoutDiagnostics(definition.Unit!.Value != NamedType.Empty);
     }
 
     private IValidityWithDiagnostics ValidateScalarNotNull(IProcessingContext context, RawSharpMeasuresVectorDefinition definition)

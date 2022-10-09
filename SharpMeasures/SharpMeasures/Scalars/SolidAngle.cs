@@ -2,9 +2,10 @@
 
 using SharpMeasures.Generators;
 
-[ScalarQuantity(typeof(UnitOfSolidAngle), DefaultUnitInstanceName = "Steradian", DefaultUnitInstanceSymbol = "sr")]
+[ScalarQuantity(typeof(UnitOfSolidAngle), DefaultUnit = "Steradian", DefaultSymbol = "sr")]
 public readonly partial record struct SolidAngle { }
 
+[QuantityOperation(typeof(Angle), typeof(AngularFrequency), OperatorType.Multiplication)]
 [QuantityOperation(typeof(Angle), typeof(Angle), OperatorType.Division)]
 public readonly partial record struct SolidAngle { }
 

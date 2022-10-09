@@ -2,7 +2,7 @@
 
 using SharpMeasures.Generators;
 
-[ScalarQuantity(typeof(UnitOfPace), DefaultUnitInstanceName = "SecondPerMetre", DefaultUnitInstanceSymbol = "s∙m⁻¹")]
+[ScalarQuantity(typeof(UnitOfPace), DefaultUnit = "SecondPerMetre", DefaultSymbol = "s∙m⁻¹")]
 public readonly partial record struct Pace { }
 
 [QuantityOperation(typeof(TimeSquared), typeof(Absement), OperatorType.Multiplication)]
@@ -14,6 +14,8 @@ public readonly partial record struct Pace { }
 [QuantityOperation(typeof(SpatialFrequency), typeof(Time), OperatorType.Division)]
 [QuantityOperation(typeof(Scalar), typeof(Speed), OperatorType.Multiplication)]
 [QuantityOperation(typeof(Momentum), typeof(Energy), OperatorType.Multiplication)]
+[QuantityOperation(typeof(Mass), typeof(Momentum), OperatorType.Multiplication)]
+[QuantityOperation(typeof(FrequencyDrift), typeof(Jerk), OperatorType.Multiplication)]
 [QuantityOperation(typeof(Frequency), typeof(Acceleration), OperatorType.Multiplication)]
 [QuantityOperation(typeof(Force), typeof(Power), OperatorType.Multiplication)]
 public readonly partial record struct Pace { }

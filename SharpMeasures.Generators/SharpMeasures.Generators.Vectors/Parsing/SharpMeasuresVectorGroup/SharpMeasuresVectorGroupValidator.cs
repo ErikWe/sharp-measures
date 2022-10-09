@@ -108,6 +108,11 @@ internal sealed class SharpMeasuresVectorGroupValidator : IProcesser<ISharpMeasu
 
     private IValidityWithDiagnostics ValidateScalarIsScalar(ISharpMeasuresVectorGroupValidationContext context, SharpMeasuresVectorGroupDefinition definition)
     {
+        if (definition.Scalar is not null && definition.Scalar.Value == NamedType.Empty)
+        {
+            return ValidityWithDiagnostics.InvalidWithoutDiagnostics;
+        }
+
         var scalarIsNotScalar = definition.Scalar is not null && context.ScalarPopulation.Scalars.ContainsKey(definition.Scalar.Value) is false;
 
         return ValidityWithDiagnostics.Conditional(scalarIsNotScalar is false, () => Diagnostics.TypeNotScalar(context, definition));
@@ -115,6 +120,11 @@ internal sealed class SharpMeasuresVectorGroupValidator : IProcesser<ISharpMeasu
 
     private IValidityWithDiagnostics ValidateDifferenceIsVectorGroup(ISharpMeasuresVectorGroupValidationContext context, SharpMeasuresVectorGroupDefinition definition)
     {
+        if (definition.Difference is not null && definition.Difference.Value == NamedType.Empty)
+        {
+            return ValidityWithDiagnostics.InvalidWithoutDiagnostics;
+        }
+
         var differenceIsNotVectorGroup = definition.Difference is not null && context.VectorPopulation.Groups.ContainsKey(definition.Difference.Value) is false;
 
         return ValidityWithDiagnostics.Conditional(differenceIsNotVectorGroup is false, () => Diagnostics.DifferenceNotVectorGroup(context, definition));

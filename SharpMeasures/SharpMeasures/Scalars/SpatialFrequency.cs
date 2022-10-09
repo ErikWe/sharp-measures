@@ -2,7 +2,7 @@
 
 using SharpMeasures.Generators;
 
-[ScalarQuantity(typeof(UnitOfSpatialFrequency), DefaultUnitInstanceName = "PerMetre", DefaultUnitInstanceSymbol = "m⁻¹")]
+[ScalarQuantity(typeof(UnitOfSpatialFrequency), DefaultUnit = "PerMetre", DefaultSymbol = "m⁻¹")]
 public readonly partial record struct SpatialFrequency { }
 
 [QuantityOperation(typeof(VolumetricFrequency), typeof(ArealFrequency), OperatorType.Multiplication)]
@@ -20,6 +20,8 @@ public readonly partial record struct SpatialFrequency { }
 [QuantityOperation(typeof(Frequency), typeof(Speed), OperatorType.Multiplication)]
 [QuantityOperation(typeof(Frequency), typeof(Pace), OperatorType.Division)]
 [QuantityOperation(typeof(Force), typeof(Energy), OperatorType.Multiplication)]
+[QuantityOperation(typeof(Force), typeof(Torque), OperatorType.Multiplication)]
+[QuantityOperation(typeof(Force), typeof(Work), OperatorType.Multiplication)]
 [QuantityOperation(typeof(Density), typeof(ArealDensity), OperatorType.Multiplication)]
 [QuantityOperation(typeof(ArealFrequency), typeof(SpatialFrequency), OperatorType.Multiplication)]
 [QuantityOperation(typeof(ArealFrequency), typeof(Length), OperatorType.Division)]

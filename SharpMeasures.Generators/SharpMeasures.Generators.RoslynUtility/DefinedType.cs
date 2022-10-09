@@ -9,6 +9,11 @@ public readonly record struct DefinedType(string Name, string Namespace, string 
 
     public static DefinedType FromSymbol(INamedTypeSymbol symbol)
     {
+        if (symbol.Kind is SymbolKind.ErrorType)
+        {
+            return Empty;
+        }
+
         NamedType namedType = NamedType.FromSymbol(symbol);
 
         return new(namedType.Name, namedType.Namespace, symbol.ContainingAssembly.Name, symbol.DeclaredAccessibility, symbol.IsReferenceType && symbol.IsSealed, symbol.IsReadOnly, symbol.IsRecord, symbol.IsValueType);

@@ -2,7 +2,7 @@
 
 using SharpMeasures.Generators;
 
-[ScalarQuantity(typeof(UnitOfDensity), DefaultUnitInstanceName = "KilogramPerCubicMetre", DefaultUnitInstanceSymbol = "kg∙m⁻³")]
+[ScalarQuantity(typeof(UnitOfDensity), DefaultUnit = "KilogramPerCubicMetre", DefaultSymbol = "kg∙m⁻³")]
 public readonly partial record struct Density { }
 
 [QuantityOperation(typeof(VolumetricFrequency), typeof(Mass), OperatorType.Division)]

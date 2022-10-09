@@ -9,7 +9,7 @@
 
 #nullable enable
 
-/// <summary>A measure of the 2-dimensional vector quantity Position2, expressed in <see cref="global::UnitOfLength"/>.</summary>
+/// <summary>A measure of the 2-dimensional vector quantity Position, expressed in <see cref="global::UnitOfLength"/>.</summary>
 public partial class Position2 :
     global::SharpMeasures.IVector2Quantity<global::Position2>,
     global::System.IEquatable<global::Position2>

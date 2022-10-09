@@ -84,7 +84,7 @@ internal static class Execution
                 SeparationHandler.AddIfNecessary();
 
                 AppendDocumentation(indentation, Data.Documentation.UnitBase(includedBase));
-                Builder.Append($"{indentation}public static {Data.Scalar.FullyQualifiedName} One{includedBase.Name} => ");
+                Builder.Append($"{indentation}public static {Data.Scalar.FullyQualifiedName} {UnitBaseInstanceNameInterpreter.InterpretName(includedBase.Name)} => ");
 
                 if (Data.UnitQuantity == Data.Scalar.AsNamedType())
                 {

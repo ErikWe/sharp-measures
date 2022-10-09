@@ -2,7 +2,7 @@
 
 using SharpMeasures.Generators;
 
-[ScalarQuantity(typeof(UnitOfVolume), DefaultUnitInstanceName = "CubicMetre", DefaultUnitInstanceSymbol = "m³")]
+[ScalarQuantity(typeof(UnitOfVolume), DefaultUnit = "CubicMetre", DefaultSymbol = "m³")]
 public readonly partial record struct Volume { }
 
 [QuantityOperation(typeof(VolumetricFrequency), typeof(Scalar), OperatorType.Division, OperatorPosition.Right)]

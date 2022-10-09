@@ -2,7 +2,7 @@
 
 using SharpMeasures.Generators;
 
-[ScalarQuantity(typeof(UnitOfSpecificVolume), DefaultUnitInstanceName = "CubicMetrePerKilogram", DefaultUnitInstanceSymbol = "m³∙kg⁻¹")]
+[ScalarQuantity(typeof(UnitOfSpecificVolume), DefaultUnit = "CubicMetrePerKilogram", DefaultSymbol = "m³∙kg⁻¹")]
 public readonly partial record struct SpecificVolume { }
 
 [QuantityOperation(typeof(Volume), typeof(Mass), OperatorType.Multiplication)]

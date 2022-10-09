@@ -23,6 +23,7 @@ internal sealed class SharpMeasuresUnitProcesser : AProcesser<IProcessingContext
     {
         return VerifyRequiredPropertiesSet(definition)
             .Validate(() => ValidateQuantityNotNull(context, definition))
+            .Validate(() => ValidateQuantityNotUndefined(definition))
             .Transform(() => ProduceResult(definition));
     }
 
@@ -36,5 +37,10 @@ internal sealed class SharpMeasuresUnitProcesser : AProcesser<IProcessingContext
     private IValidityWithDiagnostics ValidateQuantityNotNull(IProcessingContext context, RawSharpMeasuresUnitDefinition definition)
     {
         return ValidityWithDiagnostics.Conditional(definition.Quantity is not null, () => Diagnostics.NullQuantity(context, definition));
+    }
+
+    private static IValidityWithDiagnostics ValidateQuantityNotUndefined(RawSharpMeasuresUnitDefinition definition)
+    {
+        return ValidityWithDiagnostics.ConditionalWithoutDiagnostics(definition.Quantity!.Value != NamedType.Empty);
     }
 }

@@ -2,7 +2,7 @@
 
 using SharpMeasures.Generators;
 
-[ScalarQuantity(typeof(UnitOfLinearDensity), DefaultUnitInstanceName = "KilogramPerMetre", DefaultUnitInstanceSymbol = "kg∙m⁻¹")]
+[ScalarQuantity(typeof(UnitOfLinearDensity), DefaultUnit = "KilogramPerMetre", DefaultSymbol = "kg∙m⁻¹")]
 public readonly partial record struct LinearDensity { }
 
 [QuantityOperation(typeof(SpatialFrequency), typeof(Mass), OperatorType.Division)]

@@ -64,6 +64,6 @@ public class PhysicsClassroom
         var height = 1.4 * Distance.OneMetre;
         var acceleration = 1.67 * GravitationalAcceleration.OneMetrePerSecondSquared;
 
-        var duration = (height * 2 / acceleration);
+        var duration = (height * 2 / acceleration).SquareRoot();
     }
 }

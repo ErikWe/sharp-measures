@@ -33,7 +33,8 @@ internal sealed class SpecializedSharpMeasuresScalarProcesser : AProcesser<IProc
     public override IOptionalWithDiagnostics<SpecializedSharpMeasuresScalarDefinition> Process(IProcessingContext context, RawSpecializedSharpMeasuresScalarDefinition definition)
     {
         return VerifyRequiredPropertiesSet(definition)
-            .Validate(() => ValidateOriginalScalar(context, definition))
+            .Validate(() => ValidateOriginalScalarNotNull(context, definition))
+            .Validate(() => ValidateOriginalScalarNotUndefined(definition))
             .Validate(() => ValidateForwardsCastOperatorBehaviourDefined(context, definition))
             .Validate(() => ValidateBackwardsCastOperatorBehaviourDefined(context, definition))
             .Validate(() => ValidateVectorNotNull(context, definition))
@@ -53,9 +54,14 @@ internal sealed class SpecializedSharpMeasuresScalarProcesser : AProcesser<IProc
         return ValidityWithDiagnostics.ConditionalWithoutDiagnostics(definition.Locations.ExplicitlySetOriginalQuantity);
     }
 
-    private IValidityWithDiagnostics ValidateOriginalScalar(IProcessingContext context, RawSpecializedSharpMeasuresScalarDefinition definition)
+    private IValidityWithDiagnostics ValidateOriginalScalarNotNull(IProcessingContext context, RawSpecializedSharpMeasuresScalarDefinition definition)
     {
         return ValidityWithDiagnostics.Conditional(definition.OriginalQuantity is not null, () => Diagnostics.NullOriginalScalar(context, definition));
+    }
+
+    private static IValidityWithDiagnostics ValidateOriginalScalarNotUndefined(RawSpecializedSharpMeasuresScalarDefinition definition)
+    {
+        return ValidityWithDiagnostics.ConditionalWithoutDiagnostics(definition.OriginalQuantity!.Value != NamedType.Empty);
     }
 
     private IValidityWithDiagnostics ValidateForwardsCastOperatorBehaviourDefined(IProcessingContext context, RawSpecializedSharpMeasuresScalarDefinition definition)

@@ -3,6 +3,7 @@
 using SharpMeasures.Generators.Quantities;
 using SharpMeasures.Generators.SourceBuilding;
 using SharpMeasures.Generators.Units;
+using SharpMeasures.Generators.Vectors.Parsing;
 
 using System;
 using System.Collections.Generic;
@@ -88,7 +89,7 @@ internal sealed class DefaultVectorDocumentation : IVectorDocumentationStrategy,
         return null;
     }
 
-    public string Header() => $"""/// <summary>A measure of the {Dimension}-dimensional vector quantity {Type.Name}, expressed in {UnitReference}.</summary>""";
+    public string Header() => $"""/// <summary>A measure of the {Dimension}-dimensional vector quantity {DimensionParsingUtility.InterpretNameWithoutDimension(Type.Name)}, expressed in {UnitReference}.</summary>""";
 
     public string Zero() => $$"""/// <summary>The {{VectorReference}} representing { {{ConstantVectorTexts.Zeros(Dimension)}} }.</summary>""";
     public string Constant(IVectorConstant constant)
@@ -146,7 +147,7 @@ internal sealed class DefaultVectorDocumentation : IVectorDocumentationStrategy,
             commonText = $"""
                 {commonText}
                 /// <remarks>A {VectorReference} may also be constructed as demonstrated below.
-                /// <code>{VectorReference} x = ({ConstantVectorTexts.SampleValues(Dimension)}) * <see cref="{Scalar.Value.FullyQualifiedName}.One{ExampleScalarUnitBaseInstance.Name}"/>;</code>
+                /// <code>{VectorReference} x = ({ConstantVectorTexts.SampleValues(Dimension)}) * <see cref="{Scalar.Value.FullyQualifiedName}.{InterpretUnitBaseInstanceName(ExampleScalarUnitBaseInstance.Name)}"/>;</code>
                 /// </remarks>
                 """;
         }
@@ -166,7 +167,7 @@ internal sealed class DefaultVectorDocumentation : IVectorDocumentationStrategy,
             commonText = $"""
                 {commonText}
                 /// <remarks>A {VectorReference} may also be constructed as demonstrated below.
-                /// <code>{VectorReference} x = ({ConstantVectorTexts.SampleValues(Dimension)}) * <see cref="{Scalar.Value.FullyQualifiedName}.One{ExampleScalarUnitBaseInstance.Name}"/>;</code>
+                /// <code>{VectorReference} x = ({ConstantVectorTexts.SampleValues(Dimension)}) * <see cref="{Scalar.Value.FullyQualifiedName}.{InterpretUnitBaseInstanceName(ExampleScalarUnitBaseInstance.Name)}"/>;</code>
                 /// </remarks>
                 """;
         }
@@ -231,11 +232,11 @@ internal sealed class DefaultVectorDocumentation : IVectorDocumentationStrategy,
         /// <param name="a">This <see cref="{vector.FullyQualifiedName}"/> is converted to the equivalent {VectorReference}.</param>
         """;
 
-    public string OperationMethod(IQuantityOperation operation, NamedType other) => OperationMethod(operation, mirrored: false);
-    public string MirroredOperationMethod(IQuantityOperation operation, NamedType other) => OperationMethod(operation, mirrored: true);
-    private static string OperationMethod(IQuantityOperation operation, bool mirrored)
+    public string OperationMethod(IQuantityOperation operation, NamedType other) => OperationMethod(operation, other, mirrored: false);
+    public string MirroredOperationMethod(IQuantityOperation operation, NamedType other) => OperationMethod(operation, other, mirrored: true);
+    private static string OperationMethod(IQuantityOperation operation, NamedType other, bool mirrored)
     {
-        var parameterName = SourceBuildingUtility.ToParameterName(operation.Other.Name);
+        var parameterName = SourceBuildingUtility.ToParameterName(other.Name);
 
         if (operation.OperatorType is OperatorType.Addition)
         {
@@ -283,11 +284,11 @@ internal sealed class DefaultVectorDocumentation : IVectorDocumentationStrategy,
             """;
     }
 
-    public string VectorOperationMethod(IVectorOperation operation, NamedType other) => VectorOperationMethod(operation, mirrored: false);
-    public string MirroredVectorOperationMethod(IVectorOperation operation, NamedType other) => VectorOperationMethod(operation, mirrored: true);
-    private static string VectorOperationMethod(IVectorOperation operation, bool mirrored)
+    public string VectorOperationMethod(IVectorOperation operation, NamedType other) => VectorOperationMethod(operation, other, mirrored: false);
+    public string MirroredVectorOperationMethod(IVectorOperation operation, NamedType other) => VectorOperationMethod(operation, other, mirrored: true);
+    private static string VectorOperationMethod(IVectorOperation operation, NamedType other, bool mirrored)
     {
-        var parameterName = SourceBuildingUtility.ToParameterName(operation.Other.Name);
+        var parameterName = SourceBuildingUtility.ToParameterName(other.Name);
 
         if (operation.OperatorType is VectorOperatorType.Dot)
         {
@@ -589,6 +590,16 @@ internal sealed class DefaultVectorDocumentation : IVectorDocumentationStrategy,
                 return $"""/// <param name="{componentLowerCase}">The {componentUpperCase}-component of <see langword="this"/>.</param>""";
             }
         }
+    }
+
+    private static string InterpretUnitBaseInstanceName(string name)
+    {
+        if (name.StartsWith("Per", StringComparison.InvariantCulture) && char.IsUpper(name[3]))
+        {
+            return $"Once{name}";
+        }
+
+        return $"One{name}";
     }
 
     public bool Equals(DefaultVectorDocumentation? other) => other is not null && Type == other.Type && Dimension == other.Dimension && Unit == other.Unit && Scalar == other.Scalar && DefaultUnitInstance == other.DefaultUnitInstance && DefaultUnitInstanceSymbol == other.DefaultUnitInstanceSymbol;

@@ -57,7 +57,9 @@ internal sealed class VectorOperationProcesser : AActionableProcesser<IVectorOpe
     public override IOptionalWithDiagnostics<VectorOperationDefinition> Process(IVectorOperationProcessingContext context, RawVectorOperationDefinition definition)
     {
         return ValidateResultNotNull(context, definition)
+            .Validate(() => ValidateResultNotUndefined(definition))
             .Validate(() => ValidateOtherNotNull(context, definition))
+            .Validate(() => ValidateOtherNotUndefined(definition))
             .Validate(() => ValidateOperatorTypeRecognized(context, definition))
             .Validate(() => ValidatePositionRecognized(context, definition))
             .Validate(() => ValidateMirrorNotSetButUnsupported(context, definition))
@@ -84,9 +86,19 @@ internal sealed class VectorOperationProcesser : AActionableProcesser<IVectorOpe
         return ValidityWithDiagnostics.Conditional(definition.Result is not null, () => Diagnostics.NullResult(context, definition));
     }
 
+    private static IValidityWithDiagnostics ValidateResultNotUndefined(RawVectorOperationDefinition definition)
+    {
+        return ValidityWithDiagnostics.ConditionalWithoutDiagnostics(definition.Result!.Value != NamedType.Empty);
+    }
+
     private IValidityWithDiagnostics ValidateOtherNotNull(IVectorOperationProcessingContext context, RawVectorOperationDefinition definition)
     {
         return ValidityWithDiagnostics.Conditional(definition.Other is not null, () => Diagnostics.NullOther(context, definition));
+    }
+
+    private static IValidityWithDiagnostics ValidateOtherNotUndefined(RawVectorOperationDefinition definition)
+    {
+        return ValidityWithDiagnostics.ConditionalWithoutDiagnostics(definition.Other!.Value != NamedType.Empty);
     }
 
     private IValidityWithDiagnostics ValidateOperatorTypeRecognized(IVectorOperationProcessingContext context, RawVectorOperationDefinition definition)

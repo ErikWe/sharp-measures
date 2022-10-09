@@ -2,8 +2,14 @@
 
 using SharpMeasures.Generators;
 
-[VectorGroup(typeof(UnitOfLength), DefaultUnitInstanceName = "Metre", DefaultUnitInstanceSymbol = "m")]
-public static partial class Position { }
+[SpecializedVectorGroup(typeof(LengthN), Scalar = typeof(Distance), Difference = typeof(DisplacementN))]
+public static partial class PositionN { }
 
-[VectorGroupMember(typeof(Position))]
+[VectorGroupMember(typeof(PositionN))]
+public readonly partial record struct Position2 { }
+
+[VectorGroupMember(typeof(PositionN))]
 public readonly partial record struct Position3 { }
+
+[VectorGroupMember(typeof(PositionN))]
+public readonly partial record struct Position4 { }

@@ -36,6 +36,7 @@ internal sealed class SpecializedSharpMeasuresVectorGroupProcesser : AProcesser<
         return VerifyRequiredPropertiesSet(definition)
             .Validate(() => ValidateNameNotSuggestingDimension(context, definition))
             .Validate(() => ValidateOriginalVectorGroupNotNull(context, definition))
+            .Validate(() => ValidateOriginalVectorGroupNotUndefined(definition))
             .Validate(() => ValidateForwardsCastOperatorBehaviourDefined(context, definition))
             .Validate(() => ValidateBackwardsCastOperatorBehaviourDefined(context, definition))
             .Validate(() => ValidateScalarNotNull(context, definition))
@@ -66,6 +67,11 @@ internal sealed class SpecializedSharpMeasuresVectorGroupProcesser : AProcesser<
     private IValidityWithDiagnostics ValidateOriginalVectorGroupNotNull(IProcessingContext context, RawSpecializedSharpMeasuresVectorGroupDefinition definition)
     {
         return ValidityWithDiagnostics.Conditional(definition.OriginalQuantity is not null, () => Diagnostics.NullOriginalVectorGroup(context, definition));
+    }
+
+    private static IValidityWithDiagnostics ValidateOriginalVectorGroupNotUndefined(RawSpecializedSharpMeasuresVectorGroupDefinition definition)
+    {
+        return ValidityWithDiagnostics.ConditionalWithoutDiagnostics(definition.OriginalQuantity!.Value != NamedType.Empty);
     }
 
     private IValidityWithDiagnostics ValidateForwardsCastOperatorBehaviourDefined(IProcessingContext context, RawSpecializedSharpMeasuresVectorGroupDefinition definition)

@@ -2,7 +2,7 @@
 
 using SharpMeasures.Generators;
 
-[ScalarQuantity(typeof(UnitOfArealDensity), DefaultUnitInstanceName = "KilogramPerSquareMetre", DefaultUnitInstanceSymbol = "kg∙m⁻²")]
+[ScalarQuantity(typeof(UnitOfArealDensity), DefaultUnit = "KilogramPerSquareMetre", DefaultSymbol = "kg∙m⁻²")]
 public readonly partial record struct ArealDensity { }
 
 [QuantityOperation(typeof(SpatialFrequency), typeof(LinearDensity), OperatorType.Division)]

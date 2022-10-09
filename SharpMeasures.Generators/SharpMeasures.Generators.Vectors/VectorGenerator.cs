@@ -12,6 +12,7 @@ using SharpMeasures.Generators.Vectors.Pipelines.Groups.MemberFactory;
 using SharpMeasures.Generators.Vectors.Pipelines.Vectors.Common;
 using SharpMeasures.Generators.Vectors.Pipelines.Vectors.Conversions;
 using SharpMeasures.Generators.Vectors.Pipelines.Vectors.Maths;
+using SharpMeasures.Generators.Vectors.Pipelines.Vectors.Operations;
 using SharpMeasures.Generators.Vectors.Pipelines.Vectors.Processes;
 using SharpMeasures.Generators.Vectors.Pipelines.Vectors.Units;
 
@@ -49,6 +50,7 @@ public static class VectorGenerator
         VectorCommonGenerator.Initialize(context, reduced);
         VectorConversionsGenerator.Initialize(context, reduced);
         VectorMathsGenerator.Initialize(context, reduced);
+        VectorOperationsGenerator.Initialize(context, reduced);
         VectorProcessesGenerator.Initialize(context, reduced);
         VectorUnitsGenerator.Initialize(context, reduced);
     }

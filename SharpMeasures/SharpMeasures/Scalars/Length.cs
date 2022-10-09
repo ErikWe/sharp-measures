@@ -2,7 +2,7 @@
 
 using SharpMeasures.Generators;
 
-[ScalarQuantity(typeof(UnitOfLength), DefaultUnitInstanceName = "Metre", DefaultUnitInstanceSymbol = "m")]
+[ScalarQuantity(typeof(UnitOfLength), Vector = typeof(LengthN), DefaultUnit = "Metre", DefaultSymbol = "m")]
 public readonly partial record struct Length { }
 
 [QuantityOperation(typeof(Volume), typeof(Area), OperatorType.Multiplication)]

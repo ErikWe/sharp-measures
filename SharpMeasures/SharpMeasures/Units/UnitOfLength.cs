@@ -23,5 +23,5 @@ using SharpMeasures.Generators;
 [ScaledUnitInstance("Mile", "[*]s", "Yard", 1760)]
 [ScaledUnitInstance("Angstrom", "[*]s", "Nanometre", 0.1)]
 [ScaledUnitInstance("NauticalMile", "[*]s", "Metre", 1852)]
-[Unit(typeof(Length))]
+[Unit(typeof(Distance))]
 public readonly partial record struct UnitOfLength { }

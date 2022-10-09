@@ -139,6 +139,11 @@ internal sealed class SpecializedSharpMeasuresVectorValidator : IProcesser<ISpec
 
     private IValidityWithDiagnostics ValidateScalarIsScalar(ISpecializedSharpMeasuresVectorValidationContext context, SpecializedSharpMeasuresVectorDefinition definition)
     {
+        if (definition.Scalar is not null && definition.Scalar.Value == NamedType.Empty)
+        {
+            return ValidityWithDiagnostics.InvalidWithoutDiagnostics;
+        }
+
         var scalarIsNotScalar = definition.Scalar is not null && context.ScalarPopulation.Scalars.ContainsKey(definition.Scalar.Value) is false;
 
         return ValidityWithDiagnostics.Conditional(scalarIsNotScalar is false, () => Diagnostics.TypeNotScalar(context, definition));
@@ -168,6 +173,11 @@ internal sealed class SpecializedSharpMeasuresVectorValidator : IProcesser<ISpec
         if (context.VectorPopulation.GroupMembers.TryGetValue(definition.Difference.Value, out var groupMember))
         {
             return OptionalWithDiagnostics.Conditional(groupMember.Definition.Dimension == dimension, definition.Difference.Value, () => Diagnostics.DifferenceVectorInvalidDimension(context, definition, dimension, groupMember.Definition.Dimension));
+        }
+
+        if (definition.Difference == NamedType.Empty)
+        {
+            return OptionalWithDiagnostics.Empty<NamedType>();
         }
 
         return OptionalWithDiagnostics.Empty<NamedType>(Diagnostics.DifferenceNotVector(context, definition));

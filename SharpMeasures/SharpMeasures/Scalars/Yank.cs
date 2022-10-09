@@ -2,7 +2,7 @@
 
 using SharpMeasures.Generators;
 
-[ScalarQuantity(typeof(UnitOfYank), DefaultUnitInstanceName = "NewtonPerSecond", DefaultUnitInstanceSymbol = "N∙s⁻¹")]
+[ScalarQuantity(typeof(UnitOfYank), Vector = typeof(YankN), DefaultUnit = "NewtonPerSecond", DefaultSymbol = "N∙s⁻¹")]
 public readonly partial record struct Yank { }
 
 [QuantityOperation(typeof(Frequency), typeof(Force), OperatorType.Division)]

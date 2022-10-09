@@ -97,7 +97,7 @@ internal sealed class DefaultDocumentation : IDocumentationStrategy, IEquatable<
             return $"""
                 {commonText}
                 /// <remarks>A {ScalarReference} may also be constructed as demonstrated below.
-                /// <code>{ScalarReference} x = 2.3 * <see cref="{Type.FullyQualifiedName}.One{ExampleUnitBaseInstance.Name}"/>;</code>
+                /// <code>{ScalarReference} x = 2.3 * <see cref="{Type.FullyQualifiedName}.{UnitBaseInstanceNameInterpreter.InterpretName(ExampleUnitBaseInstance.Name)}"/>;</code>
                 /// </remarks>
                 """;
         }
@@ -137,11 +137,11 @@ internal sealed class DefaultDocumentation : IDocumentationStrategy, IEquatable<
         /// <param name="x">This <see cref="{scalar.FullyQualifiedName}"/> is converted to the equivalent {ScalarReference}.</param>
         """;
 
-    public string OperationMethod(IQuantityOperation operation, NamedType other) => OperationMethod(operation, mirrored: false);
-    public string MirroredOperationMethod(IQuantityOperation operation, NamedType other) => OperationMethod(operation, mirrored: true);
-    private static string OperationMethod(IQuantityOperation operation, bool mirrored)
+    public string OperationMethod(IQuantityOperation operation, NamedType other) => OperationMethod(operation, other, mirrored: false);
+    public string MirroredOperationMethod(IQuantityOperation operation, NamedType other) => OperationMethod(operation, other, mirrored: true);
+    private static string OperationMethod(IQuantityOperation operation, NamedType other, bool mirrored)
     {
-        var parameterName = SourceBuildingUtility.ToParameterName(operation.Other.Name);
+        var parameterName = SourceBuildingUtility.ToParameterName(other.Name);
 
         if (operation.OperatorType is OperatorType.Addition)
         {

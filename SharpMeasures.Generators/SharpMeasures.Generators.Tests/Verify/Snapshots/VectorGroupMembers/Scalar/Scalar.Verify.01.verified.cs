@@ -9,7 +9,7 @@
 
 #nullable enable
 
-/// <summary>A measure of the 3-dimensional vector quantity Position3, expressed in <see cref="global::UnitOfLength"/>.</summary>
+/// <summary>A measure of the 3-dimensional vector quantity Position, expressed in <see cref="global::UnitOfLength"/>.</summary>
 public partial class Position3 :
     global::SharpMeasures.IVector3Quantity<global::Position3>,
     global::System.IEquatable<global::Position3>

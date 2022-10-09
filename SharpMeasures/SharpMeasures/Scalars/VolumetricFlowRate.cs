@@ -2,7 +2,7 @@
 
 using SharpMeasures.Generators;
 
-[ScalarQuantity(typeof(UnitOfVolumetricFlowRate), DefaultUnitInstanceName = "CubicMetrePerSecond", DefaultUnitInstanceSymbol = "m³∙s⁻¹")]
+[ScalarQuantity(typeof(UnitOfVolumetricFlowRate), DefaultUnit = "CubicMetrePerSecond", DefaultSymbol = "m³∙s⁻¹")]
 public readonly partial record struct VolumetricFlowRate { }
 
 [QuantityOperation(typeof(Volume), typeof(Time), OperatorType.Multiplication)]

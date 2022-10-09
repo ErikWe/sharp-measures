@@ -110,7 +110,7 @@ internal static class Execution
 
         private void AppendMethodOperation(Indentation indentation, IQuantityOperation operation)
         {
-            if (GetQuantityCombination(operation) is not (NamedType result, NamedType other))
+            if (GetQuantityCombination(operation.Result, operation.Other) is not (NamedType result, NamedType other))
             {
                 return;
             }
@@ -128,7 +128,7 @@ internal static class Execution
                 StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers, fullExpression(), new[] { (other, parameterName) });
             }
 
-            if (operation.MirrorMethod && operation.OperatorType is OperatorType.Subtraction or OperatorType.Division && ImplementedMethods.Add((operation.MirroredMethodName, other)))
+            if ((operation.MirrorMethod && operation.OperatorType is OperatorType.Subtraction or OperatorType.Division) && ImplementedMethods.Add((operation.MirroredMethodName, other)))
             {
                 SeparationHandler.AddIfNecessary();
 
@@ -176,7 +176,12 @@ internal static class Execution
 
         private void AppendMethodVectorOperation(Indentation indentation, IVectorOperation operation)
         {
-            if (GetVectorCombination(operation) is not (NamedType result, NamedType other))
+            if (operation.OperatorType is VectorOperatorType.Cross && Data.Dimension is not 3)
+            {
+                return;
+            }
+
+            if (GetQuantityCombination(operation.Result, operation.Other) is not (NamedType result, NamedType other))
             {
                 return;
             }
@@ -193,7 +198,7 @@ internal static class Execution
                 StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers, fullExpression(), new[] { (other, parameterName) });
             }
 
-            if (operation.Mirror && operation.OperatorType is VectorOperatorType.Cross && ImplementedMethods.Add((operation.MirroredName, other)))
+            if ((operation.Mirror && operation.OperatorType is VectorOperatorType.Cross) && ImplementedMethods.Add((operation.MirroredName, other)))
             {
                 SeparationHandler.AddIfNecessary();
 
@@ -251,7 +256,7 @@ internal static class Execution
 
         private void AppendOperatorOperation(Indentation indentation, IQuantityOperation operation)
         {
-            if (GetQuantityCombination(operation) is not (NamedType result, NamedType other))
+            if (GetQuantityCombination(operation.Result, operation.Other) is not (NamedType result, NamedType other))
             {
                 return;
             }
@@ -304,12 +309,17 @@ internal static class Execution
 
             string otherExpression(string parameterName)
             {
-                if (other.FullyQualifiedName is "global::SharpMeasures.Scalar")
+                if (other.FullyQualifiedName is "global::SharpMeasures.Scalar" || other.FullyQualifiedName.StartsWith("global::SharpMeasures.Vector", StringComparison.InvariantCulture))
                 {
                     return $"{parameterName}";
                 }
 
-                return $"{parameterName}.Magnitude";
+                if (Data.ScalarPopulation.Scalars.ContainsKey(other))
+                {
+                    return $"{parameterName}.Magnitude";
+                }
+
+                return $"{parameterName}.Components";
             }
         }
 
@@ -322,78 +332,36 @@ internal static class Execution
             _ => throw new NotSupportedException($"Invalid {typeof(OperatorType).Name}: {operatorType}")
         };
 
-        private (NamedType Result, NamedType Other)? GetQuantityCombination(IQuantityOperation operation)
+        private (NamedType Result, NamedType Other)? GetQuantityCombination(NamedType result, NamedType other)
         {
-            if (Data.VectorPopulation.Vectors.ContainsKey(operation.Result))
+            if (Data.ScalarPopulation.Scalars.ContainsKey(result))
             {
-                return (operation.Result, operation.Other);
+                return (result, other);
             }
 
-            if (Data.VectorPopulation.Groups.TryGetValue(operation.Result, out var resultGroup))
+            if (Data.VectorPopulation.Vectors.ContainsKey(result))
             {
-                if (resultGroup.MembersByDimension.TryGetValue(Data.Dimension, out var resultMember))
+                if (Data.VectorPopulation.Vectors.ContainsKey(other))
                 {
-                    return (resultMember, operation.Other);
-                }
-            }
-
-            return null;
-        }
-
-        private (NamedType Result, NamedType Other)? GetVectorCombination(IVectorOperation operation)
-        {
-            if (Data.ScalarPopulation.Scalars.ContainsKey(operation.Result))
-            {
-                if (Data.VectorPopulation.Vectors.ContainsKey(operation.Other))
-                {
-                    return (operation.Result, operation.Other);
+                    return (result, other);
                 }
 
-                if (Data.VectorPopulation.Groups.TryGetValue(operation.Other, out var otherGroup))
+                if (Data.VectorPopulation.Groups.TryGetValue(other, out var otherGroup) && otherGroup.MembersByDimension.TryGetValue(Data.Dimension, out var otherMember))
                 {
-                    if (otherGroup.MembersByDimension.TryGetValue(Data.Dimension, out var otherMember))
-                    {
-                        return (operation.Result, otherMember);
-                    }
-                }
-
-                return null;
-            }
-
-            if (Data.VectorPopulation.Vectors.ContainsKey(operation.Result))
-            {
-                if (Data.VectorPopulation.Vectors.ContainsKey(operation.Other))
-                {
-                    return (operation.Result, operation.Other);
-                }
-
-                if (Data.VectorPopulation.Groups.TryGetValue(operation.Other, out var otherGroup))
-                {
-                    if (otherGroup.MembersByDimension.TryGetValue(Data.Dimension, out var otherMember))
-                    {
-                        return (operation.Result, otherMember);
-                    }
+                    return (result, otherMember);
                 }
             }
 
-            if (Data.VectorPopulation.Groups.TryGetValue(operation.Result, out var resultGroup))
+            if (Data.VectorPopulation.Groups.TryGetValue(result, out var resultGroup) && resultGroup.MembersByDimension.TryGetValue(Data.Dimension, out var resultMember))
             {
-                if (resultGroup.MembersByDimension.TryGetValue(Data.Dimension, out var resultMember) is false)
+                if (Data.VectorPopulation.Vectors.ContainsKey(other))
                 {
-                    return null;
+                    return (resultMember, other);
                 }
 
-                if (Data.VectorPopulation.Vectors.ContainsKey(operation.Other))
+                if (Data.VectorPopulation.Groups.TryGetValue(other, out var otherGroup) && otherGroup.MembersByDimension.TryGetValue(Data.Dimension, out var otherMember))
                 {
-                    return (resultMember, operation.Other);
-                }
-
-                if (Data.VectorPopulation.Groups.TryGetValue(operation.Other, out var otherGroup))
-                {
-                    if (otherGroup.MembersByDimension.TryGetValue(Data.Dimension, out var otherMember))
-                    {
-                        return (resultMember, otherMember);
-                    }
+                    return (resultMember, otherMember);
                 }
             }
 

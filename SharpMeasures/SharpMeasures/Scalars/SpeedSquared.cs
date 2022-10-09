@@ -2,7 +2,7 @@
 
 using SharpMeasures.Generators;
 
-[ScalarQuantity(typeof(UnitOfSpeedSquared), DefaultUnitInstanceName = "SquareMetrePerSecondSquared", DefaultUnitInstanceSymbol = "m²∙s⁻²")]
+[ScalarQuantity(typeof(UnitOfSpeedSquared), DefaultUnit = "SquareMetrePerSecondSquared", DefaultSymbol = "m²∙s⁻²")]
 public readonly partial record struct SpeedSquared { }
 
 [QuantityOperation(typeof(Speed), typeof(Pace), OperatorType.Multiplication)]

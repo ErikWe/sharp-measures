@@ -2,5 +2,5 @@
 
 using SharpMeasures.Generators;
 
-[ScalarQuantity(typeof(UnitOfTemperature), UseUnitBias = true, DefaultUnitInstanceName = "Kelvin", DefaultUnitInstanceSymbol = "K", Difference = typeof(TemperatureDifference))]
+[ScalarQuantity(typeof(UnitOfTemperature), UseUnitBias = true, DefaultUnit = "Kelvin", DefaultSymbol = "K", Difference = typeof(TemperatureDifference))]
 public readonly partial record struct Temperature { }

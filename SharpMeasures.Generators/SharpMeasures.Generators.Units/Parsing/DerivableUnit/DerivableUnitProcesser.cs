@@ -193,6 +193,11 @@ internal sealed class DerivableUnitProcesser : AActionableProcesser<IDerivableUn
             return OptionalWithDiagnostics.Empty<NamedType[]>(Diagnostics.NullSignatureElement(context, definition, index));
         }
 
+        if (signatureElement == NamedType.Empty)
+        {
+            return OptionalWithDiagnostics.Empty<NamedType[]>();
+        }
+
         signature[index] = signatureElement;
 
         return OptionalWithDiagnostics.Result(signature);

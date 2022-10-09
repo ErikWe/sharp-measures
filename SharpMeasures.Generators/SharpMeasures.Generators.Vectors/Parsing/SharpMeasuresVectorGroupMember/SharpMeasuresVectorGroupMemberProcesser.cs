@@ -27,7 +27,8 @@ internal sealed class SharpMeasuresVectorGroupMemberProcesser : AProcesser<IProc
     public override IOptionalWithDiagnostics<SharpMeasuresVectorGroupMemberDefinition> Process(IProcessingContext context, RawSharpMeasuresVectorGroupMemberDefinition definition)
     {
         return VerifyRequiredPropertiesSet(definition)
-            .Validate(() => ValidateVectorGroupIsNotNull(context, definition))
+            .Validate(() => ValidateVectorGroupNotNull(context, definition))
+            .Validate(() => ValidateVectorGroupNotUndefined(definition))
             .Validate(() => ValidateSpecifiedDimensionNotInvalid(context, definition))
             .Merge(() => ProcessDimension(context, definition))
             .Validate((dimension) => ValidateInterpretedDimensionNotInvalid(context, definition, dimension))
@@ -46,9 +47,14 @@ internal sealed class SharpMeasuresVectorGroupMemberProcesser : AProcesser<IProc
         return ValidityWithDiagnostics.ConditionalWithoutDiagnostics(definition.Locations.ExplicitlySetVectorGroup);
     }
 
-    private IValidityWithDiagnostics ValidateVectorGroupIsNotNull(IProcessingContext context, RawSharpMeasuresVectorGroupMemberDefinition definition)
+    private IValidityWithDiagnostics ValidateVectorGroupNotNull(IProcessingContext context, RawSharpMeasuresVectorGroupMemberDefinition definition)
     {
         return ValidityWithDiagnostics.Conditional(definition.VectorGroup is not null, () => Diagnostics.NullVectorGroup(context, definition));
+    }
+
+    private static IValidityWithDiagnostics ValidateVectorGroupNotUndefined(RawSharpMeasuresVectorGroupMemberDefinition definition)
+    {
+        return ValidityWithDiagnostics.ConditionalWithoutDiagnostics(definition.VectorGroup!.Value != NamedType.Empty);
     }
 
     private IValidityWithDiagnostics ValidateSpecifiedDimensionNotInvalid(IProcessingContext context, RawSharpMeasuresVectorGroupMemberDefinition definition)

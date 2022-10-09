@@ -28,6 +28,7 @@ internal sealed class SharpMeasuresScalarProcesser : AProcesser<IProcessingConte
     {
         return VerifyRequiredPropertiesSet(definition)
             .Validate(() => ValidateUnitNotNull(context, definition))
+            .Validate(() => ValidateUnitNotUndefined(definition))
             .Validate(() => ValidateVectorNotNull(context, definition))
             .Validate(() => ValidateDifferenceNotNull(context, definition))
             .Validate(() => ValidateDifferenceNotUnexpectedlySpecified(context, definition))
@@ -49,6 +50,7 @@ internal sealed class SharpMeasuresScalarProcesser : AProcesser<IProcessingConte
 
     private static IValidityWithDiagnostics VerifyRequiredPropertiesSet(RawSharpMeasuresScalarDefinition definition) => ValidityWithDiagnostics.ConditionalWithoutDiagnostics(definition.Locations.ExplicitlySetUnit);
     private IValidityWithDiagnostics ValidateUnitNotNull(IProcessingContext context, RawSharpMeasuresScalarDefinition definition) => ValidityWithDiagnostics.Conditional(definition.Unit is not null, () => Diagnostics.NullUnit(context, definition));
+    private static IValidityWithDiagnostics ValidateUnitNotUndefined(RawSharpMeasuresScalarDefinition definition) => ValidityWithDiagnostics.ConditionalWithoutDiagnostics(definition.Unit!.Value != NamedType.Empty);
 
     private IValidityWithDiagnostics ValidateVectorNotNull(IProcessingContext context, RawSharpMeasuresScalarDefinition definition)
     {

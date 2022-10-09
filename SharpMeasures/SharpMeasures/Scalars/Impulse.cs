@@ -2,7 +2,7 @@
 
 using SharpMeasures.Generators;
 
-[ScalarQuantity(typeof(UnitOfImpulse), DefaultUnitInstanceName = "NewtonSecond", DefaultUnitInstanceSymbol = "N∙s")]
+[ScalarQuantity(typeof(UnitOfMomentum), Vector = typeof(ImpulseN), DefaultUnit = "NewtonSecond", DefaultSymbol = "N∙s")]
 public readonly partial record struct Impulse { }
 
 [QuantityOperation(typeof(Time), typeof(Force), OperatorType.Division)]

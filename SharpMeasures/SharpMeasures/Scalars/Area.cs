@@ -2,7 +2,7 @@
 
 using SharpMeasures.Generators;
 
-[ScalarQuantity(typeof(UnitOfArea), DefaultUnitInstanceName = "SquareMetre", DefaultUnitInstanceSymbol = "m²")]
+[ScalarQuantity(typeof(UnitOfArea), DefaultUnit = "SquareMetre", DefaultSymbol = "m²")]
 public readonly partial record struct Area { }
 
 [QuantityOperation(typeof(Volume), typeof(Length), OperatorType.Multiplication)]

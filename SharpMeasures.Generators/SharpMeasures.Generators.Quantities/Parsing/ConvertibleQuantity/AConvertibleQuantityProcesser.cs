@@ -121,6 +121,7 @@ public abstract class AConvertibleQuantityProcesser<TContext, TProduct> : AActio
     protected virtual IValidityWithDiagnostics ValidateQuantity(TContext context, RawConvertibleQuantityDefinition definition, int index)
     {
         return ValidateQuantityNotNull(context, definition, index)
+            .Validate(() => ValidateQuantityNotUndefined(definition, index))
             .Validate(() => ValidateQuantityNotSelf(context, definition, index))
             .Validate(() => ValidateQuantityNotDuplicate(context, definition, index))
             .Validate(() => ValidateConversionNotSpecifiedDuringSpecialization(context, definition, index));
@@ -129,6 +130,11 @@ public abstract class AConvertibleQuantityProcesser<TContext, TProduct> : AActio
     private IValidityWithDiagnostics ValidateQuantityNotNull(TContext context, RawConvertibleQuantityDefinition definition, int index)
     {
         return ValidityWithDiagnostics.Conditional(definition.Quantities[index] is not null, () => Diagnostics.NullQuantity(context, definition, index));
+    }
+
+    private static IValidityWithDiagnostics ValidateQuantityNotUndefined(RawConvertibleQuantityDefinition definition, int index)
+    {
+        return ValidityWithDiagnostics.ConditionalWithoutDiagnostics(definition.Quantities[index]!.Value != NamedType.Empty);
     }
 
     private IValidityWithDiagnostics ValidateQuantityNotSelf(TContext context, RawConvertibleQuantityDefinition definition, int index)

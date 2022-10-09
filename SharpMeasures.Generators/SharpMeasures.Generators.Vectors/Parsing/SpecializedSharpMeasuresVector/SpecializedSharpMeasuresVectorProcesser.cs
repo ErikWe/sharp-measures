@@ -33,6 +33,7 @@ internal sealed class SpecializedSharpMeasuresVectorProcesser : AProcesser<IProc
     {
         return VerifyRequiredPropertiesSet(definition)
             .Validate(() => ValidateOriginalVectorNotNull(context, definition))
+            .Validate(() => ValidateOriginalVectorNotUndefined(definition))
             .Validate(() => ValidateForwardsCastOperatorBehaviourDefined(context, definition))
             .Validate(() => ValidateBackwardsCastOperatorBehaviourDefined(context, definition))
             .Validate(() => ValidateScalarNotNull(context, definition))
@@ -56,6 +57,11 @@ internal sealed class SpecializedSharpMeasuresVectorProcesser : AProcesser<IProc
     private IValidityWithDiagnostics ValidateOriginalVectorNotNull(IProcessingContext context, RawSpecializedSharpMeasuresVectorDefinition definition)
     {
         return ValidityWithDiagnostics.Conditional(definition.OriginalQuantity is not null, () => Diagnostics.NullOriginalVector(context, definition));
+    }
+
+    private static IValidityWithDiagnostics ValidateOriginalVectorNotUndefined(RawSpecializedSharpMeasuresVectorDefinition definition)
+    {
+        return ValidityWithDiagnostics.ConditionalWithoutDiagnostics(definition.OriginalQuantity!.Value != NamedType.Empty);
     }
 
     private IValidityWithDiagnostics ValidateForwardsCastOperatorBehaviourDefined(IProcessingContext context, RawSpecializedSharpMeasuresVectorDefinition definition)

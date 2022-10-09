@@ -2,7 +2,7 @@
 
 using SharpMeasures.Generators;
 
-[ScalarQuantity(typeof(UnitOfArealFrequency), DefaultUnitInstanceName = "PerSquareMetre", DefaultUnitInstanceSymbol = "m⁻²")]
+[ScalarQuantity(typeof(UnitOfArealFrequency), DefaultUnit = "PerSquareMetre", DefaultSymbol = "m⁻²")]
 public readonly partial record struct ArealFrequency { }
 
 [QuantityOperation(typeof(VolumetricFrequency), typeof(SpatialFrequency), OperatorType.Multiplication)]
