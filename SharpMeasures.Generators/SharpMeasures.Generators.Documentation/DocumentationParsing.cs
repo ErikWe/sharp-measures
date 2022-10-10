@@ -51,16 +51,11 @@ internal static class DocumentationParsing
 
     public static string CommentText(string text) => NewLineRegex.Replace(text, "$0/// ");
 
-    public static string ReadName(AdditionalText file)
+    public static string ReadName(AdditionalText file, string extension)
     {
-        string fileName = Path.GetFileName(file.Path);
+        var fileName = Path.GetFileName(file.Path);
 
-        if (fileName.Split('.') is string[] { Length: > 0 } components)
-        {
-            return components[0];
-        }
-
-        return fileName;
+        return fileName.Substring(0, fileName.Length - extension.Length);
     }
 
     public static bool ReadUtilityState(string text)

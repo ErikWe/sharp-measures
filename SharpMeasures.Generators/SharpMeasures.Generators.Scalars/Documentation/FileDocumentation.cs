@@ -8,11 +8,13 @@ using System;
 
 internal sealed class FileDocumentation : IDocumentationStrategy, IEquatable<FileDocumentation>
 {
-    private DocumentationFile DocumentationFile { get; }
+    private bool PrintDocumentationTags { get; }
+    private DocumentationFile? DocumentationFile { get; }
     private IDocumentationStrategy DefaultDocumentationStrategy { get; }
 
-    public FileDocumentation(DocumentationFile documentationFile, IDocumentationStrategy defaultDocumentationStrategy)
+    public FileDocumentation(bool printDocumentationTags, DocumentationFile? documentationFile, IDocumentationStrategy defaultDocumentationStrategy)
     {
+        PrintDocumentationTags = printDocumentationTags;
         DocumentationFile = documentationFile;
         DefaultDocumentationStrategy = defaultDocumentationStrategy;
     }
@@ -132,23 +134,31 @@ internal sealed class FileDocumentation : IDocumentationStrategy, IEquatable<Fil
     public string LessThanOrEqualSameType() => FromFileOrDefault(static (strategy) => strategy.LessThanOrEqualSameType());
     public string GreaterThanOrEqualSameType() => FromFileOrDefault(static (strategy) => strategy.GreaterThanOrEqualSameType());
 
-    private string FromFileOrDefault(Func<IDocumentationStrategy, string> defaultDelegate)
+    private string FromFileOrDefault(Func<IDocumentationStrategy, string> target)
     {
-        string tag = defaultDelegate(DocumentationTags.Instance);
+        string tag = target(DocumentationTags.Instance);
 
-        if (DocumentationFile.OptionallyResolveTag(tag) is not string { Length: > 0 } tagContent)
+        if (DocumentationFile?.OptionallyResolveTag(tag) is not string { Length: > 0 } tagContent)
         {
-            tagContent = defaultDelegate(DefaultDocumentationStrategy);
+            tagContent = target(DefaultDocumentationStrategy);
+        }
+
+        if (PrintDocumentationTags)
+        {
+            tagContent = $"""
+                {tagContent}
+                /// <sharpmeasures-tag>{tag}</sharpmeasures-tag>
+                """;
         }
 
         return tagContent;
     }
 
-    public bool Equals(FileDocumentation? other) => other is not null && DocumentationFile == other.DocumentationFile && DefaultDocumentationStrategy.Equals(other.DefaultDocumentationStrategy);
+    public bool Equals(FileDocumentation? other) => other is not null && PrintDocumentationTags == other.PrintDocumentationTags && DocumentationFile == other.DocumentationFile && DefaultDocumentationStrategy.Equals(other.DefaultDocumentationStrategy);
     public override bool Equals(object? obj) => obj is FileDocumentation other && Equals(other);
 
     public static bool operator ==(FileDocumentation? lhs, FileDocumentation? rhs) => lhs?.Equals(rhs) ?? rhs is null;
     public static bool operator !=(FileDocumentation? lhs, FileDocumentation? rhs) => (lhs == rhs) is false;
 
-    public override int GetHashCode() => (DocumentationFile, DefaultDocumentationStrategy).GetHashCode();
+    public override int GetHashCode() => (PrintDocumentationTags, DocumentationFile, DefaultDocumentationStrategy).GetHashCode();
 }

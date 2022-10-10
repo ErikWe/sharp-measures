@@ -47,11 +47,6 @@ public sealed class UnitAttribute : Attribute
     /// to be able to express both <i>Celsius</i> and <i>Fahrenheit</i>.</remarks>
     public bool BiasTerm { get; init; }
 
-    /// <summary>Dictates whether documentation should be generated for this unit.</summary>
-    /// <remarks>If this property is not explicitly set, the entry [<i>SharpMeasures_GenerateDocumentation</i>] in the global AnalyzerConfig
-    /// file is used to determine whether documentation is generated - which in turn is <see langword="true"/> by default.</remarks>
-    public bool GenerateDocumentation { get; init; }
-
     /// <inheritdoc cref="UnitAttribute"/>
     /// <param name="quantity"><inheritdoc cref="Quantity" path="/summary"/><para><inheritdoc cref="Quantity" path="/remarks"/></para></param>
     public UnitAttribute(Type quantity)

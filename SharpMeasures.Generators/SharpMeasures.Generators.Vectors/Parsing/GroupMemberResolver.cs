@@ -51,12 +51,10 @@ internal static class GroupMemberResolver
         var defaultUnitInstanceName = RecursivelySearchForDefinedInGroups(vectorType, vectorPopulation, static (vector) => vector.Definition.DefaultUnitInstanceName);
         var defaultUnitInstanceSymbol = RecursivelySearchForDefinedInGroups(vectorType, vectorPopulation, static (vector) => vector.Definition.DefaultUnitInstanceSymbol);
 
-        var generateDocumentation = RecursivelySearchForDefined(vectorType, vectorPopulation, static (vector) => vector.Definition.GenerateDocumentation, static (vector) => vector.Definition.GenerateDocumentation);
-
         (var forwardsCastBehaviour, var backwardsCastBehaviour) = GetSpecializationCastBehaviour(vectorType, vectorPopulation);
 
         return new ResolvedVectorType(vectorType.Type, vectorType.Definition.Dimension, vectorType.Definition.VectorGroup, unit.Type.AsNamedType(), originalQuantity: null, forwardsCastBehaviour, backwardsCastBehaviour, scalar, implementSum!.Value, implementDifference!.Value,
-            difference, defaultUnitInstanceName, defaultUnitInstanceSymbol, vectorType.Operations, vectorType.VectorOperations, vectorType.Processes, vectorType.Constants, vectorType.Conversions, inheritedOperations, inheritedVectorOperations, inheritedProcesses, inheritedConstants, inheritedConversions, includedUnitInstances, generateDocumentation);
+            difference, defaultUnitInstanceName, defaultUnitInstanceSymbol, vectorType.Operations, vectorType.VectorOperations, vectorType.Processes, vectorType.Constants, vectorType.Conversions, inheritedOperations, inheritedVectorOperations, inheritedProcesses, inheritedConstants, inheritedConversions, includedUnitInstances);
     }
 
     private static (ConversionOperatorBehaviour ForwardsCastBehaviour, ConversionOperatorBehaviour BackwardsCastBehaviour) GetSpecializationCastBehaviour(GroupMemberType vectorType, IVectorPopulation vectorPopulation)

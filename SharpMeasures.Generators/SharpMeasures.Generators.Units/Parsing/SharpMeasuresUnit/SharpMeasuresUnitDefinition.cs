@@ -2,7 +2,7 @@
 
 using SharpMeasures.Generators.Attributes.Parsing;
 
-internal sealed record class SharpMeasuresUnitDefinition : ASharpMeasuresObjectDefinition<SharpMeasuresUnitLocations>, IUnit
+internal sealed record class SharpMeasuresUnitDefinition : AAttributeDefinition<SharpMeasuresUnitLocations>, IUnit
 {
     public NamedType Quantity { get; }
 
@@ -11,7 +11,7 @@ internal sealed record class SharpMeasuresUnitDefinition : ASharpMeasuresObjectD
     ISharpMeasuresObjectLocations ISharpMeasuresObject.Locations => Locations;
     IUnitLocations IUnit.Locations => Locations;
 
-    public SharpMeasuresUnitDefinition(NamedType quantity, bool biasTerm, bool? generateDocumentation, SharpMeasuresUnitLocations locations) : base(generateDocumentation, locations)
+    public SharpMeasuresUnitDefinition(NamedType quantity, bool biasTerm, SharpMeasuresUnitLocations locations) : base(locations)
     {
         Quantity = quantity;
 

@@ -58,7 +58,7 @@ public static class VectorGenerator
             return new Optional<VectorDataModel>();
         }
 
-        VectorSourceBuildingContext sourceBuildingContext = new(input.Config.GeneratedFileHeaderContent, GetDocumentationStrategy(input.Vector.Value, input.UnitPopulation, input.ScalarPopulation, input.DocumentationDictionary, input.Config));
+        VectorSourceBuildingContext sourceBuildingContext = new(input.Config.GeneratedFileHeaderLevel, GetDocumentationStrategy(input.Vector.Value, input.UnitPopulation, input.ScalarPopulation, input.DocumentationDictionary, input.Config));
         return new VectorDataModel(input.Vector.Value, input.UnitPopulation, input.ScalarPopulation, input.VectorPopulation, sourceBuildingContext);
     }
 
@@ -69,45 +69,35 @@ public static class VectorGenerator
             return new Optional<GroupDataModel>();
         }
 
-        GroupSourceBuildingContext sourceBuildingContext = new(input.Config.GeneratedFileHeaderContent, GetDocumentationStrategy(input.Group.Value, input.UnitPopulation, input.ScalarPopulation, input.DocumentationDictionary, input.Config));
+        GroupSourceBuildingContext sourceBuildingContext = new(input.Config.GeneratedFileHeaderLevel, GetDocumentationStrategy(input.Group.Value, input.UnitPopulation, input.ScalarPopulation, input.DocumentationDictionary, input.Config));
         return new GroupDataModel(input.Group.Value, input.UnitPopulation, input.ScalarPopulation, input.VectorPopulation, sourceBuildingContext);
     }
 
     private static IVectorDocumentationStrategy GetDocumentationStrategy(ResolvedVectorType vector, IUnitPopulation unitPopulation, IResolvedScalarPopulation scalarPopulation, DocumentationDictionary documentationDictionary, GlobalAnalyzerConfig config)
     {
-        var generateDocumentation = vector.GenerateDocumentation ?? config.GenerateDocumentationByDefault;
-
-        if (generateDocumentation is false)
+        if (config.GenerateDocumentation is false)
         {
             return EmptyDocumentation.Instance;
         }
 
         DefaultVectorDocumentation defaultDocumentation = new(vector, unitPopulation, scalarPopulation);
 
-        if (documentationDictionary.TryGetValue(vector.Type.Name, out DocumentationFile documentationFile))
-        {
-            return new VectorFileDocumentation(vector.Dimension, documentationFile, defaultDocumentation);
-        }
+        documentationDictionary.TryGetValue(vector.Type.QualifiedName, out DocumentationFile documentationFile);
 
-        return defaultDocumentation;
+        return new VectorFileDocumentation(config.PrintDocumentationTags, vector.Dimension, documentationFile, defaultDocumentation);
     }
 
     private static IGroupDocumentationStrategy GetDocumentationStrategy(ResolvedGroupType group, IUnitPopulation unitPopulation, IResolvedScalarPopulation scalarPopulation, DocumentationDictionary documentationDictionary, GlobalAnalyzerConfig config)
     {
-        var generateDocumentation = group.GenerateDocumentation ?? config.GenerateDocumentationByDefault;
-
-        if (generateDocumentation is false)
+        if (config.GenerateDocumentation is false)
         {
             return EmptyDocumentation.Instance;
         }
 
         DefaultGroupDocumentation defaultDocumentation = new(group, unitPopulation, scalarPopulation);
 
-        if (documentationDictionary.TryGetValue(group.Type.Name, out DocumentationFile documentationFile))
-        {
-            return new GroupFileDocumentation(documentationFile, defaultDocumentation);
-        }
+        documentationDictionary.TryGetValue(group.Type.QualifiedName, out DocumentationFile documentationFile);
 
-        return defaultDocumentation;
+        return new GroupFileDocumentation(config.PrintDocumentationTags, documentationFile, defaultDocumentation);
     }
 }

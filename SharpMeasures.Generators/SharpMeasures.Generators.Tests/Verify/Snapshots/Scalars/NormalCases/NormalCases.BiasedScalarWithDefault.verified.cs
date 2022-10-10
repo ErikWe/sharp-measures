@@ -31,8 +31,8 @@ public partial class Temperature :
     /// <summary>Constructs a new <see cref="global::Temperature"/> representing { <paramref name="magnitude"/> }, when expressed in <paramref name="unitOfTemperature"/>.</summary>
     /// <param name="magnitude">The magnitude represented by the constructed <see cref="global::Temperature"/>, when expressed in <paramref name="unitOfTemperature"/>.</param>
     /// <param name="unitOfTemperature">The <see cref="global::UnitOfTemperature"/> in which <paramref name="magnitude"/> is expressed.</param>
-    /// <remarks>A <see cref="global::Temperature"/> may also be constructed as demonstrated below.
-    /// <code><see cref="global::Temperature"/> x = 2.3 * <see cref="global::Temperature.OneKelvin"/>;</code>
+    /// <remarks>A new <see cref="global::Temperature"/> may also be constructed as demonstrated below.
+    /// <code><see cref="global::Temperature"/> x = 4.2 * <see cref="global::Temperature.OneKelvin"/>;</code>
     /// </remarks>
     /// <exception cref="global::System.ArgumentNullException"/>
     public Temperature(global::SharpMeasures.Scalar magnitude, global::UnitOfTemperature unitOfTemperature)

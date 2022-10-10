@@ -5,14 +5,16 @@ public readonly record struct GlobalAnalyzerConfig
     public static GlobalAnalyzerConfig Default { get; } = new GlobalAnalyzerConfig() with
     {
         DocumentationFileExtension = ".doc.txt",
-        GenerateDocumentationByDefault = true,
+        PrintDocumentationTags = false,
+        GenerateDocumentation = true,
         LimitOneErrorPerDocumentationFile = true,
-        GeneratedFileHeaderContent = GeneratedFileHeaderContent.All
+        GeneratedFileHeaderLevel = -1
     };
 
     public string DocumentationFileExtension { get; init; }
-    public bool GenerateDocumentationByDefault { get; init; }
+    public bool PrintDocumentationTags { get; init; }
+    public bool GenerateDocumentation { get; init; }
     public bool LimitOneErrorPerDocumentationFile { get; init; }
 
-    public GeneratedFileHeaderContent GeneratedFileHeaderContent { get; init; }
+    public int GeneratedFileHeaderLevel { get; init; }
 }

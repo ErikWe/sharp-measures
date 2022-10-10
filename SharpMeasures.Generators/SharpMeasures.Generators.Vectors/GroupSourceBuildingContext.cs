@@ -1,17 +1,16 @@
 ﻿namespace SharpMeasures.Generators.Vectors;
 
-using SharpMeasures.Generators.Configuration;
 using SharpMeasures.Generators.Vectors.Documentation;
 
 internal sealed record class GroupSourceBuildingContext
 {
-    public GeneratedFileHeaderContent HeaderContent { get; }
+    public int HeaderContentLevel { get; }
 
-    public IGroupDocumentationStrategy Documentation { get; init; }
+    public IGroupDocumentationStrategy Documentation { get; }
 
-    public GroupSourceBuildingContext(GeneratedFileHeaderContent headerContent, IGroupDocumentationStrategy documentation)
+    public GroupSourceBuildingContext(int headerContentLevel, IGroupDocumentationStrategy documentation)
     {
-        HeaderContent = headerContent;
+        HeaderContentLevel = headerContentLevel;
 
         Documentation = documentation;
     }

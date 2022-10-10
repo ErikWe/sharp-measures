@@ -23,8 +23,7 @@ internal static class SpecializedSharpMeasuresVectorProperties
         ImplementDifference,
         Difference,
         DefaultUnitInstanceName,
-        DefaultUnitInstanceSymbol,
-        GenerateDocumentation
+        DefaultUnitInstanceSymbol
     };
 
     private static SpecializedSharpMeasuresVectorProperty<INamedTypeSymbol> OriginalVector { get; } = new
@@ -123,12 +122,5 @@ internal static class SpecializedSharpMeasuresVectorProperties
         name: nameof(SpecializedVectorQuantityAttribute.DefaultSymbol),
         setter: static (definition, defaultUnitInstanceSymbol) => definition with { DefaultUnitInstanceSymbol = defaultUnitInstanceSymbol },
         locator: static (locations, defaultUnitInstanceSymbolLocation) => locations with { DefaultUnitInstanceSymbol = defaultUnitInstanceSymbolLocation }
-    );
-
-    private static SpecializedSharpMeasuresVectorProperty<bool> GenerateDocumentation { get; } = new
-    (
-        name: nameof(SpecializedVectorQuantityAttribute.GenerateDocumentation),
-        setter: static (definition, generateDocumentation) => definition with { GenerateDocumentation = generateDocumentation },
-        locator: static (locations, generateDocumentationLocation) => locations with { GenerateDocumentation = generateDocumentationLocation }
     );
 }

@@ -3,7 +3,9 @@
 public static class ConfigKeys
 {
     public const string DocumentationFileExtension = "SharpMeasures_DocumentationFileExtension";
-    public const string GenerateDocumentationByDefault = "SharpMeasures_GenerateDocumentation";
+    public const string PrintDocumentationTags = "SharpMeasures_PrintDocumentationTags";
     public const string LimitOneErrorPerDocumentationFile = "SharpMeasures_LimitOneErrorPerDocumentationFile";
-    public const string GeneratedFileHeaderContent = "SharpMeasures_GeneratedFileHeader";
+    public const string GenerateDocumentation = "SharpMeasures_GenerateDocumentation";
+
+    public const string GeneratedFileHeaderLevel = "SharpMeasures_GeneratedFileHeaderLevel";
 }

@@ -70,10 +70,6 @@ public sealed class SpecializedVectorGroupAttribute : Attribute
     /// <remarks><inheritdoc cref="VectorGroupAttribute.DefaultSymbol" path="/remarks"/></remarks>
     public string? DefaultSymbol { get; init; }
 
-    /// <summary><inheritdoc cref="VectorGroupAttribute.GenerateDocumentation" path="/summary"/> By default, the behaviour is inherited from the original
-    /// group.</summary>
-    public bool GenerateDocumentation { get; init; }
-
     /// <inheritdoc cref="VectorGroupAttribute"/>
     /// <param name="originalVectorGroup"><inheritdoc cref="OriginalVectorGroup" path="/summary"/><para><inheritdoc cref="OriginalVectorGroup" path="/remarks"/></para></param>
     public SpecializedVectorGroupAttribute(Type originalVectorGroup)

@@ -34,7 +34,7 @@ internal static class VectorBaseResolver
         var includedUnitInstances = ResolveUnitInstanceInclusions(unit, vectorType.UnitInstanceInclusions, () => vectorType.UnitInstanceExclusions);
 
         return new ResolvedVectorType(vectorType.Type, vectorType.Definition.Dimension, group: null, vectorType.Definition.Unit, originalQuantity: null, ConversionOperatorBehaviour.None, ConversionOperatorBehaviour.None, vectorType.Definition.Scalar, vectorType.Definition.ImplementSum, vectorType.Definition.ImplementDifference, vectorType.Definition.Difference, vectorType.Definition.DefaultUnitInstanceName, vectorType.Definition.DefaultUnitInstanceSymbol,
-            vectorType.Operations, vectorType.VectorOperations, vectorType.Processes, vectorType.Constants, vectorType.Conversions, inheritedOperations: Array.Empty<IQuantityOperation>(), inheritedVectorOperations: Array.Empty<IVectorOperation>(), inheritedProcesses: Array.Empty<IQuantityProcess>(), inheritedConstants: Array.Empty<IVectorConstant>(), inheritedConversions: Array.Empty<IConvertibleQuantity>(), includedUnitInstances, vectorType.Definition.GenerateDocumentation);
+            vectorType.Operations, vectorType.VectorOperations, vectorType.Processes, vectorType.Constants, vectorType.Conversions, inheritedOperations: Array.Empty<IQuantityOperation>(), inheritedVectorOperations: Array.Empty<IVectorOperation>(), inheritedProcesses: Array.Empty<IQuantityProcess>(), inheritedConstants: Array.Empty<IVectorConstant>(), inheritedConversions: Array.Empty<IConvertibleQuantity>(), includedUnitInstances);
     }
 
     private static IReadOnlyList<string> ResolveUnitInstanceInclusions(IUnitType unit, IEnumerable<IUnitInstanceList> unitInstanceInclusions, Func<IEnumerable<IUnitInstanceList>> exclusionsDelegate)

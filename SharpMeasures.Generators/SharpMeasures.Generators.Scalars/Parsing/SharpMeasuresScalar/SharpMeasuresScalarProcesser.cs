@@ -45,7 +45,7 @@ internal sealed class SharpMeasuresScalarProcesser : AProcesser<IProcessingConte
             difference = context.Type.AsNamedType();
         }
 
-        return new(definition.Unit!.Value, definition.Vector, definition.UseUnitBias, definition.ImplementSum, definition.ImplementDifference, difference, defaultUnitInstanceName, defaultUnitInstanceSymbol, definition.GenerateDocumentation, definition.Locations);
+        return new(definition.Unit!.Value, definition.Vector, definition.UseUnitBias, definition.ImplementSum, definition.ImplementDifference, difference, defaultUnitInstanceName, defaultUnitInstanceSymbol, definition.Locations);
     }
 
     private static IValidityWithDiagnostics VerifyRequiredPropertiesSet(RawSharpMeasuresScalarDefinition definition) => ValidityWithDiagnostics.ConditionalWithoutDiagnostics(definition.Locations.ExplicitlySetUnit);

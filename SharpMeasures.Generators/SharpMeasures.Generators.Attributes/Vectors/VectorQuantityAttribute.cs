@@ -60,11 +60,6 @@ public sealed class VectorQuantityAttribute : Attribute
     /// <summary>The symbol of the default unit instance.</summary>
     public string? DefaultSymbol { get; init; }
 
-    /// <summary>Dictates whether documentation should be generated for this quantity.</summary>
-    /// <remarks>If this property is not explicitly set, the entry [<i>SharpMeasures_GenerateDocumentation</i>] in the global AnalyzerConfig
-    /// file is used to determine whether documentation is generated - which in turn is <see langword="true"/> by default.</remarks>
-    public bool GenerateDocumentation { get; init; }
-
     /// <inheritdoc cref="VectorQuantityAttribute"/>
     /// <param name="unit"><inheritdoc cref="Unit" path="/summary"/><para><inheritdoc cref="Unit" path="/remarks"/></para></param>
     public VectorQuantityAttribute(Type unit)

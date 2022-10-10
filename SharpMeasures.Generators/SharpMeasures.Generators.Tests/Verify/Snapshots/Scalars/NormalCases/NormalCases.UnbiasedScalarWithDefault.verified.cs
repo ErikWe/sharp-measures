@@ -34,8 +34,8 @@ public partial class Length :
     /// <summary>Constructs a new <see cref="global::Length"/> representing { <paramref name="magnitude"/> }, when expressed in <paramref name="unitOfLength"/>.</summary>
     /// <param name="magnitude">The magnitude represented by the constructed <see cref="global::Length"/>, when expressed in <paramref name="unitOfLength"/>.</param>
     /// <param name="unitOfLength">The <see cref="global::UnitOfLength"/> in which <paramref name="magnitude"/> is expressed.</param>
-    /// <remarks>A <see cref="global::Length"/> may also be constructed as demonstrated below.
-    /// <code><see cref="global::Length"/> x = 2.3 * <see cref="global::Length.OneMetre"/>;</code>
+    /// <remarks>A new <see cref="global::Length"/> may also be constructed as demonstrated below.
+    /// <code><see cref="global::Length"/> x = 4.2 * <see cref="global::Length.OneMetre"/>;</code>
     /// </remarks>
     /// <exception cref="global::System.ArgumentNullException"/>
     public Length(global::SharpMeasures.Scalar magnitude, global::UnitOfLength unitOfLength)

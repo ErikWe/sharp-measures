@@ -27,8 +27,6 @@ internal sealed record class SpecializedSharpMeasuresVectorLocations : AAttribut
     public MinimalLocation? DefaultUnitInstanceName { get; init; }
     public MinimalLocation? DefaultUnitInstanceSymbol { get; init; }
 
-    public MinimalLocation? GenerateDocumentation { get; init; }
-
     public bool ExplicitlySetOriginalQuantity => OriginalQuantity is not null;
 
     public bool ExplicitlySetInheritOperations => InheritOperations is not null;
@@ -48,8 +46,6 @@ internal sealed record class SpecializedSharpMeasuresVectorLocations : AAttribut
 
     public bool ExplicitlySetDefaultUnitInstanceName => DefaultUnitInstanceName is not null;
     public bool ExplicitlySetDefaultUnitInstanceSymbol => DefaultUnitInstanceSymbol is not null;
-
-    public bool ExplicitlySetGenerateDocumentation => GenerateDocumentation is not null;
 
     protected override SpecializedSharpMeasuresVectorLocations Locations => this;
 

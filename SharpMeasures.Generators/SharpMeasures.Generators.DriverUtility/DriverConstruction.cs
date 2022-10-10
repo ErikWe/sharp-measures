@@ -2,6 +2,7 @@
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.Diagnostics;
 
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -15,18 +16,24 @@ public static class DriverConstruction
     private static CSharpParseOptions ParseOptions { get; } = new(languageVersion: LanguageVersion);
     private static CSharpCompilationOptions CompilationOptions { get; } = new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary);
 
-    public static GeneratorDriver ConstructAndRun<TGenerator>(string source, string documentationDirectory) where TGenerator : IIncrementalGenerator, new() => ConstructAndRun(source, new TGenerator(), documentationDirectory);
-    public static GeneratorDriver ConstructAndRun(string source, IIncrementalGenerator generator, string documentationDirectory) => Run(source, Construct(generator, documentationDirectory));
-    public static GeneratorDriver ConstructAndRun<TGenerator>(string source, string documentationDirectory, out Compilation compilation) where TGenerator : IIncrementalGenerator, new() => ConstructAndRun(source, new TGenerator(), documentationDirectory, out compilation);
-    public static GeneratorDriver ConstructAndRun(string source, IIncrementalGenerator generator, string documentationDirectory, out Compilation compilation) => RunAndUpdateCompilation(source, Construct(generator, documentationDirectory), out compilation);
+    public static GeneratorDriver ConstructAndRun<TGenerator>(string source, string documentationDirectory) where TGenerator : IIncrementalGenerator, new() => ConstructAndRun<TGenerator>(source, documentationDirectory, CustomAnalyzerConfigOptionsProvider.Empty);
+    public static GeneratorDriver ConstructAndRun(string source, IIncrementalGenerator generator, string documentationDirectory) => ConstructAndRun(source, generator, documentationDirectory, CustomAnalyzerConfigOptionsProvider.Empty);
+    public static GeneratorDriver ConstructAndRun<TGenerator>(string source, string documentationDirectory, out Compilation compilation) where TGenerator : IIncrementalGenerator, new() => ConstructAndRun<TGenerator>(source, documentationDirectory, CustomAnalyzerConfigOptionsProvider.Empty, out compilation);
+    public static GeneratorDriver ConstructAndRun(string source, IIncrementalGenerator generator, string documentationDirectory, out Compilation compilation) => ConstructAndRun(source, generator, documentationDirectory, CustomAnalyzerConfigOptionsProvider.Empty, out compilation);
 
-    public static GeneratorDriver Construct<TGenerator>(string documentationDirectory) where TGenerator : IIncrementalGenerator, new() => Construct(new TGenerator(), documentationDirectory);
+    public static GeneratorDriver ConstructAndRun<TGenerator>(string source, string documentationDirectory, AnalyzerConfigOptionsProvider optionsProvider) where TGenerator : IIncrementalGenerator, new() => ConstructAndRun(source, new TGenerator(), documentationDirectory, optionsProvider);
+    public static GeneratorDriver ConstructAndRun(string source, IIncrementalGenerator generator, string documentationDirectory, AnalyzerConfigOptionsProvider optionsProvider) => Run(source, Construct(generator, documentationDirectory, optionsProvider));
+    public static GeneratorDriver ConstructAndRun<TGenerator>(string source, string documentationDirectory, AnalyzerConfigOptionsProvider optionsProvider, out Compilation compilation) where TGenerator : IIncrementalGenerator, new() => ConstructAndRun(source, new TGenerator(), documentationDirectory, optionsProvider, out compilation);
+    public static GeneratorDriver ConstructAndRun(string source, IIncrementalGenerator generator, string documentationDirectory, AnalyzerConfigOptionsProvider optionsProvider, out Compilation compilation) => RunAndUpdateCompilation(source, Construct(generator, documentationDirectory, optionsProvider), out compilation);
 
-    public static GeneratorDriver Construct(IIncrementalGenerator generator, string documentationDirectory)
+    public static GeneratorDriver Construct<TGenerator>(string documentationDirectory) where TGenerator : IIncrementalGenerator, new() => Construct<TGenerator>(documentationDirectory, CustomAnalyzerConfigOptionsProvider.Empty);
+    public static GeneratorDriver Construct<TGenerator>(string documentationDirectory, AnalyzerConfigOptionsProvider optionsProvider) where TGenerator : IIncrementalGenerator, new() => Construct(new TGenerator(), documentationDirectory, optionsProvider);
+
+    public static GeneratorDriver Construct(IIncrementalGenerator generator, string documentationDirectory, AnalyzerConfigOptionsProvider optionsProvider)
     {
         ImmutableArray<AdditionalText> additionalFiles = GetAdditionalFiles(documentationDirectory);
 
-        return CSharpGeneratorDriver.Create(generator).AddAdditionalTexts(additionalFiles).WithUpdatedParseOptions(ParseOptions);
+        return CSharpGeneratorDriver.Create(generator).AddAdditionalTexts(additionalFiles).WithUpdatedAnalyzerConfigOptions(optionsProvider).WithUpdatedParseOptions(ParseOptions);
     }
 
     public static Compilation CreateCompilation(string source)

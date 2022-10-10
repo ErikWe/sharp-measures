@@ -5,7 +5,6 @@ using Microsoft.CodeAnalysis.Diagnostics;
 
 using SharpMeasures.Generators.Providers.AnalyzerConfig;
 
-using System.Globalization;
 using System.Threading;
 
 public static class GlobalAnalyzerConfigProvider
@@ -22,22 +21,25 @@ public static class GlobalAnalyzerConfigProvider
             }
 
             var documentationFileExtension = ParseDocumentationFileExtension(provider);
-            var generateDocumentationByDefault = ParseGenerateDocumentationByDefault(provider);
+            var printDocumentationTags = ParsePrintDocumentationTags(provider);
             var limitOneErrorPerDocumentationFile = ParseLimitOneErrorPerDocumentationFile(provider);
+            var generateDocumentation = ParseGenerateDocumentation(provider);
+
             var generatedFileHeaderContent = ParseGeneratedFileHeaderContent(provider);
 
             return GlobalAnalyzerConfig.Default with
             {
                 DocumentationFileExtension = documentationFileExtension,
-                GenerateDocumentationByDefault = generateDocumentationByDefault,
+                PrintDocumentationTags = printDocumentationTags,
+                GenerateDocumentation = generateDocumentation,
                 LimitOneErrorPerDocumentationFile = limitOneErrorPerDocumentationFile,
-                GeneratedFileHeaderContent = generatedFileHeaderContent
+                GeneratedFileHeaderLevel = generatedFileHeaderContent
             };
         }
 
         private static string ParseDocumentationFileExtension(AnalyzerConfigOptionsProvider provider)
         {
-            if (provider.GlobalOptions.TryGetValue(ConfigKeys.GenerateDocumentationByDefault, out var value) is false || value is null)
+            if (provider.GlobalOptions.TryGetValue(ConfigKeys.GenerateDocumentation, out var value) is false || value is null)
             {
                 return ".doc.txt";
             }
@@ -50,14 +52,14 @@ public static class GlobalAnalyzerConfigProvider
             return value;
         }
 
-        private static bool ParseGenerateDocumentationByDefault(AnalyzerConfigOptionsProvider provider)
+        private static bool ParsePrintDocumentationTags(AnalyzerConfigOptionsProvider provider)
         {
-            if (provider.GlobalOptions.TryGetValue(ConfigKeys.GenerateDocumentationByDefault, out var value) is false)
+            if (provider.GlobalOptions.TryGetValue(ConfigKeys.PrintDocumentationTags, out var value) is false)
             {
-                return true;
+                return false;
             }
 
-            return BooleanTransforms.TrueByDefault(value);
+            return BooleanTransforms.FalseByDefault(value);
         }
 
         private static bool ParseLimitOneErrorPerDocumentationFile(AnalyzerConfigOptionsProvider provider)
@@ -70,31 +72,29 @@ public static class GlobalAnalyzerConfigProvider
             return BooleanTransforms.TrueByDefault(value);
         }
 
-        private static GeneratedFileHeaderContent ParseGeneratedFileHeaderContent(AnalyzerConfigOptionsProvider provider)
+        private static bool ParseGenerateDocumentation(AnalyzerConfigOptionsProvider provider)
         {
-            if (provider.GlobalOptions.TryGetValue(ConfigKeys.GeneratedFileHeaderContent, out var value) is false || value is null)
+            if (provider.GlobalOptions.TryGetValue(ConfigKeys.GenerateDocumentation, out var value) is false)
             {
-                return GeneratedFileHeaderContent.All;
+                return true;
             }
 
-            var components = value.Replace(" ", string.Empty).Split(',');
+            return BooleanTransforms.TrueByDefault(value);
+        }
 
-            var includedContent = GeneratedFileHeaderContent.None;
-
-            for (int i = 0; i < components.Length; i++)
+        private static int ParseGeneratedFileHeaderContent(AnalyzerConfigOptionsProvider provider)
+        {
+            if (provider.GlobalOptions.TryGetValue(ConfigKeys.GeneratedFileHeaderLevel, out var value) is false || value is null)
             {
-                includedContent |= components[i].ToUpper(CultureInfo.InvariantCulture) switch
-                {
-                    "ALL" => GeneratedFileHeaderContent.All,
-                    "TOOL" => GeneratedFileHeaderContent.Tool,
-                    "VERSION" => GeneratedFileHeaderContent.Version,
-                    "DATE" => GeneratedFileHeaderContent.Date,
-                    "TIME" => GeneratedFileHeaderContent.Time,
-                    _ => GeneratedFileHeaderContent.None
-                };
+                return -1;
             }
 
-            return includedContent;
+            if (int.TryParse(value.Trim(), out var integerValue))
+            {
+                return integerValue;
+            }
+
+            return -1;
         }
     }
 }

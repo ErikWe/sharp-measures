@@ -69,7 +69,7 @@ internal sealed class SharpMeasuresVectorValidator : IProcesser<ISharpMeasuresVe
 
     private static SharpMeasuresVectorDefinition ProduceResult(SharpMeasuresVectorDefinition definition, NamedType? scalar, NamedType? difference, string? defaultUnitInstanceName, string? defaultUnitInstanceSymbol)
     {
-        return new(definition.Unit, scalar, definition.Dimension, definition.ImplementSum, definition.ImplementDifference, difference, defaultUnitInstanceName, defaultUnitInstanceSymbol, definition.GenerateDocumentation, definition.Locations);
+        return new(definition.Unit, scalar, definition.Dimension, definition.ImplementSum, definition.ImplementDifference, difference, defaultUnitInstanceName, defaultUnitInstanceSymbol, definition.Locations);
     }
 
     private IValidityWithDiagnostics ValidateTypeNotAlreadyUnit(ISharpMeasuresVectorValidationContext context, SharpMeasuresVectorDefinition definition)

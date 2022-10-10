@@ -20,8 +20,7 @@ internal sealed record class RawSpecializedSharpMeasuresVectorDefinition : ARawA
         ImplementDifference = symbolicDefinition.ImplementDifference,
         Difference = symbolicDefinition.Difference?.AsNamedType(),
         DefaultUnitInstanceName = symbolicDefinition.DefaultUnitInstanceName,
-        DefaultUnitInstanceSymbol = symbolicDefinition.DefaultUnitInstanceSymbol,
-        GenerateDocumentation = symbolicDefinition.GenerateDocumentation
+        DefaultUnitInstanceSymbol = symbolicDefinition.DefaultUnitInstanceSymbol
     };
 
     public NamedType? OriginalQuantity { get; init; }
@@ -43,8 +42,6 @@ internal sealed record class RawSpecializedSharpMeasuresVectorDefinition : ARawA
 
     public string? DefaultUnitInstanceName { get; init; }
     public string? DefaultUnitInstanceSymbol { get; init; }
-
-    public bool? GenerateDocumentation { get; init; }
 
     protected override RawSpecializedSharpMeasuresVectorDefinition Definition => this;
 

@@ -35,6 +35,8 @@ internal sealed class DefaultVectorDocumentation : IVectorDocumentationStrategy,
         Dimension = vector.Dimension;
         Unit = vector.Unit;
 
+        Scalar = vector.Scalar;
+
         DefaultUnitInstanceName = vector.DefaultUnitInstanceName;
         DefaultUnitInstanceSymbol = vector.DefaultUnitInstanceSymbol;
 
@@ -137,7 +139,7 @@ internal sealed class DefaultVectorDocumentation : IVectorDocumentationStrategy,
         {
             commonText = $"""
                 {commonText}
-                /// <remarks>A {VectorReference} may also be constructed as demonstrated below.
+                /// <remarks>A new {VectorReference} may also be constructed as demonstrated below.
                 /// <code>{VectorReference} x = ({ConstantVectorTexts.SampleValues(Dimension)}) * <see cref="{Scalar.Value.FullyQualifiedName}.{InterpretUnitBaseInstanceName(ExampleScalarUnitBaseInstanceName)}"/>;</code>
                 /// </remarks>
                 """;

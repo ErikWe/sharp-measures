@@ -51,10 +51,8 @@ internal static class ScalarSpecializationResolver
         var defaultUnitInstanceName = RecursivelySearchForDefined(scalarType, scalarPopulation, static (scalar) => scalar.Definition.DefaultUnitInstanceName);
         var defaultUnitInstanceSymbol = RecursivelySearchForDefined(scalarType, scalarPopulation, static (scalar) => scalar.Definition.DefaultUnitInstanceSymbol);
 
-        var generateDocumentation = RecursivelySearchForDefined(scalarType, scalarPopulation, static (scalar) => scalar.Definition.GenerateDocumentation);
-
         return new ResolvedScalarType(scalarType.Type, unit.Type.AsNamedType(), scalarBase.Definition.UseUnitBias, scalarType.Definition.OriginalQuantity, scalarType.Definition.ForwardsCastOperatorBehaviour, scalarType.Definition.BackwardsCastOperatorBehaviour, vector, implementSum!.Value,
-            implementDifference!.Value, difference, defaultUnitInstanceName, defaultUnitInstanceSymbol, scalarType.Operations, scalarType.Processes, scalarType.Constants, scalarType.Conversions, inheritedOperations, inheritedProcesses, inheritedConstants, inheritedConversions, includedUnitInstanceBases, includedUnitInstances, generateDocumentation);
+            implementDifference!.Value, difference, defaultUnitInstanceName, defaultUnitInstanceSymbol, scalarType.Operations, scalarType.Processes, scalarType.Constants, scalarType.Conversions, inheritedOperations, inheritedProcesses, inheritedConstants, inheritedConversions, includedUnitInstanceBases, includedUnitInstances);
     }
 
     private static NamedType? ResolveDifference(ScalarSpecializationType scalarType, IScalarPopulation scalarPopulation)

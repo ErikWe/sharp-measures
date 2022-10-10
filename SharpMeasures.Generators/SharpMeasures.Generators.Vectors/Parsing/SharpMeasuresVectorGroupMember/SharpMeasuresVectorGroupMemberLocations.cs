@@ -21,8 +21,6 @@ internal sealed record class SharpMeasuresVectorGroupMemberLocations : AAttribut
 
     public MinimalLocation? Dimension { get; init; }
 
-    public MinimalLocation? GenerateDocumentation { get; init; }
-
     MinimalLocation? IQuantityLocations.ImplementSum => null;
     MinimalLocation? IQuantityLocations.ImplementDifference => null;
     MinimalLocation? IQuantityLocations.Difference => null;
@@ -43,8 +41,6 @@ internal sealed record class SharpMeasuresVectorGroupMemberLocations : AAttribut
     public bool ExplicitlySetInheritUnitsFromMembers => InheritUnitsFromMembers is not null;
 
     public bool ExplicitlySetDimension => Dimension is not null;
-
-    public bool ExplicitlySetGenerateDocumentation => GenerateDocumentation is not null;
 
     bool IQuantityLocations.ExplicitlySetImplementSum => false;
     bool IQuantityLocations.ExplicitlySetImplementDifference => false;

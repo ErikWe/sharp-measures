@@ -48,8 +48,7 @@ internal sealed class SharpMeasuresVectorGroupProcesser : AProcesser<IProcessing
             difference = context.Type.AsNamedType();
         }
 
-        return new(definition.Unit!.Value, definition.Scalar, definition.ImplementSum, definition.ImplementDifference, difference, defaultUnitInstanceName, defaultUnitInstanceSymbol,
-            definition.GenerateDocumentation, definition.Locations);
+        return new(definition.Unit!.Value, definition.Scalar, definition.ImplementSum, definition.ImplementDifference, difference, defaultUnitInstanceName, defaultUnitInstanceSymbol, definition.Locations);
     }
 
     private static IValidityWithDiagnostics VerifyRequiredPropertiesSet(RawSharpMeasuresVectorGroupDefinition definition)

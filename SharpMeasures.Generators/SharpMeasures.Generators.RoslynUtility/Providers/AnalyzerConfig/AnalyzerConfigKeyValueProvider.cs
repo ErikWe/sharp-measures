@@ -8,8 +8,8 @@ using System.Threading;
 
 public static class BooleanTransforms
 {
-    public static AnalyzerConfigKeyValueProvider.DSingleOutputTransform<bool> FalseByDefault { get; } = (value) => value?.ToUpperInvariant() is "TRUE";
-    public static AnalyzerConfigKeyValueProvider.DSingleOutputTransform<bool> TrueByDefault { get; } = (value) => value?.ToUpperInvariant() is "FALSE" is false;
+    public static AnalyzerConfigKeyValueProvider.DSingleOutputTransform<bool> FalseByDefault { get; } = (value) => value?.Trim().ToUpperInvariant() is "TRUE";
+    public static AnalyzerConfigKeyValueProvider.DSingleOutputTransform<bool> TrueByDefault { get; } = (value) => value?.Trim().ToUpperInvariant() is "FALSE" is false;
     public static AnalyzerConfigKeyValueProvider.DSingleOutputTransform<bool?> NullByDefault { get; } = (value) =>
     {
         if (value is null)

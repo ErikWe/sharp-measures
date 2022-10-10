@@ -1,3 +1,6 @@
 is_global = true
 
 SharpMeasures_GenerateDocumentation = true
+SharpMeasures_PrintDocumentationTags = true
+
+SharpMeasures_GeneratedFileHeaderLevel = -1

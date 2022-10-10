@@ -86,10 +86,6 @@ public sealed class SpecializedScalarQuantityAttribute : Attribute
     /// <summary>The symbol of the default unit instance. By default, the value is inherited from the original quantity.</summary>
     public string? DefaultSymbol { get; init; }
 
-    /// <summary><inheritdoc cref="ScalarQuantityAttribute.GenerateDocumentation" path="/summary"/> By default, the behaviour is inherited from
-    /// the original quantity.</summary>
-    public bool GenerateDocumentation { get; init; }
-
     /// <inheritdoc cref="SpecializedScalarQuantityAttribute"/>
     /// <param name="originalScalar"><inheritdoc cref="OriginalScalar" path="/summary"/><para><inheritdoc cref="OriginalScalar" path="/remarks"/></para></param>
     public SpecializedScalarQuantityAttribute(Type originalScalar)

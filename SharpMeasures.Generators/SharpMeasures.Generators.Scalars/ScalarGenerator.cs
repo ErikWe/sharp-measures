@@ -48,26 +48,21 @@ public static class ScalarGenerator
             return new Optional<DataModel>();
         }
 
-        SourceBuildingContext sourceBuildingContext = new(input.Config.GeneratedFileHeaderContent, GetDocumentationStrategy(input.Scalar.Value, input.UnitPopulation, input.DocumentationDictionary, input.Config));
+        SourceBuildingContext sourceBuildingContext = new(input.Config.GeneratedFileHeaderLevel, GetDocumentationStrategy(input.Scalar.Value, input.UnitPopulation, input.DocumentationDictionary, input.Config));
         return new DataModel(input.Scalar.Value, input.UnitPopulation, input.ScalarPopulation, input.VectorPopulation, sourceBuildingContext);
     }
 
     private static IDocumentationStrategy GetDocumentationStrategy(ResolvedScalarType scalar, IUnitPopulation unitPopulation, DocumentationDictionary documentationDictionary, GlobalAnalyzerConfig config)
     {
-        var generateDocumentation = scalar.GenerateDocumentation ?? config.GenerateDocumentationByDefault;
-
-        if (generateDocumentation is false)
+        if (config.GenerateDocumentation is false)
         {
             return EmptyDocumentation.Instance;
         }
 
         DefaultDocumentation defaultDocumentation = new(scalar, unitPopulation);
 
-        if (documentationDictionary.TryGetValue(scalar.Type.Name, out DocumentationFile documentationFile))
-        {
-            return new FileDocumentation(documentationFile, defaultDocumentation);
-        }
+        documentationDictionary.TryGetValue(scalar.Type.QualifiedName, out DocumentationFile documentationFile);
 
-        return defaultDocumentation;
+        return new FileDocumentation(config.PrintDocumentationTags, documentationFile, defaultDocumentation);
     }
 }

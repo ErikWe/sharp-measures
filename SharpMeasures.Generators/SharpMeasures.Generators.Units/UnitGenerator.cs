@@ -30,26 +30,21 @@ public static class UnitGenerator
             return new Optional<DataModel>();
         }
 
-        SourceBuildingContext sourceBuildingContext = new(input.Config.GeneratedFileHeaderContent, GetDocumentationStrategy(input.Unit.Value, input.DocumentationDictionary, input.Config));
+        SourceBuildingContext sourceBuildingContext = new(input.Config.GeneratedFileHeaderLevel, GetDocumentationStrategy(input.Unit.Value, input.DocumentationDictionary, input.Config));
         return new DataModel(input.Unit.Value, input.UnitPopulation, sourceBuildingContext);
     }
 
     private static IDocumentationStrategy GetDocumentationStrategy(UnitType unit, DocumentationDictionary documentationDictionary, GlobalAnalyzerConfig config)
     {
-        var generateDocumentation = unit.Definition.GenerateDocumentation ?? config.GenerateDocumentationByDefault;
-
-        if (generateDocumentation is false)
+        if (config.GenerateDocumentation is false)
         {
             return EmptyDocumentation.Instance;
         }
 
         DefaultDocumentation defaultDocumentation = new(unit);
 
-        if (documentationDictionary.TryGetValue(unit.Type.Name, out DocumentationFile documentationFile))
-        {
-            return new FileDocumentation(documentationFile, defaultDocumentation);
-        }
+        documentationDictionary.TryGetValue(unit.Type.QualifiedName, out var documentationFile);
 
-        return defaultDocumentation;
+        return new FileDocumentation(config.PrintDocumentationTags, documentationFile, defaultDocumentation);
     }
 }

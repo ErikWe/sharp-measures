@@ -16,8 +16,6 @@ internal sealed record class SharpMeasuresVectorGroupDefinition : AAttributeDefi
     public string? DefaultUnitInstanceName { get; }
     public string? DefaultUnitInstanceSymbol { get; }
 
-    public bool? GenerateDocumentation { get; }
-
     bool? IQuantity.ImplementSum => ImplementSum;
     bool? IQuantity.ImplementDifference => ImplementDifference;
 
@@ -28,7 +26,7 @@ internal sealed record class SharpMeasuresVectorGroupDefinition : AAttributeDefi
     IVectorGroupBaseLocations IVectorGroupBase.Locations => Locations;
     IDefaultUnitInstanceLocations IDefaultUnitInstanceDefinition.DefaultUnitInstanceLocations => Locations;
 
-    public SharpMeasuresVectorGroupDefinition(NamedType unit, NamedType? scalar, bool implementSum, bool implementDifference, NamedType? difference, string? defaultUnitInstanceName, string? defaultUnitInstanceSymbol, bool? generateDocumentation, SharpMeasuresVectorGroupLocations locations) : base(locations)
+    public SharpMeasuresVectorGroupDefinition(NamedType unit, NamedType? scalar, bool implementSum, bool implementDifference, NamedType? difference, string? defaultUnitInstanceName, string? defaultUnitInstanceSymbol, SharpMeasuresVectorGroupLocations locations) : base(locations)
     {
         Unit = unit;
         Scalar = scalar;
@@ -40,7 +38,5 @@ internal sealed record class SharpMeasuresVectorGroupDefinition : AAttributeDefi
 
         DefaultUnitInstanceName = defaultUnitInstanceName;
         DefaultUnitInstanceSymbol = defaultUnitInstanceSymbol;
-
-        GenerateDocumentation = generateDocumentation;
     }
 }

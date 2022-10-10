@@ -62,8 +62,7 @@ internal sealed class SharpMeasuresVectorProcesser : AProcesser<IProcessingConte
             difference = context.Type.AsNamedType();
         }
 
-        return new(definition.Unit!.Value, definition.Scalar, dimension, definition.ImplementSum, definition.ImplementDifference, difference, defaultUnitInstanceName, defaultUnitInstanceSymbol,
-            definition.GenerateDocumentation, definition.Locations);
+        return new(definition.Unit!.Value, definition.Scalar, dimension, definition.ImplementSum, definition.ImplementDifference, difference, defaultUnitInstanceName, defaultUnitInstanceSymbol, definition.Locations);
     }
 
     private static IValidityWithDiagnostics VerifyRequiredPropertiesSet(RawSharpMeasuresVectorDefinition definition)

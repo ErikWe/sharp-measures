@@ -1,6 +1,7 @@
 ﻿namespace SharpMeasures.Generators.Tests.Verify;
 
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Text;
 
 using SharpMeasures.Generators.DriverUtility;
@@ -27,13 +28,19 @@ internal readonly record struct GeneratorVerifierSettings(bool AssertNoDiagnosti
 [UsesVerify]
 internal class GeneratorVerifier
 {
-    public static GeneratorVerifier Construct<TGenerator>(string source) where TGenerator : IIncrementalGenerator, new() => Construct(source, new TGenerator());
-    public static GeneratorVerifier Construct(string source, IIncrementalGenerator generator) => Construct(source, generator, GeneratorVerifierSettings.AllAssertions);
+    public static GeneratorVerifier Construct<TGenerator>(string source) where TGenerator : IIncrementalGenerator, new() => Construct<TGenerator>(source, CustomAnalyzerConfigOptionsProvider.Empty);
+    public static GeneratorVerifier Construct(string source, IIncrementalGenerator generator) => Construct(source, generator, CustomAnalyzerConfigOptionsProvider.Empty);
 
-    public static GeneratorVerifier Construct<TGenerator>(string source, GeneratorVerifierSettings settings) where TGenerator : IIncrementalGenerator, new() => Construct(source, new TGenerator(), settings);
-    public static GeneratorVerifier Construct(string source, IIncrementalGenerator generator, GeneratorVerifierSettings settings)
+    public static GeneratorVerifier Construct<TGenerator>(string source, AnalyzerConfigOptionsProvider optionsProvider) where TGenerator : IIncrementalGenerator, new() => Construct(source, new TGenerator(), optionsProvider);
+    public static GeneratorVerifier Construct(string source, IIncrementalGenerator generator, AnalyzerConfigOptionsProvider optionsProvider) => Construct(source, generator, GeneratorVerifierSettings.AllAssertions, optionsProvider);
+
+    public static GeneratorVerifier Construct<TGenerator>(string source, GeneratorVerifierSettings settings) where TGenerator : IIncrementalGenerator, new() => Construct<TGenerator>(source, settings, CustomAnalyzerConfigOptionsProvider.Empty);
+    public static GeneratorVerifier Construct(string source, IIncrementalGenerator generator, GeneratorVerifierSettings settings) => Construct(source, generator, settings, CustomAnalyzerConfigOptionsProvider.Empty);
+
+    public static GeneratorVerifier Construct<TGenerator>(string source, GeneratorVerifierSettings settings, AnalyzerConfigOptionsProvider optionsProvider) where TGenerator : IIncrementalGenerator, new() => Construct(source, new TGenerator(), settings, optionsProvider);
+    public static GeneratorVerifier Construct(string source, IIncrementalGenerator generator, GeneratorVerifierSettings settings, AnalyzerConfigOptionsProvider optionsProvider)
     {
-        var driver = DriverConstruction.ConstructAndRun(source, generator, ProjectPath.Path + @"\Documentation", out var compilation);
+        var driver = DriverConstruction.ConstructAndRun(source, generator, ProjectPath.Path + @"\Documentation", optionsProvider, out var compilation);
 
         return new(source, driver, compilation, settings);
     }

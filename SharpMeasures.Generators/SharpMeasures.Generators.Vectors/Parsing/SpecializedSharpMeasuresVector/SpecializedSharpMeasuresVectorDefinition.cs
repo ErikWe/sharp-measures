@@ -25,8 +25,6 @@ internal sealed record class SpecializedSharpMeasuresVectorDefinition : AAttribu
     public string? DefaultUnitInstanceName { get; }
     public string? DefaultUnitInstanceSymbol { get; }
 
-    public bool? GenerateDocumentation { get; }
-
     ISharpMeasuresObjectLocations ISharpMeasuresObject.Locations => Locations;
     IQuantityLocations IQuantity.Locations => Locations;
     IQuantitySpecializationLocations IQuantitySpecialization.Locations => Locations;
@@ -35,7 +33,7 @@ internal sealed record class SpecializedSharpMeasuresVectorDefinition : AAttribu
     IDefaultUnitInstanceLocations IDefaultUnitInstanceDefinition.DefaultUnitInstanceLocations => Locations;
 
     public SpecializedSharpMeasuresVectorDefinition(NamedType originalQuantity, bool inheritOperations, bool inheritProcesses, bool inheritConstants, bool inheritConversions, bool inheritUnits, ConversionOperatorBehaviour forwardsCastOperatorBehaviour, ConversionOperatorBehaviour backwardsCastOperatorBehaviour,
-        NamedType? scalar, bool? implementSum, bool? implementDifference, NamedType? difference, string? defaultUnitInstanceName, string? defaultUnitInstanceSymbol, bool? generateDocumentation, SpecializedSharpMeasuresVectorLocations locations) : base(locations)
+        NamedType? scalar, bool? implementSum, bool? implementDifference, NamedType? difference, string? defaultUnitInstanceName, string? defaultUnitInstanceSymbol, SpecializedSharpMeasuresVectorLocations locations) : base(locations)
     {
         OriginalQuantity = originalQuantity;
 
@@ -56,7 +54,5 @@ internal sealed record class SpecializedSharpMeasuresVectorDefinition : AAttribu
 
         DefaultUnitInstanceName = defaultUnitInstanceName;
         DefaultUnitInstanceSymbol = defaultUnitInstanceSymbol;
-
-        GenerateDocumentation = generateDocumentation;
     }
 }

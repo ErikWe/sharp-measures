@@ -39,13 +39,11 @@ internal sealed record class ResolvedScalarType : IResolvedScalarType
     public IReadOnlyList<string> IncludedUnitBaseInstanceNames { get; }
     public IReadOnlyList<string> IncludedUnitInstanceNames { get; }
 
-    public bool? GenerateDocumentation { get; }
-
     IReadOnlyList<IConvertibleQuantity> IResolvedQuantityType.Conversions => Conversions;
 
     public ResolvedScalarType(DefinedType type, NamedType unit, bool useUnitBias, NamedType? originalQuantity, ConversionOperatorBehaviour specializationForwardsConversionBehaviour, ConversionOperatorBehaviour specializationBackwardsConversionBehaviour, NamedType? vector,
         bool implementSum, bool implementDifference, NamedType? difference, string? defaultUnitInstanceName, string? defaultUnitInstanceSymbol, IReadOnlyList<IQuantityOperation> operations, IReadOnlyList<IQuantityProcess> processes, IReadOnlyList<IScalarConstant> constants, IReadOnlyList<IConvertibleQuantity> conversions,
-        IReadOnlyList<IQuantityOperation> inheritedOperations, IReadOnlyList<IQuantityProcess> inheritedProcesses, IReadOnlyList<IScalarConstant> inheritedConstants, IReadOnlyList<IConvertibleQuantity> inheritedConversions, IReadOnlyList<string> includedUnitBaseInstanceNames, IReadOnlyList<string> includedUnitInstanceNames, bool? generateDocumentation)
+        IReadOnlyList<IQuantityOperation> inheritedOperations, IReadOnlyList<IQuantityProcess> inheritedProcesses, IReadOnlyList<IScalarConstant> inheritedConstants, IReadOnlyList<IConvertibleQuantity> inheritedConversions, IReadOnlyList<string> includedUnitBaseInstanceNames, IReadOnlyList<string> includedUnitInstanceNames)
     {
         Type = type;
 
@@ -78,7 +76,5 @@ internal sealed record class ResolvedScalarType : IResolvedScalarType
 
         IncludedUnitBaseInstanceNames = includedUnitBaseInstanceNames.AsReadOnlyEquatable();
         IncludedUnitInstanceNames = includedUnitInstanceNames.AsReadOnlyEquatable();
-
-        GenerateDocumentation = generateDocumentation;
     }
 }

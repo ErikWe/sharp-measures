@@ -55,7 +55,7 @@ internal static class Execution
 
         private void Compose()
         {
-            StaticBuilding.AppendHeaderAndDirectives(Builder, Data.SourceBuildingContext.HeaderContent);
+            StaticBuilding.AppendHeaderAndDirectives(Builder, Data.SourceBuildingContext.HeaderContentLevel);
 
             NamespaceBuilding.AppendNamespace(Builder, Data.Vector.Namespace);
 

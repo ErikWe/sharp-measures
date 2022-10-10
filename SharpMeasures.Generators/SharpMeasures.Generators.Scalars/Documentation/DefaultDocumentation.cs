@@ -105,8 +105,8 @@ internal sealed class DefaultDocumentation : IDocumentationStrategy, IEquatable<
         {
             return $"""
                 {commonText}
-                /// <remarks>A {ScalarReference} may also be constructed as demonstrated below.
-                /// <code>{ScalarReference} x = 2.3 * <see cref="{Type.FullyQualifiedName}.{UnitBaseInstanceNameInterpreter.InterpretName(ExampleUnitBaseInstanceName)}"/>;</code>
+                /// <remarks>A new {ScalarReference} may also be constructed as demonstrated below.
+                /// <code>{ScalarReference} x = 4.2 * <see cref="{Type.FullyQualifiedName}.{UnitBaseInstanceNameInterpreter.InterpretName(ExampleUnitBaseInstanceName)}"/>;</code>
                 /// </remarks>
                 """;
         }

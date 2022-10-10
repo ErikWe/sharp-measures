@@ -23,8 +23,6 @@ internal sealed record class SymbolicSharpMeasuresScalarDefinition : ARawAttribu
     public string? DefaultUnitInstanceName { get; init; }
     public string? DefaultUnitInstanceSymbol { get; init; }
 
-    public bool? GenerateDocumentation { get; init; }
-
     protected override SymbolicSharpMeasuresScalarDefinition Definition => this;
 
     private SymbolicSharpMeasuresScalarDefinition() : base(SharpMeasuresScalarLocations.Empty) { }

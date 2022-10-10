@@ -91,7 +91,7 @@ internal sealed class DocumentationFileBuilder
 
         var text = fileText.ToString();
 
-        Name = DocumentationParsing.ReadName(file);
+        Name = DocumentationParsing.ReadName(file, configuration.DocumentationFileExtension);
         IsUtility = DocumentationParsing.ReadUtilityState(text);
         Dependencies = DocumentationParsing.GetDependencies(text);
         Content = DocumentationParsing.GetParsedTagDefinitions(text);

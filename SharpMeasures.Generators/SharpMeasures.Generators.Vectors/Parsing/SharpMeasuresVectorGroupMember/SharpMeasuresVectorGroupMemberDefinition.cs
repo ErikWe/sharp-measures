@@ -19,8 +19,6 @@ internal sealed record class SharpMeasuresVectorGroupMemberDefinition : AAttribu
 
     public int Dimension { get; }
 
-    public bool? GenerateDocumentation { get; }
-
     bool? IQuantity.ImplementSum => null;
     bool? IQuantity.ImplementDifference => null;
     NamedType? IQuantity.Difference => null;
@@ -34,7 +32,7 @@ internal sealed record class SharpMeasuresVectorGroupMemberDefinition : AAttribu
     IDefaultUnitInstanceLocations IDefaultUnitInstanceDefinition.DefaultUnitInstanceLocations => Locations;
 
     public SharpMeasuresVectorGroupMemberDefinition(NamedType vectorGroup, bool inheritOperations, bool inheritConversions, bool inheritUnits, bool inheritOperationsFromMembers, bool inheritProcessesFromMembers, bool inheritConstantsFromMembers,
-        bool inheritConversionsFromMembers, bool inheritUnitsFromMembers, int dimension, bool? generateDocumentation, SharpMeasuresVectorGroupMemberLocations locations) : base(locations)
+        bool inheritConversionsFromMembers, bool inheritUnitsFromMembers, int dimension, SharpMeasuresVectorGroupMemberLocations locations) : base(locations)
  {
         VectorGroup = vectorGroup;
 
@@ -49,7 +47,5 @@ internal sealed record class SharpMeasuresVectorGroupMemberDefinition : AAttribu
         InheritUnitsFromMembers = inheritUnitsFromMembers;
 
         Dimension = dimension;
-
-        GenerateDocumentation = generateDocumentation;
     }
 }

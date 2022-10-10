@@ -50,10 +50,8 @@ internal static class GroupSpecializationResolver
         var defaultUnitInstanceName = RecursivelySearchForDefined(groupType, vectorPopulation, static (vector) => vector.Definition.DefaultUnitInstanceName);
         var defaultUnitInstanceSymbol = RecursivelySearchForDefined(groupType, vectorPopulation, static (vector) => vector.Definition.DefaultUnitInstanceSymbol);
 
-        var generateDocumentation = RecursivelySearchForDefined(groupType, vectorPopulation, static (vector) => vector.Definition.GenerateDocumentation);
-
         return new ResolvedGroupType(groupType.Type, unit.Type.AsNamedType(), groupType.Definition.OriginalQuantity, groupType.Definition.ForwardsCastOperatorBehaviour, groupType.Definition.BackwardsCastOperatorBehaviour, scalar, implementSum!.Value, implementDifference!.Value,
-            difference, defaultUnitInstanceName, defaultUnitInstanceSymbol, membersByDimension, groupType.Operations, groupType.VectorOperations, groupType.Conversions, inheritedOperations, inheritedVectorOperations, inheritedConversions, includedUnitInstances, generateDocumentation);
+            difference, defaultUnitInstanceName, defaultUnitInstanceSymbol, membersByDimension, groupType.Operations, groupType.VectorOperations, groupType.Conversions, inheritedOperations, inheritedVectorOperations, inheritedConversions, includedUnitInstances);
     }
 
     private static IReadOnlyDictionary<int, NamedType> ResolveMembers(GroupSpecializationType groupType, IVectorPopulation vectorPopulation)

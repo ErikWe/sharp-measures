@@ -6,15 +6,14 @@ using System;
 
 internal sealed class GroupFileDocumentation : IGroupDocumentationStrategy, IEquatable<GroupFileDocumentation>
 {
-    private GroupDocumentationTags DocumentationTags { get; }
+    private bool PrintDocumentationTags { get; }
 
     private DocumentationFile DocumentationFile { get; }
     private IGroupDocumentationStrategy DefaultDocumentationStrategy { get; }
 
-    public GroupFileDocumentation(DocumentationFile documentationFile, IGroupDocumentationStrategy defaultDocumentationStrategy)
+    public GroupFileDocumentation(bool printDocumentationTags, DocumentationFile documentationFile, IGroupDocumentationStrategy defaultDocumentationStrategy)
     {
-        DocumentationTags = new();
-
+        PrintDocumentationTags = printDocumentationTags;
         DocumentationFile = documentationFile;
         DefaultDocumentationStrategy = defaultDocumentationStrategy;
     }
@@ -25,23 +24,31 @@ internal sealed class GroupFileDocumentation : IGroupDocumentationStrategy, IEqu
     public string VectorFactoryMethod(int dimension) => FromFileOrDefault((strategy) => strategy.VectorFactoryMethod(dimension));
     public string ComponentsFactoryMethod(int dimension) => FromFileOrDefault((strategy) => strategy.ComponentsFactoryMethod(dimension));
 
-    private string FromFileOrDefault(Func<IGroupDocumentationStrategy, string> defaultDelegate)
+    private string FromFileOrDefault(Func<IGroupDocumentationStrategy, string> target)
     {
-        string tag = defaultDelegate(DocumentationTags);
+        string tag = target(GroupDocumentationTags.Instance);
 
-        if (DocumentationFile.OptionallyResolveTag(tag) is not string { Length: > 0 } tagContent)
+        if (DocumentationFile?.OptionallyResolveTag(tag) is not string { Length: > 0 } tagContent)
         {
-            tagContent = defaultDelegate(DefaultDocumentationStrategy);
+            tagContent = target(DefaultDocumentationStrategy);
+        }
+
+        if (PrintDocumentationTags)
+        {
+            tagContent = $"""
+                {tagContent}
+                /// <sharpmeasures-tag>{tag}</sharpmeasures-tag>
+                """;
         }
 
         return tagContent;
     }
 
-    public bool Equals(GroupFileDocumentation? other) => other is not null && DocumentationTags == other.DocumentationTags && DocumentationFile == other.DocumentationFile && DefaultDocumentationStrategy.Equals(other.DefaultDocumentationStrategy);
+    public bool Equals(GroupFileDocumentation? other) => other is not null && PrintDocumentationTags == other.PrintDocumentationTags && DocumentationFile == other.DocumentationFile && DefaultDocumentationStrategy.Equals(other.DefaultDocumentationStrategy);
     public override bool Equals(object? obj) => obj is GroupFileDocumentation other && Equals(other);
 
     public static bool operator ==(GroupFileDocumentation? lhs, GroupFileDocumentation? rhs) => lhs?.Equals(rhs) ?? rhs is null;
     public static bool operator !=(GroupFileDocumentation? lhs, GroupFileDocumentation? rhs) => (lhs == rhs) is false;
 
-    public override int GetHashCode() => (DocumentationTags, DocumentationFile, DefaultDocumentationStrategy).GetHashCode();
+    public override int GetHashCode() => (PrintDocumentationTags, DocumentationFile, DefaultDocumentationStrategy).GetHashCode();
 }

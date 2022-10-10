@@ -4,7 +4,9 @@ using System;
 
 internal sealed class GroupDocumentationTags : IGroupDocumentationStrategy, IEquatable<GroupDocumentationTags>
 {
-    public GroupDocumentationTags() { }
+    public static GroupDocumentationTags Instance { get; } = new();
+
+    private GroupDocumentationTags() { }
 
     public string Header() => "Header";
 

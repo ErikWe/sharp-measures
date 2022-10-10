@@ -42,13 +42,11 @@ internal sealed record class ResolvedVectorType : IResolvedVectorType
 
     public IReadOnlyList<string> IncludedUnitInstanceNames { get; }
 
-    public bool? GenerateDocumentation { get; }
-
     IReadOnlyList<IConvertibleQuantity> IResolvedQuantityType.Conversions => Conversions;
 
     public ResolvedVectorType(DefinedType type, int dimension, NamedType? group, NamedType unit, NamedType? originalQuantity, ConversionOperatorBehaviour specializationForwardsConversionBehaviour, ConversionOperatorBehaviour specializationBackwardsConversionBehaviour, NamedType? scalar,
         bool implementSum, bool implementDifference, NamedType? difference, string? defaultUnitInstanceName, string? defaultUnitInstanceSymbol, IReadOnlyList<IQuantityOperation> operations, IReadOnlyList<IVectorOperation> vectorOperations, IReadOnlyList<IQuantityProcess> processes, IReadOnlyList<IVectorConstant> constants,
-        IReadOnlyList<IConvertibleQuantity> conversions, IReadOnlyList<IQuantityOperation> inheritedOperations, IReadOnlyList<IVectorOperation> inheritedVectorOperations, IReadOnlyList<IQuantityProcess> inheritedProcesses, IReadOnlyList<IVectorConstant> inheritedConstants, IReadOnlyList<IConvertibleQuantity> inheritedConversions, IReadOnlyList<string> includedUnitInstanceNames, bool? generateDocumentation)
+        IReadOnlyList<IConvertibleQuantity> conversions, IReadOnlyList<IQuantityOperation> inheritedOperations, IReadOnlyList<IVectorOperation> inheritedVectorOperations, IReadOnlyList<IQuantityProcess> inheritedProcesses, IReadOnlyList<IVectorConstant> inheritedConstants, IReadOnlyList<IConvertibleQuantity> inheritedConversions, IReadOnlyList<string> includedUnitInstanceNames)
     {
         Type = type;
 
@@ -84,7 +82,5 @@ internal sealed record class ResolvedVectorType : IResolvedVectorType
         InheritedConversions = inheritedConversions.AsReadOnlyEquatable();
 
         IncludedUnitInstanceNames = includedUnitInstanceNames.AsReadOnlyEquatable();
-
-        GenerateDocumentation = generateDocumentation;
     }
 }

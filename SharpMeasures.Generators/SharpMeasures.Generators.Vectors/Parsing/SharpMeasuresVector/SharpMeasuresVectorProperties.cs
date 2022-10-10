@@ -17,8 +17,7 @@ internal static class SharpMeasuresVectorProperties
         ImplementDifference,
         Difference,
         DefaultUnitInstanceName,
-        DefaultUnitInstanceSymbol,
-        GenerateDocumentation
+        DefaultUnitInstanceSymbol
     };
 
     private static SharpMeasuresVectorProperty<INamedTypeSymbol> Unit { get; } = new
@@ -75,12 +74,5 @@ internal static class SharpMeasuresVectorProperties
         name: nameof(VectorQuantityAttribute.DefaultSymbol),
         setter: static (definition, defaultUnitInstanceSymbol) => definition with { DefaultUnitInstanceSymbol = defaultUnitInstanceSymbol },
         locator: static (locations, defaultUnitInstanceSymbolLocation) => locations with { DefaultUnitInstanceSymbol = defaultUnitInstanceSymbolLocation }
-    );
-
-    private static SharpMeasuresVectorProperty<bool> GenerateDocumentation { get; } = new
-    (
-        name: nameof(VectorQuantityAttribute.GenerateDocumentation),
-        setter: static (definition, generateDocumentation) => definition with { GenerateDocumentation = generateDocumentation },
-        locator: static (locations, generateDocumentationLocation) => locations with { GenerateDocumentation = generateDocumentationLocation }
     );
 }

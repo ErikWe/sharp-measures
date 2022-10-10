@@ -2,13 +2,12 @@
 
 using SharpMeasures.Generators.Attributes.Parsing;
 
-internal sealed record class RawSharpMeasuresUnitDefinition : ARawSharpMeasuresObjectDefinition<RawSharpMeasuresUnitDefinition, SharpMeasuresUnitLocations>
+internal sealed record class RawSharpMeasuresUnitDefinition : ARawAttributeDefinition<RawSharpMeasuresUnitDefinition, SharpMeasuresUnitLocations>
 {
     public static RawSharpMeasuresUnitDefinition FromSymbolic(SymbolicSharpMeasuresUnitDefinition symbolicDefinition) => new RawSharpMeasuresUnitDefinition(symbolicDefinition.Locations) with
     {
         Quantity = symbolicDefinition.Quantity?.AsNamedType(),
-        BiasTerm = symbolicDefinition.BiasTerm,
-        GenerateDocumentation = symbolicDefinition.GenerateDocumentation
+        BiasTerm = symbolicDefinition.BiasTerm
     };
 
     protected override RawSharpMeasuresUnitDefinition Definition => this;

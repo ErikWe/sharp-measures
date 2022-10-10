@@ -57,7 +57,7 @@ internal sealed class DefaultGroupDocumentation : IGroupDocumentationStrategy, I
         var memberReference = MemberReference(dimension);
 
         var commonText = $$"""
-            /// <summary>Constructs a new {{memberReference}} representing { {{Texts.ParameterTupleBuilder.GetText(dimension)}} }, expressed in an arbitrary unit.</summary>
+            /// <summary>Constructs a new {{memberReference}} representing { {{Texts.ParameterTupleBuilder.GetText(dimension)}} }, when expressed in <paramref name="{{UnitParameterName}}"/>.</summary>
             {{Texts.GetScalarFactoryMethodBuilder(memberReference, UnitParameterName).GetText(dimension)}}
             /// <param name="{{UnitParameterName}}">The {{UnitReference}} in which the magnitudes of the components are expressed.</param>
             """;
@@ -66,7 +66,7 @@ internal sealed class DefaultGroupDocumentation : IGroupDocumentationStrategy, I
         {
             commonText = $"""
                 {commonText}
-                /// <remarks>A {memberReference} may also be constructed as demonstrated below.
+                /// <remarks>A new {memberReference} may also be constructed as demonstrated below.
                 /// <code>{memberReference} x = ({ConstantVectorTexts.SampleValues(dimension)}) * <see cref="{Scalar.Value.FullyQualifiedName}.One{ExampleScalarUnitBaseInstanceName}"/>;</code>
                 /// </remarks>
                 """;
@@ -80,7 +80,7 @@ internal sealed class DefaultGroupDocumentation : IGroupDocumentationStrategy, I
         var memberReference = MemberReference(dimension);
 
         var commonText = $$"""
-            /// <summary>Constructs a new {{memberReference}} representing { <paramref name="components"/> [<paramref name="{{UnitParameterName}}"/>] }.</summary>
+            /// <summary>Constructs a new {{memberReference}} representing { <paramref name="components"/> }, when expressed in <paramref name="{{UnitParameterName}}"/>.</summary>
             /// <param name="components">The magnitudes of the components of the constructed {{memberReference}}, expressed in <paramref name="{{UnitParameterName}}"/>.</param>
             /// <param name="{{UnitParameterName}}">The {{UnitReference}} in which <paramref name="components"/> is expressed.</param>
             """;

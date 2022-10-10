@@ -23,8 +23,7 @@ internal static class SpecializedSharpMeasuresScalarProperties
         ImplementDifference,
         Difference,
         DefaultUnitInstanceName,
-        DefaultUnitInstanceSymbol,
-        GenerateDocumentation
+        DefaultUnitInstanceSymbol
     };
 
     private static SpecializedSharpMeasuresScalarProperty<INamedTypeSymbol> OriginalQuantity { get; } = new
@@ -123,12 +122,5 @@ internal static class SpecializedSharpMeasuresScalarProperties
         name: nameof(SpecializedScalarQuantityAttribute.DefaultSymbol),
         setter: static (definition, defaultUnitInstanceSymbol) => definition with { DefaultUnitInstanceSymbol = defaultUnitInstanceSymbol },
         locator: static (locations, defaultUnitInstanceSymbolLocation) => locations with { DefaultUnitInstanceSymbol = defaultUnitInstanceSymbolLocation }
-    );
-
-    private static SpecializedSharpMeasuresScalarProperty<bool> GenerateDocumentation { get; } = new
-    (
-        name: nameof(SpecializedScalarQuantityAttribute.GenerateDocumentation),
-        setter: static (definition, generateDocumentation) => definition with { GenerateDocumentation = generateDocumentation },
-        locator: static (locations, generateDocumentationLocation) => locations with { GenerateDocumentation = generateDocumentationLocation }
     );
 }

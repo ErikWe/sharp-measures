@@ -25,8 +25,6 @@ internal sealed record class SymbolicSharpMeasuresVectorGroupMemberDefinition : 
 
     public int? Dimension { get; init; }
 
-    public bool? GenerateDocumentation { get; init; }
-
     protected override SymbolicSharpMeasuresVectorGroupMemberDefinition Definition => this;
 
     private SymbolicSharpMeasuresVectorGroupMemberDefinition(SharpMeasuresVectorGroupMemberLocations locations) : base(locations) { }

@@ -32,8 +32,6 @@ internal sealed record class SymbolicSpecializedSharpMeasuresScalarDefinition : 
     public string? DefaultUnitInstanceName { get; init; }
     public string? DefaultUnitInstanceSymbol { get; init; }
 
-    public bool? GenerateDocumentation { get; init; }
-
     protected override SymbolicSpecializedSharpMeasuresScalarDefinition Definition => this;
 
     private SymbolicSpecializedSharpMeasuresScalarDefinition(SpecializedSharpMeasuresScalarLocations locations) : base(locations) { }

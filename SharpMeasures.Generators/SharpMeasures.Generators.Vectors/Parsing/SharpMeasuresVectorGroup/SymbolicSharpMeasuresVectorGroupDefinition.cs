@@ -22,8 +22,6 @@ internal sealed record class SymbolicSharpMeasuresVectorGroupDefinition : ARawAt
     public string? DefaultUnitInstanceName { get; init; }
     public string? DefaultUnitInstanceSymbol { get; init; }
 
-    public bool? GenerateDocumentation { get; init; }
-
     protected override SymbolicSharpMeasuresVectorGroupDefinition Definition => this;
 
     private SymbolicSharpMeasuresVectorGroupDefinition(SharpMeasuresVectorGroupLocations locations) : base(locations) { }

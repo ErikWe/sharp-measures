@@ -19,8 +19,6 @@ internal sealed record class SharpMeasuresScalarLocations : AAttributeLocations<
     public MinimalLocation? DefaultUnitInstanceName { get; init; }
     public MinimalLocation? DefaultUnitInstanceSymbol { get; init; }
 
-    public MinimalLocation? GenerateDocumentation { get; init; }
-
     public bool ExplicitlySetUnit => Unit is not null;
     public bool ExplicitlySetVector => Vector is not null;
 
@@ -32,8 +30,6 @@ internal sealed record class SharpMeasuresScalarLocations : AAttributeLocations<
 
     public bool ExplicitlySetDefaultUnitInstanceName => DefaultUnitInstanceName is not null;
     public bool ExplicitlySetDefaultUnitInstanceSymbol => DefaultUnitInstanceSymbol is not null;
-
-    public bool ExplicitlySetGenerateDocumentation => GenerateDocumentation is not null;
 
     protected override SharpMeasuresScalarLocations Locations => this;
 

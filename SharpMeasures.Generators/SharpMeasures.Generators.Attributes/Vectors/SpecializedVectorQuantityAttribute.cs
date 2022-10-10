@@ -75,10 +75,6 @@ public sealed class SpecializedVectorQuantityAttribute : Attribute
     /// <remarks><inheritdoc cref="VectorQuantityAttribute.DefaultSymbol" path="/remarks"/></remarks>
     public string? DefaultSymbol { get; init; }
 
-    /// <summary><inheritdoc cref="VectorQuantityAttribute.GenerateDocumentation" path="/summary"/> By default, the behaviour is inherited from the original
-    /// quantity.</summary>
-    public bool GenerateDocumentation { get; init; }
-
     /// <inheritdoc cref="VectorQuantityAttribute"/>
     /// <param name="originalVector"><inheritdoc cref="OriginalVector" path="/summary"/><para><inheritdoc cref="OriginalVector" path="/remarks"/></para></param>
     public SpecializedVectorQuantityAttribute(Type originalVector)

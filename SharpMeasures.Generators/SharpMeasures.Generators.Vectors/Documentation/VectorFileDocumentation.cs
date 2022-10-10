@@ -8,13 +8,15 @@ using System;
 
 internal sealed class VectorFileDocumentation : IVectorDocumentationStrategy, IEquatable<VectorFileDocumentation>
 {
+    private bool PrintDocumentationTags { get; }
     private VectorDocumentationTags DocumentationTags { get; }
 
     private DocumentationFile DocumentationFile { get; }
     private IVectorDocumentationStrategy DefaultDocumentationStrategy { get; }
 
-    public VectorFileDocumentation(int dimension, DocumentationFile documentationFile, IVectorDocumentationStrategy defaultDocumentationStrategy)
+    public VectorFileDocumentation(bool printDocumentationTags, int dimension, DocumentationFile documentationFile, IVectorDocumentationStrategy defaultDocumentationStrategy)
     {
+        PrintDocumentationTags = printDocumentationTags;
         DocumentationTags = new(dimension);
 
         DocumentationFile = documentationFile;
@@ -131,23 +133,31 @@ internal sealed class VectorFileDocumentation : IVectorDocumentationStrategy, IE
     public string MultiplyUnhandledOperatorRHS() => FromFileOrDefault(static (strategy) => strategy.MultiplyUnhandledOperatorRHS());
     public string DivideUnhandledOperatorLHS() => FromFileOrDefault(static (strategy) => strategy.DivideUnhandledOperatorLHS());
 
-    private string FromFileOrDefault(Func<IVectorDocumentationStrategy, string> defaultDelegate)
+    private string FromFileOrDefault(Func<IVectorDocumentationStrategy, string> target)
     {
-        string tag = defaultDelegate(DocumentationTags);
+        string tag = target(DocumentationTags);
 
-        if (DocumentationFile.OptionallyResolveTag(tag) is not string { Length: > 0 } tagContent)
+        if (DocumentationFile?.OptionallyResolveTag(tag) is not string { Length: > 0 } tagContent)
         {
-            tagContent = defaultDelegate(DefaultDocumentationStrategy);
+            tagContent = target(DefaultDocumentationStrategy);
+        }
+
+        if (PrintDocumentationTags)
+        {
+            tagContent = $"""
+                {tagContent}
+                /// <sharpmeasures-tag>{tag}</sharpmeasures-tag>
+                """;
         }
 
         return tagContent;
     }
 
-    public bool Equals(VectorFileDocumentation? other) => other is not null && DocumentationTags == other.DocumentationTags && DocumentationFile == other.DocumentationFile && DefaultDocumentationStrategy.Equals(other.DefaultDocumentationStrategy);
+    public bool Equals(VectorFileDocumentation? other) => other is not null && PrintDocumentationTags == other.PrintDocumentationTags && DocumentationTags == other.DocumentationTags && DocumentationFile == other.DocumentationFile && DefaultDocumentationStrategy.Equals(other.DefaultDocumentationStrategy);
     public override bool Equals(object? obj) => obj is VectorFileDocumentation other && Equals(other);
 
     public static bool operator ==(VectorFileDocumentation? lhs, VectorFileDocumentation? rhs) => lhs?.Equals(rhs) ?? rhs is null;
     public static bool operator !=(VectorFileDocumentation? lhs, VectorFileDocumentation? rhs) => (lhs == rhs) is false;
 
-    public override int GetHashCode() => (DocumentationTags, DocumentationFile, DefaultDocumentationStrategy).GetHashCode();
+    public override int GetHashCode() => (PrintDocumentationTags, DocumentationTags, DocumentationFile, DefaultDocumentationStrategy).GetHashCode();
 }

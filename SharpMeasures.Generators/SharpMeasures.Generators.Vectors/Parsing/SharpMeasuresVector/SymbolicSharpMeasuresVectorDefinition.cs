@@ -23,8 +23,6 @@ internal sealed record class SymbolicSharpMeasuresVectorDefinition : ARawAttribu
     public string? DefaultUnitInstanceName { get; init; }
     public string? DefaultUnitInstanceSymbol { get; init; }
 
-    public bool? GenerateDocumentation { get; init; }
-
     protected override SymbolicSharpMeasuresVectorDefinition Definition => this;
 
     private SymbolicSharpMeasuresVectorDefinition(SharpMeasuresVectorLocations locations) : base(locations) { }

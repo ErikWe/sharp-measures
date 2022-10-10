@@ -19,8 +19,7 @@ internal static class SharpMeasuresVectorGroupMemberProperties
         InheritConstantsFromMembers,
         InheritConversionsFromMembers,
         InheritUnitsFromMembers,
-        Dimension,
-        GenerateDocumentation
+        Dimension
     };
 
     private static SharpMeasuresVectorGroupMemberProperty<INamedTypeSymbol> VectorGroup { get; } = new
@@ -91,12 +90,5 @@ internal static class SharpMeasuresVectorGroupMemberProperties
         name: nameof(VectorGroupMemberAttribute.Dimension),
         setter: static (definition, dimension) => definition with { Dimension = dimension },
         locator: static (locations, dimensionLocation) => locations with { Dimension = dimensionLocation }
-    );
-
-    private static SharpMeasuresVectorGroupMemberProperty<bool> GenerateDocumentation { get; } = new
-    (
-        name: nameof(VectorGroupMemberAttribute.GenerateDocumentation),
-        setter: static (definition, generateDocumentation) => definition with { GenerateDocumentation = generateDocumentation },
-        locator: static (locations, generateDocumentationLocation) => locations with { GenerateDocumentation = generateDocumentationLocation }
     );
 }

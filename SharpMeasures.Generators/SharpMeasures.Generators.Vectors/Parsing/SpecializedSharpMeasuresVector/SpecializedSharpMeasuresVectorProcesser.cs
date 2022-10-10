@@ -46,7 +46,7 @@ internal sealed class SpecializedSharpMeasuresVectorProcesser : AProcesser<IProc
     private static SpecializedSharpMeasuresVectorDefinition ProduceResult(RawSpecializedSharpMeasuresVectorDefinition definition, string? defaultUnitInstanceName, string? defaultUnitInstanceSymbol)
     {
         return new(definition.OriginalQuantity!.Value, definition.InheritDerivations, definition.InheritProcesses, definition.InheritConstants, definition.InheritConversions, definition.InheritUnits, definition.ForwardsCastOperatorBehaviour, definition.BackwardsCastOperatorBehaviour,
-            definition.Scalar, definition.ImplementSum, definition.ImplementDifference, definition.Difference, defaultUnitInstanceName, defaultUnitInstanceSymbol, definition.GenerateDocumentation, definition.Locations);
+            definition.Scalar, definition.ImplementSum, definition.ImplementDifference, definition.Difference, defaultUnitInstanceName, defaultUnitInstanceSymbol, definition.Locations);
     }
 
     private static IValidityWithDiagnostics VerifyRequiredPropertiesSet(RawSpecializedSharpMeasuresVectorDefinition definition)

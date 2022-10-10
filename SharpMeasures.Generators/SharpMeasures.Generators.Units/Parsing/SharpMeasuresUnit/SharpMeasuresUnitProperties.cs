@@ -11,8 +11,7 @@ internal static class SharpMeasuresUnitProperties
     public static IReadOnlyList<IAttributeProperty<SymbolicSharpMeasuresUnitDefinition>> AllProperties => new IAttributeProperty<SymbolicSharpMeasuresUnitDefinition>[]
     {
         Quantity,
-        BiasTerm,
-        GenerateDocumentation
+        BiasTerm
     };
 
     private static SharpMeasuresUnitProperty<INamedTypeSymbol> Quantity { get; } = new
@@ -27,12 +26,5 @@ internal static class SharpMeasuresUnitProperties
         name: nameof(UnitAttribute.BiasTerm),
         setter: static (definition, biasTerm) => definition with { BiasTerm = biasTerm },
         locator: static (locations, biasTermLocation) => locations with { BiasTerm = biasTermLocation }
-    );
-
-    private static SharpMeasuresUnitProperty<bool> GenerateDocumentation { get; } = new
-    (
-        name: nameof(UnitAttribute.GenerateDocumentation),
-        setter: static (definition, generateDocumentation) => definition with { GenerateDocumentation = generateDocumentation },
-        locator: static (locations, generateDocumentationLocation) => locations with { GenerateDocumentation = generateDocumentationLocation }
     );
 }

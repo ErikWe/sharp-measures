@@ -30,8 +30,6 @@ internal sealed record class SymbolicSpecializedSharpMeasuresVectorGroupDefiniti
     public string? DefaultUnitInstanceName { get; init; }
     public string? DefaultUnitInstanceSymbol { get; init; }
 
-    public bool? GenerateDocumentation { get; init; }
-
     protected override SymbolicSpecializedSharpMeasuresVectorGroupDefinition Definition => this;
 
     private SymbolicSpecializedSharpMeasuresVectorGroupDefinition(SpecializedSharpMeasuresVectorGroupLocations locations) : base(locations) { }

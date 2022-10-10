@@ -20,19 +20,16 @@ public static partial class Extensions
 
     public static bool RepresentsAttributeWithName(this AttributeSyntax attributeSyntax, SemanticModel semanticModel, string attributeName)
     {
-        if (attributeName.EndsWith(attributeSyntax.Name.ToString(), StringComparison.Ordinal)
-            || attributeName.EndsWith($"{attributeSyntax.Name}Attribute", StringComparison.Ordinal))
+        if (attributeName.EndsWith(attributeSyntax.Name.ToString(), StringComparison.Ordinal) || attributeName.EndsWith($"{attributeSyntax.Name}Attribute", StringComparison.Ordinal))
         {
-            if (semanticModel.GetSymbolInfo(attributeSyntax.Name).Symbol is IMethodSymbol attributeConstructor
-                && attributeConstructor.ContainingType.ToDisplayString() == attributeName)
+            if (semanticModel.GetSymbolInfo(attributeSyntax.Name).Symbol is IMethodSymbol attributeConstructor && attributeConstructor.ContainingType.ToDisplayString() == attributeName)
             {
                 return true;
             }
         }
         else
         {
-            return semanticModel.GetAliasInfo(attributeSyntax.Name) is IAliasSymbol { Target: INamedTypeSymbol aliasSymbol }
-                && aliasSymbol.ToDisplayString() == attributeName;
+            return semanticModel.GetAliasInfo(attributeSyntax.Name) is IAliasSymbol { Target: INamedTypeSymbol aliasSymbol } && aliasSymbol.ToDisplayString() == attributeName;
         }
 
         return false;

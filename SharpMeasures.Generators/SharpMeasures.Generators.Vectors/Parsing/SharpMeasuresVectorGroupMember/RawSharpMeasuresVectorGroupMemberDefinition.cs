@@ -16,8 +16,7 @@ internal sealed record class RawSharpMeasuresVectorGroupMemberDefinition : ARawA
         InheritConstantsFromMembers = symbolicDefinition.InheritConstantsFromMembers,
         InheritConversionsFromMembers = symbolicDefinition.InheritConversionsFromMembers,
         InheritUnitsFromMembers = symbolicDefinition.InheritUnitsFromMembers,
-        Dimension = symbolicDefinition.Dimension,
-        GenerateDocumentation = symbolicDefinition.GenerateDocumentation
+        Dimension = symbolicDefinition.Dimension
     };
 
     public NamedType? VectorGroup { get; init; }
@@ -33,8 +32,6 @@ internal sealed record class RawSharpMeasuresVectorGroupMemberDefinition : ARawA
     public bool? InheritUnitsFromMembers { get; init; }
 
     public int? Dimension { get; init; }
-
-    public bool? GenerateDocumentation { get; init; }
 
     string? IDefaultUnitInstanceDefinition.DefaultUnitInstanceName => null;
     string? IDefaultUnitInstanceDefinition.DefaultUnitInstanceSymbol => null;

@@ -9,11 +9,10 @@ internal sealed record class SharpMeasuresUnitLocations : AAttributeLocations<Sh
     public MinimalLocation? Quantity { get; init; }
 
     public MinimalLocation? BiasTerm { get; init; }
-    public MinimalLocation? GenerateDocumentation { get; init; }
 
     public bool ExplicitlySetQuantity => Quantity is not null;
+
     public bool ExplicitlySetBiasTerm => BiasTerm is not null;
-    public bool ExplicitlySetGenerateDocumentation => GenerateDocumentation is not null;
 
     protected override SharpMeasuresUnitLocations Locations => this;
 

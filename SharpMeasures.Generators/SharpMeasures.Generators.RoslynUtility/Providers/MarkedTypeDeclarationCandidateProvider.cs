@@ -138,7 +138,12 @@ public static class MarkedTypeDeclarationCandidateProvider
 
             TypeDeclarationSyntax declaration = (TypeDeclarationSyntax)context.Node;
 
-            return attributeStrategy.GetAttributeSyntax(context, declaration) is AttributeSyntax attributeSyntax ? new OutputData(declaration, attributeSyntax) : null;
+            if (attributeStrategy.GetAttributeSyntax(context, declaration) is AttributeSyntax attributeSyntax)
+            {
+                return new OutputData(declaration, attributeSyntax);
+            }
+
+            return null;
         }
 
         private readonly record struct OutputData(TypeDeclarationSyntax Declaration, AttributeSyntax AttributeSyntax);

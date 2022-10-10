@@ -17,8 +17,7 @@ internal static class SharpMeasuresScalarProperties
         ImplementDifference,
         Difference,
         DefaultUnitInstanceName,
-        DefaultUnitInstanceSymbol,
-        GenerateDocumentation
+        DefaultUnitInstanceSymbol
     };
 
     private static SharpMeasuresScalarProperty<INamedTypeSymbol> Unit { get; } = new
@@ -75,12 +74,5 @@ internal static class SharpMeasuresScalarProperties
         name: nameof(ScalarQuantityAttribute.DefaultSymbol),
         setter: static (definition, defaultUnitInstanceSymbol) => definition with { DefaultUnitInstanceSymbol = defaultUnitInstanceSymbol },
         locator: static (locations, defaultUnitInstanceSymbolLocation) => locations with { DefaultUnitInstanceSymbol = defaultUnitInstanceSymbolLocation }
-    );
-
-    private static SharpMeasuresScalarProperty<bool> GenerateDocumentation { get; } = new
-    (
-        name: nameof(ScalarQuantityAttribute.GenerateDocumentation),
-        setter: static (definition, generateDocumentation) => definition with { GenerateDocumentation = generateDocumentation },
-        locator: static (locations, generateDocumentationLocation) => locations with { GenerateDocumentation = generateDocumentationLocation }
     );
 }

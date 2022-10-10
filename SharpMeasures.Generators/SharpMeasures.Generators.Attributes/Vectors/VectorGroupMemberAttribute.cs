@@ -63,9 +63,6 @@ public sealed class VectorGroupMemberAttribute : Attribute
     /// <inheritdoc cref="VectorQuantityAttribute.Dimension"/>
     public int Dimension { get; init; }
 
-    /// <summary><inheritdoc cref="VectorQuantityAttribute.GenerateDocumentation" path="/summary"/> By default, the behaviour is inherited from the vector group.</summary>
-    public bool GenerateDocumentation { get; init; }
-
     /// <inheritdoc cref="VectorGroupMemberAttribute"/>
     /// <param name="vectorGroup"><inheritdoc cref="VectorGroup" path="/summary"/><para><inheritdoc cref="VectorGroup" path="/remarks"/></para></param>
     public VectorGroupMemberAttribute(Type vectorGroup)
