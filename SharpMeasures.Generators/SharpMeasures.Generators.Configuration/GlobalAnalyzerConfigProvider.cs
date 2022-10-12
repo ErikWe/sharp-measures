@@ -39,7 +39,7 @@ public static class GlobalAnalyzerConfigProvider
 
         private static string ParseDocumentationFileExtension(AnalyzerConfigOptionsProvider provider)
         {
-            if (provider.GlobalOptions.TryGetValue(ConfigKeys.GenerateDocumentation, out var value) is false || value is null)
+            if (provider.GlobalOptions.TryGetValue(ConfigKeys.DocumentationFileExtension, out var value) is false || value is null)
             {
                 return ".doc.txt";
             }
