@@ -82,7 +82,7 @@ internal sealed class DefaultVectorDocumentation : IVectorDocumentationStrategy,
         return null;
     }
 
-    public string Header() => $"""/// <summary>A measure of the {Dimension}-dimensional vector quantity {DimensionParsingUtility.InterpretNameWithoutDimension(Type.Name)}, expressed in {UnitReference}.</summary>""";
+    public string Header() => $"""/// <summary>A measure of the {Dimension}-dimensional vector quantity {SourceBuildingUtility.ToQuantityName(DimensionParsingUtility.InterpretNameWithoutDimension(Type.Name))}, expressed in {UnitReference}.</summary>""";
 
     public string Zero() => $$"""/// <summary>The {{VectorReference}} representing { {{ConstantVectorTexts.Zeros(Dimension)}} }.</summary>""";
     public string Constant(IVectorConstant constant)

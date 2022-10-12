@@ -53,7 +53,7 @@ internal sealed class DefaultDocumentation : IDocumentationStrategy, IEquatable<
         return null;
     }
 
-    public string Header() => $"""/// <summary>A measure of the scalar quantity {Type.Name}, expressed in {UnitReference}.</summary>""";
+    public string Header() => $"""/// <summary>A measure of the scalar quantity {SourceBuildingUtility.ToQuantityName(Type.Name)}, expressed in {UnitReference}.</summary>""";
     public string Zero() => $$"""/// <summary>The {{ScalarReference}} representing { 0 }.</summary>""";
 
     public string Constant(IScalarConstant constant)
