@@ -83,4 +83,5 @@ Measures1440 | Usage | Error | Invalid dimension of vector constant
 Measures1460 | Usage | Error | Vector does not support cross product
 Measures1800 | Usage | Error | Unrecognized enum value
 Measures1900 | Documentation | Error | Unresolved documentation dependency
-Measures1901 | Documentation | Error | Documentation tag not found
+Measures1901 | Documentation | Error | Duplicate documentation tag
+Measures1902 | Documentation | Error | Documentation tag not found

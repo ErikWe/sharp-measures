@@ -22,10 +22,7 @@ public sealed class DocumentationDictionaryProvider
     {
         DocumentationDictionaryProvider outputProvider = new(diagnosticsStrategy);
 
-        var documentationAndDiagnostics = Construct(outputProvider, additionalTextProvider, configurationProvider);
-
-        context.ReportDiagnostics(documentationAndDiagnostics);
-        return documentationAndDiagnostics.ExtractResult();
+        return Construct(outputProvider, additionalTextProvider, configurationProvider).ReportDiagnostics(context);
     }
 
     private IDiagnosticsStrategy DiagnosticsStrategy { get; }
@@ -54,7 +51,7 @@ public sealed class DocumentationDictionaryProvider
             return new Optional<AdditionalText>();
         }
 
-        if (data.File.Path.EndsWith(data.Configuration.DocumentationFileExtension, StringComparison.Ordinal))
+        if (data.File.Path.EndsWith(data.Configuration.DocumentationFileExtension, StringComparison.OrdinalIgnoreCase))
         {
             return data.File;
         }

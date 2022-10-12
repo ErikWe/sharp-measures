@@ -1,0 +1,15 @@
+﻿[
+  {
+    Id: Measures1900,
+    Title: Unresolved documentation dependency,
+    Severity: Error,
+    WarningLevel: 0,
+    Location: {ProjectDirectory}Diagnostics\Documentation\UnresolvedDocumentationDependencyFiles\A.doc.txt: (0,0)-(0,15),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: The documentation file {0} has dependency "{1}", which was not recognized as a documentation file,
+    Message: The documentation file A has dependency "Test", which was not recognized as a documentation file,
+    Category: Documentation,
+    CustomTags: []
+  }
+]

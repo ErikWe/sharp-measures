@@ -82,6 +82,7 @@ internal sealed class DocumentationFileBuilder
 
     private GlobalAnalyzerConfig Configuration { get; }
     private bool HasReportedOneUnresolvedDependency { get; set; }
+    private bool HasReportedOneDuplicateTag { get; set; }
     private bool HasReportedOneMissingTag { get; set; }
 
     private DocumentationFileBuilder(AdditionalText file, SourceText fileText, IDiagnosticsStrategy diagnosticsStrategy, GlobalAnalyzerConfig configuration)
@@ -91,13 +92,17 @@ internal sealed class DocumentationFileBuilder
 
         var text = fileText.ToString();
 
+        DiagnosticsStrategy = diagnosticsStrategy;
+        Configuration = configuration;
+
         Name = DocumentationParsing.ReadName(file, configuration.DocumentationFileExtension);
         IsUtility = DocumentationParsing.ReadUtilityState(text);
         Dependencies = DocumentationParsing.GetDependencies(text);
-        Content = DocumentationParsing.GetParsedTagDefinitions(text);
 
-        DiagnosticsStrategy = diagnosticsStrategy;
-        Configuration = configuration;
+        var contentWithDiagnostics = DocumentationParsing.GetParsedTagDefinitions(text, CreateDuplicateTagDiagnostics);
+
+        Content = contentWithDiagnostics.Result;
+        Diagnostics.AddRange(contentWithDiagnostics);
     }
 
     public DocumentationFile Finalize() => new(Name, File, Content.AsReadOnlyEquatable(), DiagnosticsStrategy, Configuration, HasReportedOneMissingTag);
@@ -222,16 +227,34 @@ internal sealed class DocumentationFileBuilder
                     line = FileText.ToString().Take(match.Index).Count(static (character) => character is '\r');
                 }
 
+                HasReportedOneUnresolvedDependency = true;
+
                 var textSpan = FileText.Lines[line].Span;
                 LinePositionSpan lineSpan = new(new LinePosition(line, 0), new LinePosition(line, textSpan.Length - 1));
                 var location = Location.Create(File.Path, new TextSpan(match.Index, match.Length), lineSpan);
 
-                HasReportedOneUnresolvedDependency = true;
                 return DiagnosticsStrategy.UnresolvedDocumentationDependency(location, Name, dependency);
             }
         }
 
         return null;
+    }
+
+    private Diagnostic? CreateDuplicateTagDiagnostics(string tag)
+    {
+        if (DiagnosticsStrategy.GenerateDiagnostics is false || Configuration.LimitOneErrorPerDocumentationFile && HasReportedOneDuplicateTag)
+        {
+            return null;
+        }
+
+        HasReportedOneDuplicateTag = true;
+
+        if (FileText.Lines.Count is 0)
+        {
+            return DiagnosticsStrategy.DocumentationFileDuplicateTag(Location.None, Name, tag);
+        }
+
+        return DiagnosticsStrategy.DocumentationFileDuplicateTag(GetFirstLineLocation(), Name, tag);
     }
 
     private Diagnostic? CreateMissingTagDiagnostics(string tag)
@@ -248,10 +271,13 @@ internal sealed class DocumentationFileBuilder
             return DiagnosticsStrategy.DocumentationFileMissingRequestedTag(Location.None, Name, tag);
         }
 
+        return DiagnosticsStrategy.DocumentationFileMissingRequestedTag(GetFirstLineLocation(), Name, tag);
+    }
+
+    private Location GetFirstLineLocation()
+    {
         var textSpan = FileText.Lines[0].Span;
         LinePositionSpan lineSpan = new(new LinePosition(0, 0), new LinePosition(0, textSpan.Length - 1));
-        var location = Location.Create(File.Path, textSpan, lineSpan);
-
-        return DiagnosticsStrategy.DocumentationFileMissingRequestedTag(location, Name, tag);
+        return Location.Create(File.Path, textSpan, lineSpan);
     }
 }

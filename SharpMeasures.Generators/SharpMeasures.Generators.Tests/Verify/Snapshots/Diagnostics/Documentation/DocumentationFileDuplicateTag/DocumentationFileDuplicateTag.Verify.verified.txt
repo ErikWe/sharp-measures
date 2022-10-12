@@ -1,0 +1,15 @@
+﻿[
+  {
+    Id: Measures1901,
+    Title: Duplicate documentation tag,
+    Severity: Error,
+    WarningLevel: 0,
+    Location: {ProjectDirectory}Diagnostics\Documentation\DocumentationFileDuplicateTagFiles\A.doc.txt: (0,0)-(0,7),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: The documentation file {0} contains multiple definitions of "{1}",
+    Message: The documentation file A contains multiple definitions of "Header",
+    Category: Documentation,
+    CustomTags: []
+  }
+]

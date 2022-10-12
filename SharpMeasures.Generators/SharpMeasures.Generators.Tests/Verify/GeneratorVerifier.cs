@@ -17,12 +17,12 @@ using VerifyXunit;
 
 using Xunit;
 
-internal readonly record struct GeneratorVerifierSettings(bool AssertNoDiagnosticsFromGeneratedCode, bool AssertNoErrorsOrWarningsFromTestCode)
+internal readonly record struct GeneratorVerifierSettings(bool AssertNoDiagnosticsFromGeneratedCode, bool AssertNoErrorsOrWarningsFromTestCode, string DocumentationPath)
 {
-    public static GeneratorVerifierSettings AllAssertions { get; } = new(true, true);
-    public static GeneratorVerifierSettings TestCodeAssertions { get; } = new(false, true);
-    public static GeneratorVerifierSettings GeneratedCodeAssertions { get; } = new(true, false);
-    public static GeneratorVerifierSettings NoAssertions { get; } = new(false, false);
+    public static GeneratorVerifierSettings AllAssertions { get; } = new(true, true, @"\None");
+    public static GeneratorVerifierSettings TestCodeAssertions { get; } = new(false, true, @"\None");
+    public static GeneratorVerifierSettings GeneratedCodeAssertions { get; } = new(true, false, @"\None");
+    public static GeneratorVerifierSettings NoAssertions { get; } = new(false, false, @"\None");
 }
 
 [UsesVerify]
@@ -40,7 +40,7 @@ internal class GeneratorVerifier
     public static GeneratorVerifier Construct<TGenerator>(string source, GeneratorVerifierSettings settings, AnalyzerConfigOptionsProvider optionsProvider) where TGenerator : IIncrementalGenerator, new() => Construct(source, new TGenerator(), settings, optionsProvider);
     public static GeneratorVerifier Construct(string source, IIncrementalGenerator generator, GeneratorVerifierSettings settings, AnalyzerConfigOptionsProvider optionsProvider)
     {
-        var driver = DriverConstruction.ConstructAndRun(source, generator, ProjectPath.Path + @"\Documentation", optionsProvider, out var compilation);
+        var driver = DriverConstruction.ConstructAndRun(source, generator, ProjectPath.Path + settings.DocumentationPath, optionsProvider, out var compilation);
 
         return new(source, driver, compilation, settings);
     }

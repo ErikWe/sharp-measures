@@ -2,6 +2,9 @@
 
 using Microsoft.CodeAnalysis;
 
+using SharpMeasures.Generators.Diagnostics;
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
@@ -32,18 +35,32 @@ internal static class DocumentationParsing
 
     public static MatchCollection MatchTagDefinitions(string text) => TagDefinitionRegex.Matches(text);
 
-    public static Dictionary<string, string> GetParsedTagDefinitions(string text)
+    public static IResultWithDiagnostics<Dictionary<string, string>> GetParsedTagDefinitions(string text) => GetParsedTagDefinitions(text, (_) => null);
+    public static IResultWithDiagnostics<Dictionary<string, string>> GetParsedTagDefinitions(string text, Func<string, Diagnostic?> diagnosticsDelegate)
     {
         MatchCollection matches = MatchTagDefinitions(text);
 
         Dictionary<string, string> content = new(matches.Count);
+        List<Diagnostic> allDiagnostics = new();
 
         foreach (Match match in matches)
         {
+            var tag = match.Groups["tag"].Value;
+
+            if (content.ContainsKey(tag))
+            {
+                if (diagnosticsDelegate(tag) is Diagnostic diagnostics)
+                {
+                    allDiagnostics.Add(diagnostics);
+                }
+
+                continue;
+            }
+
             content[match.Groups["tag"].Value] = match.Groups["content"].Value;
         }
 
-        return content;
+        return ResultWithDiagnostics.Construct(content, allDiagnostics);
     }
 
     public static MatchCollection MatchInvokations(string text) => InvokationIdentifierRegex.Matches(text);
