@@ -54,11 +54,10 @@ public readonly record struct Scalar : IScalarQuantity<Scalar>, IComparable<Scal
     /// <summary>Computes the ceiling of <see langword="this"/>.</summary>
     public Scalar Ceiling() => Math.Ceiling(Value);
     /// <summary>Rounds <see langword="this"/> to the nearest integer value.</summary>
-    /// <remarks>Midpoint values are rounded to the nearest even integer value. This is consistent with <see cref="Math.Round(double)"/>.</remarks>
+    /// <remarks>Midpoint values are rounded to the nearest even integer value. The behaviour is consistent with <see cref="Math.Round(double)"/>.</remarks>
     public Scalar Round() => Math.Round(Value);
     /// <summary>Computes the sign of <see langword="this"/>. { 1 } is returned if <see langword="this"/> is positive, { -1 } is returned if
     /// <see langword="this"/> is negative, and { 0 } is returned if <see langword="this"/> is zero.</summary>
-    /// <returns></returns>
     public int Sign() => Math.Sign(Value);
 
     /// <summary>Computes { <see langword="this"/> ^ <paramref name="exponent"/> }.</summary>
@@ -81,7 +80,7 @@ public readonly record struct Scalar : IScalarQuantity<Scalar>, IComparable<Scal
     /// <param name="other"><see langword="this"/> is compared to this value.</param>
     /// <remarks>The behaviour is consistent with <see cref="double.CompareTo(double)"/>.</remarks>
     public int CompareTo(Scalar other) => Value.CompareTo(other.Value);
-    /// <summary>Produces a description of <see langword="this"/> containing the represented value.</summary>
+    /// <summary>Produces a description of <see langword="this"/> containing the represented <see cref="Value"/>, using the current culture.</summary>
     public override string ToString() => Value.ToString(CultureInfo.CurrentCulture);
 
     /// <inheritdoc/>

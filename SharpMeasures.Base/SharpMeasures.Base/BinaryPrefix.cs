@@ -5,23 +5,23 @@ using System;
 /// <summary>Describes a binary prefix. Common <see cref="BinaryPrefix"/> exists as static properties.</summary>
 public readonly record struct BinaryPrefix : IPrefix, IComparable<BinaryPrefix>
 {
-    /// <summary>Denotes that the value should be scaled by [2^80 = (1 024)^8]. Usually written as [Yi].</summary>
+    /// <summary>Indicates that the value should be scaled by { 2 ^ 80 = 1 024 ^ 8 }. Usually denoted by [Yi].</summary>
     public static BinaryPrefix Yobi { get; } = ThousandTwentyFourToThePower(8);
-    /// <summary>Denotes that the value should be scaled by [2^70 = (1 024)^7]. Usually written as [Zi].</summary>
+    /// <summary>Indicates that the value should be scaled by { 2 ^ 70 = 1 024 ^ 7 }. Usually denoted by [Zi].</summary>
     public static BinaryPrefix Zebi { get; } = ThousandTwentyFourToThePower(7);
-    /// <summary>Denotes that the value should be scaled by [2^60 = (1 024)^6]. Usually written as [Ei].</summary>
+    /// <summary>Indicates that the value should be scaled by { 2 ^ 60 = 1 024 ^ 6 }. Usually denoted by [Ei].</summary>
     public static BinaryPrefix Exbi { get; } = ThousandTwentyFourToThePower(6);
-    /// <summary>Denotes that the value should be scaled by [2^50 = (1 024)^5]. Usually written as [Pi].</summary>
+    /// <summary>Indicates that the value should be scaled by { 2 ^ 50 = 1 024 ^ 5 }. Usually denoted by [Pi].</summary>
     public static BinaryPrefix Pebi { get; } = ThousandTwentyFourToThePower(5);
-    /// <summary>Denotes that the value should be scaled by [2^40 = (1 024)^4]. Usually written as [Ti].</summary>
+    /// <summary>Indicates that the value should be scaled by { 2 ^ 40 = 1 024 ^ 4 }. Usually denoted by [Ti].</summary>
     public static BinaryPrefix Tebi { get; } = ThousandTwentyFourToThePower(4);
-    /// <summary>Denotes that the value should be scaled by [2^30 = (1 024)^3]. Usually written as [Gi].</summary>
+    /// <summary>Indicates that the value should be scaled by { 2 ^ 30 = 1 024 ^ 3 }. Usually denoted by [Gi].</summary>
     public static BinaryPrefix Gibi { get; } = ThousandTwentyFourToThePower(3);
-    /// <summary>Denotes that the value should be scaled by [2^20 = (1 024)^2 = 1 048 576]. Usually written as [Mi].</summary>
+    /// <summary>Indicates that the value should be scaled by { 2 ^ 20 = 1 024 ^ 2 = 1 048 576 }. Usually denoted by [Mi].</summary>
     public static BinaryPrefix Mebi { get; } = ThousandTwentyFourToThePower(2);
-    /// <summary>Denotes that the value should be scaled by [2^10 = 1 024]. Usually written as [Ki].</summary>
+    /// <summary>Indicates that the value should be scaled by { 2 ^ 10 = 1 024 }. Usually denoted by [Ki].</summary>
     public static BinaryPrefix Kibi { get; } = ThousandTwentyFourToThePower(1);
-    /// <summary>Denotes that the value should not be scaled, or scaled by one.</summary>
+    /// <summary>Indicates that the value should not be scaled.</summary>
     public static BinaryPrefix Identity { get; } = new(1);
 
     /// <summary>Constructs a custom <see cref="BinaryPrefix"/>, describing a factor { 2 ^ <paramref name="exponent"/> }.</summary>
@@ -44,8 +44,8 @@ public readonly record struct BinaryPrefix : IPrefix, IComparable<BinaryPrefix>
 
     /// <inheritdoc cref="MetricPrefix.CompareTo(MetricPrefix)"/>
     public int CompareTo(BinaryPrefix other) => Factor.CompareTo(other.Factor);
-    /// <inheritdoc cref="MetricPrefix.ToString"/>
-    public override string ToString() => $"{Factor}x";
+    /// <summary>Produces a description of <see langword="this"/> containing the represented <see cref="Factor"/>.</summary>
+    public override string ToString() => $"{Factor}";
 
     /// <inheritdoc cref="MetricPrefix.operator &lt;"/>
     public static bool operator <(BinaryPrefix x, BinaryPrefix y) => x.Factor < y.Factor;

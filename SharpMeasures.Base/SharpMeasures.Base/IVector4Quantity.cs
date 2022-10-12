@@ -17,10 +17,10 @@ public interface IVector4Quantity
     /// <summary>The magnitudes of the X, Y, Z, and W components of <see langword="this"/>.</summary>
     public abstract Vector4 Components { get; }
 
-    /// <summary>Computes the magnitude / norm / length of <see langword="this"/>.</summary>
+    /// <summary>Computes the magnitude of <see langword="this"/>.</summary>
     /// <remarks>For improved performance, consider preferring <see cref="SquaredMagnitude"/> when applicable.</remarks>
     public abstract Scalar Magnitude();
-    /// <summary>Computes the square of the magnitude / norm / length of <see langword="this"/>.</summary>
+    /// <summary>Computes the square of the magnitude of <see langword="this"/>.</summary>
     public abstract Scalar SquaredMagnitude();
 }
 

@@ -59,10 +59,10 @@ public readonly record struct Vector4 : IVector4Quantity<Vector4>
     /// <inheritdoc/>
     public Vector4 Normalize() => VectorMaths.Normalize(this);
 
-    /// <summary>Produces a description of <see langword="this"/> containing the represented components.</summary>
+    /// <summary>Produces a description of <see langword="this"/> containing the represented (<see cref="X"/>, <see cref="Y"/>, <see cref="Z"/>, <see cref="W"/>).</summary>
     public override string ToString() => $"({X.Value}, {Y.Value}, {Z.Value}, {W.Value})";
 
-    /// <summary>Deconstructs <see langword="this"/> into the components X, Y, Z, and W.</summary>
+    /// <summary>Deconstructs <see langword="this"/> into the components (<see cref="X"/>, <see cref="Y"/>, <see cref="Z"/>, <see cref="W"/>).</summary>
     /// <param name="x">The X-component of <see langword="this"/>.</param>
     /// <param name="y">The Y-component of <see langword="this"/>.</param>
     /// <param name="z">The Z-component of <see langword="this"/>.</param>

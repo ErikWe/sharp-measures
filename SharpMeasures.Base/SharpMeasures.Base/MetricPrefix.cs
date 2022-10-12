@@ -5,47 +5,47 @@ using System;
 /// <summary>Describes a metric prefix. Common <see cref="MetricPrefix"/> exists as static properties.</summary>
 public readonly record struct MetricPrefix : IPrefix, IComparable<MetricPrefix>
 {
-    /// <summary>Denotes that the value should be scaled by one septillion [10^24 = (1 000)^8]. Usually written as [Y].</summary>
+    /// <summary>Indicates that the value should be scaled by one septillion { 10 ^ 24 = 1 000 ^ 8 }. Usually denoted by [Y].</summary>
     public static MetricPrefix Yotta { get; } = ThousandToThePower(8);
-    /// <summary>Denotes that the value should be scaled by one sextillion [10^21 = (1 000)^7]. Usually written as [Z].</summary>
+    /// <summary>Indicates that the value should be scaled by one sextillion { 10 ^ 21 = 1 000 ^ 7 }. Usually denoted by [Z].</summary>
     public static MetricPrefix Zetta { get; } = ThousandToThePower(7);
-    /// <summary>Denotes that the value should be scaled by one quintillion [10^18 = (1 000)^6]. Usually written as [E].</summary>
+    /// <summary>Indicates that the value should be scaled by one quintillion { 10 ^ 18 = 1 000 ^ 6 }. Usually denoted by [E].</summary>
     public static MetricPrefix Exa { get; } = ThousandToThePower(6);
-    /// <summary>Denotes that the value should be scaled by one quadrillion [10^15 = (1 000)^5]. Usually written as [P].</summary>
+    /// <summary>Indicates that the value should be scaled by one quadrillion { 10 ^ 15 = 1 000 ^ 5 }. Usually denoted by [P].</summary>
     public static MetricPrefix Peta { get; } = ThousandToThePower(5);
-    /// <summary>Denotes that the value should be scaled by one trillion [10^12 = (1 000)^4]. Usually written as [T].</summary>
+    /// <summary>Indicates that the value should be scaled by one trillion { 10 ^ 12 = 1 000 ^ 4 }. Usually denoted by [T].</summary>
     public static MetricPrefix Tera { get; } = ThousandToThePower(4);
-    /// <summary>Denotes that the value should be scaled by one billion [10^9 = (1 000)^3 = 1 000 000 000]. Usually written as [G].</summary>
+    /// <summary>Indicates that the value should be scaled by one billion { 10 ^ 9 = 1 000 ^ 3 = 1 000 000 000 }. Usually denoted by [G].</summary>
     public static MetricPrefix Giga { get; } = ThousandToThePower(3);
-    /// <summary>Denotes that the value should be scaled by one million [10^6 = (1 000)^2 = 1 000 000]. Usually written as [M].</summary>
+    /// <summary>Indicates that the value should be scaled by one million { 10 ^ 6 = 1 000 ^ 2 = 1 000 000 }. Usually denoted by [M].</summary>
     public static MetricPrefix Mega { get; } = ThousandToThePower(2);
-    /// <summary>Denotes that the value should be scaled by one thousand [10^3 = 1 000]. Usually written as [k].</summary>
+    /// <summary>Indicates that the value should be scaled by one thousand { 10 ^ 3 = 1 000 }. Usually denoted by [k].</summary>
     public static MetricPrefix Kilo { get; } = ThousandToThePower(1);
-    /// <summary>Denotes that the value should be scaled by one hundred [10^2 = 100]. Usually written as [h].</summary>
+    /// <summary>Indicates that the value should be scaled by one hundred { 10 ^ 2 = 100 }. Usually denoted by [h].</summary>
     public static MetricPrefix Hecto { get; } = TenToThePower(2);
-    /// <summary>Denotes that the value should be scaled by ten [10^1 = 10]. Usually written as [da].</summary>
+    /// <summary>Indicates that the value should be scaled by ten { 10 ^ 1 = 10 }. Usually denoted by [da].</summary>
     public static MetricPrefix Deca { get; } = TenToThePower(1);
-    /// <summary>Denotes that the value should not be scaled, or scaled by one [10^0 = 1].</summary>
+    /// <summary>Indicates that the value should not be scaled.</summary>
     public static MetricPrefix Identity { get; } = new(1);
-    /// <summary>Denotes that the value should be scaled by one tenth [10^(-1) = 0.1]. Usually written as [d].</summary>
+    /// <summary>Indicates that the value should be scaled by one tenth { 10 ^ -1 = 0.1 }. Usually denoted by [d].</summary>
     public static MetricPrefix Deci { get; } = TenToThePower(-1);
-    /// <summary>Denotes that the value should be scaled by one hundreth [10^(-2) = 0.01]. Usually written as [c].</summary>
+    /// <summary>Indicates that the value should be scaled by one hundreth { 10 ^ -2 = 0.01 }. Usually denoted by [c].</summary>
     public static MetricPrefix Centi { get; } = TenToThePower(-2);
-    /// <summary>Denotes that the value should be scaled by one thousandth [10^(-3) = (1 000)^(-1) = 0.001]. Usually written as [m].</summary>
+    /// <summary>Indicates that the value should be scaled by one thousandth { 10 ^ -3 = 1 000 ^ -1 = 0.001 }. Usually denoted by [m].</summary>
     public static MetricPrefix Milli { get; } = ThousandToThePower(-1);
-    /// <summary>Denotes that the value should be scaled by one millionth [10^(-6) = (1 000)^(-2) = 0.000 001]. Usually written as [μ].</summary>
+    /// <summary>Indicates that the value should be scaled by one millionth { 10 ^ -6 = 1 000 ^ -2 = 0.000 001 }. Usually denoted by [μ].</summary>
     public static MetricPrefix Micro { get; } = ThousandToThePower(-2);
-    /// <summary>Denotes that the value should be scaled by one billionth [10^(-9) = (1 000)^(-3) = 0.000 000 001]. Usually written as [n].</summary>
+    /// <summary>Indicates that the value should be scaled by one billionth { 10 ^ -9 = 1 000 ^ -3 = 0.000 000 001 }. Usually denoted by [n].</summary>
     public static MetricPrefix Nano { get; } = ThousandToThePower(-3);
-    /// <summary>Denotes that the value should be scaled by one trillionth [10^(-12) = (1 000)^(-4)]. Usually written as [p].</summary>
+    /// <summary>Indicates that the value should be scaled by one trillionth { 10 ^ -12 = 1 000 ^ -4 }. Usually denoted by [p].</summary>
     public static MetricPrefix Pico { get; } = ThousandToThePower(-4);
-    /// <summary>Denotes that the value should be scaled by one quadrillionth [10^(-15) = (1 000)^(-5)]. Usually written as [f].</summary>
+    /// <summary>Indicates that the value should be scaled by one quadrillionth { 10 ^ -15 = 1 000 ^ -5 }. Usually denoted by [f].</summary>
     public static MetricPrefix Femto { get; } = ThousandToThePower(-5);
-    /// <summary>Denotes that the value should be scaled by one quintillionth [10^(-18) = (1 000)^(-6)]. Usually written as [a].</summary>
+    /// <summary>Indicates that the value should be scaled by one quintillionth { 10 ^ -18 = 1 000 ^ -6 }. Usually denoted by [a].</summary>
     public static MetricPrefix Atto { get; } = ThousandToThePower(-6);
-    /// <summary>Denotes that the value should be scaled by one sextillionth [10^(-21) = (1 000)^(-7)]. Usually written as [z].</summary>
+    /// <summary>Indicates that the value should be scaled by one sextillionth { 10 ^ -21 = 1 000 ^ -7 }. Usually denoted by [z].</summary>
     public static MetricPrefix Zepto { get; } = ThousandToThePower(-7);
-    /// <summary>Denotes that the value should be scaled by one septillionth [10^(-24) = (1 000)^(-8)]. Usually written as [y].</summary>
+    /// <summary>Indicates that the value should be scaled by one septillionth { 10 ^ -24 = 1 000 ^ -8 }. Usually denoted by [y].</summary>
     public static MetricPrefix Yocto { get; } = ThousandToThePower(-8);
 
     /// <summary>Constructs a custom <see cref="MetricPrefix"/>, describing a factor { 10 ^ <paramref name="exponent"/> }.</summary>
@@ -68,7 +68,7 @@ public readonly record struct MetricPrefix : IPrefix, IComparable<MetricPrefix>
 
     /// <inheritdoc cref="Scalar.CompareTo(Scalar)"/>
     public int CompareTo(MetricPrefix other) => Factor.CompareTo(other.Factor);
-    /// <summary>Produces a description of <see langword="this"/> containing the scale-factor, followed by the character 'x'.</summary>
+    /// <summary>Produces a description of <see langword="this"/> containing the represented <see cref="Factor"/>.</summary>
     public override string ToString() => $"{Factor.Value}x";
 
     /// <inheritdoc cref="Scalar.operator &lt;"/>

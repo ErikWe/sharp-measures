@@ -65,7 +65,7 @@ public readonly record struct Unhandled : IScalarQuantity<Unhandled>, IComparabl
 
     /// <inheritdoc cref="Scalar.CompareTo(Scalar)"/>
     public int CompareTo(Unhandled other) => Magnitude.CompareTo(other.Magnitude);
-    /// <inheritdoc cref="Scalar.ToString"/>
+    /// <summary>Produces a description of <see langword="this"/> containing the represented <see cref="Magnitude"/>.</summary>
     public override string ToString() => Magnitude.ToString();
 
     /// <inheritdoc/>

@@ -58,10 +58,10 @@ public readonly record struct Vector3 : IVector3Quantity<Vector3>
     /// <inheritdoc/>
     public Vector3 Transform(Matrix4x4 transform) => VectorMaths.Transform(this, transform);
 
-    /// <summary>Produces a description of <see langword="this"/> containing the represented components.</summary>
+    /// <summary>Produces a description of <see langword="this"/> containing the represented (<see cref="X"/>, <see cref="Y"/>, <see cref="Z"/>).</summary>
     public override string ToString() => $"({X.Value}, {Y.Value}, {Z.Value})";
 
-    /// <summary>Deconstructs <see langword="this"/> into the components X, Y, and Z.</summary>
+    /// <summary>Deconstructs <see langword="this"/> into the components (<see cref="X"/>, <see cref="Y"/>, <see cref="Z"/>).</summary>
     /// <param name="x">The X-component of <see langword="this"/>.</param>
     /// <param name="y">The Y-component of <see langword="this"/>.</param>
     /// <param name="z">The Z-component of <see langword="this"/>.</param>

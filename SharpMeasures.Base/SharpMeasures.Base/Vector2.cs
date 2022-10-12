@@ -51,10 +51,10 @@ public readonly record struct Vector2 : IVector2Quantity<Vector2>
     /// <inheritdoc/>
     public Vector2 Normalize() => VectorMaths.Normalize(this);
 
-    /// <summary>Produces a description of <see langword="this"/> containing the represented components.</summary>
+    /// <summary>Produces a description of <see langword="this"/> containing the represented (<see cref="X"/>, <see cref="Y"/>).</summary>
     public override string ToString() => $"({X.Value}, {Y.Value})";
 
-    /// <summary>Deconstructs <see langword="this"/> into the components X and Y.</summary>
+    /// <summary>Deconstructs <see langword="this"/> into the components (<see cref="X"/>, <see cref="Y"/>).</summary>
     /// <param name="x">The X-component of <see langword="this"/>.</param>
     /// <param name="y">The Y-component of <see langword="this"/>.</param>
     public void Deconstruct(out Scalar x, out Scalar y)
