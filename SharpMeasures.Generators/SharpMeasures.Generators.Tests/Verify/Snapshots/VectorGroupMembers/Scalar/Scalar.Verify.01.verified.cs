@@ -109,10 +109,10 @@ public partial class Position3 :
     /// <inheritdoc/>
     public global::Position3 Transform(global::System.Numerics.Matrix4x4 transform) => VectorMaths.Transform(this, transform);
 
-    /// <summary>Produces a description of <see langword="this"/> containing the components expressed in an arbitrary unit.</summary>
+    /// <summary>Produces a description of <see langword="this"/> containing the represented (<see cref="X"/>, <see cref="Y"/>, <see cref="Z"/>), expressed in an arbitrary unit.</summary>
     public override string ToString() => Components.ToString();
 
-    /// <summary>Deconstructs <see langword="this"/> into the individual components.</summary>
+    /// <summary>Deconstructs <see langword="this"/> into the components (<see cref="X"/>, <see cref="Y"/>, <see cref="Z"/>).</summary>
     /// <param name="x">The X-component of <see langword="this"/>.</param>
     /// <param name="y">The Y-component of <see langword="this"/>.</param>
     /// <param name="z">The Z-component of <see langword="this"/>.</param>

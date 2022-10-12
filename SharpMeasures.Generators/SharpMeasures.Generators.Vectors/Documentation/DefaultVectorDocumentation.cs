@@ -90,7 +90,7 @@ internal sealed class DefaultVectorDocumentation : IVectorDocumentationStrategy,
         StringBuilder componentText = new();
         IterativeBuilding.AppendEnumerable(componentText, components(), ", ");
 
-        return $$"""/// <summary>The {{ScalarReference}} representing { ({{componentText}}) <see cref="{{Unit.FullyQualifiedName}}.{{constant.UnitInstanceName}}"/> }.</summary>""";
+        return $$"""/// <summary>The {{ScalarReference}} representing { {{componentText}} } <see cref="{{Unit.FullyQualifiedName}}.{{constant.UnitInstanceName}}"/>.</summary>""";
 
         IEnumerable<string> components()
         {
@@ -359,19 +359,19 @@ internal sealed class DefaultVectorDocumentation : IVectorDocumentationStrategy,
 
     public string ToStringDocumentation()
     {
-        var commonText = $"""/// <summary>Produces a description of <see langword="this"/> containing the""";
+        var commonText = $"""/// <summary>Produces a description of <see langword="this"/> containing the represented ({Texts.ComponentTuple()}), expressed in """;
 
         if (DefaultUnitInstanceName is not null && DefaultUnitInstanceSymbol is not null)
         {
-            return $"""{commonText} components expressed in <see cref="{Unit.FullyQualifiedName}.{DefaultUnitInstanceName}"/>, followed by the symbol [{DefaultUnitInstanceSymbol}].</summary>""";
+            return $"""{commonText}<see cref="{Unit.FullyQualifiedName}.{DefaultUnitInstanceName}"/> and followed by the symbol [{DefaultUnitInstanceSymbol}].</summary>""";
         }
 
         if (DefaultUnitInstanceName is not null)
         {
-            return $"""{commonText} components expressed in <see cref="{Unit.FullyQualifiedName}.{DefaultUnitInstanceName}"/>.</summary>""";
+            return $"""{commonText}<see cref="{Unit.FullyQualifiedName}.{DefaultUnitInstanceName}"/>.</summary>""";
         }
 
-        return $"""{commonText} components expressed in an arbitrary unit.</summary>""";
+        return $"""{commonText}an arbitrary unit.</summary>""";
     }
 
     public string EqualsSameTypeMethod() => InheritDoc;
@@ -392,7 +392,7 @@ internal sealed class DefaultVectorDocumentation : IVectorDocumentationStrategy,
     public string GetHashCodeDocumentation() => InheritDoc;
 
     public string Deconstruct() => $"""
-        /// <summary>Deconstructs <see langword="this"/> into the individual components.</summary>
+        /// <summary>Deconstructs <see langword="this"/> into the components ({Texts.ComponentTuple()}).</summary>
         {Texts.Deconstruct()}
         """;
 
@@ -501,6 +501,7 @@ internal sealed class DefaultVectorDocumentation : IVectorDocumentationStrategy,
         public string ScalarsConstructor() => ScalarsConstructorBuilder.GetText(Dimension);
         public string ScalarsAndUnitConstructor() => ScalarsAndUnitConstructorBuilder.GetText(Dimension);
         public string Deconstruct() => DeconstructBuilder.GetText(Dimension);
+        public string ComponentTuple() => ComponentTupleBuilder.GetText(Dimension);
 
         private int Dimension { get; }
 
@@ -509,6 +510,7 @@ internal sealed class DefaultVectorDocumentation : IVectorDocumentationStrategy,
         private VectorTextBuilder ScalarsConstructorBuilder { get; }
         private VectorTextBuilder ScalarsAndUnitConstructorBuilder { get; }
         private static VectorTextBuilder DeconstructBuilder { get; } = GetDeconstructBuilder();
+        private static VectorTextBuilder ComponentTupleBuilder { get; } = GetComponentTupleBuilder();
 
         public SpecificTexts(int dimension, string vectorReference, string unitParameterName)
         {
@@ -582,6 +584,13 @@ internal sealed class DefaultVectorDocumentation : IVectorDocumentationStrategy,
 
                 return $"""/// <param name="{componentLowerCase}">The {componentUpperCase}-component of <see langword="this"/>.</param>""";
             }
+        }
+
+        private static VectorTextBuilder GetComponentTupleBuilder()
+        {
+            return new VectorTextBuilder(componentTupleComponent, ", ");
+
+            static string componentTupleComponent(int componentIndex, int dimension) => $"""<see cref="{VectorTextBuilder.GetUpperCasedComponentName(componentIndex, dimension)}"/>""";
         }
     }
 

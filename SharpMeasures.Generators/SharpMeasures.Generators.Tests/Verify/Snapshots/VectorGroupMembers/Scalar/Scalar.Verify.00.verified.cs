@@ -97,10 +97,10 @@ public partial class Position2 :
     /// <inheritdoc/>
     public global::Position2 Normalize() => VectorMaths.Normalize(this);
 
-    /// <summary>Produces a description of <see langword="this"/> containing the components expressed in an arbitrary unit.</summary>
+    /// <summary>Produces a description of <see langword="this"/> containing the represented (<see cref="X"/>, <see cref="Y"/>), expressed in an arbitrary unit.</summary>
     public override string ToString() => Components.ToString();
 
-    /// <summary>Deconstructs <see langword="this"/> into the individual components.</summary>
+    /// <summary>Deconstructs <see langword="this"/> into the components (<see cref="X"/>, <see cref="Y"/>).</summary>
     /// <param name="x">The X-component of <see langword="this"/>.</param>
     /// <param name="y">The Y-component of <see langword="this"/>.</param>
     public void Deconstruct(out Length x, out Length y)

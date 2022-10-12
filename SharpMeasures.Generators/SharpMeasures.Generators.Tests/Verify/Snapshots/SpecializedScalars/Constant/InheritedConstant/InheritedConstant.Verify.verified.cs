@@ -11,10 +11,10 @@
 
 public partial class Distance
 {
-    /// <summary>The <see cref="global::Distance"/> representing { 1.616E-35 <see cref="global::UnitOfLength.Metre"/> }.</summary>
+    /// <summary>The <see cref="global::Distance"/> representing { 1.616E-35 } <see cref="global::UnitOfLength.Metre"/>.</summary>
     public static global::Distance Planck => new(1.616255E-35, global::UnitOfLength.Metre);
 
-    /// <summary>The <see cref="global::Distance"/> representing { 1 <see cref="global::UnitOfLength.Metre"/> }.</summary>
+    /// <summary>The <see cref="global::Distance"/> representing { 1 } <see cref="global::UnitOfLength.Metre"/>.</summary>
     public static global::Distance OneMetre => new(global::UnitOfLength.Metre.Length.Magnitude);
 
     /// <summary>The magnitude of <see langword="this"/>, expressed in multiples of <see cref="global::Distance.Planck"/>.</summary>

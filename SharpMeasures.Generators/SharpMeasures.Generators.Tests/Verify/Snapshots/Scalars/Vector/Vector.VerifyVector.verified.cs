@@ -16,19 +16,19 @@ public partial class Length
 
     /// <inheritdoc cref="global::SharpMeasures.Vector3.operator *(global::SharpMeasures.Scalar, global::SharpMeasures.Vector3)"/>
     /// <exception cref="global::System.ArgumentNullException"/>
-    public static Position3 operator *(global::Length x, global::SharpMeasures.Vector3 y)
+    public static Position3 operator *(global::Length a, global::SharpMeasures.Vector3 b)
     {
-        global::System.ArgumentNullException.ThrowIfNull(x);
+        global::System.ArgumentNullException.ThrowIfNull(a);
 
-        return new(x.Magnitude.Value * y);
+        return new(a.Magnitude.Value * b);
     }
 
     /// <inheritdoc cref="global::SharpMeasures.Vector3.operator *(global::SharpMeasures.Vector3, global::SharpMeasures.Scalar)"/>
     /// <exception cref="global::System.ArgumentNullException"/>
-    public static Position3 operator *(global::SharpMeasures.Vector3 x, global::Length y)
+    public static Position3 operator *(global::SharpMeasures.Vector3 a, global::Length b)
     {
-        global::System.ArgumentNullException.ThrowIfNull(y);
+        global::System.ArgumentNullException.ThrowIfNull(b);
 
-        return new(x * y.Magnitude.Value);
+        return new(a * b.Magnitude.Value);
     }
 }

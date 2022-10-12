@@ -64,10 +64,10 @@ internal sealed class DefaultDocumentation : IDocumentationStrategy, IEquatable<
             _ => constant.Value.ToString("0.####", CultureInfo.InvariantCulture)
         };
 
-        return $$"""/// <summary>The {{ScalarReference}} representing { {{value}} <see cref="{{Unit.FullyQualifiedName}}.{{constant.UnitInstanceName}}"/> }.</summary>""";
+        return $$"""/// <summary>The {{ScalarReference}} representing { {{value}} } <see cref="{{Unit.FullyQualifiedName}}.{{constant.UnitInstanceName}}"/>.</summary>""";
     }
 
-    public string UnitBase(IUnitInstance unitInstance) => $$"""/// <summary>The {{ScalarReference}} representing { 1 <see cref="{{Unit.FullyQualifiedName}}.{{unitInstance.Name}}"/> }.</summary>""";
+    public string UnitBase(IUnitInstance unitInstance) => $$"""/// <summary>The {{ScalarReference}} representing { 1 } <see cref="{{Unit.FullyQualifiedName}}.{{unitInstance.Name}}"/>.</summary>""";
 
     public string WithMagnitude() => InheritDoc;
 
@@ -251,19 +251,19 @@ internal sealed class DefaultDocumentation : IDocumentationStrategy, IEquatable<
 
     public string ToStringDocumentation()
     {
-        var commonText = $"""/// <summary>Produces a description of <see langword="this"/> containing the""";
+        var commonText = $"""/// <summary>Produces a description of <see langword="this"/> containing the represented <see cref="Magnitude"/>, expressed in """;
 
         if (DefaultUnitInstanceName is not null && DefaultUnitInstanceSymbol is not null)
         {
-            return $"""{commonText} magnitude expressed in <see cref="{Unit.FullyQualifiedName}.{DefaultUnitInstanceName}"/>, followed by the symbol [{DefaultUnitInstanceSymbol}].</summary>""";
+            return $"""{commonText}<see cref="{Unit.FullyQualifiedName}.{DefaultUnitInstanceName}"/> and followed by the symbol [{DefaultUnitInstanceSymbol}].</summary>""";
         }
 
         if (DefaultUnitInstanceName is not null)
         {
-            return $"""{commonText} magnitude expressed in <see cref="{Unit.FullyQualifiedName}.{DefaultUnitInstanceName}"/>.</summary>""";
+            return $"""{commonText}<see cref="{Unit.FullyQualifiedName}.{DefaultUnitInstanceName}"/>.</summary>""";
         }
 
-        return $"""{commonText} magnitude expressed in an arbitrary unit.</summary>""";
+        return $"""{commonText}an arbitrary unit.</summary>""";
     }
 
     public string EqualsSameTypeMethod() => InheritDoc;
@@ -271,7 +271,7 @@ internal sealed class DefaultDocumentation : IDocumentationStrategy, IEquatable<
 
     public string EqualitySameTypeOperator() => """
         /// <summary>Indicates whether <paramref name="lhs"/> and <paramref name="rhs"/> represent equivalent magnitudes.</summary>
-        /// /// <param name="lhs">The left-hand side of the equality check.</param>
+        /// <param name="lhs">The left-hand side of the equality check.</param>
         /// <param name="rhs">The right-hand side of the equality check.</param>
         """;
 

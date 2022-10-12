@@ -45,7 +45,7 @@ public partial class Temperature :
         return new(Magnitude / unitOfTemperature.TemperatureDifference.Magnitude + unitOfTemperature.Bias);
     }
 
-    /// <summary>Produces a description of <see langword="this"/> containing the magnitude expressed in an arbitrary unit.</summary>
+    /// <summary>Produces a description of <see langword="this"/> containing the represented <see cref="Magnitude"/>, expressed in an arbitrary unit.</summary>
     public override string ToString() => Magnitude.ToString();
 
     /// <inheritdoc/>
@@ -55,7 +55,7 @@ public partial class Temperature :
     public override bool Equals(object? obj) => obj is global::Temperature other && Equals(other);
 
     /// <summary>Indicates whether <paramref name="lhs"/> and <paramref name="rhs"/> represent equivalent magnitudes.</summary>
-    /// /// <param name="lhs">The left-hand side of the equality check.</param>
+    /// <param name="lhs">The left-hand side of the equality check.</param>
     /// <param name="rhs">The right-hand side of the equality check.</param>
     public static bool operator ==(global::Temperature? lhs, global::Temperature? rhs) => lhs?.Equals(rhs) ?? rhs is null;
 

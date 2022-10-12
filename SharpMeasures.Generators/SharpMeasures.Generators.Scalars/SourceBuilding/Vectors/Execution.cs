@@ -82,11 +82,11 @@ internal static class Execution
 
             var methodNameAndModifiers = $"public static {vector.Name} operator *";
             
-            var lhsExpression = "new(x.Magnitude.Value * y)";
-            var rhsExpression = "new(x * y.Magnitude.Value)";
+            var lhsExpression = "new(a.Magnitude.Value * b)";
+            var rhsExpression = "new(a * b.Magnitude.Value)";
 
-            var lhsParameters = new[] { (Data.Scalar.AsNamedType(), "x"), (vectorType, "y") };
-            var rhsParameters = new[] { (vectorType, "x"), (Data.Scalar.AsNamedType(), "y") };
+            var lhsParameters = new[] { (Data.Scalar.AsNamedType(), "a"), (vectorType, "b") };
+            var rhsParameters = new[] { (vectorType, "a"), (Data.Scalar.AsNamedType(), "b") };
 
             AppendDocumentation(indentation, Data.SourceBuildingContext.Documentation.MultiplyVectorOperatorLHS(dimension));
             StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers, lhsExpression, lhsParameters);
