@@ -1,0 +1,7 @@
+﻿# Header
+<summary>This is a cref="#SelfType/#"/>.</summary>
+/#
+
+# SelfType
+int
+/#

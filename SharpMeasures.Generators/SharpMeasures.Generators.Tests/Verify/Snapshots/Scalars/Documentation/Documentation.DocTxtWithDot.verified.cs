@@ -9,7 +9,7 @@
 
 #nullable enable
 
-/// <summary>A measure of the scalar quantity Doc Test, expressed in <see cref="global::UnitOfDocTest"/>.</summary>
+/// <summary>Used extension .doc.txt</summary>
 public partial class DocTest :
     global::SharpMeasures.IScalarQuantity<global::DocTest>,
     global::System.IComparable<global::DocTest>,

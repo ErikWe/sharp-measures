@@ -66,6 +66,8 @@ internal sealed class DocumentationFileBuilder
         }
     }
 
+    private const string SelfTypeTag = "SelfType";
+
     private AdditionalText File { get; }
     private SourceText FileText { get; }
 
@@ -135,6 +137,11 @@ internal sealed class DocumentationFileBuilder
                     Content[tag.Key] = tag.Value;
                 }
             }
+        }
+
+        if (Content.ContainsKey(SelfTypeTag) is false)
+        {
+            Content[SelfTypeTag] = Name;
         }
     }
 

@@ -1,0 +1,15 @@
+﻿[
+  {
+    Id: Measures1902,
+    Title: Documentation tag not found,
+    Severity: Error,
+    WarningLevel: 0,
+    Location: {ProjectDirectory}Diagnostics\Documentation\DocumentationFileMissingRequestedTagFiles\A.doc.txt: (0,0)-(0,7),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: Documentation tag "{1}" was not recognized as part of {0} or any of its dependencies. If this file is only used as a dependency, add the following line to the file: "# Utility: True".,
+    Message: Documentation tag "Test" was not recognized as part of A or any of its dependencies. If this file is only used as a dependency, add the following line to the file: "# Utility: True".,
+    Category: Documentation,
+    CustomTags: []
+  }
+]

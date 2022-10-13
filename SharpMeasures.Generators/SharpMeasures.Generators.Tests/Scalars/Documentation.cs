@@ -16,29 +16,37 @@ using Xunit;
 public class Documentation
 {
     [Fact]
-    public Task DefaultExtension() => Verify();
+    public Task DefaultExtension() => Verify("DocTest");
 
     [Fact]
-    public Task ExplicitDocTxt() => Verify("doc.txt");
+    public Task ExplicitDocTxt() => Verify("doc.txt", "DocTest");
 
     [Fact]
-    public Task DocTxtWithDot() => Verify(".doc.txt");
+    public Task DocTxtWithDot() => Verify(".doc.txt", "DocTest");
 
     [Fact]
-    public Task DocumentationTxt() => Verify("documentation.txt");
+    public Task DocumentationTxt() => Verify("documentation.txt", "DocTest");
 
-    private static Task Verify() => GeneratorVerifier.Construct<SharpMeasuresGenerator>(Text).AssertNoDiagnosticsReported().VerifyMatchingSourceNames("DocTest.Common.g.cs");
-    private static Task Verify(string level) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(Text, Options(level)).AssertNoDiagnosticsReported().VerifyMatchingSourceNames("DocTest.Common.g.cs");
+    [Fact]
+    public Task SelfType() => Verify("doc.txt", "SelfType");
 
-    private static string Text => """
+    [Fact]
+    public Task OverridenSelfType() => Verify("doc.txt", "OverridenSelfType");
+
+    private static Task Verify(string typeName) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(Text(typeName), Settings).AssertNoDiagnosticsReported().VerifyMatchingSourceNames($"{typeName}.Common.g.cs");
+    private static Task Verify(string extension, string typeName) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(Text(typeName), Settings, Options(extension)).AssertNoDiagnosticsReported().VerifyMatchingSourceNames($"{typeName}.Common.g.cs");
+
+    private static string Text(string typeName) => $$"""
         using SharpMeasures.Generators;
 
         [ScalarQuantity(typeof(UnitOfDocTest))]
-        public partial class DocTest { }
+        public partial class {{typeName}} { }
 
-        [Unit(typeof(DocTest))]
+        [Unit(typeof({{typeName}}))]
         public partial class UnitOfDocTest { }
         """;
+
+    private static GeneratorVerifierSettings Settings => GeneratorVerifierSettings.AllAssertions with { DocumentationPath = @"\Documentation" };
 
     private static AnalyzerConfigOptionsProvider Options(string extension)
     {
