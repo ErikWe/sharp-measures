@@ -15,7 +15,7 @@ public sealed class IncrementalDriver
     {
         AdhocWorkspace workspace = new();
 
-        GeneratorDriver driver = DriverConstruction.Construct<SharpMeasuresGenerator>(documentationDirectory);
+        var driver = DriverConstruction.Construct<SharpMeasuresGenerator>(DriverConstructionConfiguration.Empty with { DocumentationDirectory = documentationDirectory });
 
         var solutionInfo = SolutionInfo.Create(SolutionId.CreateNewId(), VersionStamp.Default);
         var projectInfo = ProjectInfo.Create(ProjectId.CreateNewId(), VersionStamp.Default, "Test", "testassembly", "C#",

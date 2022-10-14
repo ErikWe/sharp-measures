@@ -40,7 +40,9 @@ internal class GeneratorVerifier
     public static GeneratorVerifier Construct<TGenerator>(string source, GeneratorVerifierSettings settings, AnalyzerConfigOptionsProvider optionsProvider) where TGenerator : IIncrementalGenerator, new() => Construct(source, new TGenerator(), settings, optionsProvider);
     public static GeneratorVerifier Construct(string source, IIncrementalGenerator generator, GeneratorVerifierSettings settings, AnalyzerConfigOptionsProvider optionsProvider)
     {
-        var driver = DriverConstruction.ConstructAndRun(source, generator, ProjectPath.Path + settings.DocumentationPath, optionsProvider, out var compilation);
+        var configuration = new DriverConstructionConfiguration(true, ProjectPath.Path + settings.DocumentationPath, optionsProvider);
+
+        var driver = DriverConstruction.ConstructAndRun(source, generator, configuration, out var compilation);
 
         return new(source, driver, compilation, settings);
     }

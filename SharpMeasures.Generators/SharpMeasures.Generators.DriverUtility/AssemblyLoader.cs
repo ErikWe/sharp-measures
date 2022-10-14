@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 
@@ -36,10 +37,15 @@ internal static class AssemblyLoader
                 {
                     resolvedAssemblyNames.Add(assemblyName.FullName);
 
-                    Assembly assembly = Assembly.Load(assemblyName);
+                    try
+                    {
+                        Assembly assembly = Assembly.Load(assemblyName);
 
-                    unresolvedAssemblies.Enqueue(assembly);
-                    collectedAssemblies.Add(assembly);
+                        unresolvedAssemblies.Enqueue(assembly);
+                        collectedAssemblies.Add(assembly);
+                    }
+                    catch (FileLoadException) { }
+                    catch (FileNotFoundException) { }
                 }
             }
         }

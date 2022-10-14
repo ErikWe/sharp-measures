@@ -46,6 +46,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpMeasures.Utility", "Sh
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpMeasures.Generators.Attributes.API", "SharpMeasures.Generators.Attributes.API\SharpMeasures.Generators.Attributes.API.csproj", "{3580D0E5-83FA-409D-96C8-9412381DC172}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpMeasures.Generators.Profiling", "SharpMeasures.Generators.Profiling\SharpMeasures.Generators.Profiling.csproj", "{450D240A-6DF9-478C-B351-3FEFA9BCF554}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -120,6 +122,10 @@ Global
 		{3580D0E5-83FA-409D-96C8-9412381DC172}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3580D0E5-83FA-409D-96C8-9412381DC172}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3580D0E5-83FA-409D-96C8-9412381DC172}.Release|Any CPU.Build.0 = Release|Any CPU
+		{450D240A-6DF9-478C-B351-3FEFA9BCF554}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{450D240A-6DF9-478C-B351-3FEFA9BCF554}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{450D240A-6DF9-478C-B351-3FEFA9BCF554}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{450D240A-6DF9-478C-B351-3FEFA9BCF554}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
