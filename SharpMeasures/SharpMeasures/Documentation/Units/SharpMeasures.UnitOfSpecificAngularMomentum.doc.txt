@@ -1,0 +1,3 @@
+﻿# UnitInstance_SquareMetrePerSecond
+<summary>The SI unit, representing { <see cref="UnitOfAngularMomentum.KilogramSquareMetrePerSecond"/> / <see cref="UnitOfMass.Kilogram"/> }.</summary>
+/#

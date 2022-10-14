@@ -1,0 +1,4 @@
+﻿# Header
+<summary>A measure of the scalar quantity Work, describing the transferal of <see cref="Energy"/>. The quantity is expressed in
+<see cref="UnitOfEnergy"/>, with the SI unit being <see cref="UnitOfEnergy.Joule"/>.</summary>
+/#

@@ -11,8 +11,8 @@
     </ItemGroup>
     
     <ItemGroup>
-        <PackageReference Update="SharpMeasures.Base" Version="0.3.1" />
-        <PackageReference Update="SharpMeasures.Generators" Version="0.3.42" />
+        <PackageReference Update="SharpMeasures.Base" Version="0.3.49" />
+        <PackageReference Update="SharpMeasures.Generators" Version="0.3.50" />
     </ItemGroup>
 
     <ItemGroup>

@@ -1,0 +1,28 @@
+﻿# UnitInstance_Joule
+<summary>The SI unit, representing { <see cref="UnitOfForce.Newton"/> ∙ <see cref="UnitOfLength.Metre"/> } and { <see cref="UnitOfPower.Watt"/> ∙ <see cref="UnitOfTime.Second"/> }.</summary>
+/#
+
+# UnitInstance_Kilojoule
+<summary>Represents { 1 000 } <see cref="Joule"/>.</summary>
+/#
+
+# UnitInstance_Megajoule
+<summary>Represents { 1 000 000 } <see cref="Joule"/>.</summary>
+/#
+
+# UnitInstance_Gigajoule
+<summary>Represents { 1 000 000 000 } <see cref="Joule"/>.</summary>
+/#
+
+# UnitInstance_KilowattHour
+<summary>Represents { <see cref="UnitOfPower.Kilowatt"/> ∙ <see cref="UnitOfTime.Hour"/> }.</summary>
+/#
+
+# UnitInstance_Calorie
+<summary>Represents { 4.184 } <see cref="Joule"/>.</summary>
+<remarks>Not to be confused with <see cref="Kilocalorie"/>, which is sometimes also known as calorie.</remarks>
+/#
+
+# UnitInstance_Kilocalorie
+<summary>Represents { 1 000 } <see cref="Calorie"/>.</summary>
+/#

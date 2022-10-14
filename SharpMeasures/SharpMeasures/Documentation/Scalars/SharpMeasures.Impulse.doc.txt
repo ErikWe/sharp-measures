@@ -1,0 +1,4 @@
+﻿# Header
+<summary>A measure of the scalar quantity Impulse, describing change in <see cref="Momentum"/>. The quantity is expressed in <see cref="UnitOfMomentum"/>,
+with the SI unit being <see cref="UnitOfMomentum.NewtonSecond"/>.</summary>
+/#

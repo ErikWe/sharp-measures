@@ -1,0 +1,4 @@
+﻿# Header
+<summary>A measure of the scalar quantity Yank, describing change in force over time { <see cref="Force"/> / <see cref="Time"/> }. The quantity is expressed in
+<see cref="UnitOfYank"/>, with the SI unit being <see cref="UnitOfYank.NewtonPerSecond"/>.</summary>
+/#

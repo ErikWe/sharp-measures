@@ -2,6 +2,7 @@
 
 using SharpMeasures.Generators;
 
+[QuantityOperation(typeof(WeightN), typeof(Mass), OperatorType.Multiplication)]
 [SpecializedVectorGroup(typeof(AccelerationN), Scalar = typeof(GravitationalAcceleration))]
 public static partial class GravitationalAccelerationN { }
 

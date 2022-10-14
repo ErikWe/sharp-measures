@@ -16,9 +16,11 @@ using SharpMeasures.Generators;
 [PrefixedUnitInstance("Megabyte", "[*]s", "Byte", MetricPrefixName.Mega)]
 [PrefixedUnitInstance("Gigabyte", "[*]s", "Byte", MetricPrefixName.Giga)]
 [PrefixedUnitInstance("Terabyte", "[*]s", "Byte", MetricPrefixName.Tera)]
+[PrefixedUnitInstance("Petabyte", "[*]s", "Byte", MetricPrefixName.Peta)]
 [PrefixedUnitInstance("Kibibyte", "[*]s", "Byte", BinaryPrefixName.Kibi)]
 [PrefixedUnitInstance("Mebibyte", "[*]s", "Byte", BinaryPrefixName.Mebi)]
 [PrefixedUnitInstance("Gibibyte", "[*]s", "Byte", BinaryPrefixName.Gibi)]
 [PrefixedUnitInstance("Tebibyte", "[*]s", "Byte", BinaryPrefixName.Tebi)]
+[PrefixedUnitInstance("Pebibyte", "[*]s", "Byte", BinaryPrefixName.Pebi)]
 [Unit(typeof(Information))]
 public readonly partial record struct UnitOfInformation { }

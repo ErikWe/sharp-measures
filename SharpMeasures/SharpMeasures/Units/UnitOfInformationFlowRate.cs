@@ -16,10 +16,12 @@ using SharpMeasures.Generators;
 [DerivedUnitInstance("MegabytePerSecond", "s[Per]", new[] { "Megabyte", "Second" })]
 [DerivedUnitInstance("GigabytePerSecond", "s[Per]", new[] { "Gigabyte", "Second" })]
 [DerivedUnitInstance("TerabytePerSecond", "s[Per]", new[] { "Terabyte", "Second" })]
+[DerivedUnitInstance("PetabytePerSecond", "s[Per]", new[] { "Petabyte", "Second" })]
 [DerivedUnitInstance("KibibytePerSecond", "s[Per]", new[] { "Kibibyte", "Second" })]
 [DerivedUnitInstance("MebibytePerSecond", "s[Per]", new[] { "Mebibyte", "Second" })]
 [DerivedUnitInstance("GibibytePerSecond", "s[Per]", new[] { "Gibibyte", "Second" })]
 [DerivedUnitInstance("TebibytePerSecond", "s[Per]", new[] { "Tebibyte", "Second" })]
+[DerivedUnitInstance("PebibytePerSecond", "s[Per]", new[] { "Pebibyte", "Second" })]
 [DerivableUnit("{0} / {1}", typeof(UnitOfInformation), typeof(UnitOfTime))]
 [Unit(typeof(InformationFlowRate))]
 public readonly partial record struct UnitOfInformationFlowRate { }

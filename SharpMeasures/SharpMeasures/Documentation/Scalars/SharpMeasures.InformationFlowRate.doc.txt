@@ -1,0 +1,4 @@
+﻿# Header
+<summary>A measure of the scalar quantity Information Flow Rate, describing flow or change of information over time { <see cref="Information"/> / <see cref="Time"/> }. The quantity is expressed in
+<see cref="UnitOfInformationFlowRate"/>.</summary>
+/#

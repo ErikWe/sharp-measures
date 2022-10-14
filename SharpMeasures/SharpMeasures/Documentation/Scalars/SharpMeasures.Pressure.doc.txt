@@ -1,0 +1,4 @@
+﻿# Header
+<summary>A measure of the scalar quantity Pressure, describing force being distributed over an area { <see cref="Force"/> / <see cref="Area"/> }. The quantity is expressed in <see cref="UnitOfPressure"/>,
+with the SI unit being <see cref="UnitOfPressure.Pascal"/>.</summary>
+/#

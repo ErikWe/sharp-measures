@@ -1,0 +1,4 @@
+﻿# Header
+<summary>A measure of the scalar quantity Kinetic Energy, describing <see cref="Energy"/> related to motion. The quantity is expressed in <see cref="UnitOfEnergy"/>,
+with the SI unit being <see cref="UnitOfEnergy.Joule"/>.</summary>
+/#

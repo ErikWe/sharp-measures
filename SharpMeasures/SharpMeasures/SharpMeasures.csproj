@@ -29,11 +29,76 @@
     </ItemGroup>
 
     <ItemGroup>
+      <None Remove="Documentation\Scalars\Generic.doc.txt" />
+      <None Remove="Documentation\Scalars\SharpMeasures.Acceleration.doc.txt" />
+      <None Remove="Documentation\Scalars\SharpMeasures.Angle.doc.txt" />
+      <None Remove="Documentation\Scalars\SharpMeasures.AngularAcceleration.doc.txt" />
+      <None Remove="Documentation\Scalars\SharpMeasures.AngularFrequency.doc.txt" />
+      <None Remove="Documentation\Scalars\SharpMeasures.AngularMomentum.doc.txt" />
+      <None Remove="Documentation\Scalars\SharpMeasures.AngularSpeed.doc.txt" />
+      <None Remove="Documentation\Scalars\SharpMeasures.Area.doc.txt" />
+      <None Remove="Documentation\Scalars\SharpMeasures.ArealDensity.doc.txt" />
+      <None Remove="Documentation\Scalars\SharpMeasures.ArealFrequency.doc.txt" />
+      <None Remove="Documentation\Scalars\SharpMeasures.Density.doc.txt" />
+      <None Remove="Documentation\Scalars\SharpMeasures.Distance.doc.txt" />
+      <None Remove="Documentation\Scalars\SharpMeasures.Energy.doc.txt" />
+      <None Remove="Documentation\Scalars\SharpMeasures.Force.doc.txt" />
+      <None Remove="Documentation\Scalars\SharpMeasures.Frequency.doc.txt" />
+      <None Remove="Documentation\Scalars\SharpMeasures.FrequencyDrift.doc.txt" />
+      <None Remove="Documentation\Scalars\SharpMeasures.GravitationalAcceleration.doc.txt" />
+      <None Remove="Documentation\Scalars\SharpMeasures.Impulse.doc.txt" />
+      <None Remove="Documentation\Scalars\SharpMeasures.Information.doc.txt" />
+      <None Remove="Documentation\Scalars\SharpMeasures.InformationFlowRate.doc.txt" />
+      <None Remove="Documentation\Scalars\SharpMeasures.Jerk.doc.txt" />
+      <None Remove="Documentation\Scalars\SharpMeasures.KineticEnergy.doc.txt" />
+      <None Remove="Documentation\Scalars\SharpMeasures.Length.doc.txt" />
+      <None Remove="Documentation\Scalars\SharpMeasures.LinearDensity.doc.txt" />
+      <None Remove="Documentation\Scalars\SharpMeasures.Mass.doc.txt" />
+      <None Remove="Documentation\Scalars\SharpMeasures.MassFlowRate.doc.txt" />
+      <None Remove="Documentation\Scalars\SharpMeasures.MomentOfInertia.doc.txt" />
+      <None Remove="Documentation\Scalars\SharpMeasures.Momentum.doc.txt" />
+      <None Remove="Documentation\Scalars\SharpMeasures.OrbitalAngularAcceleration.doc.txt" />
+      <None Remove="Documentation\Scalars\SharpMeasures.OrbitalAngularMomentum.doc.txt" />
+      <None Remove="Documentation\Scalars\SharpMeasures.OrbitalAngularSpeed.doc.txt" />
+      <None Remove="Documentation\Scalars\SharpMeasures.Pace.doc.txt" />
+      <None Remove="Documentation\Scalars\SharpMeasures.PotentialEnergy.doc.txt" />
+      <None Remove="Documentation\Scalars\SharpMeasures.Power.doc.txt" />
+      <None Remove="Documentation\Scalars\SharpMeasures.Pressure.doc.txt" />
+      <None Remove="Documentation\Scalars\SharpMeasures.SolidAngle.doc.txt" />
+      <None Remove="Documentation\Scalars\SharpMeasures.SpatialFrequency.doc.txt" />
+      <None Remove="Documentation\Scalars\SharpMeasures.SpecificAngularMomentum.doc.txt" />
+      <None Remove="Documentation\Scalars\SharpMeasures.SpecificOrbitalAngularMomentum.doc.txt" />
+      <None Remove="Documentation\Scalars\SharpMeasures.SpecificSpinAngularMomentum.doc.txt" />
+      <None Remove="Documentation\Scalars\SharpMeasures.SpecificVolume.doc.txt" />
+      <None Remove="Documentation\Scalars\SharpMeasures.Speed.doc.txt" />
+      <None Remove="Documentation\Scalars\SharpMeasures.SpeedSquared.doc.txt" />
+      <None Remove="Documentation\Scalars\SharpMeasures.SpinAngularAcceleration.doc.txt" />
+      <None Remove="Documentation\Scalars\SharpMeasures.SpinAngularMomentum.doc.txt" />
+      <None Remove="Documentation\Scalars\SharpMeasures.SpinAngularSpeed.doc.txt" />
+      <None Remove="Documentation\Scalars\SharpMeasures.Temperature.doc.txt" />
+      <None Remove="Documentation\Scalars\SharpMeasures.TemperatureDifference.doc.txt" />
+      <None Remove="Documentation\Scalars\SharpMeasures.TemperatureGradient.doc.txt" />
+      <None Remove="Documentation\Scalars\SharpMeasures.Time.doc.txt" />
+      <None Remove="Documentation\Scalars\SharpMeasures.TimeSquared.doc.txt" />
+      <None Remove="Documentation\Scalars\SharpMeasures.Torque.doc.txt" />
+      <None Remove="Documentation\Scalars\SharpMeasures.Volume.doc.txt" />
+      <None Remove="Documentation\Scalars\SharpMeasures.VolumetricFlowRate.doc.txt" />
+      <None Remove="Documentation\Scalars\SharpMeasures.VolumetricFrequency.doc.txt" />
+      <None Remove="Documentation\Scalars\SharpMeasures.Weight.doc.txt" />
+      <None Remove="Documentation\Scalars\SharpMeasures.Work.doc.txt" />
+      <None Remove="Documentation\Scalars\SharpMeasures.Yank.doc.txt" />
+    </ItemGroup>
+
+    <ItemGroup>
         <GlobalAnalyzerConfigFiles Include="SharpMeasures.globalconfig" />
     </ItemGroup>
 
     <ItemGroup>
         <None Include="..\..\README.md" Pack="true" PackagePath="\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Documentation\Vectors\" />
     </ItemGroup>
 
 </Project>

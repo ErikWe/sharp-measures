@@ -1,0 +1,6 @@
+﻿# Requires: Generic
+
+# Header
+<summary>A measure of the scalar quantity Distance, describing the <see cref="Length"/> between two points. The quantity is expressed in <see cref="UnitOfLength"/>,
+with the SI unit being <see cref="UnitOfLength.Metre"/>.</summary>
+/#

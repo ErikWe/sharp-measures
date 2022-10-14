@@ -1,0 +1,7 @@
+﻿# UnitInstance_KilogramPerSecond
+<summary>The SI unit, representing { <see cref="UnitOfMass.Kilogram"/> / <see cref="UnitOfTime.Second"/> }.</summary>
+/#
+
+# UnitInstance_PoundPerSecond
+<summary>Represents { <see cref="UnitOfMass.Pound"/> / <see cref="UnitOfTime.Second"/> }.</summary>
+/#

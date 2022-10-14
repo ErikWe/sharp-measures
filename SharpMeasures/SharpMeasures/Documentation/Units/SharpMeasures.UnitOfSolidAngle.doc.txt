@@ -1,0 +1,29 @@
+﻿# UnitInstance_SquareRadian
+<summary>Represents { <see cref="UnitOfAngle.Radian"/>² }.</summary>
+<remarks>This is equivalent to <see cref="Steradian"/>.</remarks>
+/#
+
+# UnitInstance_Steradian
+<summary>The SI unit, representing { <see cref="UnitOfAngle.Radian"/>² }.</summary>
+<remarks>This is equivalent to <see cref="SquareRadian"/>.</remarks>
+/#
+
+# UnitInstance_SquareDegree
+<summary>Represents { <see cref="UnitOfAngle.Degree"/>² }.</summary>
+/#
+
+# UnitInstance_SquareArcminute
+<summary>Represents { <see cref="UnitOfAngle.Arcminute"/>² }.</summary>
+/#
+
+# UnitInstance_SquareArcsecond
+<summary>Represents { <see cref="UnitOfAngle.Arcsecond"/>² }.</summary>
+/#
+
+# UnitInstance_SquareMilliarcsecond
+<summary>Represents { <see cref="UnitOfAngle.Milliarcsecond"/>² }.</summary>
+/#
+
+# UnitInstance_SquareMicroarcsecond
+<summary>Represents { <see cref="UnitOfAngle.Microarcsecond"/>² }.</summary>
+/#

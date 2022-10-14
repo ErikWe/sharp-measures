@@ -1,0 +1,97 @@
+﻿# UnitInstance_Bit
+<summary>Represents { 1 } bit of information.</summary>
+/#
+
+# UnitInstance_Kilobit
+<summary>Represents { 1 000 } <see cref="Bit"/>.</summary>
+<remarks>Not to be confused with <see cref="Kibibit"/>.</remarks>
+/#
+
+# UnitInstance_Megabit
+<summary>Represents { 1 000 ^ 2 } <see cref="Bit"/>.</summary>
+<remarks>Not to be confused with <see cref="Mebibit"/>.</remarks>
+/#
+
+# UnitInstance_Gigabit
+<summary>Represents { 1 000 ^ 3 } <see cref="Bit"/>.</summary>
+<remarks>Not to be confused with <see cref="Gibibit"/>.</remarks>
+/#
+
+# UnitInstance_Terabit
+<summary>Represents { 1 000 ^ 4 } <see cref="Bit"/>.</summary>
+<remarks>Not to be confused with <see cref="Tebibit"/>.</remarks>
+/#
+
+# UnitInstance_Kibibit
+<summary>Represents { 1 024 } <see cref="Bit"/>.</summary>
+<remarks>Not to be confused with <see cref="Kilobit"/>.</remarks>
+/#
+
+# UnitInstance_Mebibit
+<summary>Represents { 1 024 ^ 2 } <see cref="Bit"/>.</summary>
+<remarks>Not to be confused with <see cref="Megabit"/>.</remarks>
+/#
+
+# UnitInstance_Gibibit
+<summary>Represents { 1 024 ^ 3 } <see cref="Bit"/>.</summary>
+<remarks>Not to be confused with <see cref="Gigabit"/>.</remarks>
+/#
+
+# UnitInstance_Tebibit
+<summary>Represents { 1 024 ^ 4 } <see cref="Bit"/>.</summary>
+<remarks>Not to be confused with <see cref="Terabit"/>.</remarks>
+/#
+
+# UnitInstance_Byte
+<summary>Represents { 8 } <see cref="Bit"/>.</summary>
+/#
+
+# UnitInstance_Kilobyte
+<summary>Represents { 1 000 } <see cref="Byte"/>.</summary>
+<remarks>Not to be confused with <see cref="Kibibyte"/>.</remarks>
+/#
+
+# UnitInstance_Megabyte
+<summary>Represents { 1 000 ^ 2 } <see cref="Byte"/>.</summary>
+<remarks>Not to be confused with <see cref="Mebibyte"/>.</remarks>
+/#
+
+# UnitInstance_Gigabyte
+<summary>Represents { 1 000 ^ 3 } <see cref="Byte"/>.</summary>
+<remarks>Not to be confused with <see cref="Gibibyte"/>.</remarks>
+/#
+
+# UnitInstance_Terabyte
+<summary>Represents { 1 000 ^ 4 } <see cref="Byte"/>.</summary>
+<remarks>Not to be confused with <see cref="Tebibyte"/>.</remarks>
+/#
+
+# UnitInstance_Petabyte
+<summary>Represents { 1 000 ^ 5 } <see cref="Byte"/>.</summary>
+<remarks>Not to be confused with <see cref="Pebibyte"/>.</remarks>
+/#
+
+# UnitInstance_Kibibyte
+<summary>Represents { 1 024 } <see cref="Byte"/>.</summary>
+<remarks>Not to be confused with <see cref="Kilobyte"/>.</remarks>
+/#
+
+# UnitInstance_Mebibyte
+<summary>Represents { 1 024 ^ 2 } <see cref="Byte"/>.</summary>
+<remarks>Not to be confused with <see cref="Megabyte"/>.</remarks>
+/#
+
+# UnitInstance_Gibibyte
+<summary>Represents { 1 024 ^ 3 } <see cref="Byte"/>.</summary>
+<remarks>Not to be confused with <see cref="Gigabyte"/>.</remarks>
+/#
+
+# UnitInstance_Tebibyte
+<summary>Represents { 1 024 ^ 4 } <see cref="Byte"/>.</summary>
+<remarks>Not to be confused with <see cref="Terabyte"/>.</remarks>
+/#
+
+# UnitInstance_Pebibyte
+<summary>Represents { 1 024 ^ 5 } <see cref="Byte"/>.</summary>
+<remarks>Not to be confused with <see cref="Petabyte"/>.</remarks>
+/#

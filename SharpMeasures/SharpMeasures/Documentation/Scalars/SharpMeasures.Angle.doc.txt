@@ -1,0 +1,5 @@
+﻿# Requires: Generic
+
+# Header
+<summary>A measure of the scalar quantity Angle - expressed in <see cref="UnitOfAngle"/>, with the SI unit being <see cref="UnitOfAngle.Radian"/>.</summary>
+/#

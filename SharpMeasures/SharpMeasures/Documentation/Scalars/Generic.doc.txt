@@ -1,0 +1,17 @@
+﻿# Utility: true
+
+# Process_Square
+<summary>Computes { <see langword="this"/> ² }.</summary>
+/#
+
+# Process_Cube
+<summary>Computes { <see langword="this"/> ³ }.</summary>
+/#
+
+# Process_SquareRoot
+<summary>Computes { √ <see langword="this"/> }.</summary>
+/#
+
+# Process_CubeRoot
+<summary>Computes { ³√ <see langword="this"/> }.</summary>
+/#

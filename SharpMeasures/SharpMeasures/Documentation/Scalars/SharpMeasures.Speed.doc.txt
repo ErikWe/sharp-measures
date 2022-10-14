@@ -1,0 +1,10 @@
+﻿# Requires: Generic
+
+# Header
+<summary>A measure of the scalar quantity Speed, describing linear motion { <see cref="Distance"/> / <see cref="Time"/> }. The quantity is expressed in <see cref="UnitOfSpeed"/>,
+with the SI unit being <see cref="UnitOfSpeed.MetrePerSecond"/>.</summary>
+/#
+
+# Constant_SpeedOfLight
+<summary>Represents the <see cref="#SelfType/#"/> of light and causality, defined as { 299 792 458 } <see cref="UnitOfSpeed.MetrePerSecond"/>.</summary>
+/#

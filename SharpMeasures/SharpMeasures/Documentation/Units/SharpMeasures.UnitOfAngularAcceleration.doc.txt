@@ -1,0 +1,15 @@
+﻿# UnitInstance_RadianPerSecondSquared
+<summary>The SI unit, representing { <see cref="UnitOfAngularSpeed.RadianPerSecond"/> / <see cref="UnitOfTime.Second"/> }.</summary>
+/#
+
+# UnitInstance_DegreePerSecondSquared
+<summary>Represents { <see cref="UnitOfAngularSpeed.DegreePerSecond"/> / <see cref="UnitOfTime.Second"/> }.</summary>
+/#
+
+# UnitInstance_RevolutionPerSecondSquared
+<summary>Represents { <see cref="UnitOfAngularSpeed.RevolutionPerSecond"/> / <see cref="UnitOfTime.Second"/> }.</summary>
+/#
+
+# UnitInstance_RevolutionPerMinutePerSecond
+<summary>Represents { <see cref="UnitOfAngularSpeed.RevolutionPerMinute"/> / <see cref="UnitOfTime.Second"/> }.</summary>
+/#

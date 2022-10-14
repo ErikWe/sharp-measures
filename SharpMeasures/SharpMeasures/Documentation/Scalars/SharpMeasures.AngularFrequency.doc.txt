@@ -1,0 +1,4 @@
+﻿# Header
+<summary>A measure of the scalar quantity Angular Frequency, describing { 1 / <see cref="Angle"/> }. The quantity is expressed in <see cref="UnitOfAngularFrequency"/>,
+with the SI unit being <see cref="UnitOfAngularFrequency.PerRadian"/>.</summary>
+/#

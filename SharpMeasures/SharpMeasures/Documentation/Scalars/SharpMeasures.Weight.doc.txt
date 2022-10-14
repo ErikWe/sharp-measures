@@ -1,0 +1,4 @@
+﻿# Header
+<summary>A measure of the scalar quantity Weight, describing the gravitational <see cref="Force"/> on an object. The quantity is expressed in
+<see cref="UnitOfForce"/>, with the SI unit being <see cref="UnitOfForce.Newton"/>.</summary>
+/#

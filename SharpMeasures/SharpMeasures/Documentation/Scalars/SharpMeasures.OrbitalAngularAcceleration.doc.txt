@@ -1,0 +1,4 @@
+﻿# Header
+<summary>A measure of the scalar quantity Orbital Angular Acceleration, describing <see cref="AngularAcceleration"/> about an external center of rotation. The quantity is expressed in
+<see cref="UnitOfAngularAcceleration"/>, with the SI unit being <see cref="UnitOfAngularAcceleration.RadianPerSecondSquared"/>.</summary>
+/#

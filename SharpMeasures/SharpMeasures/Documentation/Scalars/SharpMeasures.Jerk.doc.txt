@@ -1,0 +1,4 @@
+﻿# Header
+<summary>A measure of the scalar quantity Jerk, describing change in acceleration over time { <see cref="Acceleration"/> / <see cref="Time"/> }. The quantity is expressed in <see cref="UnitOfJerk"/>,
+with the SI unit being <see cref="UnitOfJerk.MetrePerSecondCubed"/>.</summary>
+/#

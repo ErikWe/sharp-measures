@@ -1,0 +1,34 @@
+﻿# UnitInstance_Kilogram
+<summary>The SI unit, representing { 1 000 } <see cref="Gram"/>.</summary>
+/#
+
+# UnitInstance_Gram
+<summary>Represents { 1 / 1 000 } <see cref="Kilogram"/>.</summary>
+/#
+
+# UnitInstance_Milligram
+<summary>Represents { 1 / 1 000 } <see cref="Gram"/>.</summary>
+/#
+
+# UnitInstance_Microgram
+<summary>Represents { 1 / 1 000 000 } <see cref="Gram"/>.</summary>
+/#
+
+# UnitInstance_Hectogram
+<summary>Represents { 100 } <see cref="Gram"/>, or { 1 / 10 } <see cref="Kilogram"/>.</summary>
+/#
+
+# UnitInstance_Tonne
+<summary>Represents { 1 000 } <see cref="Kilogram"/> - the metric ton.</summary>
+<remarks>Not to be confused with other units of mass with similar names.</remarks>
+/#
+
+# UnitInstance_Ounce
+<summary>Represents { 1 / 16 } <see cref="Pound"/>, or approximately { 28 } <see cref="Gram"/> - the avoirdupois ounce.</summary>
+<remarks>Not to be confused with other units of mass with similar names.</remarks>
+/#
+
+# UnitInstance_Pound
+<summary>Represents { 16 } <see cref="Ounce"/>, or approximately { 1 / 2 } <see cref="Kilogram"/> - the avoirdupois pound.</summary>
+<remarks>Not to be confused with other units of mass with similar names.</remarks>
+/#

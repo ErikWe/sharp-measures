@@ -1,0 +1,4 @@
+﻿# Header
+<summary>A measure of the scalar quantity Volumetric Flow Rate, describing flow or change of volume over time { <see cref="Volume"/> / <see cref="Time"/> }. The quantity is expressed in
+<see cref="UnitOfVolumetricFlowRate"/>, with the SI unit being <see cref="UnitOfVolumetricFlowRate.CubicMetrePerSecond"/>.</summary>
+/#

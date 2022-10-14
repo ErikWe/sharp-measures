@@ -1,0 +1,4 @@
+﻿# Header
+<summary>A measure of the scalar quantity Spin Angular Momentum, describing <see cref="AngularMomentum"/> about the center of mass. The quantity is expressed in
+<see cref="UnitOfAngularMomentum"/>, with the SI unit being <see cref="UnitOfAngularMomentum.KilogramSquareMetrePerSecond"/>.</summary>
+/#

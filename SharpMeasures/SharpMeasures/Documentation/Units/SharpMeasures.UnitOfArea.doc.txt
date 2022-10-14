@@ -1,0 +1,49 @@
+﻿# UnitInstance_SquareMetre
+<summary>The SI unit, representing { <see cref="UnitOfLength.Metre"/>² }.</summary>
+/#
+
+# UnitInstance_SquareDecimetre
+<summary>Represents { <see cref="UnitOfLength.Decimetre"/>² }.</summary>
+/#
+
+# UnitInstance_SquareCentimetre
+<summary>Represents { <see cref="UnitOfLength.Centimetre"/>² }.</summary>
+/#
+
+# UnitInstance_SquareMillimetre
+<summary>Represents { <see cref="UnitOfLength.Millimetre"/>² }.</summary>
+/#
+
+# UnitInstance_SquareKilometre
+<summary>Represents { <see cref="UnitOfLength.Kilometre"/>² }.</summary>
+/#
+
+# UnitInstance_SquareInch
+<summary>Represents { <see cref="UnitOfLength.Inch"/>² }.</summary>
+/#
+
+# UnitInstance_SquareFoot
+<summary>Represents { <see cref="UnitOfLength.Foot"/>² }.</summary>
+/#
+
+# UnitInstance_SquareYard
+<summary>Represents { <see cref="UnitOfLength.Yard"/>² }.</summary>
+/#
+
+# UnitInstance_SquareMile
+<summary>Represents { <see cref="UnitOfLength.Mile"/>² }.</summary>
+/#
+
+# UnitInstance_Are
+<summary>Represents { 100 } <see cref="SquareMetre"/>.</summary>
+<remarks>Not to be confused with <see cref="Acre"/>.</remarks>
+/#
+
+# UnitInstance_Hectare
+<summary>Represents { 100 } <see cref="Are"/>.</summary>
+/#
+
+# UnitInstance_Acre
+<summary>Represents { 1 / 640 } <see cref="SquareMile"/>.</summary>
+<remarks>Not to be confused with <see cref="Are"/>.</remarks>
+/#

@@ -1,0 +1,11 @@
+﻿# UnitInstance_SecondPerMetre
+<summary>The SI unit, representing { <see cref="UnitOfTime.Second"/> / <see cref="UnitOfLength.Metre"/> }.</summary>
+/#
+
+# UnitInstance_MinutePerKilometre
+<summary>Represents { <see cref="UnitOfTime.Minute"/> / <see cref="UnitOfLength.Kilometre"/> }.</summary>
+/#
+
+# UnitInstance_MinutePerMile
+<summary>Represents { <see cref="UnitOfTime.Minute"/> / <see cref="UnitOfLength.Mile"/> }.</summary>
+/#

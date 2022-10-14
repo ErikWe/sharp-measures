@@ -1,0 +1,7 @@
+﻿# UnitInstance_HertzPerSecond
+<summary>The SI unit, representing { <see cref="UnitOfFrequency.Hertz"/> / <see cref="UnitOfTime.Second"/> }.</summary>
+/#
+
+# UnitInstance_PerSecondSquared
+<summary>Represents { 1 / <see cref="UnitOfTime.Second"/>² }.</summary>
+/#

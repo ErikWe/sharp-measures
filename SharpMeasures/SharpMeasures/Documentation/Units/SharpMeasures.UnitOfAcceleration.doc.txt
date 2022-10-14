@@ -1,0 +1,15 @@
+﻿# UnitInstance_MetrePerSecondSquared
+<summary>The SI unit, representing { <see cref="UnitOfSpeed.MetrePerSecond"/> / <see cref="UnitOfTime.Second"/> }.</summary>
+/#
+
+# UnitInstance_FootPerSecondSquared
+<summary>Represents { <see cref="UnitOfSpeed.FootPerSecond"/> / <see cref="UnitOfTime.Second"/> }.</summary>
+/#
+
+# UnitInstance_KilometrePerHourPerSecond
+<summary>Represents { <see cref="UnitOfSpeed.KilometrePerHour"/> / <see cref="UnitOfTime.Second"/> }.</summary>
+/#
+
+# UnitInstance_MilePerHourPerSecond
+<summary>Represents { <see cref="UnitOfSpeed.MilePerHour"/> / <see cref="UnitOfTime.Second"/> }.</summary>
+/#

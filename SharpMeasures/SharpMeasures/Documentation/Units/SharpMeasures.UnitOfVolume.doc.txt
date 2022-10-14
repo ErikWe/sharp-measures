@@ -1,0 +1,53 @@
+﻿# UnitInstance_CubicMetre
+<summary>The SI unit, representing { <see cref="UnitOfLength.Metre"/>³ }</summary>
+/#
+
+# UnitInstance_CubicDecimetre
+<summary>Represents { <see cref="UnitOfLength.Decimetre"/>³ }</summary>
+<remarks>This is equivalent to <see cref="Litre"/>.</remarks>
+/#
+
+# UnitInstance_CubicCentimetre
+<summary>Represents { <see cref="UnitOfLength.Centimetre"/>³ }</summary>
+/#
+
+# UnitInstance_CubicMillimetre
+<summary>Represents { <see cref="UnitOfLength.Millimetre"/>³ }</summary>
+/#
+
+# UnitInstance_CubicKilometre
+<summary>Represents { <see cref="UnitOfLength.Kilometre"/>³ }</summary>
+/#
+
+# UnitInstance_CubicInch
+<summary>Represents { <see cref="UnitOfLength.Inch"/>³ }</summary>
+/#
+
+# UnitInstance_CubicFoot
+<summary>Represents { <see cref="UnitOfLength.Foot"/>³ }</summary>
+/#
+
+# UnitInstance_CubicYard
+<summary>Represents { <see cref="UnitOfLength.Yard"/>³ }</summary>
+/#
+
+# UnitInstance_CubicMile
+<summary>Represents { <see cref="UnitOfLength.Mile"/>³ }</summary>
+/#
+
+# UnitInstance_Litre
+<summary>Represents { <see cref="UnitOfLength.Decimetre"/>³ }</summary>
+<remarks>This is equivalent to <see cref="CubicDecimetre"/>.</remarks>
+/#
+
+# UnitInstance_Decilitre
+<summary>Represents { 1 / 10 } <see cref="Litre"/>.</summary>
+/#
+
+# UnitInstance_Centilitre
+<summary>Represents { 1 / 100 } <see cref="Litre"/>.</summary>
+/#
+
+# UnitInstance_Millilitre
+<summary>Represents { 1 / 1 000 } <see cref="Litre"/>.</summary>
+/#

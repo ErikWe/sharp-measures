@@ -1,0 +1,49 @@
+﻿# UnitInstance_PerSquareMetre
+<summary>The SI unit, representing { 1 / <see cref="UnitOfArea.SquareMetre"/>² }.</summary>
+/#
+
+# UnitInstance_PerSquareDecimetre
+<summary>Represents { 1 / <see cref="UnitOfArea.SquareDecimetre"/>² }.</summary>
+/#
+
+# UnitInstance_PerSquareCentimetre
+<summary>Represents { <see cref="UnitOfArea.SquareCentimetre"/>² }.</summary>
+/#
+
+# UnitInstance_PerSquareMillimetre
+<summary>Represents { <see cref="UnitOfArea.SquareMillimetre"/>² }.</summary>
+/#
+
+# UnitInstance_PerSquareKilometre
+<summary>Represents { <see cref="UnitOfArea.SquareKilometre"/>² }.</summary>
+/#
+
+# UnitInstance_PerSquareInch
+<summary>Represents { <see cref="UnitOfArea.SquareInch"/>² }.</summary>
+/#
+
+# UnitInstance_PerSquareFoot
+<summary>Represents { <see cref="UnitOfArea.SquareFoot"/>² }.</summary>
+/#
+
+# UnitInstance_PerSquareYard
+<summary>Represents { <see cref="UnitOfArea.SquareYard"/>² }.</summary>
+/#
+
+# UnitInstance_PerSquareMile
+<summary>Represents { <see cref="UnitOfArea.SquareMile"/>² }.</summary>
+/#
+
+# UnitInstance_PerAre
+<summary>Represents { 1 / <see cref="UnitOfArea.Are"/> }.</summary>
+<remarks>Not to be confused with <see cref="PerAcre"/>.</remarks>
+/#
+
+# UnitInstance_PerHectare
+<summary>Represents { 1 / <see cref="UnitOfArea.Hectare"/> }.</summary>
+/#
+
+# UnitInstance_PerAcre
+<summary>Represents { 1 / <see cref="UnitOfArea.Acre"/> }.</summary>
+<remarks>Not to be confused with <see cref="PerAre"/>.</remarks>
+/#

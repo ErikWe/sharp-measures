@@ -1,0 +1,4 @@
+﻿# Header
+<summary>A measure of the scalar quantity Areal Density, describing mass distributed over an area { <see cref="Mass"/> / <see cref="Area"/> }. The quantity is expressed in <see cref="UnitOfArealDensity"/>,
+with the SI unit being <see cref="UnitOfArealDensity.KilogramPerSquareMetre"/>.</summary>
+/#

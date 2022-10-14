@@ -1,0 +1,6 @@
+﻿# Requires: Generic
+
+# Header
+<summary>A measure of the scalar quantity Volume, describing length cubed { <see cref="Length"/> ³ }. The quantity is expressed in <see cref="UnitOfVolume"/>,
+with the SI unit being <see cref="UnitOfVolume.CubicMetre"/>.</summary>
+/#

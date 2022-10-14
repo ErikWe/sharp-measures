@@ -1,0 +1,6 @@
+﻿# Requires: Generic
+
+# Header
+<summary>A measure of the scalar quantity Areal Frequency, describing { 1 / <see cref="Area"/> }. The quantity is expressed in <see cref="UnitOfArealFrequency"/>,
+with the SI unit being <see cref="UnitOfArealFrequency.PerSquareMetre"/>.</summary>
+/#

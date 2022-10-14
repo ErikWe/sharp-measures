@@ -1,0 +1,3 @@
+﻿# UnitInstance_KilogramSquareMetrePerSecond
+<summary>The SI unit, representing { <see cref="UnitOfMomentOfInertia.KilogramSquareMetre"/> ∙ <see cref="UnitOfAngularSpeed.RadianPerSecond"/> }.</summary>
+/#

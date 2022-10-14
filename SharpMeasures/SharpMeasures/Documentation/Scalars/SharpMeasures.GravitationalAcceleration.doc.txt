@@ -1,0 +1,6 @@
+﻿# Requires: SharpMeasures.Acceleration
+
+# Header
+<summary>A measure of the scalar quantity Gravitational Acceleration, describing <see cref="Acceleration"/> caused by gravitational forces. The quantity is expressed in <see cref="UnitOfAcceleration"/>,
+with the SI unit being <see cref="UnitOfAcceleration.MetrePerSecondSquared"/>.</summary>
+/#

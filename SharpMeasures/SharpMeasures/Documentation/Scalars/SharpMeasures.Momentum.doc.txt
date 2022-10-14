@@ -1,0 +1,4 @@
+﻿# Header
+<summary>A measure of the scalar quantity Momentum, describing mass in motion { <see cref="Mass"/> ∙ <see cref="Speed"/> }. The quantity is expressed in
+<see cref="UnitOfMomentum"/>, with the SI unit being <see cref="UnitOfMomentum.KilogramMetrePerSecond"/>.</summary>
+/#

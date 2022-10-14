@@ -1,0 +1,4 @@
+﻿# Header
+<summary>A measure of the scalar quantity Spin Angular Speed, describing <see cref="AngularSpeed"/> about the center of mass. The quantity is expressed in
+<see cref="UnitOfAngularSpeed"/>, with the SI unit being <see cref="UnitOfAngularSpeed.RadianPerSecond"/>.</summary>
+/#

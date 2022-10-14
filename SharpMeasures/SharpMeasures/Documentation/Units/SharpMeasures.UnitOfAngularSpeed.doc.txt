@@ -1,0 +1,15 @@
+﻿# UnitInstance_RadianPerSecond
+<summary>The SI unit, representing { <see cref="UnitOfAngle.Radian"/> / <see cref="UnitOfTime.Second"/> }.</summary>
+/#
+
+# UnitInstance_DegreePerSecond
+<summary>Represents { <see cref="UnitOfAngle.Degree"/> / <see cref="UnitOfTime.Second"/> }.</summary>
+/#
+
+# UnitInstance_RevolutionPerSecond
+<summary>Represents { <see cref="UnitOfAngle.Revolution"/> / <see cref="UnitOfTime.Second"/> }.</summary>
+/#
+
+# UnitInstance_RevolutionPerMinute
+<summary>Represents { <see cref="UnitOfAngle.Revolution"/> / <see cref="UnitOfTime.Minute"/> }.</summary>
+/#

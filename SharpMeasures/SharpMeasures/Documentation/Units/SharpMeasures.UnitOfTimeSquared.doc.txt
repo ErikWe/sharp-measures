@@ -1,0 +1,3 @@
+﻿# UnitInstance_SquareSecond
+<summary>The SI unit, representing { <see cref="UnitOfTime.Second"/>² }</summary>
+/#

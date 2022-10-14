@@ -1,0 +1,3 @@
+﻿# UnitInstance_MetreSecond
+<summary>The SI unit, representing { <see cref="UnitOfLength.Metre"/> ∙ <see cref="UnitOfTime.Second"/> }.</summary>
+/#

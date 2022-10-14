@@ -1,0 +1,4 @@
+﻿# Header
+<summary>A measure of the scalar quantity Temperature Gradient, describing change in temperature over distance { <see cref="TemperatureDifference"/> / <see cref="Distance"/> }. The quantity is expressed in
+<see cref="UnitOfTemperatureGradient"/>, with the SI unit being <see cref="UnitOfTemperatureGradient.KelvinPerMetre"/>.</summary>
+/#

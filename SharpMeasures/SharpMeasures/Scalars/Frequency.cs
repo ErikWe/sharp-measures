@@ -19,6 +19,7 @@ public readonly partial record struct Frequency { }
 [QuantityOperation(typeof(SpatialFrequency), typeof(Speed), OperatorType.Division)]
 [QuantityOperation(typeof(Scalar), typeof(Time), OperatorType.Multiplication)]
 [QuantityOperation(typeof(Power), typeof(Energy), OperatorType.Multiplication)]
+[QuantityOperation(typeof(Power), typeof(Work), OperatorType.Multiplication)]
 [QuantityOperation(typeof(Pace), typeof(Acceleration), OperatorType.Division)]
 [QuantityOperation(typeof(MassFlowRate), typeof(Mass), OperatorType.Multiplication)]
 [QuantityOperation(typeof(Jerk), typeof(Acceleration), OperatorType.Multiplication)]

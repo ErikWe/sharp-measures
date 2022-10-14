@@ -1,0 +1,3 @@
+﻿# UnitInstance_NewtonPerSecond
+<summary>The SI unit, representing { <see cref="UnitOfForce.Newton"/> / <see cref="UnitOfTime.Second"/> }</summary>
+/#

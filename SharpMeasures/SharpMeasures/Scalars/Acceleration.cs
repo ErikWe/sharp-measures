@@ -19,5 +19,5 @@ public readonly partial record struct Acceleration { }
 [QuantityOperation(typeof(Distance), typeof(FrequencyDrift), OperatorType.Division)]
 public readonly partial record struct Acceleration { }
 
-[ScalarConstant("StandardGravity", "MetrePerSecondSquared", 9.81)]
+[ScalarConstant("StandardGravity", "MetrePerSecondSquared", 9.80665)]
 public readonly partial record struct Acceleration { }

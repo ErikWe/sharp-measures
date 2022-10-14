@@ -1,0 +1,35 @@
+﻿# UnitInstance_PerMetre
+<summary>The SI unit, representing { 1 / <see cref="UnitOfLength.Metre"/> }.</summary>
+/#
+
+# UnitInstance_PerDecimetre
+<summary>Represents { 1 / <see cref="UnitOfLength.Decimetre"/> }.</summary>
+/#
+
+# UnitInstance_PerCentimetre
+<summary>Represents { 1 / <see cref="UnitOfLength.Centimetre"/> }.</summary>
+/#
+
+# UnitInstance_PerMillimetre
+<summary>Represents { 1 / <see cref="UnitOfLength.Millimetre"/> }.</summary>
+/#
+
+# UnitInstance_PerKilometre
+<summary>Represents { 1 / <see cref="UnitOfLength.Kilometre"/> }.</summary>
+/#
+
+# UnitInstance_PerInch
+<summary>Represents { 1 / <see cref="UnitOfLength.Inch"/> }.</summary>
+/#
+
+# UnitInstance_PerFoot
+<summary>Represents { 1 / <see cref="UnitOfLength.Foot"/> }.</summary>
+/#
+
+# UnitInstance_PerYard
+<summary>Represents { 1 / <see cref="UnitOfLength.Yard"/> }.</summary>
+/#
+
+# UnitInstance_PerMile
+<summary>Represents { 1 / <see cref="UnitOfLength.Mile"/> }.</summary>
+/#

@@ -1,0 +1,4 @@
+﻿# Header
+<summary>A measure of the scalar quantity Specific Volume, describing volume per unit of mass { <see cref="Volume"/> / <see cref="Mass"/> }. The quantity is expressed in
+<see cref="UnitOfSpecificVolume"/>, with the SI unit being <see cref="UnitOfSpecificVolume.CubicMetrePerKilogram"/>.</summary>
+/#

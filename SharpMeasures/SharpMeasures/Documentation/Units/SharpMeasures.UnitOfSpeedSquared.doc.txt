@@ -1,0 +1,3 @@
+﻿# UnitInstance_SquareMetrePerSecondSquared
+<summary>The SI unit, representing { <see cref="UnitOfSpeed.MetrePerSecond"/>² }.</summary>
+/#

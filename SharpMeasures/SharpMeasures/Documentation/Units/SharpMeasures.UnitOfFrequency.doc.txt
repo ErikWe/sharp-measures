@@ -1,0 +1,29 @@
+﻿# UnitInstance_PerSecond
+<summary>Represents { 1 / <see cref="UnitOfTime.Second"/> }.</summary>
+<remarks>This is equivalent to <see cref="Hertz"/>.</remarks>
+/#
+
+# UnitInstance_PerMinute
+<summary>Represents { 1 / <see cref="UnitOfTime.Minute"/> }.</summary>
+/#
+
+# UnitInstance_PerHour
+<summary>Represents { 1 / <see cref="UnitOfTime.Hour"/> }.</summary>
+/#
+
+# UnitInstance_Hertz
+<summary>The SI unit, representing { 1 / <see cref="UnitOfTime.Second"/> }.</summary>
+<remarks>This is equivalent to <see cref="PerSecond"/>.</remarks>
+/#
+
+# UnitInstance_Kilohertz
+<summary>Represents { 1 000 } <see cref="UnitOfTime.Second"/> }.</summary>
+/#
+
+# UnitInstance_Megahertz
+<summary>Represents { 1 000 000 } <see cref="UnitOfTime.Second"/> }.</summary>
+/#
+
+# UnitInstance_Gigahertz
+<summary>Represents { 1 000 000 000 } <see cref="UnitOfTime.Second"/> }.</summary>
+/#

@@ -5,6 +5,7 @@ using SharpMeasures.Generators;
 [ScalarQuantity(typeof(UnitOfMass), DefaultUnit = "Kilogram", DefaultSymbol = "kg")]
 public readonly partial record struct Mass { }
 
+[QuantityOperation(typeof(Weight), typeof(GravitationalAcceleration), OperatorType.Multiplication)]
 [QuantityOperation(typeof(Volume), typeof(SpecificVolume), OperatorType.Multiplication)]
 [QuantityOperation(typeof(Volume), typeof(Density), OperatorType.Division)]
 [QuantityOperation(typeof(Time), typeof(MassFlowRate), OperatorType.Division)]
@@ -24,6 +25,7 @@ public readonly partial record struct Mass { }
 [QuantityOperation(typeof(AngularMomentum), typeof(SpecificAngularMomentum), OperatorType.Multiplication)]
 public readonly partial record struct Mass { }
 
+[QuantityOperation(typeof(WeightN), typeof(GravitationalAccelerationN), OperatorType.Multiplication)]
 [QuantityOperation(typeof(MomentumN), typeof(VelocityN), OperatorType.Multiplication)]
 [QuantityOperation(typeof(ForceN), typeof(AccelerationN), OperatorType.Multiplication)]
 [QuantityOperation(typeof(AngularMomentumN), typeof(SpecificAngularMomentumN), OperatorType.Multiplication)]

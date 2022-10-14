@@ -1,0 +1,15 @@
+﻿# UnitInstance_Watt
+<summary>The SI unit, representing { <see cref="UnitOfEnergy.Joule"/> / <see cref="UnitOfTime.Second"/> }.</summary>
+/#
+
+# UnitInstance_Kilowatt
+<summary>Represents { 1 000 } <see cref="Watt"/>.</summary>
+/#
+
+# UnitInstance_Megawatt
+<summary>Represents { 1 000 000 } <see cref="Watt"/>.</summary>
+/#
+
+# UnitInstance_Gigawatt
+<summary>Represents { 1 000 000 000 } <see cref="Watt"/>.</summary>
+/#

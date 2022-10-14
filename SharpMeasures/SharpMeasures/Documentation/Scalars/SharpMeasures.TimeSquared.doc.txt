@@ -1,0 +1,6 @@
+﻿# Requires: Generic
+
+# Header
+<summary>A measure of the scalar quantity Time Squared, describing squared time { <see cref="Time"/> ² }. The quantity is expressed in <see cref="UnitOfTimeSquared"/>, with the SI unit being
+<see cref="UnitOfTimeSquared.SquareSecond"/>.</summary>
+/#

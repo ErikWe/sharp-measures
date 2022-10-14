@@ -1,0 +1,27 @@
+﻿# UnitInstance_MetrePerSecond
+<summary>The SI unit, representing { <see cref="UnitOfLength.Metre"/> / <see cref="UnitOfTime.Second"/> }.</summary>
+/#
+
+# UnitInstance_KilometrePerSecond
+<summary>Represents { <see cref="UnitOfLength.Kilometre"/> / <see cref="UnitOfTime.Second"/> }.</summary>
+/#
+
+# UnitInstance_KilometrePerHour
+<summary>Represents { <see cref="UnitOfLength.Kilometre"/> / <see cref="UnitOfTime.Hour"/> }.</summary>
+/#
+
+# UnitInstance_FootPerSecond
+<summary>Represents { <see cref="UnitOfLength.Foot"/> / <see cref="UnitOfTime.Second"/> }.</summary>
+/#
+
+# UnitInstance_YardPerSecond
+<summary>Represents { <see cref="UnitOfLength.Yard"/> / <see cref="UnitOfTime.Second"/> }.</summary>
+/#
+
+# UnitInstance_MilePerHour
+<summary>Represents { <see cref="UnitOfLength.Mile"/> / <see cref="UnitOfTime.Hour"/> }.</summary>
+/#
+
+# UnitInstance_Knot
+<summary>Represents { <see cref="UnitOfLength.NauticalMile"/> / <see cref="UnitOfTime.Hour"/> }.</summary>
+/#

@@ -1,0 +1,3 @@
+﻿# UnitInstance_KilogramPerMetre
+<summary>The SI unit, representing { <see cref="UnitOfMass.Kilogram"/> / <see cref="UnitOfLength.Metre"/> }.</summary>
+/#

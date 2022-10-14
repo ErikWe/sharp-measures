@@ -2,10 +2,10 @@
 
 using SharpMeasures.Generators;
 
-[DerivedUnitInstance("PerMillimetre", "[*]", new[] { "Millimetre" })]
-[DerivedUnitInstance("PerCentimetre", "[*]", new[] { "Centimetre" })]
-[DerivedUnitInstance("PerDecimetre", "[*]", new[] { "Decimetre" })]
 [DerivedUnitInstance("PerMetre", "[*]", new[] { "Metre" })]
+[DerivedUnitInstance("PerDecimetre", "[*]", new[] { "Decimetre" })]
+[DerivedUnitInstance("PerCentimetre", "[*]", new[] { "Centimetre" })]
+[DerivedUnitInstance("PerMillimetre", "[*]", new[] { "Millimetre" })]
 [DerivedUnitInstance("PerKilometre", "[*]", new[] { "Kilometre" })]
 [DerivedUnitInstance("PerInch", "[*]", new[] { "Inch" })]
 [DerivedUnitInstance("PerFoot", "[*]", new[] { "Foot" })]

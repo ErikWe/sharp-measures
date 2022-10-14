@@ -1,0 +1,47 @@
+﻿# UnitInstance_Radian
+<summary>The SI unit, representing { 1 / 2π } <see cref="Revolution"/>.</summary>
+/#
+
+# UnitInstance_Milliradian
+<summary>Represents { 1 / 1 000 } <see cref="Radian"/>.</summary>
+/#
+
+# UnitInstance_Degree
+<summary>Represents { 1 / 360 } <see cref="Revolution"/>.</summary>
+/#
+
+# UnitInstance_Gradian
+<summary>Represents { 1 / 400 } <see cref="Revolution"/>.</summary>
+/#
+
+# UnitInstance_Arcminute
+<summary>Represents { 1 / 60 } <see cref="Degree"/>.</summary>
+/#
+
+# UnitInstance_Arcsecond
+<summary>Represents { 1 / 60 } <see cref="Arcminute"/>.</summary>
+/#
+
+# UnitInstance_Milliarcsecond
+<summary>Represents { 1 / 1 000 } <see cref="Arcsecond"/>.</summary>
+/#
+
+# UnitInstance_Microarcsecond
+<summary>Represents { 1 / 1 000 000 } <see cref="Arcsecond"/>.</summary>
+/#
+
+# UnitInstance_Revolution
+<summary>Represents one full revolution - also known as rotation, cycle, or turn.</summary>
+/#
+
+# UnitInstance_HalfRevolution
+<summary>Represents { 1 / 2 } <see cref="Revolution"/>.</summary>
+/#
+
+# UnitInstance_QuarterRevolution
+<summary>Represents { 1 / 4 } <see cref="Revolution"/>.</summary>
+/#
+
+# UnitInstance_BinaryDegree
+<summary>Represents { 1 / 256 } <see cref="Revolution"/>.</summary>
+/#

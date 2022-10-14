@@ -1,0 +1,88 @@
+﻿# UnitInstance_BitPerSecond
+<summary>Represents { <see cref="UnitOfInformation.Bit"/> / <see cref="UnitOfTime.Second"/> }.</summary>
+/#
+
+# UnitInstance_KilobitPerSecond
+<summary>Represents { <see cref="UnitOfInformation.Kilobit"/> / <see cref="UnitOfTime.Second"/> }.</summary>
+<remarks>Not to be confused with <see cref="KibibitPerSecond"/>.</remarks>
+/#
+
+# UnitInstance_MegabitPerSecond
+<summary>Represents { <see cref="UnitOfInformation.Megabit"/> / <see cref="UnitOfTime.Second"/> }.</summary>
+<remarks>Not to be confused with <see cref="MebibitPerSecond"/>.</remarks>
+/#
+
+# UnitInstance_GigabitPerSecond
+<summary>Represents { <see cref="UnitOfInformation.Gigabit"/> / <see cref="UnitOfTime.Second"/> }.</summary>
+<remarks>Not to be confused with <see cref="GibibitPerSecond"/>.</remarks>
+/#
+
+# UnitInstance_TerabitPerSecond
+<summary>Represents { <see cref="UnitOfInformation.Terabit"/> / <see cref="UnitOfTime.Second"/> }.</summary>
+<remarks>Not to be confused with <see cref="TebibitPerSecond"/>.</remarks>
+/#
+
+# UnitInstance_KibibitPerSecond
+<summary>Represents { <see cref="UnitOfInformation.Kibibit"/> / <see cref="UnitOfTime.Second"/> }.</summary>
+/#
+
+# UnitInstance_MebibitPerSecond
+<summary>Represents { <see cref="UnitOfInformation.Mebibit"/> / <see cref="UnitOfTime.Second"/> }.</summary>
+/#
+
+# UnitInstance_GibibitPerSecond
+<summary>Represents { <see cref="UnitOfInformation.Gibibit"/> / <see cref="UnitOfTime.Second"/> }.</summary>
+/#
+
+# UnitInstance_TebibitPerSecond
+<summary>Represents { <see cref="UnitOfInformation.Tebibit"/> / <see cref="UnitOfTime.Second"/> }.</summary>
+/#
+
+# UnitInstance_BytePerSecond
+<summary>Represents { <see cref="UnitOfInformation.Byte"/> / <see cref="UnitOfTime.Second"/> }.</summary>
+/#
+
+# UnitInstance_KilobytePerSecond
+<summary>Represents { <see cref="UnitOfInformation.Kilobyte"/> / <see cref="UnitOfTime.Second"/> }.</summary>
+<remarks>Not to be confused with <see cref="KibibytePerSecond"/>.</remarks>
+/#
+
+# UnitInstance_MegabytePerSecond
+<summary>Represents { <see cref="UnitOfInformation.Megabyte"/> / <see cref="UnitOfTime.Second"/> }.</summary>
+<remarks>Not to be confused with <see cref="MebibytePerSecond"/>.</remarks>
+/#
+
+# UnitInstance_GigabytePerSecond
+<summary>Represents { <see cref="UnitOfInformation.Gigabyte"/> / <see cref="UnitOfTime.Second"/> }.</summary>
+<remarks>Not to be confused with <see cref="GibibytePerSecond"/>.</remarks>
+/#
+
+# UnitInstance_TerabytePerSecond
+<summary>Represents { <see cref="UnitOfInformation.Terabyte"/> / <see cref="UnitOfTime.Second"/> }.</summary>
+<remarks>Not to be confused with <see cref="TebibytePerSecond"/>.</remarks>
+/#
+
+# UnitInstance_PetabytePerSecond
+<summary>Represents { <see cref="UnitOfInformation.Petabyte"/> / <see cref="UnitOfTime.Second"/> }.</summary>
+<remarks>Not to be confused with <see cref="PebibytePerSecond"/>.</remarks>
+/#
+
+# UnitInstance_KibibytePerSecond
+<summary>Represents { <see cref="UnitOfInformation.Kibibyte"/> / <see cref="UnitOfTime.Second"/> }.</summary>
+/#
+
+# UnitInstance_MebibytePerSecond
+<summary>Represents { <see cref="UnitOfInformation.Mebibyte"/> / <see cref="UnitOfTime.Second"/> }.</summary>
+/#
+
+# UnitInstance_GibibytePerSecond
+<summary>Represents { <see cref="UnitOfInformation.Gibibyte"/> / <see cref="UnitOfTime.Second"/> }.</summary>
+/#
+
+# UnitInstance_TebibytePerSecond
+<summary>Represents { <see cref="UnitOfInformation.Tebibyte"/> / <see cref="UnitOfTime.Second"/> }.</summary>
+/#
+
+# UnitInstance_PebibytePerSecond
+<summary>Represents { <see cref="UnitOfInformation.Pebibyte"/> / <see cref="UnitOfTime.Second"/> }.</summary>
+/#

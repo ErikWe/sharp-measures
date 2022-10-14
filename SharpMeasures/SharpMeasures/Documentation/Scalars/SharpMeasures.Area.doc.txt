@@ -1,0 +1,6 @@
+﻿# Requires: Generic
+
+# Header
+<summary>A measure of the scalar quantity Area, describing length squared { <see cref="Length"/> ² }. The quantity is expressed in <see cref="UnitOfArea"/>,
+with the SI unit being <see cref="UnitOfArea.SquareMetre"/>.</summary>
+/#

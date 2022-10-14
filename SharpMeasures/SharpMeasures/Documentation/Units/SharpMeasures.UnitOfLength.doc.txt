@@ -1,0 +1,83 @@
+﻿# UnitInstance_Metre
+<summary>The SI unit.</summary>
+/#
+
+# UnitInstance_Femtometre
+<summary>Represents { 1 000 ^ -5 } <see cref="Metre"/>.</summary>
+/#
+
+# UnitInstance_Picometre
+<summary>Represents { 1 000 ^ -4 } <see cref="Metre"/>.</summary>
+/#
+
+# UnitInstance_Nanometre
+<summary>Represents { 1 000 ^ -3 } <see cref="Metre"/>.</summary>
+/#
+
+# UnitInstance_Micrometre
+<summary>Represents { 1 / 1 000 000 } <see cref="Metre"/>.</summary>
+/#
+
+# UnitInstance_Millimetre
+<summary>Represents { 1 / 1 000 } <see cref="Metre"/>.</summary>
+/#
+
+# UnitInstance_Centimetre
+<summary>Represents { 1 / 100 } <see cref="Metre"/>.</summary>
+/#
+
+# UnitInstance_Decimetre
+<summary>Represents { 1 / 10 } <see cref="Metre"/>.</summary>
+/#
+
+# UnitInstance_Kilometre
+<summary>Represents { 1 000 } <see cref="Metre"/>.</summary>
+/#
+
+# UnitInstance_AstronomicalUnit
+<summary>Represents the approximate distance between the Earth and the Sun.</summary>
+/#
+
+# UnitInstance_LightYear
+<summary>Represents { <see cref="Speed.SpeedOfLight"/> ∙ <see cref="UnitOfTime.JulianYear"/> }.</summary>
+/#
+
+# UnitInstance_Parsec
+<summary>Represents the distance from which { 1 <see cref="AstronomicalUnit"/> } covers { 1 <see cref="UnitOfAngle.Arcsecond"/> }.</summary>
+/#
+
+# UnitInstance_Kiloparsec
+<summary>Represents { 1 000 } <see cref="Parsec"/>.</summary>
+/#
+
+# UnitInstance_Megaparsec
+<summary>Represents { 1 000 000 } <see cref="Parsec"/>.</summary>
+/#
+
+# UnitInstance_Gigaparsec
+<summary>Represents { 1 000 000 000 } <see cref="Parsec"/>.</summary>
+/#
+
+# UnitInstance_Inch
+<summary>Represents { 1 / 12 } <see cref="Foot"/>, or approximately { 25 } <see cref="Millimetre"/>.</summary>
+/#
+
+# UnitInstance_Foot
+<summary>Represents { 12 } <see cref="Inch"/>, or { 1 / 3 } <see cref="Yard"/>.</summary>
+/#
+
+# UnitInstance_Yard
+<summary>Represents { 3 } <see cref="Foot"/>.</summary>
+/#
+
+# UnitInstance_Mile
+<summary>Represents { 1760 } <see cref="Yard"/> or approximately { 1 609 } <see cref="Metre"/>.</summary>
+/#
+
+# UnitInstance_Angstrom
+<summary>Represents { 0.1 } <see cref="Nanometre"/>.</summary>
+/#
+
+# UnitInstance_NauticalMile
+<summary>Represents { 1852 } <see cref="Metre"/>.</summary>
+/#

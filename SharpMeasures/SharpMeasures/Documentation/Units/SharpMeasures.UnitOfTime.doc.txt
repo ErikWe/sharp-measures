@@ -1,0 +1,47 @@
+﻿# UnitInstance_Second
+<summary>The SI unit.</summary>
+/#
+
+# UnitInstance_Minute
+<summary>Represents { 60 } <see cref="Second"/>.</summary>
+/#
+
+# UnitInstance_Hour
+<summary>Represents { 60 } <see cref="Minute"/>.</summary>
+/#
+
+# UnitInstance_Day
+<summary>Represents { 24 } <see cref="Hour"/>.</summary>
+/#
+
+# UnitInstance_Week
+<summary>Represents { 7 } <see cref="Day"/>.</summary>
+/#
+
+# UnitInstance_CommonYear
+<summary>Represents { 365 } <see cref="Day"/>.</summary>
+/#
+
+# UnitInstance_JulianYear
+<summary>Represents the average year of the Julian Calendar, { 365.25 } <see cref="Day"/>.</summary>
+/#
+
+# UnitInstance_Femtosecond
+<summary>Represents { 1 / 1 000 ^ 5 } <see cref="Second"/>.</summary>
+/#
+
+# UnitInstance_Picosecond
+<summary>Represents { 1 / 1 000 ^ 4 } <see cref="Second"/>.</summary>
+/#
+
+# UnitInstance_Nanosecond
+<summary>Represents { 1 / 1 000 000 000 } <see cref="Second"/>.</summary>
+/#
+
+# UnitInstance_Microsecond
+<summary>Represents { 1 / 1 000 000 } <see cref="Second"/>.</summary>
+/#
+
+# UnitInstance_Millisecond
+<summary>Represents { 1 / 1 000 } <see cref="Second"/>.</summary>
+/#

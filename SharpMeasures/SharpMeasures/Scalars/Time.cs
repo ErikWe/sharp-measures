@@ -20,7 +20,7 @@ public readonly partial record struct Time { }
 [QuantityOperation(typeof(Frequency), typeof(FrequencyDrift), OperatorType.Multiplication)]
 [QuantityOperation(typeof(Frequency), typeof(TimeSquared), OperatorType.Division)]
 [QuantityOperation(typeof(Force), typeof(Yank), OperatorType.Multiplication)]
-[QuantityOperation(typeof(Energy), typeof(Power), OperatorType.Multiplication)]
+[QuantityOperation(typeof(Work), typeof(Power), OperatorType.Multiplication)]
 [QuantityOperation(typeof(Distance), typeof(Speed), OperatorType.Multiplication)]
 [QuantityOperation(typeof(Distance), typeof(Pace), OperatorType.Division)]
 [QuantityOperation(typeof(AngularSpeed), typeof(AngularAcceleration), OperatorType.Multiplication)]

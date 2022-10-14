@@ -1,0 +1,15 @@
+﻿# UnitInstance_Pascal
+<summary>The SI unit, representing { <see cref="UnitOfForce.Newton"/> / <see cref="UnitOfArea.SquareMetre"/> }.</summary>
+/#
+
+# UnitInstance_Kilopascal
+<summary>Represents { 1 000 } <see cref="UnitOfPressure.Pascal"/>.</summary>
+/#
+
+# UnitInstance_Bars
+<summary>Represents { 100 } <see cref="UnitOfPressure.Kilopascal"/>.</summary>
+/#
+
+# UnitInstance_PoundForcePerSquareInch
+<summary>Represents { <see cref="UnitOfForce.PoundForce"/> / <see cref="UnitOfArea.SquareInch"/> }.</summary>
+/#

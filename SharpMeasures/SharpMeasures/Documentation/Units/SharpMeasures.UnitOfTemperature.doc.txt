@@ -1,0 +1,19 @@
+﻿# Header
+<summary>A unit of measurement, primarily describing <see cref="SharpMeasures.Temperature"/> and <see cref="SharpMeasures.TemperatureDifference"/>.</summary>
+/#
+
+# UnitInstance_Kelvin
+<summary>The SI unit, with { 0 } representing absolute zero.</summary>
+/#
+
+# UnitInstance_Celsius
+<summary>Represents <see cref="Kelvin"/> with an offset of { 273.15 }.</summary>
+/#
+
+# UnitInstance_Rankine
+<summary>Represents { 5 / 9 } <see cref="Kelvin"/>.</summary>
+/#
+
+# UnitInstance_Fahrenheit
+<summary>Represents <see cref="Rankine"/> with an offset of { 459.67 }.</summary>
+/#

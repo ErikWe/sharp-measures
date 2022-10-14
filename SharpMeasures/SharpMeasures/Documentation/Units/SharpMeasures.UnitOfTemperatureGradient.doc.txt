@@ -1,0 +1,19 @@
+﻿# UnitInstance_KelvinPerMetre
+<summary>The SI unit, representing { <see cref="UnitOfTemperature.Kelvin"/> / <see cref="UnitOfLength.Metre"/> }.</summary>
+<remarks>This is equivalent to <see cref="CelsiusPerMetre"/>.</remarks>
+/#
+
+# UnitInstance_CelsiusPerMetre
+<summary>Represents { <see cref="UnitOfTemperature.Celsius"/> / <see cref="UnitOfLength.Metre"/> }.</summary>
+<remarks>This is equivalent to <see cref="KelvinPerMetre"/>.</remarks>
+/#
+
+# UnitInstance_RankinePerMetre
+<summary>Represents { <see cref="UnitOfTemperature.Rankine"/> / <see cref="UnitOfLength.Metre"/> }.</summary>
+<remarks>This is equivalent to <see cref="FahrenheitPerMetre"/>.</remarks>
+/#
+
+# UnitInstance_FahrenheitPerMetre
+<summary>Represents { <see cref="UnitOfTemperature.Fahrenheit"/> / <see cref="UnitOfLength.Metre"/> }.</summary>
+<remarks>This is equivalent to <see cref="RankinePerMetre"/>.</remarks>
+/#
