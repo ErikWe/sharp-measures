@@ -27,13 +27,16 @@ public static class GlobalAnalyzerConfigProvider
 
             var generatedFileHeaderContent = ParseGeneratedFileHeaderContent(provider);
 
+            var allowAttributeAliases = ParseAllowAttributeAliases(provider);
+
             return GlobalAnalyzerConfig.Default with
             {
                 DocumentationFileExtension = documentationFileExtension,
                 PrintDocumentationTags = printDocumentationTags,
                 GenerateDocumentation = generateDocumentation,
                 LimitOneErrorPerDocumentationFile = limitOneErrorPerDocumentationFile,
-                GeneratedFileHeaderLevel = generatedFileHeaderContent
+                GeneratedFileHeaderLevel = generatedFileHeaderContent,
+                AllowAttributeAliases = allowAttributeAliases
             };
         }
 
@@ -95,6 +98,16 @@ public static class GlobalAnalyzerConfigProvider
             }
 
             return -1;
+        }
+
+        private static bool ParseAllowAttributeAliases(AnalyzerConfigOptionsProvider provider)
+        {
+            if (provider.GlobalOptions.TryGetValue(ConfigKeys.AllowAttributeAliases, out var value) is false)
+            {
+                return false;
+            }
+
+            return BooleanTransforms.FalseByDefault(value);
         }
     }
 }

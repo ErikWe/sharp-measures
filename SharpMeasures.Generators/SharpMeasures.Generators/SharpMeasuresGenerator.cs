@@ -16,6 +16,7 @@ using SharpMeasures.Generators.Vectors.Parsing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 
 [Generator]
 public sealed class SharpMeasuresGenerator : IIncrementalGenerator
@@ -27,7 +28,8 @@ public sealed class SharpMeasuresGenerator : IIncrementalGenerator
         var globalAnalyzerConfig = GlobalAnalyzerConfigProvider.Attach(context.AnalyzerConfigOptionsProvider);
         var documentationDictionary = DocumentationDictionaryProvider.AttachAndReport(context, context.AdditionalTextsProvider, globalAnalyzerConfig, DocumentationDiagnostics.Instance);
 
-        var targetTypes = MarkedTypeDeclarationCandidateProvider.ConstructTargeted().AttachAnyOf(context.SyntaxProvider, TargetAttributes);
+        var markedTypeDeclarationConfiguration = globalAnalyzerConfig.Select(ConstructMarkedTypeDeclarationConfiguration);
+        var targetTypes = MarkedTypeDeclarationProvider.ConstructTargeted().RegisterConfigurationProvider(markedTypeDeclarationConfiguration).AttachAnyOf(context.SyntaxProvider, TargetAttributes);
 
         (var unitParsingResult, var unitForeignSymbols) = UnitParser.Attach(context, targetTypes);
         (var scalarParsingResult, var scalarForeignSymbols) = ScalarParser.Attach(context, targetTypes);
@@ -62,5 +64,10 @@ public sealed class SharpMeasuresGenerator : IIncrementalGenerator
         UnitGenerator.Generate(context, unitValidationResult, extendedValidatedUnitPopulation, documentationDictionary, globalAnalyzerConfig);
         ScalarGenerator.Generate(context, scalarResolutionResult, extendedValidatedUnitPopulation, extendedResolvedScalarPopulation, extendedResolvedVectorPopulation, documentationDictionary, globalAnalyzerConfig);
         VectorGenerator.Generate(context, vectorResulutionResult, extendedValidatedUnitPopulation, extendedResolvedScalarPopulation, extendedResolvedVectorPopulation, documentationDictionary, globalAnalyzerConfig);
+    }
+
+    private static MarkedTypeDeclarationConfiguration ConstructMarkedTypeDeclarationConfiguration(GlobalAnalyzerConfig globalConfiguration, CancellationToken _)
+    {
+        return new MarkedTypeDeclarationConfiguration(AllowAliases: globalConfiguration.AllowAttributeAliases);
     }
 }

@@ -8,4 +8,6 @@ public static class ConfigKeys
     public const string GenerateDocumentation = "SharpMeasures_GenerateDocumentation";
 
     public const string GeneratedFileHeaderLevel = "SharpMeasures_GeneratedFileHeaderLevel";
+
+    public const string AllowAttributeAliases = "SharpMeasures_AllowAttributeAliases";
 }

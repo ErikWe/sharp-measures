@@ -7,8 +7,15 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 
-public interface IMarkedTypeDeclarationCandidateProvider<TOut>
+public readonly record struct MarkedTypeDeclarationConfiguration(bool AllowAliases)
 {
+    public static MarkedTypeDeclarationConfiguration Default { get; } = new(true);
+}
+
+public interface IMarkedTypeDeclarationProvider<TOut>
+{
+    public abstract IMarkedTypeDeclarationProvider<TOut> RegisterConfigurationProvider(IncrementalValueProvider<MarkedTypeDeclarationConfiguration> configurationProvider);
+
     public abstract IncrementalValuesProvider<Optional<TOut>> Attach<TAttribute>(SyntaxValueProvider syntaxProvider);
     public abstract IncrementalValuesProvider<Optional<TOut>> Attach(SyntaxValueProvider syntaxProvider, Type attributeType);
     public abstract IncrementalValuesProvider<Optional<TOut>> Attach(SyntaxValueProvider syntaxProvider, string attributeName);
@@ -23,35 +30,37 @@ public interface IMarkedTypeDeclarationCandidateProvider<TOut>
     public abstract IncrementalValuesProvider<Optional<TOut>> AttachAnyOf(SyntaxValueProvider syntaxProvider, params string[] candidateNames);
 }
 
-public static class MarkedTypeDeclarationCandidateProvider
+public static class MarkedTypeDeclarationProvider
 {
     public delegate TOut DOutputTransform<out TOut>(TypeDeclarationSyntax declaration, AttributeSyntax attributeSyntax);
     public delegate TOut DTargetedOutputTransform<out TOut>(TypeDeclarationSyntax declaration, AttributeSyntax attributeSyntax, string targetAttribute);
 
-    public static IMarkedTypeDeclarationCandidateProvider<TOut> Construct<TOut>(DOutputTransform<TOut> outputTransform)
+    public static IMarkedTypeDeclarationProvider<TOut> Construct<TOut>(DOutputTransform<TOut> outputTransform)
     {
         return new Provider<TOut>(targetedOutputTransform);
 
         TOut targetedOutputTransform(TypeDeclarationSyntax declaration, AttributeSyntax attributeSyntax, string targetAttribute) => outputTransform(declaration, attributeSyntax);
     }
         
-    public static IMarkedTypeDeclarationCandidateProvider<TypeDeclarationSyntax> Construct()
+    public static IMarkedTypeDeclarationProvider<TypeDeclarationSyntax> Construct()
     {
         return Construct(extractDeclaration);
 
         static TypeDeclarationSyntax extractDeclaration(TypeDeclarationSyntax declaration, AttributeSyntax attributeSyntax) => declaration;
     }
 
-    public static IMarkedTypeDeclarationCandidateProvider<TOut> Construct<TOut>(DTargetedOutputTransform<TOut> outputTransform) => new Provider<TOut>(outputTransform);
-    public static IMarkedTypeDeclarationCandidateProvider<(TypeDeclarationSyntax Declaration, string Attribute)> ConstructTargeted()
+    public static IMarkedTypeDeclarationProvider<TOut> Construct<TOut>(DTargetedOutputTransform<TOut> outputTransform) => new Provider<TOut>(outputTransform);
+    public static IMarkedTypeDeclarationProvider<(TypeDeclarationSyntax Declaration, string Attribute)> ConstructTargeted()
     {
         return Construct(extract);
 
         static (TypeDeclarationSyntax, string) extract(TypeDeclarationSyntax declaration, AttributeSyntax attributeSyntax, string targetAttribute) => (declaration, targetAttribute);
     }
 
-    private sealed class Provider<TOut> : IMarkedTypeDeclarationCandidateProvider<TOut>
+    private sealed class Provider<TOut> : IMarkedTypeDeclarationProvider<TOut>
     {
+        private Optional<IncrementalValueProvider<MarkedTypeDeclarationConfiguration>> ConfigurationProvider { get; set; }
+
         public DTargetedOutputTransform<TOut> OutputTransform { get; }
 
         public Provider(DTargetedOutputTransform<TOut> outputTransform)
@@ -94,9 +103,16 @@ public static class MarkedTypeDeclarationCandidateProvider
             return Attach(attributeStrategy, syntaxProvider);
         }
 
+        public IMarkedTypeDeclarationProvider<TOut> RegisterConfigurationProvider(IncrementalValueProvider<MarkedTypeDeclarationConfiguration> configurationProvider)
+        {
+            ConfigurationProvider = configurationProvider;
+
+            return this;
+        }
+
         private interface IAttributeSyntaxStrategy
         {
-            public abstract (AttributeSyntax Syntax, string TargetAttribute)? GetAttributeSyntax(GeneratorSyntaxContext context, TypeDeclarationSyntax declaration);
+            public abstract (AttributeSyntax Syntax, string TargetAttribute)? GetAttributeSyntax(SemanticModel semanticModel, TypeDeclarationSyntax declaration, bool checkForAlias);
         }
 
         private sealed class AttributeSyntaxFromName : IAttributeSyntaxStrategy
@@ -108,9 +124,9 @@ public static class MarkedTypeDeclarationCandidateProvider
                 AttributeName = attributeName;
             }
 
-            public (AttributeSyntax, string)? GetAttributeSyntax(GeneratorSyntaxContext context, TypeDeclarationSyntax declaration)
+            public (AttributeSyntax, string)? GetAttributeSyntax(SemanticModel semanticModel, TypeDeclarationSyntax declaration, bool checkForAlias)
             {
-                if (declaration.GetAttributeWithName(context.SemanticModel, AttributeName) is AttributeSyntax syntax)
+                if (declaration.GetAttributeWithName(semanticModel, AttributeName, checkForAlias) is AttributeSyntax syntax)
                 {
                     return (syntax, AttributeName);
                 }
@@ -128,42 +144,62 @@ public static class MarkedTypeDeclarationCandidateProvider
                 CandidateNames = candidateNames;
             }
 
-            public (AttributeSyntax, string)? GetAttributeSyntax(GeneratorSyntaxContext context, TypeDeclarationSyntax declaration) => declaration.GetAttributeWithAnyName(context.SemanticModel, CandidateNames);
+            public (AttributeSyntax, string)? GetAttributeSyntax(SemanticModel semanticModel, TypeDeclarationSyntax declaration, bool checkForAlias) => declaration.GetAttributeWithAnyName(semanticModel, CandidateNames, checkForAlias);
         }
 
         private IncrementalValuesProvider<Optional<TOut>> Attach(IAttributeSyntaxStrategy attributeStrategy, SyntaxValueProvider syntaxProvider)
         {
-            return syntaxProvider.CreateSyntaxProvider(SyntaxNodeIsTypeDeclarationWithAttributes, candidateTypeDeclarationElseNull).Select(ApplyOutputTransform);
+            var declarations = syntaxProvider.CreateSyntaxProvider(SyntaxNodeIsTypeDeclarationWithAttributes, CandidateTypeDeclaration);
 
-            OutputData? candidateTypeDeclarationElseNull(GeneratorSyntaxContext context, CancellationToken token) => CandidateTypeDeclarationElseNull(attributeStrategy, context, token);
+            if (ConfigurationProvider.HasValue)
+            {
+                return declarations.Combine(ConfigurationProvider.Value).Select(selectWithRegistered).Select(ApplyOutputTransform);
+            }
+
+            return declarations.Select(selectWithDefault).Select(ApplyOutputTransform);
+
+            Optional<OutputData> selectWithRegistered(((SemanticModel SemanticModel, TypeDeclarationSyntax Declaration) Candidate, MarkedTypeDeclarationConfiguration Configuration) input, CancellationToken token)
+            {
+                if (token.IsCancellationRequested)
+                {
+                    return new Optional<OutputData>();
+                }
+
+                return MatchingTypeDeclaration(attributeStrategy, input.Configuration, input.Candidate.SemanticModel, input.Candidate.Declaration);
+            }
+
+            Optional<OutputData> selectWithDefault((SemanticModel SemanticModel, TypeDeclarationSyntax Declaration) input, CancellationToken token)
+            {
+                if (token.IsCancellationRequested)
+                {
+                    return new Optional<OutputData>();
+                }
+
+                return MatchingTypeDeclaration(attributeStrategy, MarkedTypeDeclarationConfiguration.Default, input.SemanticModel, input.Declaration);
+            }
         }
 
-        private Optional<TOut> ApplyOutputTransform(OutputData? result, CancellationToken _)
+        private static bool SyntaxNodeIsTypeDeclarationWithAttributes(SyntaxNode node, CancellationToken _) => node is TypeDeclarationSyntax declaration && declaration.Identifier.IsMissing is false && declaration.AttributeLists.Count > 0;
+        private static (SemanticModel SemanticModel, TypeDeclarationSyntax Declaration) CandidateTypeDeclaration(GeneratorSyntaxContext context, CancellationToken _) => (context.SemanticModel, (TypeDeclarationSyntax)context.Node);
+
+        private static Optional<OutputData> MatchingTypeDeclaration(IAttributeSyntaxStrategy attributeStrategy, MarkedTypeDeclarationConfiguration configuration, SemanticModel semanticModel, TypeDeclarationSyntax declaration)
         {
-            if (result is null)
+            if (attributeStrategy.GetAttributeSyntax(semanticModel, declaration, configuration.AllowAliases) is (AttributeSyntax, string) result)
+            {
+                return new OutputData(declaration, result.Syntax, result.TargetAttribute);
+            }
+
+            return new Optional<OutputData>();
+        }
+
+        private Optional<TOut> ApplyOutputTransform(Optional<OutputData> result, CancellationToken _)
+        {
+            if (result.HasValue is false)
             {
                 return new Optional<TOut>();
             }
 
             return OutputTransform(result.Value.Declaration, result.Value.AttributeSyntax, result.Value.TargetAttribute);
-        }
-
-        private static bool SyntaxNodeIsTypeDeclarationWithAttributes(SyntaxNode node, CancellationToken _) => node is TypeDeclarationSyntax declaration && declaration.Identifier.IsMissing is false && declaration.AttributeLists.Count > 0;
-        private static OutputData? CandidateTypeDeclarationElseNull(IAttributeSyntaxStrategy attributeStrategy, GeneratorSyntaxContext context, CancellationToken token)
-        {
-            if (token.IsCancellationRequested)
-            {
-                return null;
-            }
-
-            TypeDeclarationSyntax declaration = (TypeDeclarationSyntax)context.Node;
-
-            if (attributeStrategy.GetAttributeSyntax(context, declaration) is (AttributeSyntax, string) result)
-            {
-                return new OutputData(declaration, result.Syntax, result.TargetAttribute);
-            }
-
-            return null;
         }
 
         private readonly record struct OutputData(TypeDeclarationSyntax Declaration, AttributeSyntax AttributeSyntax, string TargetAttribute);
