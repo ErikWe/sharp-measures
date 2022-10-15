@@ -25,49 +25,49 @@ public sealed class ForeignVectorParser
 
     public (bool Success, IEnumerable<INamedTypeSymbol> ReferencedSymbols) TryParse(INamedTypeSymbol typeSymbol)
     {
-        (var groupBase, var groupBaseSymbols) = GroupBaseParser.Parse(typeSymbol);
+        var groupBaseResult = GroupBaseParser.Parse(typeSymbol);
 
-        if (groupBase.HasValue)
+        if (groupBaseResult.HasValue)
         {
-            GroupBases.Add(groupBase.Value);
+            GroupBases.Add(groupBaseResult.Value.Definition);
 
-            return (true, groupBaseSymbols);
+            return (true, groupBaseResult.Value.ForeignSymbols);
         }
 
-        (var groupSpecialization, var groupSpecializationSymbols) = GroupSpecializationParser.Parse(typeSymbol);
+        var groupSpecializationResult = GroupSpecializationParser.Parse(typeSymbol);
 
-        if (groupSpecialization.HasValue)
+        if (groupSpecializationResult.HasValue)
         {
-            GroupSpecializations.Add(groupSpecialization.Value);
+            GroupSpecializations.Add(groupSpecializationResult.Value.Definition);
 
-            return (true, groupSpecializationSymbols);
+            return (true, groupSpecializationResult.Value.ForeignSymbols);
         }
 
-        (var member, var memberSymbols) = GroupMemberParser.Parse(typeSymbol);
+        var groupMemberResult = GroupMemberParser.Parse(typeSymbol);
 
-        if (member.HasValue)
+        if (groupMemberResult.HasValue)
         {
-            GroupMembers.Add(member.Value);
+            GroupMembers.Add(groupMemberResult.Value.Definition);
 
-            return (true, memberSymbols);
+            return (true, groupMemberResult.Value.ForeignSymbols);
         }
 
-        (var vectorBase, var vectorBaseSymbols) = VectorBaseParser.Parse(typeSymbol);
+        var vectorBaseResult = VectorBaseParser.Parse(typeSymbol);
 
-        if (vectorBase.HasValue)
+        if (vectorBaseResult.HasValue)
         {
-            VectorBases.Add(vectorBase.Value);
+            VectorBases.Add(vectorBaseResult.Value.Definition);
 
-            return (true, vectorBaseSymbols);
+            return (true, vectorBaseResult.Value.ForeignSymbols);
         }
 
-        (var vectorSpecialization, var vectorSpecializationSymbols) = VectorSpecializationParser.Parse(typeSymbol);
+        var vectorSpecializationResult = VectorSpecializationParser.Parse(typeSymbol);
 
-        if (vectorSpecialization.HasValue)
+        if (vectorSpecializationResult.HasValue)
         {
-            VectorSpecializations.Add(vectorSpecialization.Value);
+            VectorSpecializations.Add(vectorSpecializationResult.Value.Definition);
 
-            return (true, vectorSpecializationSymbols);
+            return (true, vectorSpecializationResult.Value.ForeignSymbols);
         }
 
         return (false, Array.Empty<INamedTypeSymbol>());

@@ -16,4 +16,11 @@ internal static class GroupTypeDiagnostics
     {
         return DiagnosticConstruction.TypeNotStatic<TAttribute>(declaration.Identifier.GetLocation(), declaration.Identifier.Text);
     }
+
+    public static Diagnostic VectorGroupTypeAlreadyVectorGroup(AttributeData attribute, INamedTypeSymbol typeSymbol)
+    {
+        var location = attribute.GetSyntax() is AttributeSyntax attributeSyntax ? attributeSyntax.Name.GetLocation() : null;
+
+        return DiagnosticConstruction.VectorGroupTypeAlreadyDefinedAsVectorGroup(location, typeSymbol.Name);
+    }
 }

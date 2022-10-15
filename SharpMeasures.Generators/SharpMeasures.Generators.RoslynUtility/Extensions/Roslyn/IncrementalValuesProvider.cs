@@ -5,6 +5,7 @@ using Microsoft.CodeAnalysis;
 using SharpMeasures.Generators.Diagnostics;
 
 using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Threading;
 
@@ -92,11 +93,9 @@ public static partial class RoslynUtilityExtensions
         }
     }
 
-    public static IncrementalValuesProvider<T> ExtractResults<T>(this IncrementalValuesProvider<IResultWithDiagnostics<T>> provider)
-        => provider.Select(static (result, _) => result.Result);
+    public static IncrementalValuesProvider<T> ExtractResults<T>(this IncrementalValuesProvider<IResultWithDiagnostics<T>> provider) => provider.Select(static (result, _) => result.Result);
 
-    public static IncrementalValuesProvider<Optional<T>> ReportDiagnostics<T>(this IncrementalValuesProvider<IOptionalWithDiagnostics<T>> provider,
-        IncrementalGeneratorInitializationContext context)
+    public static IncrementalValuesProvider<Optional<T>> ReportDiagnostics<T>(this IncrementalValuesProvider<IOptionalWithDiagnostics<T>> provider, IncrementalGeneratorInitializationContext context)
     {
         context.ReportDiagnostics(provider);
 
@@ -113,13 +112,18 @@ public static partial class RoslynUtilityExtensions
         }
     }
 
-    public static IncrementalValuesProvider<T> ReportDiagnostics<T>(this IncrementalValuesProvider<IResultWithDiagnostics<T>> provider,
-        IncrementalGeneratorInitializationContext context)
+    public static IncrementalValuesProvider<T> ReportDiagnostics<T>(this IncrementalValuesProvider<IResultWithDiagnostics<T>> provider, IncrementalGeneratorInitializationContext context)
     {
         context.ReportDiagnostics(provider);
 
         return provider.ExtractResults();
     }
+
+    public static void ReportDiagnostics(this IncrementalValuesProvider<Diagnostic> provider, IncrementalGeneratorInitializationContext context) => context.ReportDiagnostics(provider);
+    public static void ReportDiagnostics(this IncrementalValuesProvider<Optional<Diagnostic>> provider, IncrementalGeneratorInitializationContext context) => context.ReportDiagnostics(provider);
+
+    public static void ReportDiagnostics<T>(this IncrementalValuesProvider<T> provider, IncrementalGeneratorInitializationContext context) where T : IEnumerable<Diagnostic> => context.ReportDiagnostics(provider);
+    public static void ReportDiagnostics<T>(this IncrementalValuesProvider<Optional<T>> provider, IncrementalGeneratorInitializationContext context) where T : IEnumerable<Diagnostic> => context.ReportDiagnostics(provider);
 
     public static IncrementalValueProvider<ImmutableArray<T>> CollectResults<T>(this IncrementalValuesProvider<Optional<T>> provider)
     {

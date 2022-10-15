@@ -4,11 +4,11 @@
     Title: Type already defined,
     Severity: Error,
     WarningLevel: 0,
-    Location: : (2,1)-(2,26),
+    Location: : (3,1)-(3,26),
     Description: ,
     HelpLink: ,
     MessageFormat: {0} cannot be defined as a {1}, as it was already defined as a {2},
-    Message: Displacement2 cannot be defined as a vector, as it was already defined as a unit,
+    Message: A2 cannot be defined as a vector, as it was already defined as a unit,
     Category: Usage,
     CustomTags: []
   }

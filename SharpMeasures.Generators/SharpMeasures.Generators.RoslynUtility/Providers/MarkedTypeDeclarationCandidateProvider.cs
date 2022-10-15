@@ -26,8 +26,15 @@ public interface IMarkedTypeDeclarationCandidateProvider<TOut>
 public static class MarkedTypeDeclarationCandidateProvider
 {
     public delegate TOut DOutputTransform<out TOut>(TypeDeclarationSyntax declaration, AttributeSyntax attributeSyntax);
+    public delegate TOut DTargetedOutputTransform<out TOut>(TypeDeclarationSyntax declaration, AttributeSyntax attributeSyntax, string targetAttribute);
 
-    public static IMarkedTypeDeclarationCandidateProvider<TOut> Construct<TOut>(DOutputTransform<TOut> outputTransform) => new Provider<TOut>(outputTransform);
+    public static IMarkedTypeDeclarationCandidateProvider<TOut> Construct<TOut>(DOutputTransform<TOut> outputTransform)
+    {
+        return new Provider<TOut>(targetedOutputTransform);
+
+        TOut targetedOutputTransform(TypeDeclarationSyntax declaration, AttributeSyntax attributeSyntax, string targetAttribute) => outputTransform(declaration, attributeSyntax);
+    }
+        
     public static IMarkedTypeDeclarationCandidateProvider<TypeDeclarationSyntax> Construct()
     {
         return Construct(extractDeclaration);
@@ -35,11 +42,19 @@ public static class MarkedTypeDeclarationCandidateProvider
         static TypeDeclarationSyntax extractDeclaration(TypeDeclarationSyntax declaration, AttributeSyntax attributeSyntax) => declaration;
     }
 
+    public static IMarkedTypeDeclarationCandidateProvider<TOut> Construct<TOut>(DTargetedOutputTransform<TOut> outputTransform) => new Provider<TOut>(outputTransform);
+    public static IMarkedTypeDeclarationCandidateProvider<(TypeDeclarationSyntax Declaration, string Attribute)> ConstructTargeted()
+    {
+        return Construct(extract);
+
+        static (TypeDeclarationSyntax, string) extract(TypeDeclarationSyntax declaration, AttributeSyntax attributeSyntax, string targetAttribute) => (declaration, targetAttribute);
+    }
+
     private sealed class Provider<TOut> : IMarkedTypeDeclarationCandidateProvider<TOut>
     {
-        public DOutputTransform<TOut> OutputTransform { get; }
+        public DTargetedOutputTransform<TOut> OutputTransform { get; }
 
-        public Provider(DOutputTransform<TOut> outputTransform)
+        public Provider(DTargetedOutputTransform<TOut> outputTransform)
         {
             OutputTransform = outputTransform;
         }
@@ -56,7 +71,8 @@ public static class MarkedTypeDeclarationCandidateProvider
 
         public IncrementalValuesProvider<Optional<TOut>> AttachAnyOf<TAttribute1, TAttribute2>(SyntaxValueProvider syntaxProvider) => AttachAnyOf(syntaxProvider, typeof(TAttribute1), typeof(TAttribute2));
         public IncrementalValuesProvider<Optional<TOut>> AttachAnyOf<TAttribute1, TAttribute2, TAttribute3>(SyntaxValueProvider syntaxProvider) => AttachAnyOf(syntaxProvider, typeof(TAttribute1), typeof(TAttribute2), typeof(TAttribute3));
-
+        
+        public IncrementalValuesProvider<Optional<TOut>> AttachAnyOf(SyntaxValueProvider syntaxProvider, params Type[] candidateTypes) => AttachAnyOf(syntaxProvider, candidateTypes as IEnumerable<Type>);
         public IncrementalValuesProvider<Optional<TOut>> AttachAnyOf(SyntaxValueProvider syntaxProvider, IEnumerable<Type> candidateTypes)
         {
             return AttachAnyOf(syntaxProvider, candidateNames());
@@ -70,18 +86,17 @@ public static class MarkedTypeDeclarationCandidateProvider
             }
         }
 
-        public IncrementalValuesProvider<Optional<TOut>> AttachAnyOf(SyntaxValueProvider syntaxProvider, params Type[] candidateTypes) => AttachAnyOf(syntaxProvider, candidateTypes as IEnumerable<Type>);
         public IncrementalValuesProvider<Optional<TOut>> AttachAnyOf(SyntaxValueProvider syntaxProvider, params string[] candidateNames) => AttachAnyOf(syntaxProvider, candidateNames as IEnumerable<string>);
         public IncrementalValuesProvider<Optional<TOut>> AttachAnyOf(SyntaxValueProvider syntaxProvider, IEnumerable<string> candidateNames)
         {
-            IAttributeSyntaxStrategy attributeStrategy = new AttributeSyntaxFromFirstName(candidateNames);
+            IAttributeSyntaxStrategy attributeStrategy = new AttributeSyntaxFromAnyName(candidateNames);
 
             return Attach(attributeStrategy, syntaxProvider);
         }
 
         private interface IAttributeSyntaxStrategy
         {
-            public abstract AttributeSyntax? GetAttributeSyntax(GeneratorSyntaxContext context, TypeDeclarationSyntax declaration);
+            public abstract (AttributeSyntax Syntax, string TargetAttribute)? GetAttributeSyntax(GeneratorSyntaxContext context, TypeDeclarationSyntax declaration);
         }
 
         private sealed class AttributeSyntaxFromName : IAttributeSyntaxStrategy
@@ -93,27 +108,32 @@ public static class MarkedTypeDeclarationCandidateProvider
                 AttributeName = attributeName;
             }
 
-            public AttributeSyntax? GetAttributeSyntax(GeneratorSyntaxContext context, TypeDeclarationSyntax declaration) => declaration.GetAttributeWithName(context.SemanticModel, AttributeName);
+            public (AttributeSyntax, string)? GetAttributeSyntax(GeneratorSyntaxContext context, TypeDeclarationSyntax declaration)
+            {
+                if (declaration.GetAttributeWithName(context.SemanticModel, AttributeName) is AttributeSyntax syntax)
+                {
+                    return (syntax, AttributeName);
+                }
+
+                return null;
+            }
         }
 
-        private sealed class AttributeSyntaxFromFirstName : IAttributeSyntaxStrategy
+        private sealed class AttributeSyntaxFromAnyName : IAttributeSyntaxStrategy
         {
             private IEnumerable<string> CandidateNames { get; }
 
-            public AttributeSyntaxFromFirstName(IEnumerable<string> candidateNames)
+            public AttributeSyntaxFromAnyName(IEnumerable<string> candidateNames)
             {
                 CandidateNames = candidateNames;
             }
 
-            public AttributeSyntax? GetAttributeSyntax(GeneratorSyntaxContext context, TypeDeclarationSyntax declaration) => declaration.GetFirstAttributeWithName(context.SemanticModel, CandidateNames);
+            public (AttributeSyntax, string)? GetAttributeSyntax(GeneratorSyntaxContext context, TypeDeclarationSyntax declaration) => declaration.GetAttributeWithAnyName(context.SemanticModel, CandidateNames);
         }
 
         private IncrementalValuesProvider<Optional<TOut>> Attach(IAttributeSyntaxStrategy attributeStrategy, SyntaxValueProvider syntaxProvider)
         {
-            return syntaxProvider.CreateSyntaxProvider(
-                predicate: SyntaxNodeIsTypeDeclarationWithAttributes,
-                transform: candidateTypeDeclarationElseNull
-            ).Select(ApplyOutputTransform);
+            return syntaxProvider.CreateSyntaxProvider(SyntaxNodeIsTypeDeclarationWithAttributes, candidateTypeDeclarationElseNull).Select(ApplyOutputTransform);
 
             OutputData? candidateTypeDeclarationElseNull(GeneratorSyntaxContext context, CancellationToken token) => CandidateTypeDeclarationElseNull(attributeStrategy, context, token);
         }
@@ -125,7 +145,7 @@ public static class MarkedTypeDeclarationCandidateProvider
                 return new Optional<TOut>();
             }
 
-            return OutputTransform(result.Value.Declaration, result.Value.AttributeSyntax);
+            return OutputTransform(result.Value.Declaration, result.Value.AttributeSyntax, result.Value.TargetAttribute);
         }
 
         private static bool SyntaxNodeIsTypeDeclarationWithAttributes(SyntaxNode node, CancellationToken _) => node is TypeDeclarationSyntax declaration && declaration.Identifier.IsMissing is false && declaration.AttributeLists.Count > 0;
@@ -138,14 +158,14 @@ public static class MarkedTypeDeclarationCandidateProvider
 
             TypeDeclarationSyntax declaration = (TypeDeclarationSyntax)context.Node;
 
-            if (attributeStrategy.GetAttributeSyntax(context, declaration) is AttributeSyntax attributeSyntax)
+            if (attributeStrategy.GetAttributeSyntax(context, declaration) is (AttributeSyntax, string) result)
             {
-                return new OutputData(declaration, attributeSyntax);
+                return new OutputData(declaration, result.Syntax, result.TargetAttribute);
             }
 
             return null;
         }
 
-        private readonly record struct OutputData(TypeDeclarationSyntax Declaration, AttributeSyntax AttributeSyntax);
+        private readonly record struct OutputData(TypeDeclarationSyntax Declaration, AttributeSyntax AttributeSyntax, string TargetAttribute);
     }
 }

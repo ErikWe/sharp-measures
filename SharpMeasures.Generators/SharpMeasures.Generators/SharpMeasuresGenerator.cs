@@ -5,6 +5,7 @@ using Microsoft.CodeAnalysis;
 using SharpMeasures.Generators.Configuration;
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Documentation;
+using SharpMeasures.Generators.Providers;
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Scalars.Parsing;
 using SharpMeasures.Generators.Units;
@@ -12,17 +13,25 @@ using SharpMeasures.Generators.Units.Parsing;
 using SharpMeasures.Generators.Vectors;
 using SharpMeasures.Generators.Vectors.Parsing;
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
 [Generator]
 public sealed class SharpMeasuresGenerator : IIncrementalGenerator
 {
+    private static IEnumerable<Type> TargetAttributes { get; } = Units.TargetAttributes.Attributes.Concat(Scalars.TargetAttributes.Attributes).Concat(Vectors.TargetAttributes.Attributes);
+    
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
         var globalAnalyzerConfig = GlobalAnalyzerConfigProvider.Attach(context.AnalyzerConfigOptionsProvider);
         var documentationDictionary = DocumentationDictionaryProvider.AttachAndReport(context, context.AdditionalTextsProvider, globalAnalyzerConfig, DocumentationDiagnostics.Instance);
 
-        (var unitParsingResult, var unitForeignSymbols) = UnitParser.Attach(context);
-        (var scalarParsingResult, var scalarForeignSymbols) = ScalarParser.Attach(context);
-        (var vectorParsingResult, var vectorForeignSymbols) = VectorParser.Attach(context);
+        var targetTypes = MarkedTypeDeclarationCandidateProvider.ConstructTargeted().AttachAnyOf(context.SyntaxProvider, TargetAttributes);
+
+        (var unitParsingResult, var unitForeignSymbols) = UnitParser.Attach(context, targetTypes);
+        (var scalarParsingResult, var scalarForeignSymbols) = ScalarParser.Attach(context, targetTypes);
+        (var vectorParsingResult, var vectorForeignSymbols) = VectorParser.Attach(context, targetTypes);
 
         (var unitProcessingResult, var unvalidatedUnitPopulation) = UnitProcesser.Process(context, unitParsingResult);
         (var scalarProcessingResult, var unvalidatedScalarPopulation) = ScalarProcesser.Process(context, scalarParsingResult);

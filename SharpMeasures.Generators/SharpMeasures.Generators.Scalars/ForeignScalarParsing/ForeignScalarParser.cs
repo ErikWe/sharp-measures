@@ -17,22 +17,22 @@ public sealed class ForeignScalarParser
 
     public (bool Sucess, IEnumerable<INamedTypeSymbol> ReferencedSymbols) TryParse(INamedTypeSymbol typeSymbol)
     {
-        (var scalarBase, var scalarBaseSymbols) = ScalarBaseParser.Parse(typeSymbol);
+        var scalarResult = ScalarBaseParser.Parse(typeSymbol);
 
-        if (scalarBase.HasValue)
+        if (scalarResult.HasValue)
         {
-            ScalarBases.Add(scalarBase.Value);
+            ScalarBases.Add(scalarResult.Value.Definition);
 
-            return (true, scalarBaseSymbols);
+            return (true, scalarResult.Value.ForeignSymbols);
         }
 
-        (var scalarSpecialization, var scalarSpecializationSymbols) = ScalarSpecializationParser.Parse(typeSymbol);
+        var specializedScalarResult = ScalarSpecializationParser.Parse(typeSymbol);
 
-        if (scalarSpecialization.HasValue)
+        if (specializedScalarResult.HasValue)
         {
-            ScalarSpecializations.Add(scalarSpecialization.Value);
+            ScalarSpecializations.Add(specializedScalarResult.Value.Definition);
 
-            return (true, scalarSpecializationSymbols);
+            return (true, specializedScalarResult.Value.ForeignSymbols);
         }
 
         return (false, Array.Empty<INamedTypeSymbol>());

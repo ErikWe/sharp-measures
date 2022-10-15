@@ -3,38 +3,37 @@
 using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Quantities.Parsing.ConvertibleQuantity;
-using SharpMeasures.Generators.Quantities.Parsing.QuantityOperation;
 using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
 using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
+using SharpMeasures.Generators.Quantities.Parsing.QuantityOperation;
 using SharpMeasures.Generators.Quantities.Parsing.QuantityProcess;
 using SharpMeasures.Generators.Scalars.Parsing.ExcludeUnitBases;
 using SharpMeasures.Generators.Scalars.Parsing.IncludeUnitBases;
 using SharpMeasures.Generators.Scalars.Parsing.ScalarConstant;
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
 internal abstract class AScalarParser<TDefinition, TProduct>
 {
-    public (Optional<TProduct> Definition, IEnumerable<INamedTypeSymbol> ForeignSymbols) Parse(Optional<INamedTypeSymbol> typeSymbol, CancellationToken token)
+    public Optional<(INamedTypeSymbol, TProduct, IEnumerable<INamedTypeSymbol>)> Parse(Optional<INamedTypeSymbol> typeSymbol, CancellationToken token)
     {
         if (token.IsCancellationRequested || typeSymbol.HasValue is false)
         {
-            return (new Optional<TProduct>(), Array.Empty<INamedTypeSymbol>());
+            return new Optional<(INamedTypeSymbol, TProduct, IEnumerable<INamedTypeSymbol>)>();
         }
 
         return Parse(typeSymbol.Value);
     }
 
-    public (Optional<TProduct>, IEnumerable<INamedTypeSymbol>) Parse(INamedTypeSymbol typeSymbol)
+    public Optional<(INamedTypeSymbol Symbol, TProduct Definition, IEnumerable<INamedTypeSymbol> ForeignSymbols)> Parse(INamedTypeSymbol typeSymbol)
     {
         (var scalar, var scalarForeignSymbols) = ParseScalar(typeSymbol);
 
         if (scalar.HasValue is false)
         {
-            return (new Optional<TProduct>(), Array.Empty<INamedTypeSymbol>());
+            return new Optional<(INamedTypeSymbol, TProduct, IEnumerable<INamedTypeSymbol>)>();
         }
 
         (var operations, var operationForeignSymbols) = ParseOperations(typeSymbol);
@@ -51,7 +50,7 @@ internal abstract class AScalarParser<TDefinition, TProduct>
         TProduct product = ProduceResult(typeSymbol.AsDefinedType(), scalar.Value, operations, processes, constants, conversions, includeUnitInstanceBases, excludeUnitInstanceBases, includeUnitInstances, excludeUnitInstances);
         var foreignSymbols = scalarForeignSymbols.Concat(operationForeignSymbols).Concat(conversionsForeignSymbols);
 
-        return (product, foreignSymbols);
+        return (typeSymbol, product, foreignSymbols);
     }
 
     protected abstract TProduct ProduceResult(DefinedType type, TDefinition definition, IEnumerable<RawQuantityOperationDefinition> operations, IEnumerable<RawQuantityProcessDefinition> processes, IEnumerable<RawScalarConstantDefinition> constants, IEnumerable<RawConvertibleQuantityDefinition> conversions,

@@ -13,13 +13,13 @@ public sealed class ForeignUnitParser
 
     public (bool Success, IEnumerable<INamedTypeSymbol> ReferencedSymbols) TryParse(INamedTypeSymbol typeSymbol)
     {
-        (var unit, var unitReferencedSymbols) = UnitParser.Parse(typeSymbol);
+        var result = UnitParser.Parse(typeSymbol);
 
-        if (unit.HasValue)
+        if (result.HasValue)
         {
-            Units.Add(unit.Value);
+            Units.Add(result.Value.Definition);
 
-            return (true, unitReferencedSymbols);
+            return (true, result.Value.ForeignSymbols);
         }
 
         return (false, Array.Empty<INamedTypeSymbol>());
