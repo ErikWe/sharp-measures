@@ -65,6 +65,6 @@ internal sealed class BiasedUnitInstanceProcesser : AModifiedUnitInstanceProcess
 
     private IValidityWithDiagnostics ValidateExpressionNotEmpty(IUnitInstanceProcessingContext context, RawBiasedUnitInstanceDefinition definition)
     {
-        return ValidityWithDiagnostics.Conditional(definition.Expression!.Length is not 0, () => Diagnostics.EmptyExpression(context, definition));
+        return ValidityWithDiagnostics.Conditional(definition.Expression!.Length > 0, () => Diagnostics.EmptyExpression(context, definition));
     }
 }

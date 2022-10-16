@@ -56,7 +56,7 @@ internal sealed class DerivedUnitInstanceProcesser : AUnitInstanceProcesser<IUni
 
     private IValidityWithDiagnostics ValidateUnitListNotEmpty(IUnitInstanceProcessingContext context, RawDerivedUnitInstanceDefinition definition)
     {
-        return ValidityWithDiagnostics.Conditional(definition.Units.Count is not 0, () => Diagnostics.EmptyUnitList(context, definition));
+        return ValidityWithDiagnostics.Conditional(definition.Units.Count > 0, () => Diagnostics.EmptyUnitList(context, definition));
     }
 
     private IOptionalWithDiagnostics<string[]> ProcessElement(IUnitInstanceProcessingContext context, RawDerivedUnitInstanceDefinition definition, int index, string[] units)
@@ -80,6 +80,6 @@ internal sealed class DerivedUnitInstanceProcesser : AUnitInstanceProcesser<IUni
 
     private IValidityWithDiagnostics ValidateElementNotEmpty(IUnitInstanceProcessingContext context, RawDerivedUnitInstanceDefinition definition, int index)
     {
-        return ValidityWithDiagnostics.Conditional(definition.Units[index]!.Length is not 0, () => Diagnostics.EmptyUnitsElement(context, definition, index));
+        return ValidityWithDiagnostics.Conditional(definition.Units[index]!.Length > 0, () => Diagnostics.EmptyUnitsElement(context, definition, index));
     }
 }

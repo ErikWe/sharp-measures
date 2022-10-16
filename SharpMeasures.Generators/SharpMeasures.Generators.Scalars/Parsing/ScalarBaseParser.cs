@@ -24,9 +24,9 @@ internal sealed class ScalarBaseParser : AScalarParser<RawSharpMeasuresScalarDef
         return new(type, definition, operations, processes, constants, conversions, baseInclusions, baseExclusions, unitInstanceInclusions, unitInstanceExclusions);
     }
 
-    protected override (Optional<RawSharpMeasuresScalarDefinition>, IEnumerable<INamedTypeSymbol>) ParseScalar(INamedTypeSymbol typeSymbol)
+    protected override (Optional<RawSharpMeasuresScalarDefinition>, IEnumerable<INamedTypeSymbol>) ParseScalar(INamedTypeSymbol typeSymbol, IEnumerable<AttributeData> attributes)
     {
-        if (SharpMeasuresScalarParser.Parser.ParseFirstOccurrence(typeSymbol) is not SymbolicSharpMeasuresScalarDefinition symbolicScalar)
+        if (SharpMeasuresScalarParser.Parser.ParseFirstOccurrence(attributes) is not SymbolicSharpMeasuresScalarDefinition symbolicScalar)
         {
             return (new Optional<RawSharpMeasuresScalarDefinition>(), Array.Empty<INamedTypeSymbol>());
         }

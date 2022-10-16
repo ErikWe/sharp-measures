@@ -5,7 +5,6 @@ using Microsoft.CodeAnalysis;
 using SharpMeasures.Generators.Attributes.Parsing;
 
 using System.Collections.Generic;
-using System.Linq;
 
 internal sealed record class SymbolicSharpMeasuresVectorGroupMemberDefinition : ARawAttributeDefinition<SymbolicSharpMeasuresVectorGroupMemberDefinition, SharpMeasuresVectorGroupMemberLocations>
 {
@@ -29,5 +28,11 @@ internal sealed record class SymbolicSharpMeasuresVectorGroupMemberDefinition : 
 
     private SymbolicSharpMeasuresVectorGroupMemberDefinition(SharpMeasuresVectorGroupMemberLocations locations) : base(locations) { }
 
-    public IEnumerable<INamedTypeSymbol> ForeignSymbols(string localAssemblyName, bool alreadyInForeignAssembly) => new[] { VectorGroup }.Where((symbol) => symbol is not null && (alreadyInForeignAssembly || symbol.ContainingAssembly.Name != localAssemblyName)).Select(static (symbol) => symbol!);
+    public IEnumerable<INamedTypeSymbol> ForeignSymbols(string localAssemblyName, bool alreadyInForeignAssembly)
+    {
+        if (VectorGroup is not null && (alreadyInForeignAssembly || VectorGroup.ContainingAssembly.Name != localAssemblyName))
+        {
+            yield return VectorGroup!;
+        }
+    }
 }

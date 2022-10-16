@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Text;
 
@@ -115,12 +114,28 @@ public static class StaticBuilding
 
     public static void AppendSingleLineMethodWithPotentialNullArgumentGuards(StringBuilder source, Indentation indentation, string methodNameAndModifiers, string expression, IEnumerable<(NamedType Type, string Name)> parameters)
     {
-        DocumentationBuilding.AppendArgumentNullExceptionTagIfReferenceType(source, indentation, parameters.Select(static (parameter) => parameter.Type));
+        List<NamedType> types = new();
+        List<string> signatureComponents = new();
+
+        bool anyReferenceTypes = false;
+
+        foreach (var parameter in parameters)
+        {
+            types.Add(parameter.Type);
+            signatureComponents.Add($"{parameter.Type.FullyQualifiedName} {parameter.Name}");
+
+            if (parameter.Type.IsReferenceType)
+            {
+                anyReferenceTypes = true;
+            }
+        }
+
+        DocumentationBuilding.AppendArgumentNullExceptionTagIfReferenceType(source, indentation, types);
 
         StringBuilder signature = new();
-        IterativeBuilding.AppendEnumerable(signature, prefix: "(", parameters.Select(static ((NamedType Type, string Name) parameter) => $"{parameter.Type.FullyQualifiedName} {parameter.Name}"), separator: ", ", postfix: ")", removeFixedIfEmpty: false);
+        IterativeBuilding.AppendEnumerable(signature, prefix: "(", signatureComponents, separator: ", ", postfix: ")", removeFixedIfEmpty: false);
 
-        if (parameters.Any(static (parameter) => parameter.Type.IsReferenceType))
+        if (anyReferenceTypes)
         {
             source.AppendLine($$"""
                 {{indentation}}{{methodNameAndModifiers}}{{signature}}

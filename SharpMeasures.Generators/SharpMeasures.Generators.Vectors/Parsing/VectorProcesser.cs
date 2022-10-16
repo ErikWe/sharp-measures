@@ -3,7 +3,6 @@
 using Microsoft.CodeAnalysis;
 
 using System.Collections.Immutable;
-using System.Linq;
 using System.Threading;
 
 public static class VectorProcesser

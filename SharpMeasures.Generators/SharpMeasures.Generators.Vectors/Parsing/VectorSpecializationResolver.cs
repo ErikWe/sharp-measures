@@ -105,7 +105,7 @@ internal static class VectorSpecializationResolver
 
         void modify(IVectorType vector)
         {
-            if (vector.UnitInstanceInclusions.Any())
+            if (vector.UnitInstanceInclusions.Count > 0)
             {
                 includedUnits.IntersectWith(vector.UnitInstanceInclusions.SelectMany(static (unitList) => unitList.UnitInstances));
 

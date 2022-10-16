@@ -115,7 +115,14 @@ internal sealed class VectorOperationValidator : AValidator<IVectorOperationVali
 
         if (vectorPopulation.GroupMembersByGroup.TryGetValue(type, out var groupMembers))
         {
-            return (true, groupMembers.GroupMembersByDimension.Keys.ToList());
+            List<int> dimensions = new(groupMembers.GroupMembersByDimension.Count);
+
+            foreach (var groupMember in groupMembers.GroupMembersByDimension)
+            {
+                dimensions.Add(groupMember.Key);
+            }
+
+            return (true, dimensions);
         }
 
         if (vectorPopulation.GroupMembers.TryGetValue(type, out var member))

@@ -23,9 +23,9 @@ internal sealed class VectorSpecializationParser : AVectorParser<RawSpecializedS
         return new(type, definition, operations, vectorOperations, processes, constants, conversions, unitInstanceInclusions, unitInstanceExclusions);
     }
 
-    protected override (Optional<RawSpecializedSharpMeasuresVectorDefinition>, IEnumerable<INamedTypeSymbol>) ParseVector(INamedTypeSymbol typeSymbol)
+    protected override (Optional<RawSpecializedSharpMeasuresVectorDefinition>, IEnumerable<INamedTypeSymbol>) ParseVector(INamedTypeSymbol typeSymbol, IEnumerable<AttributeData> attributes)
     {
-        if (SpecializedSharpMeasuresVectorParser.Parser.ParseFirstOccurrence(typeSymbol) is not SymbolicSpecializedSharpMeasuresVectorDefinition symbolicVector)
+        if (SpecializedSharpMeasuresVectorParser.Parser.ParseFirstOccurrence(attributes) is not SymbolicSpecializedSharpMeasuresVectorDefinition symbolicVector)
         {
             return (new Optional<RawSpecializedSharpMeasuresVectorDefinition>(), Array.Empty<INamedTypeSymbol>());
         }

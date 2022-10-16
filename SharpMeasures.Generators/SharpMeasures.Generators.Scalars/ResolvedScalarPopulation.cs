@@ -4,7 +4,6 @@ using SharpMeasures.Equatables;
 using SharpMeasures.Generators.Quantities;
 
 using System.Collections.Generic;
-using System.Linq;
 
 internal sealed record class ResolvedScalarPopulation : IResolvedScalarPopulation
 {
@@ -17,5 +16,20 @@ internal sealed record class ResolvedScalarPopulation : IResolvedScalarPopulatio
         Scalars = scalars.AsReadOnlyEquatable();
     }
 
-    public static ResolvedScalarPopulation Build(IReadOnlyList<IResolvedScalarType> scalarBases, IReadOnlyList<IResolvedScalarType> scalarSpecializations) => new(scalarBases.Concat(scalarSpecializations).ToDictionary(static (scalar) => scalar.Type.AsNamedType()));
+    public static ResolvedScalarPopulation Build(IReadOnlyList<IResolvedScalarType> scalarBases, IReadOnlyList<IResolvedScalarType> scalarSpecializations)
+    {
+        Dictionary<NamedType, IResolvedScalarType> scalars = new(scalarBases.Count + scalarSpecializations.Count);
+
+        foreach (var scalar in scalarBases)
+        {
+            scalars.TryAdd(scalar.Type.AsNamedType(), scalar);
+        }
+
+        foreach (var scalar in scalarSpecializations)
+        {
+            scalars.TryAdd(scalar.Type.AsNamedType(), scalar);
+        }
+
+        return new(scalars);
+    }
 }

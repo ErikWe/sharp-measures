@@ -170,7 +170,7 @@ internal static class GroupMemberResolver
 
         void modify(IReadOnlyList<IUnitInstanceList> inclusions, IReadOnlyList<IUnitInstanceList> exclusions)
         {
-            if (inclusions.Any())
+            if (inclusions.Count > 0)
             {
                 includedUnits.IntersectWith(inclusions.SelectMany(static (unitList) => unitList.UnitInstances));
 

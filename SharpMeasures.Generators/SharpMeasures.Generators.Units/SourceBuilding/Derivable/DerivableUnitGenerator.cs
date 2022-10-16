@@ -2,7 +2,6 @@
 
 using Microsoft.CodeAnalysis;
 
-using System.Linq;
 using System.Threading;
 
 internal static class DerivableUnitGenerator
@@ -16,7 +15,7 @@ internal static class DerivableUnitGenerator
 
     private static Optional<DataModel> ReduceToDataModel(Optional<Units.DataModel> model, CancellationToken _)
     {
-        if (model.HasValue is false || model.Value.Unit.UnitDerivations.Any() is false)
+        if (model.HasValue is false || model.Value.Unit.UnitDerivations.Count is 0)
         {
             return new Optional<DataModel>();
         }

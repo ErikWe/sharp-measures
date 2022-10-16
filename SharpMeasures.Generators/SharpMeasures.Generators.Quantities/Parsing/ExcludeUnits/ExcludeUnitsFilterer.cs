@@ -51,7 +51,7 @@ public sealed class ExcludeUnitsFilterer : AProcesser<IExcludeUnitsFilteringCont
             }
         }
 
-        return OptionalWithDiagnostics.ConditionalWithDefiniteDiagnostics(validUnitInstances.Count is not 0, () => new ExcludeUnitsDefinition(validUnitInstances, definition.Locations, locationMap), allDiagnostics);
+        return OptionalWithDiagnostics.ConditionalWithDefiniteDiagnostics(validUnitInstances.Count > 0, () => new ExcludeUnitsDefinition(validUnitInstances, definition.Locations, locationMap), allDiagnostics);
     }
 
     private IValidityWithDiagnostics ValidateUnitInstanceRecognized(IExcludeUnitsFilteringContext context, ExcludeUnitsDefinition definition, int index)

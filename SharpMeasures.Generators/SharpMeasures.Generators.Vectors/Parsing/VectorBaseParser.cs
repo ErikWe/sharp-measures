@@ -22,9 +22,9 @@ internal sealed class VectorBaseParser : AVectorParser<RawSharpMeasuresVectorDef
         return new(type, definition, operations, vectorOperations, processes, constants, conversions, unitInstanceInclusions, unitInstanceExclusions);
     }
 
-    protected override (Optional<RawSharpMeasuresVectorDefinition>, IEnumerable<INamedTypeSymbol>) ParseVector(INamedTypeSymbol typeSymbol)
+    protected override (Optional<RawSharpMeasuresVectorDefinition>, IEnumerable<INamedTypeSymbol>) ParseVector(INamedTypeSymbol typeSymbol, IEnumerable<AttributeData> attributes)
     {
-        if (SharpMeasuresVectorParser.Parser.ParseFirstOccurrence(typeSymbol) is not SymbolicSharpMeasuresVectorDefinition symbolicVector)
+        if (SharpMeasuresVectorParser.Parser.ParseFirstOccurrence(attributes) is not SymbolicSharpMeasuresVectorDefinition symbolicVector)
         {
             return (new Optional<RawSharpMeasuresVectorDefinition>(), Array.Empty<INamedTypeSymbol>());
         }

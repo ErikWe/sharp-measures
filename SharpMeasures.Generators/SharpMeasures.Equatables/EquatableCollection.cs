@@ -4,7 +4,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 
 public class EquatableCollection<T> : ICollection<T>, IReadOnlyCollection<T>, IEquatable<EquatableCollection<T>>
 {
@@ -34,7 +33,37 @@ public class EquatableCollection<T> : ICollection<T>, IReadOnlyCollection<T>, IE
     [SuppressMessage("Design", "CA1033", Justification = "Available through Items")]
     void ICollection<T>.CopyTo(T[] array, int arrayIndex) => Items.CopyTo(array, arrayIndex);
 
-    public bool Equals(EquatableCollection<T>? other) => other is not null && Items.SequenceEqual(other.Items);
+    public bool Equals(EquatableCollection<T>? other)
+    {
+        if (other is null || Count != other.Count)
+        {
+            return false;
+        }
+
+        if (Count is 0)
+        {
+            return true;
+        }
+
+        IEnumerator<T> thisEnumerator = GetEnumerator();
+        IEnumerator<T> otherEnumerator = other.GetEnumerator();
+
+        while (thisEnumerator.MoveNext() && otherEnumerator.MoveNext())
+        {
+            if (thisEnumerator.Current is null && otherEnumerator.Current is not null || thisEnumerator.Current is not null && otherEnumerator.Current is null)
+            {
+                return false;
+            }
+
+            if (thisEnumerator.Current!.Equals(otherEnumerator.Current) is false)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public override bool Equals(object? obj) => obj is EquatableCollection<T> other && Equals(other);
 
     public static bool operator ==(EquatableCollection<T>? lhs, EquatableCollection<T>? rhs) => lhs?.Equals(rhs) ?? rhs is null;

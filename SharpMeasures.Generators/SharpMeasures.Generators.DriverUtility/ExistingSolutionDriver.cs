@@ -17,11 +17,6 @@ public class ExistingSolutionDriver
     {
         var driver = DriverConstruction.Construct<SharpMeasuresGenerator>();
 
-        var references = AssemblyLoader.ReferencedAssemblies
-                .Where(static (assembly) => assembly.IsDynamic is false)
-                .Select(static (assembly) => MetadataReference.CreateFromFile(assembly.Location))
-                .Cast<MetadataReference>();
-
         MSBuildLocator.RegisterDefaults();
 
         var workspace = MSBuildWorkspace.Create();
@@ -29,8 +24,6 @@ public class ExistingSolutionDriver
         var solution = await workspace.OpenSolutionAsync(solutionPath).ConfigureAwait(false);
 
         var projectID = solution.Projects.Where(static (project) => project.Name is "SharpMeasures").Single().Id;
-
-        //solution = solution.AddMetadataReferences(projectID, references);
 
         var compilation = await solution.GetProject(projectID)!.GetCompilationAsync().ConfigureAwait(false);
 

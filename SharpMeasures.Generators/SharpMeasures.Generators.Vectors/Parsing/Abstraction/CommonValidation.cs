@@ -2,20 +2,20 @@
 
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
+using SharpMeasures.Generators.Quantities;
 using SharpMeasures.Generators.Quantities.Parsing.Contexts.Validation;
-using SharpMeasures.Generators.Quantities.Parsing.QuantityOperation;
 using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
 using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
+using SharpMeasures.Generators.Quantities.Parsing.QuantityOperation;
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 using SharpMeasures.Generators.Vectors.Parsing.Contexts.Validation;
 using SharpMeasures.Generators.Vectors.Parsing.ConvertibleVector;
 using SharpMeasures.Generators.Vectors.Parsing.VectorConstant;
+using SharpMeasures.Generators.Vectors.Parsing.VectorOperation;
 
 using System.Collections.Generic;
 using System.Linq;
-using SharpMeasures.Generators.Quantities;
-using SharpMeasures.Generators.Vectors.Parsing.VectorOperation;
 
 internal static class CommonValidation
 {

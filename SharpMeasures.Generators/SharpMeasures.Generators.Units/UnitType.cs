@@ -11,7 +11,6 @@ using SharpMeasures.Generators.Units.Parsing.SharpMeasuresUnit;
 using SharpMeasures.Generators.Units.Parsing.UnitInstanceAlias;
 
 using System.Collections.Generic;
-using System.Linq;
 
 internal sealed class UnitType : IUnitType
 {
@@ -60,43 +59,87 @@ internal sealed class UnitType : IUnitType
         PrefixedUnitInstances = prefixedUnitInstances.AsReadOnlyEquatable();
         ScaledUnitInstances = scaledUnitInstances.AsReadOnlyEquatable();
 
-        UnitInstancesByName = ConstructUnitInstancesByNameDictionary();
-        UnitInstancesByPluralForm = ConstructUnitInstancesByPluralFormDictionary();
-        DerivationsByID = ConstructDerivationsByIDDictionary();
+        UnitInstancesByName = ConstructUnitInstancesByNameDictionary().AsReadOnlyEquatable();
+        UnitInstancesByPluralForm = ConstructUnitInstancesByPluralFormDictionary().AsReadOnlyEquatable();
+        DerivationsByID = ConstructDerivationsByIDDictionary().AsReadOnlyEquatable();
     }
+
+    private int UnitInstanceCount() => UnitInstanceAliases.Count + BiasedUnitInstances.Count + DerivedUnitInstances.Count + PrefixedUnitInstances.Count + ScaledUnitInstances.Count + (FixedUnitInstance is null ? 0 : 1);
 
     private IEnumerable<IUnitInstance> AllUnitInstances()
     {
-        var allUnitInstances = (UnitInstanceAliases as IEnumerable<IUnitInstance>).Concat(BiasedUnitInstances).Concat(DerivedUnitInstances).Concat(PrefixedUnitInstances) .Concat(ScaledUnitInstances);
+        foreach (var unitInstanceAlias in UnitInstanceAliases)
+        {
+            yield return unitInstanceAlias;
+        }
+
+        foreach (var biasedUnitInstance in BiasedUnitInstances)
+        {
+            yield return biasedUnitInstance;
+        }
+
+        foreach (var derivedUnitInstance in DerivedUnitInstances)
+        {
+            yield return derivedUnitInstance;
+        }
+
+        foreach (var prefixedUnitInstance in PrefixedUnitInstances)
+        {
+            yield return prefixedUnitInstance;
+        }
+
+        foreach (var scaledUnitInstance in ScaledUnitInstances)
+        {
+            yield return scaledUnitInstance;
+        }
 
         if (FixedUnitInstance is not null)
         {
-            allUnitInstances = allUnitInstances.Concat(new[] { FixedUnitInstance });
+            yield return FixedUnitInstance;
         }
-
-        return allUnitInstances;
     }
 
-    private ReadOnlyEquatableDictionary<string, IUnitInstance> ConstructUnitInstancesByNameDictionary() => AllUnitInstances().ToDictionary(static (unitInstance) => unitInstance.Name).AsReadOnlyEquatable();
-    private ReadOnlyEquatableDictionary<string, IUnitInstance> ConstructUnitInstancesByPluralFormDictionary() => AllUnitInstances().ToDictionary(static (unitInstance) => unitInstance.PluralForm).AsReadOnlyEquatable();
+    private IReadOnlyDictionary<string, IUnitInstance> ConstructUnitInstancesByNameDictionary()
+    {
+        Dictionary<string, IUnitInstance> unitInstancesByName = new(UnitInstanceCount());
+    
+        foreach (var unit in AllUnitInstances())
+        {
+            unitInstancesByName.TryAdd(unit.Name, unit);
+        }
+
+        return unitInstancesByName;
+    }
+
+    private IReadOnlyDictionary<string, IUnitInstance> ConstructUnitInstancesByPluralFormDictionary()
+    {
+        Dictionary<string, IUnitInstance> unitInstancesByPluralForm = new(UnitInstanceCount());
+
+        foreach (var unit in AllUnitInstances())
+        {
+            unitInstancesByPluralForm.TryAdd(unit.PluralForm, unit);
+        }
+
+        return unitInstancesByPluralForm;
+    }
 
     private ReadOnlyEquatableDictionary<string, IDerivableUnit> ConstructDerivationsByIDDictionary()
     {
-        Dictionary<string, IDerivableUnit> derivationsDictionary = new(UnitDerivations.Count);
+        Dictionary<string, IDerivableUnit> derivationsByID = new(UnitDerivations.Count);
 
         foreach (var derivation in UnitDerivations)
         {
             if (derivation.DerivationID is not null)
             {
-                derivationsDictionary.Add(derivation.DerivationID, derivation);
+                derivationsByID.TryAdd(derivation.DerivationID, derivation);
             }
         }
 
-        if (derivationsDictionary.Count is 0 && UnitDerivations.Count > 0)
+        if (derivationsByID.Count is 0 && UnitDerivations.Count > 0)
         {
-            derivationsDictionary.Add("default", UnitDerivations.Single());
+            derivationsByID.Add("default", UnitDerivations[0]);
         }
 
-        return derivationsDictionary.AsReadOnlyEquatable();
+        return derivationsByID.AsReadOnlyEquatable();
     }
 }

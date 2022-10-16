@@ -5,7 +5,6 @@ using Microsoft.CodeAnalysis;
 using SharpMeasures.Generators.Units;
 
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 
 internal static class UnitsGenerator
@@ -32,7 +31,19 @@ internal static class UnitsGenerator
         var includedUnitBaseInstances = GetIncludedUnitInstances(unit, model.Value.Scalar.IncludedUnitBaseInstanceNames);
         var includedUnitInstances = GetIncludedUnitInstances(unit, model.Value.Scalar.IncludedUnitInstanceNames);
 
-        return new DataModel(model.Value.Scalar.Type, model.Value.Scalar.Unit, unit.Definition.Quantity, includedUnitBaseInstances, includedUnitInstances, model.Value.Scalar.Constants.Concat(model.Value.Scalar.InheritedConstants).ToList(), model.Value.SourceBuildingContext);
+        List<IScalarConstant> constants = new(model.Value.Scalar.Constants.Count + model.Value.Scalar.InheritedConstants.Count);
+
+        foreach (var constant in model.Value.Scalar.Constants)
+        {
+            constants.Add(constant);
+        }
+
+        foreach (var constant in model.Value.Scalar.InheritedConstants)
+        {
+            constants.Add(constant);
+        }
+
+        return new DataModel(model.Value.Scalar.Type, model.Value.Scalar.Unit, unit.Definition.Quantity, includedUnitBaseInstances, includedUnitInstances, constants, model.Value.SourceBuildingContext);
     }
 
     private static List<IUnitInstance> GetIncludedUnitInstances(IUnitType unit, IReadOnlyList<string> includedUnitInstanceNames)

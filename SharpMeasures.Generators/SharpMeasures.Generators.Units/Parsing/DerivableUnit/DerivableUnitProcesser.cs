@@ -7,7 +7,6 @@ using SharpMeasures.Generators.Diagnostics;
 
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Text.RegularExpressions;
 
 internal interface IDerivableUnitProcessingDiagnostics
@@ -108,7 +107,7 @@ internal sealed class DerivableUnitProcesser : AActionableProcesser<IDerivableUn
 
     private IValidityWithDiagnostics ValidateExpressionIsNotEmpty(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition)
     {
-        return ValidityWithDiagnostics.Conditional(definition.Expression!.Length is not 0, () => Diagnostics.EmptyExpression(context, definition));
+        return ValidityWithDiagnostics.Conditional(definition.Expression!.Length > 0, () => Diagnostics.EmptyExpression(context, definition));
     }
 
     private IValidityWithDiagnostics ValidateSignatureNotNull(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition)
@@ -118,18 +117,18 @@ internal sealed class DerivableUnitProcesser : AActionableProcesser<IDerivableUn
 
     private IValidityWithDiagnostics ValidateSignatureNotEmpty(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition)
     {
-        return ValidityWithDiagnostics.Conditional(definition.Signature!.Count is not 0, () => Diagnostics.EmptySignature(context, definition));
+        return ValidityWithDiagnostics.Conditional(definition.Signature!.Count > 0, () => Diagnostics.EmptySignature(context, definition));
     }
 
     private IValidityWithDiagnostics ValidateExpressionContainsValidUnits(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition)
     {
         var quantityMatches = ExpressionQuantityPattern.Matches(definition.Expression);
 
-        HashSet<int> unincludedUnits = new HashSet<int>();
+        HashSet<int> unincludedUnitIndices = new HashSet<int>();
 
         for (int i = 0; i < definition.Signature!.Count; i++)
         {
-            unincludedUnits.Add(i);
+            unincludedUnitIndices.Add(i);
         }
 
         foreach (var quantityMatch in quantityMatches)
@@ -141,14 +140,22 @@ internal sealed class DerivableUnitProcesser : AActionableProcesser<IDerivableUn
                 return ValidityWithDiagnostics.Invalid(Diagnostics.UnmatchedExpressionUnit(context, definition, requestedIndex));
             }
 
-            unincludedUnits.Remove(requestedIndex);
+            unincludedUnitIndices.Remove(requestedIndex);
         }
 
-        if (unincludedUnits.Count > 0)
+        if (unincludedUnitIndices.Count > 0)
         {
-            List<Diagnostic?> diagnostics = new(unincludedUnits.Select((index) => Diagnostics.ExpressionDoesNotIncludeUnit(context, definition, index)));
+            List<Diagnostic> allDiagnostics = new(unincludedUnitIndices.Count);
+            
+            foreach (var unincludedUnitIndex in unincludedUnitIndices)
+            {
+                if (Diagnostics.ExpressionDoesNotIncludeUnit(context, definition, unincludedUnitIndex) is Diagnostic diagnostics)
+                {
+                    allDiagnostics.Add(diagnostics);
+                }
+            }
 
-            return ValidityWithDiagnostics.Invalid(diagnostics.Where(static (diagnostic) => diagnostic is not null).Select(static (diagnostic) => diagnostic!));
+            return ValidityWithDiagnostics.Invalid(allDiagnostics);
         }
 
         return ValidityWithDiagnostics.Valid;

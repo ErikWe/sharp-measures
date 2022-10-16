@@ -2,7 +2,9 @@
 
 using Microsoft.CodeAnalysis;
 
-using System.Linq;
+using SharpMeasures.Generators.Quantities;
+
+using System.Collections.Generic;
 using System.Threading;
 
 internal static class OperationsGenerator
@@ -21,6 +23,18 @@ internal static class OperationsGenerator
             return new Optional<DataModel>();
         }
 
-        return new DataModel(model.Value.Scalar.Type, model.Value.Scalar.Operations.Concat(model.Value.Scalar.InheritedOperations).ToList(), model.Value.ScalarPopulation, model.Value.VectorPopulation, model.Value.SourceBuildingContext);
+        List<IQuantityOperation> operations = new(model.Value.Scalar.Operations.Count + model.Value.Scalar.InheritedOperations.Count);
+
+        foreach (var operation in model.Value.Scalar.Operations)
+        {
+            operations.Add(operation);
+        }
+
+        foreach (var operation in model.Value.Scalar.InheritedOperations)
+        {
+            operations.Add(operation);
+        }
+
+        return new DataModel(model.Value.Scalar.Type, operations, model.Value.ScalarPopulation, model.Value.VectorPopulation, model.Value.SourceBuildingContext);
     }
 }

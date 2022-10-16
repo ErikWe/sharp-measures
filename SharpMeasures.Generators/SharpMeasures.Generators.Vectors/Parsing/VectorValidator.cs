@@ -6,7 +6,6 @@ using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
 using System.Collections.Immutable;
-using System.Linq;
 using System.Threading;
 
 public static class VectorValidator

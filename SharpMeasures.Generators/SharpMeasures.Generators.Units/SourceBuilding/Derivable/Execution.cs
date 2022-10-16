@@ -9,7 +9,6 @@ using SharpMeasures.Generators.Units.Parsing.DerivableUnit;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Text;
 
 internal static class Execution
@@ -132,7 +131,20 @@ internal static class Execution
                 return new[] { (new DerivableUnitSignature(definition.Signature), parameterNames) };
             }
 
-            return recurse(definition.Signature.ToArray(), parameterNames.ToArray(), 0);
+            NamedType[] signatureArray = new NamedType[definition.Signature.Count];
+            string[] parameterNamesArray = new string[parameterNames.Count];
+
+            for (int i = 0; i < signatureArray.Length; i++)
+            {
+                signatureArray[i] = definition.Signature[i];
+            }
+
+            for (int i = 0; i < parameterNamesArray.Length; i++)
+            {
+                parameterNamesArray[i] = parameterNames[i];
+            }
+
+            return recurse(signatureArray, parameterNamesArray, 0);
 
             static IEnumerable<(DerivableUnitSignature Signature, IReadOnlyList<string> ParameterNames)> recurse(NamedType[] signatureElements, string[] parameterNames, int fromIndex)
             {

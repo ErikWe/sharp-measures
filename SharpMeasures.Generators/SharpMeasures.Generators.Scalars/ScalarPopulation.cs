@@ -5,7 +5,6 @@ using SharpMeasures.Generators.Quantities;
 using SharpMeasures.Generators.Scalars.Parsing.Abstraction;
 
 using System.Collections.Generic;
-using System.Linq;
 
 internal sealed record class ScalarPopulation : IScalarPopulation
 {
@@ -108,7 +107,12 @@ internal sealed record class ScalarPopulation : IScalarPopulation
 
     private static void IterativelySetScalarBaseForSpecializations(Dictionary<NamedType, IScalarBaseType> scalarBasePopulation, IReadOnlyDictionary<NamedType, IScalarSpecializationType> scalarSpecializationPopulation)
     {
-        var unassignedSpecializations = scalarSpecializationPopulation.Values.ToList();
+        List<IScalarSpecializationType> unassignedSpecializations = new(scalarSpecializationPopulation.Count);
+
+        foreach (var scalarSpecialization in scalarSpecializationPopulation)
+        {
+            unassignedSpecializations.Add(scalarSpecialization.Value);
+        }
 
         iterativelySetBaseScalarForSpecializations();
 

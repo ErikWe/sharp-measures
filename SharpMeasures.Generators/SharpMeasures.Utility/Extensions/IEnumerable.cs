@@ -2,7 +2,6 @@
 
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 public static partial class UtilityExtensions
 {
@@ -26,5 +25,15 @@ public static partial class UtilityExtensions
         }
     }
 
-    public static IDictionary<TKey, TValue> ToDictionary<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> keyValuePairs) => keyValuePairs.ToDictionary(static (x) => x.Key, static (x) => x.Value);
+    public static IDictionary<TKey, TValue> ToDictionary<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> keyValuePairs)
+    {
+        Dictionary<TKey, TValue> dictionary = new();
+
+        foreach (var keyValuePair in keyValuePairs)
+        {
+            dictionary.Add(keyValuePair.Key, keyValuePair.Value);
+        }
+
+        return dictionary;
+    }
 }

@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 
 public class ReadOnlyEquatableList<T> : ReadOnlyEquatableCollection<T>, IReadOnlyList<T>, IEquatable<ReadOnlyEquatableList<T>>
 {
@@ -19,7 +18,37 @@ public class ReadOnlyEquatableList<T> : ReadOnlyEquatableCollection<T>, IReadOnl
         Items = items;
     }
 
-    public virtual bool Equals(ReadOnlyEquatableList<T>? other) => other is not null && Items.SequenceEqual(other.Items);
+    public virtual bool Equals(ReadOnlyEquatableList<T>? other)
+    {
+        if (other is null || Count != other.Count)
+        {
+            return false;
+        }
+
+        if (Count is 0)
+        {
+            return true;
+        }
+
+        IEnumerator<T> thisEnumerator = GetEnumerator();
+        IEnumerator<T> otherEnumerator = other.GetEnumerator();
+
+        while (thisEnumerator.MoveNext() && otherEnumerator.MoveNext())
+        {
+            if (thisEnumerator.Current is null && otherEnumerator.Current is not null || thisEnumerator.Current is not null && otherEnumerator.Current is null)
+            {
+                return false;
+            }
+
+            if (thisEnumerator.Current!.Equals(otherEnumerator.Current) is false)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public override bool Equals(object? obj) => obj is ReadOnlyEquatableList<T> other && Equals(other);
 
     public static bool operator ==(ReadOnlyEquatableList<T>? lhs, ReadOnlyEquatableList<T>? rhs) => lhs?.Equals(rhs) ?? rhs is null;

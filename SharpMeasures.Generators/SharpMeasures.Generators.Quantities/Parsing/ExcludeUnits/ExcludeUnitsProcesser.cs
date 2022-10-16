@@ -30,7 +30,7 @@ public sealed class ExcludeUnitsProcesser : AUniqueItemListProcesser<string?, st
 
     private IValidityWithDiagnostics ValidateItemNotEmpty(IUniqueItemListProcessingContext<string> context, RawExcludeUnitsDefinition definition, int index)
     {
-        return ValidityWithDiagnostics.Conditional(definition.UnitInstances[index]?.Length is not 0, () => Diagnostics.EmptyItem(context, definition, index));
+        return ValidityWithDiagnostics.Conditional(definition.UnitInstances[index]?.Length > 0, () => Diagnostics.EmptyItem(context, definition, index));
     }
 
     protected override string UpgradeItem(string? item) => UpgradeNullItem(item);

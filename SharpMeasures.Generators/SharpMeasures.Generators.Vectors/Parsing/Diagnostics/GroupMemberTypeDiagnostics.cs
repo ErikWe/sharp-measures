@@ -19,16 +19,16 @@ internal static class GroupMemberTypeDiagnostics
         return DiagnosticConstruction.TypeStatic<TAttribute>(declaration.Identifier.GetLocation(), declaration.Identifier.Text);
     }
 
-    public static Diagnostic UnitTypeAlreadyGroupMember(AttributeData attribute, INamedTypeSymbol typeSymbol) => TypeAlreadyGroupMember(attribute, typeSymbol, DiagnosticConstruction.UnitTypeAlreadyDefinedAsVectorGroupMember);
-    public static Diagnostic ScalarTypeAlreadyGroupMember(AttributeData attribute, INamedTypeSymbol typeSymbol) => TypeAlreadyGroupMember(attribute, typeSymbol, DiagnosticConstruction.ScalarTypeAlreadyDefinedAsVectorGroupMember);
-    public static Diagnostic SpecializedScalarTypeAlreadyGroupMember(AttributeData attribute, INamedTypeSymbol typeSymbol) => ScalarTypeAlreadyGroupMember(attribute, typeSymbol);
-    public static Diagnostic VectorTypeAlreadyGroupMember(AttributeData attribute, INamedTypeSymbol typeSymbol) => TypeAlreadyGroupMember(attribute, typeSymbol, DiagnosticConstruction.VectorTypeAlreadyDefinedAsVectorGroupMember);
-    public static Diagnostic SpecializedVectorTypeAlreadyGroupMember(AttributeData attribute, INamedTypeSymbol typeSymbol) => VectorTypeAlreadyGroupMember(attribute, typeSymbol);
+    public static Diagnostic UnitTypeAlreadyGroupMember(AttributeData attribute, DefinedType type) => TypeAlreadyGroupMember(attribute, type, DiagnosticConstruction.UnitTypeAlreadyDefinedAsVectorGroupMember);
+    public static Diagnostic ScalarTypeAlreadyGroupMember(AttributeData attribute, DefinedType type) => TypeAlreadyGroupMember(attribute, type, DiagnosticConstruction.ScalarTypeAlreadyDefinedAsVectorGroupMember);
+    public static Diagnostic SpecializedScalarTypeAlreadyGroupMember(AttributeData attribute, DefinedType type) => ScalarTypeAlreadyGroupMember(attribute, type);
+    public static Diagnostic VectorTypeAlreadyGroupMember(AttributeData attribute, DefinedType type) => TypeAlreadyGroupMember(attribute, type, DiagnosticConstruction.VectorTypeAlreadyDefinedAsVectorGroupMember);
+    public static Diagnostic SpecializedVectorTypeAlreadyGroupMember(AttributeData attribute, DefinedType type) => VectorTypeAlreadyGroupMember(attribute, type);
 
-    private static Diagnostic TypeAlreadyGroupMember(AttributeData attribute, INamedTypeSymbol typeSymbol, Func<Location?, string, Diagnostic> diagnosticsDelegate)
+    private static Diagnostic TypeAlreadyGroupMember(AttributeData attribute, DefinedType type, Func<Location?, string, Diagnostic> diagnosticsDelegate)
     {
         var location = attribute.GetSyntax() is AttributeSyntax attributeSyntax ? attributeSyntax.Name.GetLocation() : null;
 
-        return diagnosticsDelegate(location, typeSymbol.Name);
+        return diagnosticsDelegate(location, type.Name);
     }
 }

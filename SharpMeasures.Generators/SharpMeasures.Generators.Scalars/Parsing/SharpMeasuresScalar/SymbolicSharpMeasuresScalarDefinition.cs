@@ -5,7 +5,6 @@ using Microsoft.CodeAnalysis;
 using SharpMeasures.Generators.Attributes.Parsing;
 
 using System.Collections.Generic;
-using System.Linq;
 
 internal sealed record class SymbolicSharpMeasuresScalarDefinition : ARawAttributeDefinition<SymbolicSharpMeasuresScalarDefinition, SharpMeasuresScalarLocations>
 {
@@ -27,5 +26,23 @@ internal sealed record class SymbolicSharpMeasuresScalarDefinition : ARawAttribu
 
     private SymbolicSharpMeasuresScalarDefinition() : base(SharpMeasuresScalarLocations.Empty) { }
 
-    public IEnumerable<INamedTypeSymbol> ForeignSymbols(string localAssemblyName, bool alreadyInForeignAssembly) => new[] { Unit, Vector, Difference }.Where((symbol) => symbol is not null && (alreadyInForeignAssembly || symbol.ContainingAssembly.Name != localAssemblyName)).Select(static (symbol) => symbol!);
+    public IEnumerable<INamedTypeSymbol> ForeignSymbols(string localAssemblyName, bool alreadyInForeignAssembly)
+    {
+        if (isForeign(Unit))
+        {
+            yield return Unit!;
+        }
+
+        if (isForeign(Vector))
+        {
+            yield return Vector!;
+        }
+
+        if (isForeign(Difference))
+        {
+            yield return Difference!;
+        }
+
+        bool isForeign(INamedTypeSymbol? symbol) => symbol is not null && (alreadyInForeignAssembly || symbol.ContainingAssembly.Name != localAssemblyName);
+    }
 }

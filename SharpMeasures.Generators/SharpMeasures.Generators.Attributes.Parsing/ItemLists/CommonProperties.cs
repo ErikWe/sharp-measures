@@ -1,7 +1,7 @@
 ﻿namespace SharpMeasures.Generators.Attributes.Parsing.ItemLists;
 
 using System;
-using System.Linq;
+using System.Collections.Generic;
 
 public static class CommonProperties
 {
@@ -24,8 +24,20 @@ public static class CommonProperties
         return new AttributeProperty<TDefinition, TLocations, TRawItem[]>
         (
             name: name,
-            setter: (definition, items) => definition.WithItems(items.Select((x) => transform(x)).ToList()),
+            setter: (definition, items) => definition.WithItems(executeTransform(items)),
             locator: static (locations, collectionLocation, elementLocations) => locations.WithItems(collectionLocation, elementLocations)
         );
+
+        IReadOnlyList<TItem> executeTransform(TRawItem[] items)
+        {
+            TItem[] transformedItems = new TItem[items.Length];
+
+            for (int i = 0; i < items.Length; i++)
+            {
+                transformedItems[i] = transform(items[i]);
+            }
+
+            return transformedItems;
+        }
     }
 }

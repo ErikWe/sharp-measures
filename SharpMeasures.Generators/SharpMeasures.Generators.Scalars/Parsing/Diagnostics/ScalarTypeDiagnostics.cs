@@ -19,16 +19,17 @@ internal static class ScalarTypeDiagnostics
         return DiagnosticConstruction.TypeStatic<TAttribute>(declaration.Identifier.GetLocation(), declaration.Identifier.Text);
     }
 
-    public static Diagnostic UnitTypeAlreadyScalar(AttributeData attribute, INamedTypeSymbol typeSymbol) => TypeAlreadyScalar(attribute, typeSymbol, DiagnosticConstruction.UnitTypeAlreadyDefinedAsScalar);
-    public static Diagnostic ScalarTypeAlreadyScalar(AttributeData attribute, INamedTypeSymbol typeSymbol) => TypeAlreadyScalar(attribute, typeSymbol, DiagnosticConstruction.ScalarTypeAlreadyDefinedAsScalar);
-    public static Diagnostic VectorTypeAlreadyScalar(AttributeData attribute, INamedTypeSymbol typeSymbol) => TypeAlreadyScalar(attribute, typeSymbol, DiagnosticConstruction.VectorTypeAlreadyDefinedAsScalar);
-    public static Diagnostic SpecializedVectorTypeAlreadyScalar(AttributeData attribute, INamedTypeSymbol typeSymbol) => VectorTypeAlreadyScalar(attribute, typeSymbol);
-    public static Diagnostic VectorGroupMemberTypeAlreadyScalar(AttributeData attribute, INamedTypeSymbol typeSymbol) => TypeAlreadyScalar(attribute, typeSymbol, DiagnosticConstruction.VectorGroupMemberTypeAlreadyDefinedAsScalar);
+    public static Diagnostic UnitTypeAlreadyScalar(AttributeData attribute, DefinedType type) => TypeAlreadyScalar(attribute, type, DiagnosticConstruction.UnitTypeAlreadyDefinedAsScalar);
+    public static Diagnostic ScalarTypeAlreadyScalar(AttributeData attribute, DefinedType type) => TypeAlreadyScalar(attribute, type, DiagnosticConstruction.ScalarTypeAlreadyDefinedAsScalar);
+    public static Diagnostic SpecializedScalarTypeAlreadyScalar(AttributeData attribute, DefinedType type) => ScalarTypeAlreadyScalar(attribute, type);
+    public static Diagnostic VectorTypeAlreadyScalar(AttributeData attribute, DefinedType type) => TypeAlreadyScalar(attribute, type, DiagnosticConstruction.VectorTypeAlreadyDefinedAsScalar);
+    public static Diagnostic SpecializedVectorTypeAlreadyScalar(AttributeData attribute, DefinedType type) => VectorTypeAlreadyScalar(attribute, type);
+    public static Diagnostic VectorGroupMemberTypeAlreadyScalar(AttributeData attribute, DefinedType type) => TypeAlreadyScalar(attribute, type, DiagnosticConstruction.VectorGroupMemberTypeAlreadyDefinedAsScalar);
 
-    private static Diagnostic TypeAlreadyScalar(AttributeData attribute, INamedTypeSymbol typeSymbol, Func<Location?, string, Diagnostic> diagnosticsDelegate)
+    private static Diagnostic TypeAlreadyScalar(AttributeData attribute, DefinedType type, Func<Location?, string, Diagnostic> diagnosticsDelegate)
     {
         var location = attribute.GetSyntax() is AttributeSyntax attributeSyntax ? attributeSyntax.Name.GetLocation() : null;
 
-        return diagnosticsDelegate(location, typeSymbol.Name);
+        return diagnosticsDelegate(location, type.Name);
     }
 }

@@ -5,7 +5,6 @@ using SharpMeasures.Generators.Quantities;
 using SharpMeasures.Generators.Vectors.Parsing;
 
 using System.Collections.Generic;
-using System.Linq;
 
 internal sealed record class VectorPopulation : IVectorPopulation
 {
@@ -18,8 +17,49 @@ internal sealed record class VectorPopulation : IVectorPopulation
 
     public IReadOnlyDictionary<NamedType, IGroupPopulation> GroupMembersByGroup { get; }
 
-    IReadOnlyDictionary<NamedType, IQuantityBaseType> IQuantityPopulation.QuantityBases => GroupBases.Transform(static (vector) => vector as IQuantityBaseType) .Concat(VectorBases.Transform(static (vector) => vector as IQuantityBaseType)).ToDictionary().AsEquatable();
-    IReadOnlyDictionary<NamedType, IQuantityType> IQuantityPopulation.Quantities => Groups.Transform(static (vector) => vector as IQuantityType) .Concat(Vectors.Transform(static (vector) => vector as IQuantityType)).Concat(GroupMembers.Transform(static (vector) => vector as IQuantityType)).ToDictionary().AsEquatable();
+    IReadOnlyDictionary<NamedType, IQuantityBaseType> IQuantityPopulation.QuantityBases
+    {
+        get
+        {
+            Dictionary<NamedType, IQuantityBaseType> quantityBases = new(GroupBases.Count + VectorBases.Count);
+
+            foreach (var group in GroupBases)
+            {
+                quantityBases.Add(group.Key, group.Value);
+            }
+
+            foreach (var vector in VectorBases)
+            {
+                quantityBases.TryAdd(vector.Key, vector.Value);
+            }
+
+            return quantityBases;
+        }
+    }
+    IReadOnlyDictionary<NamedType, IQuantityType> IQuantityPopulation.Quantities
+    {
+        get
+        {
+            Dictionary<NamedType, IQuantityType> quantities = new(Groups.Count + Vectors.Count + GroupMembers.Count);
+
+            foreach (var group in Groups)
+            {
+                quantities.Add(group.Key, group.Value);
+            }
+
+            foreach (var vector in Vectors)
+            {
+                quantities.TryAdd(vector.Key, vector.Value);
+            }
+
+            foreach (var member in GroupMembers)
+            {
+                quantities.TryAdd(member.Key, member.Value);
+            }
+
+            return quantities;
+        }
+    }
 
     private VectorPopulation(IReadOnlyDictionary<NamedType, IVectorGroupBaseType> vectorGroupBases, IReadOnlyDictionary<NamedType, IVectorGroupType> groups, IReadOnlyDictionary<NamedType, IVectorGroupMemberType> groupMembers,
         IReadOnlyDictionary<NamedType, IVectorBaseType> vectorBases, IReadOnlyDictionary<NamedType, IVectorType> vectors, IReadOnlyDictionary<NamedType, IGroupPopulation> groupMembersByGroup)
@@ -154,7 +194,7 @@ internal sealed record class VectorPopulation : IVectorPopulation
         IterativelySetGroupBaseForSpecializations(groupBasePopulation, groupSpecializationPopulation);
         IterativelySetVectorBaseForSpecializations(vectorBasePopulation, vectorSpecializationPopulation);
 
-        var population = new VectorPopulation(groupBasePopulation, groupPopulation, groupMemberPopulation, vectorBasePopulation, vectorPopulation, groupMembersByGroup.Transform(static (group) => new GroupPopulation(group) as IGroupPopulation));
+        var population = new VectorPopulation(groupBasePopulation, groupPopulation, groupMemberPopulation, vectorBasePopulation, vectorPopulation, (IReadOnlyDictionary<NamedType, IGroupPopulation>)groupMembersByGroup.Transform(static (group) => new GroupPopulation(group) as IGroupPopulation));
         var processingData = new VectorProcessingData(duplicateVectorBasePopulation, duplicateVectorSpecializationPopulation, vectorSpecializationsAlreadyDefinedAsVectorBases, duplicateGroupBasePopulation, duplicateGroupSpecializationPopulation, groupSpecializationsAlreadyDefinedAsGroupBases, duplicateGroupMemberPopulation);
 
         return (population, processingData);
@@ -234,12 +274,17 @@ internal sealed record class VectorPopulation : IVectorPopulation
         IterativelySetGroupBaseForSpecializations(groupBasePopulation, groupSpecializationPopulation);
         IterativelySetVectorBaseForSpecializations(vectorBasePopulation, vectorSpecializationPopulation);
 
-        return new(groupBasePopulation, groupPopulation, groupMemberPopulation, vectorBasePopulation, vectorPopulation, groupMembersByGroup.Transform(static (group) => new GroupPopulation(group) as IGroupPopulation));
+        return new(groupBasePopulation, groupPopulation, groupMemberPopulation, vectorBasePopulation, vectorPopulation, (IReadOnlyDictionary<NamedType, IGroupPopulation>)groupMembersByGroup.Transform(static (group) => new GroupPopulation(group) as IGroupPopulation));
     }
 
     private static void IterativelySetGroupBaseForSpecializations(Dictionary<NamedType, IVectorGroupBaseType> groupBasePopulation, IReadOnlyDictionary<NamedType, IVectorGroupSpecializationType> groupSpecializationPopulation)
     {
-        var unassignedGroupSpecializations = groupSpecializationPopulation.Values.ToList();
+        List<IVectorGroupSpecializationType> unassignedGroupSpecializations = new(groupSpecializationPopulation.Count);
+
+        foreach (var groupSpecialization in groupSpecializationPopulation)
+        {
+            unassignedGroupSpecializations.Add(groupSpecialization.Value);
+        }
 
         iterativelySetGroupBaseForSpecializations();
 
@@ -267,7 +312,12 @@ internal sealed record class VectorPopulation : IVectorPopulation
 
     private static void IterativelySetVectorBaseForSpecializations(Dictionary<NamedType, IVectorBaseType> vectorBasePopulation, IReadOnlyDictionary<NamedType, IVectorSpecializationType> vectorSpecializationPopulation)
     {
-        var unassignedVectorSpecializations = vectorSpecializationPopulation.Values.ToList();
+        List<IVectorSpecializationType> unassignedVectorSpecializations = new(vectorSpecializationPopulation.Count);
+
+        foreach (var vectorSpecialization in vectorSpecializationPopulation)
+        {
+            unassignedVectorSpecializations.Add(vectorSpecialization.Value);
+        }
 
         iterativelySetVectorBaseForSpecializations();
 

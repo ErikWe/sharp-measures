@@ -34,48 +34,50 @@ public static class UnitParser
         var units = unitsAndForeignSymbols.Select(ExtractDefinition);
         var foreignSymbols = unitsAndForeignSymbols.Select(ExtractForeignSymbols).Collect().Expand();
 
-        unitsAndForeignSymbols.Select(ExtractSymbol).Select(CreateTypeAlreadyDefinedDiagnostics).ReportDiagnostics(context);
+        unitsAndForeignSymbols.Select(CreateTypeAlreadyDefinedDiagnostics).ReportDiagnostics(context);
 
         return (new UnitParsingResult(units), foreignSymbols);
     }
 
-    private static Optional<(INamedTypeSymbol, RawUnitType, IEnumerable<INamedTypeSymbol>)> Parse(Optional<INamedTypeSymbol> typeSymbol, CancellationToken token)
+    private static Optional<(IEnumerable<AttributeData>, RawUnitType, IEnumerable<INamedTypeSymbol>)> Parse(Optional<INamedTypeSymbol> typeSymbol, CancellationToken token)
     {
         if (token.IsCancellationRequested || typeSymbol.HasValue is false)
         {
-            return new Optional<(INamedTypeSymbol, RawUnitType, IEnumerable<INamedTypeSymbol>)>();
+            return new Optional<(IEnumerable<AttributeData>, RawUnitType, IEnumerable<INamedTypeSymbol>)>();
         }
 
         return Parse(typeSymbol.Value);
     }
 
-    internal static Optional<(INamedTypeSymbol Symbol, RawUnitType Definition, IEnumerable<INamedTypeSymbol> ForeignSymbols)> Parse(INamedTypeSymbol typeSymbol)
+    internal static Optional<(IEnumerable<AttributeData> Attributes, RawUnitType Definition, IEnumerable<INamedTypeSymbol> ForeignSymbols)> Parse(INamedTypeSymbol typeSymbol)
     {
-        (var unit, var unitForeignSymbols) = ParseUnit(typeSymbol);
+        var attributes = typeSymbol.GetAttributes();
+
+        (var unit, var unitForeignSymbols) = ParseUnit(typeSymbol, attributes);
 
         if (unit.HasValue is false)
         {
-            return new Optional<(INamedTypeSymbol, RawUnitType, IEnumerable<INamedTypeSymbol>)>();
+            return new Optional<(IEnumerable<AttributeData>, RawUnitType, IEnumerable<INamedTypeSymbol>)>();
         }
 
-        (var derivations, var derivationsForeignSymbols) = ParseDerivations(typeSymbol);
+        (var derivations, var derivationsForeignSymbols) = ParseDerivations(typeSymbol, attributes);
 
-        var fixedUnitInstance = ParseFixedUnitInstance(typeSymbol);
-        var unitInstanceAliases = ParseUnitInstanceAliases(typeSymbol);
-        var derivedUnitInstances = ParseDerivedUnitInstances(typeSymbol);
-        var biasedUnitInstances = ParseBiasedUnitInstances(typeSymbol);
-        var prefixedUnitInstances = ParsePrefixedUnitInstances(typeSymbol);
-        var scaledUnitInstances = ParseScaledUnitInstances(typeSymbol);
+        var fixedUnitInstance = ParseFixedUnitInstance(attributes);
+        var unitInstanceAliases = ParseUnitInstanceAliases(attributes);
+        var derivedUnitInstances = ParseDerivedUnitInstances(attributes);
+        var biasedUnitInstances = ParseBiasedUnitInstances(attributes);
+        var prefixedUnitInstances = ParsePrefixedUnitInstances(attributes);
+        var scaledUnitInstances = ParseScaledUnitInstances(attributes);
 
         RawUnitType unitType = new(typeSymbol.AsDefinedType(), unit.Value, derivations, fixedUnitInstance.HasValue ? fixedUnitInstance.Value : null, unitInstanceAliases, derivedUnitInstances, biasedUnitInstances, prefixedUnitInstances, scaledUnitInstances);
         var foreignSymbols = unitForeignSymbols.Concat(derivationsForeignSymbols);
 
-        return (typeSymbol, unitType, foreignSymbols);
+        return (attributes, unitType, foreignSymbols);
     }
 
-    private static (Optional<RawSharpMeasuresUnitDefinition>, IEnumerable<INamedTypeSymbol>) ParseUnit(INamedTypeSymbol typeSymbol)
+    private static (Optional<RawSharpMeasuresUnitDefinition>, IEnumerable<INamedTypeSymbol>) ParseUnit(INamedTypeSymbol typeSymbol, IEnumerable<AttributeData> attributes)
     {
-        if (SharpMeasuresUnitParser.Parser.ParseFirstOccurrence(typeSymbol) is not SymbolicSharpMeasuresUnitDefinition symbolicUnit)
+        if (SharpMeasuresUnitParser.Parser.ParseFirstOccurrence(attributes) is not SymbolicSharpMeasuresUnitDefinition symbolicUnit)
         {
             return (new Optional<RawSharpMeasuresUnitDefinition>(), Array.Empty<INamedTypeSymbol>());
         }
@@ -86,9 +88,9 @@ public static class UnitParser
         return (rawUnit, foreignSymbols);
     }
 
-    private static (IEnumerable<RawDerivableUnitDefinition>, IEnumerable<INamedTypeSymbol>) ParseDerivations(INamedTypeSymbol typeSymbol)
+    private static (IEnumerable<RawDerivableUnitDefinition>, IEnumerable<INamedTypeSymbol>) ParseDerivations(INamedTypeSymbol typeSymbol, IEnumerable<AttributeData> attributes)
     {
-        var symbolicDerivations = DerivableUnitParser.Parser.ParseAllOccurrences(typeSymbol);
+        var symbolicDerivations = DerivableUnitParser.Parser.ParseAllOccurrences(attributes);
 
         var rawDerivations = symbolicDerivations.Select(static (symbolicDerivation) => RawDerivableUnitDefinition.FromSymbolic(symbolicDerivation));
         var foreignSymbols = symbolicDerivations.SelectMany((symbolicDerivation) => symbolicDerivation.ForeignSymbols(typeSymbol.ContainingAssembly.Name, alreadyInForeignAssembly: false));
@@ -96,9 +98,9 @@ public static class UnitParser
         return (rawDerivations, foreignSymbols);
     }
 
-    private static Optional<RawFixedUnitInstanceDefinition> ParseFixedUnitInstance(INamedTypeSymbol typeSymbol)
+    private static Optional<RawFixedUnitInstanceDefinition> ParseFixedUnitInstance(IEnumerable<AttributeData> attributes)
     {
-        if (FixedUnitInstanceParser.Parser.ParseFirstOccurrence(typeSymbol) is not RawFixedUnitInstanceDefinition rawFixedUnitInstance)
+        if (FixedUnitInstanceParser.Parser.ParseFirstOccurrence(attributes) is not RawFixedUnitInstanceDefinition rawFixedUnitInstance)
         {
             return new Optional<RawFixedUnitInstanceDefinition>();
         }
@@ -106,11 +108,11 @@ public static class UnitParser
         return rawFixedUnitInstance;
     }
 
-    private static IEnumerable<RawUnitInstanceAliasDefinition> ParseUnitInstanceAliases(INamedTypeSymbol typeSymbol) => UnitInstanceAliasParser.Parser.ParseAllOccurrences(typeSymbol);
-    private static IEnumerable<RawDerivedUnitInstanceDefinition> ParseDerivedUnitInstances(INamedTypeSymbol typeSymbol) => DerivedUnitInstanceParser.Parser.ParseAllOccurrences(typeSymbol);
-    private static IEnumerable<RawBiasedUnitInstanceDefinition> ParseBiasedUnitInstances(INamedTypeSymbol typeSymbol) => BiasedUnitInstanceParser.Parser.ParseAllOccurrences(typeSymbol);
-    private static IEnumerable<RawPrefixedUnitInstanceDefinition> ParsePrefixedUnitInstances(INamedTypeSymbol typeSymbol) => PrefixedUnitInstanceParser.Parser.ParseAllOccurrences(typeSymbol);
-    private static IEnumerable<RawScaledUnitInstanceDefinition> ParseScaledUnitInstances(INamedTypeSymbol typeSymbol) => ScaledUnitInstanceParser.Parser.ParseAllOccurrences(typeSymbol);
+    private static IEnumerable<RawUnitInstanceAliasDefinition> ParseUnitInstanceAliases(IEnumerable<AttributeData> attributes) => UnitInstanceAliasParser.Parser.ParseAllOccurrences(attributes);
+    private static IEnumerable<RawDerivedUnitInstanceDefinition> ParseDerivedUnitInstances(IEnumerable<AttributeData> attributes) => DerivedUnitInstanceParser.Parser.ParseAllOccurrences(attributes);
+    private static IEnumerable<RawBiasedUnitInstanceDefinition> ParseBiasedUnitInstances(IEnumerable<AttributeData> attributes) => BiasedUnitInstanceParser.Parser.ParseAllOccurrences(attributes);
+    private static IEnumerable<RawPrefixedUnitInstanceDefinition> ParsePrefixedUnitInstances(IEnumerable<AttributeData> attributes) => PrefixedUnitInstanceParser.Parser.ParseAllOccurrences(attributes);
+    private static IEnumerable<RawScaledUnitInstanceDefinition> ParseScaledUnitInstances(IEnumerable<AttributeData> attributes) => ScaledUnitInstanceParser.Parser.ParseAllOccurrences(attributes);
 
     private static Optional<TypeDeclarationSyntax> ExtractUnitDeclarations(Optional<(TypeDeclarationSyntax Declaration, string Attribute)> data, CancellationToken _)
     {
@@ -122,44 +124,35 @@ public static class UnitParser
         return data.Value.Declaration;
     }
 
-    private static Optional<Diagnostic> CreateTypeAlreadyDefinedDiagnostics(Optional<INamedTypeSymbol> typeSymbol, CancellationToken token)
+    private static Dictionary<string, Func<AttributeData, DefinedType, Diagnostic>> ConflictingSharpMeasuresTypes { get; } = new()
     {
-        if (token.IsCancellationRequested || typeSymbol.HasValue is false)
+        { typeof(ScalarQuantityAttribute).FullName, UnitTypeDiagnostics.ScalarTypeAlreadyUnit },
+        { typeof(SpecializedScalarQuantityAttribute).FullName, UnitTypeDiagnostics.SpecializedScalarTypeAlreadyUnit },
+        { typeof(VectorQuantityAttribute).FullName, UnitTypeDiagnostics.VectorTypeAlreadyUnit },
+        { typeof(SpecializedVectorQuantityAttribute).FullName, UnitTypeDiagnostics.SpecializedVectorTypeAlreadyUnit },
+        { typeof(VectorGroupMemberAttribute).FullName, UnitTypeDiagnostics.VectorGroupMemberTypeAlreadyUnit }
+    };
+
+    private static Optional<Diagnostic> CreateTypeAlreadyDefinedDiagnostics<T>(Optional<(IEnumerable<AttributeData> AttributeData, RawUnitType Definition, T)> input, CancellationToken token)
+    {
+        if (token.IsCancellationRequested || input.HasValue is false)
         {
             return new Optional<Diagnostic>();
         }
 
-        if (typeSymbol.Value.GetAttributeOfType<ScalarQuantityAttribute>() is AttributeData scalarAttribute)
+        foreach (var attributeData in input.Value.AttributeData)
         {
-            return UnitTypeDiagnostics.ScalarTypeAlreadyUnit(scalarAttribute, typeSymbol.Value);
-        }
-
-        if (typeSymbol.Value.GetAttributeOfType<SpecializedScalarQuantityAttribute>() is AttributeData specializedScalarAttribute)
-        {
-            return UnitTypeDiagnostics.SpecializedScalarTypeAlreadyUnit(specializedScalarAttribute, typeSymbol.Value);
-        }
-
-        if (typeSymbol.Value.GetAttributeOfType<VectorQuantityAttribute>() is AttributeData vectorAttribute)
-        {
-            return UnitTypeDiagnostics.VectorTypeAlreadyUnit(vectorAttribute, typeSymbol.Value);
-        }
-
-        if (typeSymbol.Value.GetAttributeOfType<SpecializedVectorQuantityAttribute>() is AttributeData specializedVectorAttribute)
-        {
-            return UnitTypeDiagnostics.SpecializedVectorTypeAlreadyUnit(specializedVectorAttribute, typeSymbol.Value);
-        }
-
-        if (typeSymbol.Value.GetAttributeOfType<VectorGroupMemberAttribute>() is AttributeData vectorGroupMemberAttribute)
-        {
-            return UnitTypeDiagnostics.VectorGroupMemberTypeAlreadyUnit(vectorGroupMemberAttribute, typeSymbol.Value);
+            if (attributeData.AttributeClass?.ToDisplayString() is string attributeType && ConflictingSharpMeasuresTypes.TryGetValue(attributeType, out var diagnosticsDelegate))
+            {
+                return diagnosticsDelegate(attributeData, input.Value.Definition.Type);
+            }
         }
 
         return new Optional<Diagnostic>();
     }
 
-    private static Optional<INamedTypeSymbol> ExtractSymbol(Optional<TypeDeclarationSyntax> declaration, INamedTypeSymbol typeSymbol) => new(typeSymbol);
+    private static Optional<INamedTypeSymbol> ExtractSymbol<T>(T _, INamedTypeSymbol typeSymbol) => new(typeSymbol);
 
-    private static Optional<INamedTypeSymbol> ExtractSymbol<T1, T2>(Optional<(INamedTypeSymbol Symbol, T1, T2)> input, CancellationToken _) => input.HasValue ? new Optional<INamedTypeSymbol>(input.Value.Symbol) : new Optional<INamedTypeSymbol>();
     private static Optional<RawUnitType> ExtractDefinition<T1, T2>(Optional<(T1, RawUnitType Definition, T2)> input, CancellationToken _) => input.HasValue ? input.Value.Definition : new Optional<RawUnitType>();
     private static IEnumerable<INamedTypeSymbol> ExtractForeignSymbols<T1, T2>(Optional<(T1, T2, IEnumerable<INamedTypeSymbol> ForeignSymbols)> input, CancellationToken _) => input.HasValue ? input.Value.ForeignSymbols : Array.Empty<INamedTypeSymbol>();
 

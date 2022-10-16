@@ -3,7 +3,6 @@
 using Microsoft.CodeAnalysis;
 
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 
 internal static class VectorsGenerator

@@ -97,7 +97,7 @@ public abstract class AQuantityConstantProcesser<TContext, TDefinition, TLocatio
 
     private IValidityWithDiagnostics ValidateNameNotEmpty(TContext context, TDefinition definition)
     {
-        return ValidityWithDiagnostics.Conditional(definition.Name!.Length is not 0, () => Diagnostics.EmptyName(context, definition));
+        return ValidityWithDiagnostics.Conditional(definition.Name!.Length > 0, () => Diagnostics.EmptyName(context, definition));
     }
 
     private IValidityWithDiagnostics ValidateNameNotDuplicate(TContext context, TDefinition definition)
@@ -127,7 +127,7 @@ public abstract class AQuantityConstantProcesser<TContext, TDefinition, TLocatio
 
     private IValidityWithDiagnostics ValidateUnitInstanceNameNotEmpty(TContext context, TDefinition definition)
     {
-        return ValidityWithDiagnostics.Conditional(definition.UnitInstanceName!.Length is not 0, () => Diagnostics.EmptyUnitInstanceName(context, definition));
+        return ValidityWithDiagnostics.Conditional(definition.UnitInstanceName!.Length > 0, () => Diagnostics.EmptyUnitInstanceName(context, definition));
     }
 
     private IOptionalWithDiagnostics<string> ProcessMultiples(TContext context, TDefinition definition)

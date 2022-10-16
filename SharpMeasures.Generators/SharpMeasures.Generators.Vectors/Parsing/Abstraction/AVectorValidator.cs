@@ -4,21 +4,21 @@ using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Quantities;
-using SharpMeasures.Generators.Quantities.Parsing.QuantityOperation;
 using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
 using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
+using SharpMeasures.Generators.Quantities.Parsing.QuantityOperation;
 using SharpMeasures.Generators.Quantities.Parsing.QuantityProcess;
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 using SharpMeasures.Generators.Vectors.Abstraction;
 using SharpMeasures.Generators.Vectors.Parsing.ConvertibleVector;
 using SharpMeasures.Generators.Vectors.Parsing.VectorConstant;
+using SharpMeasures.Generators.Vectors.Parsing.VectorOperation;
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using SharpMeasures.Generators.Vectors.Parsing.VectorOperation;
 
 internal abstract class AVectorValidatorr<TVector, TDefinition>
     where TVector : AVectorType<TDefinition>
@@ -133,7 +133,7 @@ internal abstract class AVectorValidatorr<TVector, TDefinition>
 
         void modify(IVectorType vector)
         {
-            if (vector.UnitInstanceInclusions.Any())
+            if (vector.UnitInstanceInclusions.Count > 0)
             {
                 includedUnits.IntersectWith(listUnits(vector.UnitInstanceInclusions));
 

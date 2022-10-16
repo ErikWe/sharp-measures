@@ -17,10 +17,12 @@ internal static class GroupTypeDiagnostics
         return DiagnosticConstruction.TypeNotStatic<TAttribute>(declaration.Identifier.GetLocation(), declaration.Identifier.Text);
     }
 
-    public static Diagnostic VectorGroupTypeAlreadyVectorGroup(AttributeData attribute, INamedTypeSymbol typeSymbol)
+    public static Diagnostic VectorGroupTypeAlreadyVectorGroup(AttributeData attribute, DefinedType type)
     {
         var location = attribute.GetSyntax() is AttributeSyntax attributeSyntax ? attributeSyntax.Name.GetLocation() : null;
 
-        return DiagnosticConstruction.VectorGroupTypeAlreadyDefinedAsVectorGroup(location, typeSymbol.Name);
+        return DiagnosticConstruction.VectorGroupTypeAlreadyDefinedAsVectorGroup(location, type.Name);
     }
+
+    public static Diagnostic SpecializedVectorGroupTypeAlreadyVectorGroup(AttributeData attribute, DefinedType type) => VectorGroupTypeAlreadyVectorGroup(attribute, type);
 }

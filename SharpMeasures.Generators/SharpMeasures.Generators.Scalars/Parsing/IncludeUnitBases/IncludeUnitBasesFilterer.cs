@@ -58,7 +58,7 @@ internal sealed class IncludeUnitBasesFilterer : AProcesser<IIncludeUnitBasesFil
         var productCreationDelegate = () => new IncludeUnitBasesDefinition(validUnitInstances, definition.StackingMode, definition.Locations, locationMap);
 
         return ValidateStackingModeIsNotRedundant(context, definition)
-            .Merge(() => OptionalWithDiagnostics.ConditionalWithDefiniteDiagnostics(validUnitInstances.Count is not 0, productCreationDelegate, allDiagnostics));
+            .Merge(() => OptionalWithDiagnostics.ConditionalWithDefiniteDiagnostics(validUnitInstances.Count > 0, productCreationDelegate, allDiagnostics));
     }
 
     private IValidityWithDiagnostics ValidateStackingModeIsNotRedundant(IIncludeUnitBasesFilteringContext context, IncludeUnitBasesDefinition definition)

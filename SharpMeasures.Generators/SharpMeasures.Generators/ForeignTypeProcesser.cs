@@ -9,7 +9,6 @@ using SharpMeasures.Generators.Units.ForeignUnitParsing;
 using SharpMeasures.Generators.Vectors;
 using SharpMeasures.Generators.Vectors.ForeignVectorParsing;
 
-using System.Linq;
 using System.Threading;
 
 internal static class ForeignTypeProcesser

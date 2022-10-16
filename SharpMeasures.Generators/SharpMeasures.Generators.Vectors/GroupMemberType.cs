@@ -2,17 +2,16 @@
 
 using SharpMeasures.Equatables;
 using SharpMeasures.Generators.Quantities;
-using SharpMeasures.Generators.Quantities.Parsing.QuantityOperation;
 using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
 using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
+using SharpMeasures.Generators.Quantities.Parsing.QuantityOperation;
 using SharpMeasures.Generators.Quantities.Parsing.QuantityProcess;
 using SharpMeasures.Generators.Vectors.Parsing.ConvertibleVector;
 using SharpMeasures.Generators.Vectors.Parsing.SharpMeasuresVectorGroupMember;
 using SharpMeasures.Generators.Vectors.Parsing.VectorConstant;
+using SharpMeasures.Generators.Vectors.Parsing.VectorOperation;
 
 using System.Collections.Generic;
-using System.Linq;
-using SharpMeasures.Generators.Vectors.Parsing.VectorOperation;
 
 internal sealed record class GroupMemberType : IVectorGroupMemberType
 {
@@ -61,10 +60,34 @@ internal sealed record class GroupMemberType : IVectorGroupMemberType
         UnitInstanceInclusions = unitInstanceInclusions.AsReadOnlyEquatable();
         UnitInstanceExclusions = unitInstanceExclusions.AsReadOnlyEquatable();
 
-        ConstantsByName = ConstructConstantsByNameDictionary();
-        ConstantsByMultiplesName = ConstructConstantsByMultiplesNameDictionary();
+        ConstantsByName = ConstructConstantsByNameDictionary().AsReadOnlyEquatable();
+        ConstantsByMultiplesName = ConstructConstantsByMultiplesNameDictionary().AsReadOnlyEquatable();
     }
 
-    private ReadOnlyEquatableDictionary<string, IVectorConstant> ConstructConstantsByNameDictionary() => Constants.ToDictionary(static (constant) => constant.Name, static (constant) => constant as IVectorConstant).AsReadOnlyEquatable();
-    private ReadOnlyEquatableDictionary<string, IVectorConstant> ConstructConstantsByMultiplesNameDictionary() => Constants.Where(static (constant) => constant.Multiples is not null).ToDictionary(static (constant) => constant.Multiples!, static (constant) => constant as IVectorConstant).AsReadOnlyEquatable();
+    private IReadOnlyDictionary<string, IVectorConstant> ConstructConstantsByNameDictionary()
+    {
+        Dictionary<string, IVectorConstant> constantsByName = new(Constants.Count);
+
+        foreach (var constant in Constants)
+        {
+            constantsByName.TryAdd(constant.Name, constant);
+        }
+
+        return constantsByName;
+    }
+
+    private IReadOnlyDictionary<string, IVectorConstant> ConstructConstantsByMultiplesNameDictionary()
+    {
+        Dictionary<string, IVectorConstant> constantsByMultiplesName = new(Constants.Count);
+
+        foreach (var constant in Constants)
+        {
+            if (constant.Multiples is not null)
+            {
+                constantsByMultiplesName.TryAdd(constant.Multiples, constant);
+            }
+        }
+
+        return constantsByMultiplesName;
+    }
 }

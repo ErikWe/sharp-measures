@@ -6,7 +6,6 @@ using SharpMeasures.Generators;
 using SharpMeasures.Generators.Attributes.Parsing;
 
 using System.Collections.Generic;
-using System.Linq;
 
 public sealed record class SymbolicQuantityOperationDefinition : ARawAttributeDefinition<SymbolicQuantityOperationDefinition, QuantityOperationLocations>
 {
@@ -31,6 +30,16 @@ public sealed record class SymbolicQuantityOperationDefinition : ARawAttributeDe
 
     public IEnumerable<INamedTypeSymbol> ForeignSymbols(string localAssemblyName, bool alreadyInForeignAssembly)
     {
-        return new[] { Result, Other }.Where((symbol) => symbol is not null && (alreadyInForeignAssembly || symbol.ContainingAssembly.Name != localAssemblyName)).Select(static (symbol) => symbol!);
+        if (isForeign(Result))
+        {
+            yield return Result!;
+        }
+
+        if (isForeign(Other))
+        {
+            yield return Other!;
+        }
+
+        bool isForeign(INamedTypeSymbol? symbol) => symbol is not null && (alreadyInForeignAssembly || symbol.ContainingAssembly.Name != localAssemblyName);
     }
 }

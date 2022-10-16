@@ -2,9 +2,9 @@
 
 using SharpMeasures.Equatables;
 using SharpMeasures.Generators.Quantities;
-using SharpMeasures.Generators.Quantities.Parsing.QuantityOperation;
 using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
 using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
+using SharpMeasures.Generators.Quantities.Parsing.QuantityOperation;
 using SharpMeasures.Generators.Quantities.Parsing.QuantityProcess;
 using SharpMeasures.Generators.Scalars.Parsing.ConvertibleScalar;
 using SharpMeasures.Generators.Scalars.Parsing.ExcludeUnitBases;
@@ -12,7 +12,6 @@ using SharpMeasures.Generators.Scalars.Parsing.IncludeUnitBases;
 using SharpMeasures.Generators.Scalars.Parsing.ScalarConstant;
 
 using System.Collections.Generic;
-using System.Linq;
 
 internal record class AScalarType<TDefinition> : IScalarType where TDefinition : IScalar
 {
@@ -67,10 +66,33 @@ internal record class AScalarType<TDefinition> : IScalarType where TDefinition :
         UnitInstanceInclusions = unitInstanceInclusions.AsReadOnlyEquatable();
         UnitInstanceExclusions = unitInstanceExclusions.AsReadOnlyEquatable();
 
-        ConstantsByName = ConstructConstantsByNameDictionary();
-        ConstantsByMultiplesName = ConstructConstantsByMultiplesNameDictionary();
+        ConstantsByName = ConstructConstantsByNameDictionary().AsReadOnlyEquatable();
+        ConstantsByMultiplesName = ConstructConstantsByMultiplesNameDictionary().AsReadOnlyEquatable();
     }
 
-    private ReadOnlyEquatableDictionary<string, IScalarConstant> ConstructConstantsByNameDictionary() => Constants.ToDictionary(static (constant) => constant.Name, static (constant) => constant as IScalarConstant).AsReadOnlyEquatable();
-    private ReadOnlyEquatableDictionary<string, IScalarConstant> ConstructConstantsByMultiplesNameDictionary() => Constants.Where(static (constant) => constant.Multiples is not null).ToDictionary(static (constant) => constant.Multiples!, static (constant) => constant as IScalarConstant).AsReadOnlyEquatable();
+    private IReadOnlyDictionary<string, IScalarConstant> ConstructConstantsByNameDictionary()
+    {
+        Dictionary<string, IScalarConstant> constantsByName = new(Constants.Count);
+
+        foreach (var constant in Constants)
+        {
+            constantsByName.TryAdd(constant.Name, constant);
+        }
+
+        return constantsByName;
+    }
+    private IReadOnlyDictionary<string, IScalarConstant> ConstructConstantsByMultiplesNameDictionary()
+    {
+        Dictionary<string, IScalarConstant> constantsByMultiplesName = new(Constants.Count);
+
+        foreach (var constant in Constants)
+        {
+            if (constant.Multiples is not null)
+            {
+                constantsByMultiplesName.TryAdd(constant.Multiples, constant);
+            }
+        }
+
+        return constantsByMultiplesName;
+    }
 }

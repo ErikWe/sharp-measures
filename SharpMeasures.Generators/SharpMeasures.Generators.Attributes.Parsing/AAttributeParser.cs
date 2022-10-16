@@ -12,6 +12,9 @@ public interface IAttributeParser<TDefinition>
     public abstract TDefinition? Parse(AttributeData attributeData);
     public abstract IEnumerable<TDefinition> Parse(IEnumerable<AttributeData> attributeData);
 
+    public abstract TDefinition? ParseFirstOccurrence(IEnumerable<AttributeData> attributeData);
+    public abstract IEnumerable<TDefinition> ParseAllOccurrences(IEnumerable<AttributeData> attributeData);
+
     public abstract TDefinition? ParseFirstOccurrence(INamedTypeSymbol typeSymbol);
     public abstract IEnumerable<TDefinition> ParseAllOccurrences(INamedTypeSymbol typeSymbol);
 }
@@ -71,11 +74,40 @@ public abstract class AAttributeParser<TDefinition, TLocations> : IAttributePars
 
     public IEnumerable<TDefinition> Parse(IEnumerable<AttributeData> attributeData)
     {
-        foreach (AttributeData data in attributeData)
+        foreach (var data in attributeData)
         {
             if (Parse(data) is TDefinition definition)
             {
                 yield return definition;
+            }
+        }
+    }
+
+    public TDefinition? ParseFirstOccurrence(IEnumerable<AttributeData> attributeData)
+    {
+        foreach (var data in attributeData)
+        {
+            if (data.AttributeClass?.ToDisplayString() == AttributeType.FullName)
+            {
+                return Parse(data);
+            }
+        }
+
+        return default;
+    }
+
+    public IEnumerable<TDefinition> ParseAllOccurrences(IEnumerable<AttributeData> attributeData)
+    {
+        return Parse(relevantAttributeData());
+
+        IEnumerable<AttributeData> relevantAttributeData()
+        {
+            foreach (var data in attributeData)
+            {
+                if (data.AttributeClass?.ToDisplayString() == AttributeType.FullName)
+                {
+                    yield return data;
+                }
             }
         }
     }

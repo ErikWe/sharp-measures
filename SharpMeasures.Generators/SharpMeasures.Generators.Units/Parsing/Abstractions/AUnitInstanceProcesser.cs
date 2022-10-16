@@ -70,7 +70,7 @@ internal abstract class AUnitInstanceProcesser<TContext, TDefinition, TLocations
 
     private IValidityWithDiagnostics ValidateUnitInstanceNameNotEmpty(TContext context, TDefinition definition)
     {
-        return ValidityWithDiagnostics.Conditional(definition.Name!.Length is not 0, () => Diagnostics.EmptyUnitInstanceName(context, definition));
+        return ValidityWithDiagnostics.Conditional(definition.Name!.Length > 0, () => Diagnostics.EmptyUnitInstanceName(context, definition));
     }
 
     private IValidityWithDiagnostics ValidateUnitInstanceNameNotDuplicate(TContext context, TDefinition definition)
@@ -99,7 +99,7 @@ internal abstract class AUnitInstanceProcesser<TContext, TDefinition, TLocations
 
     private IValidityWithDiagnostics ValidateUnitInstancePluralFormNotEmpty(TContext context, TDefinition definition)
     {
-        return ValidityWithDiagnostics.Conditional(definition.PluralForm!.Length is not 0, () => Diagnostics.EmptyUnitInstancePluralForm(context, definition));
+        return ValidityWithDiagnostics.Conditional(definition.PluralForm!.Length > 0, () => Diagnostics.EmptyUnitInstancePluralForm(context, definition));
     }
 
     private static string? InterpretUnitInstancePluralForm(TDefinition definition)

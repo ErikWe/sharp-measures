@@ -4,19 +4,19 @@ using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Quantities;
-using SharpMeasures.Generators.Quantities.Parsing.QuantityOperation;
 using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
 using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
+using SharpMeasures.Generators.Quantities.Parsing.QuantityOperation;
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 using SharpMeasures.Generators.Vectors.Abstraction;
 using SharpMeasures.Generators.Vectors.Parsing.ConvertibleVector;
+using SharpMeasures.Generators.Vectors.Parsing.VectorOperation;
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using SharpMeasures.Generators.Vectors.Parsing.VectorOperation;
 
 internal abstract class AGroupValidator<TGroup, TDefinition>
     where TGroup : AGroupType<TDefinition>
@@ -63,7 +63,12 @@ internal abstract class AGroupValidator<TGroup, TDefinition>
             return group.AsEmptyOptional<TGroup>();
         }
 
-        var dimensions = groupMembers.GroupMembersByDimension.Keys.ToList();
+        List<int> dimensions = new(groupMembers.GroupMembersByDimension.Count);
+
+        foreach (var groupMember in groupMembers.GroupMembersByDimension)
+        {
+            dimensions.Add(groupMember.Key);
+        }
 
         var inheritedUnitInstances = GetUnitInstanceInclusions(groupType, vectorPopulation, unit.UnitInstancesByName.Values, unit, static (vector) => vector.Definition.InheritUnits, onlyInherited: true);
         var inheritedUnitInstanceNames = new HashSet<string>(inheritedUnitInstances.Select(static (unit) => unit.Name));

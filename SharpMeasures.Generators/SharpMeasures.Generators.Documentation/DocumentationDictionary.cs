@@ -9,4 +9,6 @@ public sealed class DocumentationDictionary : ReadOnlyEquatableDictionary<string
     new public static DocumentationDictionary Empty => new(new Dictionary<string, DocumentationFile>());
 
     public DocumentationDictionary(IReadOnlyDictionary<string, DocumentationFile> dictionary) : base(dictionary) { }
+    public DocumentationDictionary(IDictionary<string, DocumentationFile> dictionary) : base(dictionary) { }
+    public DocumentationDictionary(Dictionary<string, DocumentationFile> dictionary) : base(dictionary) { }
 }

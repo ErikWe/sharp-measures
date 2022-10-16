@@ -2,7 +2,6 @@
 
 using Microsoft.CodeAnalysis;
 
-using System.Linq;
 using System.Threading;
 
 internal static class VectorConversionsGenerator

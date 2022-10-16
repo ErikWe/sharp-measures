@@ -152,7 +152,7 @@ internal sealed class GroupMemberValidator
 
         void modify(IReadOnlyList<IUnitInstanceList> inclusions, IReadOnlyList<IUnitInstanceList> exclusions)
         {
-            if (inclusions.Any())
+            if (inclusions.Count > 0)
             {
                 includedUnits.IntersectWith(listUnits(inclusions));
 

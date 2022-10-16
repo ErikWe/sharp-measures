@@ -2,7 +2,9 @@
 
 using Microsoft.CodeAnalysis;
 
-using System.Linq;
+using SharpMeasures.Generators.Quantities;
+
+using System.Collections.Generic;
 using System.Threading;
 
 internal static class VectorProcessesGenerator
@@ -21,6 +23,18 @@ internal static class VectorProcessesGenerator
             return new Optional<DataModel>();
         }
 
-        return new DataModel(model.Value.Vector.Type, model.Value.Vector.Processes.Concat(model.Value.Vector.InheritedProcesses).ToList(), model.Value.SourceBuildingContext);
+        List<IQuantityProcess> processes = new(model.Value.Vector.Processes.Count + model.Value.Vector.InheritedProcesses.Count);
+
+        foreach (var process in model.Value.Vector.Processes)
+        {
+            processes.Add(process);
+        }
+
+        foreach (var process in model.Value.Vector.InheritedProcesses)
+        {
+            processes.Add(process);
+        }
+
+        return new DataModel(model.Value.Vector.Type, processes, model.Value.SourceBuildingContext);
     }
 }

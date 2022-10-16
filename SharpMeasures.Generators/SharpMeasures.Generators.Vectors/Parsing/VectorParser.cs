@@ -10,7 +10,6 @@ using SharpMeasures.Generators.Vectors.Parsing.Diagnostics;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Linq;
 using System.Threading;
 
 public static class VectorParser
@@ -52,12 +51,12 @@ public static class VectorParser
         var vectorBaseForeignSymbols = vectorBasesAndForeignSymbols.Select(ExtractForeignSymbols).Collect();
         var vectorSpecializationForeignSymbols = vectorSpecializationsAndForeignSymbols.Select(ExtractForeignSymbols).Collect();
 
-        groupBasesAndForeignSymbols.Select(ExtractSymbol).Select(CreateTypeAlreadyDefinedAsGroupDiagnostics).ReportDiagnostics(context);
-        groupSpecializationsAndForeignSymbols.Select(ExtractSymbol).Select(CreateTypeAlreadyDefinedAsSpecializedGroupDiagnostics).ReportDiagnostics(context);
-        groupMembersAndForeignSymbols.Select(ExtractSymbol).Select(CreateTypeAlreadyDefinedAsGroupMemberDiagnostics).ReportDiagnostics(context);
+        groupBasesAndForeignSymbols.Select(CreateTypeAlreadyDefinedAsGroupDiagnostics).ReportDiagnostics(context);
+        groupSpecializationsAndForeignSymbols.Select(CreateTypeAlreadyDefinedAsSpecializedGroupDiagnostics).ReportDiagnostics(context);
+        groupMembersAndForeignSymbols.Select(CreateTypeAlreadyDefinedAsGroupMemberDiagnostics).ReportDiagnostics(context);
 
-        vectorBasesAndForeignSymbols.Select(ExtractSymbol).Select(CreateTypeAlreadyDefinedAsVectorDiagnostics).ReportDiagnostics(context);
-        vectorSpecializationsAndForeignSymbols.Select(ExtractSymbol).Select(CreateTypeAlreadyDefinedAsSpecializedVectorDiagnostics).ReportDiagnostics(context);
+        vectorBasesAndForeignSymbols.Select(CreateTypeAlreadyDefinedAsVectorDiagnostics).ReportDiagnostics(context);
+        vectorSpecializationsAndForeignSymbols.Select(CreateTypeAlreadyDefinedAsSpecializedVectorDiagnostics).ReportDiagnostics(context);
 
         var foreignSymbols = groupBaseForeignSymbols.Concat(groupSpecializationForeignSymbols).Concat(groupMemberForeignSymbols).Concat(vectorBaseForeignSymbols).Concat(vectorSpecializationForeignSymbols).Expand();
 
@@ -85,132 +84,106 @@ public static class VectorParser
         return data.Value.Declaration;
     }
 
-    private static Optional<Diagnostic> CreateTypeAlreadyDefinedAsVectorDiagnostics(Optional<INamedTypeSymbol> typeSymbol, CancellationToken token)
+    private static Dictionary<string, Func<AttributeData, DefinedType, Diagnostic>> GroupConflictingSharpMeasuresTypes { get; } = new()
     {
-        if (token.IsCancellationRequested || typeSymbol.HasValue is false)
-        {
-            return new Optional<Diagnostic>();
-        }
+        { typeof(SpecializedVectorGroupAttribute).FullName, GroupTypeDiagnostics.SpecializedVectorGroupTypeAlreadyVectorGroup }
+    };
 
-        return CreateTypeAlreadyDefinedAsVectorDiagnostics(typeSymbol.Value, specializedVector: false);
-    }
-
-    private static Optional<Diagnostic> CreateTypeAlreadyDefinedAsSpecializedVectorDiagnostics(Optional<INamedTypeSymbol> typeSymbol, CancellationToken token)
+    private static Dictionary<string, Func<AttributeData, DefinedType, Diagnostic>> SpecializedGroupConflictingSharpMeasuresTypes { get; } = new()
     {
-        if (token.IsCancellationRequested || typeSymbol.HasValue is false)
-        {
-            return new Optional<Diagnostic>();
-        }
+        { typeof(VectorGroupAttribute).FullName, GroupTypeDiagnostics.VectorGroupTypeAlreadyVectorGroup }
+    };
 
-        return CreateTypeAlreadyDefinedAsVectorDiagnostics(typeSymbol.Value, specializedVector: true);
-    }
-
-    private static Optional<Diagnostic> CreateTypeAlreadyDefinedAsVectorDiagnostics(INamedTypeSymbol typeSymbol, bool specializedVector)
+    private static Dictionary<string, Func<AttributeData, DefinedType, Diagnostic>> GroupMemberConflictingSharpMeasuresTypes { get; } = new()
     {
-        if (typeSymbol.GetAttributeOfType<UnitAttribute>() is AttributeData unitAttribute)
-        {
-            return VectorTypeDiagnostics.UnitTypeAlreadyVector(unitAttribute, typeSymbol);
-        }
+        { typeof(UnitAttribute).FullName, GroupMemberTypeDiagnostics.UnitTypeAlreadyGroupMember },
+        { typeof(ScalarQuantityAttribute).FullName, GroupMemberTypeDiagnostics.ScalarTypeAlreadyGroupMember },
+        { typeof(SpecializedScalarQuantityAttribute).FullName, GroupMemberTypeDiagnostics.SpecializedScalarTypeAlreadyGroupMember },
+        { typeof(VectorQuantityAttribute).FullName, GroupMemberTypeDiagnostics.VectorTypeAlreadyGroupMember },
+        { typeof(SpecializedVectorQuantityAttribute).FullName, GroupMemberTypeDiagnostics.SpecializedVectorTypeAlreadyGroupMember }
+    };
 
-        if (typeSymbol.GetAttributeOfType<ScalarQuantityAttribute>() is AttributeData scalarAttribute)
-        {
-            return VectorTypeDiagnostics.ScalarTypeAlreadyVector(scalarAttribute, typeSymbol);
-        }
+    private static Dictionary<string, Func<AttributeData, DefinedType, Diagnostic>> VectorConflictingSharpMeasuresTypes { get; } = new()
+    {
+        { typeof(UnitAttribute).FullName, VectorTypeDiagnostics.UnitTypeAlreadyVector },
+        { typeof(ScalarQuantityAttribute).FullName, VectorTypeDiagnostics.ScalarTypeAlreadyVector },
+        { typeof(SpecializedScalarQuantityAttribute).FullName, VectorTypeDiagnostics.SpecializedScalarTypeAlreadyVector },
+        { typeof(SpecializedVectorQuantityAttribute).FullName, VectorTypeDiagnostics.SpecializedVectorTypeAlreadyVector },
+        { typeof(VectorGroupMemberAttribute).FullName, VectorTypeDiagnostics.VectorGroupMemberTypeAlreadyVector }
+    };
 
-        if (typeSymbol.GetAttributeOfType<SpecializedScalarQuantityAttribute>() is AttributeData specializedScalarAttribute)
-        {
-            return VectorTypeDiagnostics.SpecializedScalarTypeAlreadyVector(specializedScalarAttribute, typeSymbol);
-        }
+    private static Dictionary<string, Func<AttributeData, DefinedType, Diagnostic>> SpecializedVectorConflictingSharpMeasuresTypes { get; } = new()
+    {
+        { typeof(UnitAttribute).FullName, VectorTypeDiagnostics.UnitTypeAlreadyVector },
+        { typeof(ScalarQuantityAttribute).FullName, VectorTypeDiagnostics.ScalarTypeAlreadyVector },
+        { typeof(SpecializedScalarQuantityAttribute).FullName, VectorTypeDiagnostics.SpecializedScalarTypeAlreadyVector },
+        { typeof(VectorQuantityAttribute).FullName, VectorTypeDiagnostics.VectorTypeAlreadyVector },
+        { typeof(VectorGroupMemberAttribute).FullName, VectorTypeDiagnostics.VectorGroupMemberTypeAlreadyVector }
+    };
 
-        if (specializedVector && typeSymbol.GetAttributeOfType<VectorQuantityAttribute>() is AttributeData vectorAttribute)
+    private static Optional<Diagnostic> CreateTypeAlreadyDefinedDiagnostics(IEnumerable<AttributeData> attributeData, DefinedType type, IReadOnlyDictionary<string, Func<AttributeData, DefinedType, Diagnostic>> diagnosticsDictionary)
+    {
+        foreach (var data in attributeData)
         {
-            return VectorTypeDiagnostics.VectorTypeAlreadyVector(vectorAttribute, typeSymbol);
-        }
-
-        if (specializedVector is false && typeSymbol.GetAttributeOfType<SpecializedVectorQuantityAttribute>() is AttributeData specializedVectorAttribute)
-        {
-            return VectorTypeDiagnostics.VectorTypeAlreadyVector(specializedVectorAttribute, typeSymbol);
-        }
-
-        if (typeSymbol.GetAttributeOfType<VectorGroupMemberAttribute>() is AttributeData vectorGroupMemberAttribute)
-        {
-            return VectorTypeDiagnostics.VectorGroupMemberTypeAlreadyVector(vectorGroupMemberAttribute, typeSymbol);
+            if (data.AttributeClass?.ToDisplayString() is string attributeType && diagnosticsDictionary.TryGetValue(attributeType, out var diagnosticsDelegate))
+            {
+                return diagnosticsDelegate(data, type);
+            }
         }
 
         return new Optional<Diagnostic>();
     }
 
-    private static Optional<Diagnostic> CreateTypeAlreadyDefinedAsGroupDiagnostics(Optional<INamedTypeSymbol> typeSymbol, CancellationToken token)
+    private static Optional<Diagnostic> CreateTypeAlreadyDefinedAsGroupDiagnostics<T>(Optional<(IEnumerable<AttributeData> AttributeData, RawGroupBaseType Definition, T)> input, CancellationToken token)
     {
-        if (token.IsCancellationRequested || typeSymbol.HasValue is false)
+        if (token.IsCancellationRequested || input.HasValue is false)
         {
             return new Optional<Diagnostic>();
         }
 
-        return CreateTypeAlreadyDefinedAsGroupDiagnostics(typeSymbol.Value, specializedGroup: false);
+        return CreateTypeAlreadyDefinedDiagnostics(input.Value.AttributeData, input.Value.Definition.Type, GroupConflictingSharpMeasuresTypes);
     }
 
-    private static Optional<Diagnostic> CreateTypeAlreadyDefinedAsSpecializedGroupDiagnostics(Optional<INamedTypeSymbol> typeSymbol, CancellationToken token)
+    private static Optional<Diagnostic> CreateTypeAlreadyDefinedAsSpecializedGroupDiagnostics<T>(Optional<(IEnumerable<AttributeData> AttributeData, RawGroupSpecializationType Definition, T)> input, CancellationToken token)
     {
-        if (token.IsCancellationRequested || typeSymbol.HasValue is false)
+        if (token.IsCancellationRequested || input.HasValue is false)
         {
             return new Optional<Diagnostic>();
         }
 
-        return CreateTypeAlreadyDefinedAsGroupDiagnostics(typeSymbol.Value, specializedGroup: true);
+        return CreateTypeAlreadyDefinedDiagnostics(input.Value.AttributeData, input.Value.Definition.Type, SpecializedGroupConflictingSharpMeasuresTypes);
     }
 
-    private static Optional<Diagnostic> CreateTypeAlreadyDefinedAsGroupDiagnostics(INamedTypeSymbol typeSymbol, bool specializedGroup)
+    private static Optional<Diagnostic> CreateTypeAlreadyDefinedAsGroupMemberDiagnostics<T>(Optional<(IEnumerable<AttributeData> AttributeData, RawGroupMemberType Definition, T)> input, CancellationToken token)
     {
-        if (specializedGroup && typeSymbol.GetAttributeOfType<VectorGroupAttribute>() is AttributeData vectorGroupAttribute)
-        {
-            return GroupTypeDiagnostics.VectorGroupTypeAlreadyVectorGroup(vectorGroupAttribute, typeSymbol);
-        }
-
-        if (specializedGroup is false && typeSymbol.GetAttributeOfType<SpecializedVectorGroupAttribute>() is AttributeData specializedVectorGroupAttribute)
-        {
-            return GroupTypeDiagnostics.VectorGroupTypeAlreadyVectorGroup(specializedVectorGroupAttribute, typeSymbol);
-        }
-
-        return new Optional<Diagnostic>();
-    }
-
-    private static Optional<Diagnostic> CreateTypeAlreadyDefinedAsGroupMemberDiagnostics(Optional<INamedTypeSymbol> typeSymbol, CancellationToken token)
-    {
-        if (token.IsCancellationRequested || typeSymbol.HasValue is false)
+        if (token.IsCancellationRequested || input.HasValue is false)
         {
             return new Optional<Diagnostic>();
         }
 
-        if (typeSymbol.Value.GetAttributeOfType<UnitAttribute>() is AttributeData unitAttribute)
-        {
-            return GroupMemberTypeDiagnostics.UnitTypeAlreadyGroupMember(unitAttribute, typeSymbol.Value);
-        }
-
-        if (typeSymbol.Value.GetAttributeOfType<ScalarQuantityAttribute>() is AttributeData scalarAttribute)
-        {
-            return GroupMemberTypeDiagnostics.ScalarTypeAlreadyGroupMember(scalarAttribute, typeSymbol.Value);
-        }
-
-        if (typeSymbol.Value.GetAttributeOfType<SpecializedScalarQuantityAttribute>() is AttributeData specializedScalarAttribute)
-        {
-            return GroupMemberTypeDiagnostics.SpecializedScalarTypeAlreadyGroupMember(specializedScalarAttribute, typeSymbol.Value);
-        }
-
-        if (typeSymbol.Value.GetAttributeOfType<VectorQuantityAttribute>() is AttributeData vectorAttribute)
-        {
-            return GroupMemberTypeDiagnostics.VectorTypeAlreadyGroupMember(vectorAttribute, typeSymbol.Value);
-        }
-
-        if (typeSymbol.Value.GetAttributeOfType<SpecializedVectorQuantityAttribute>() is AttributeData specializedVectorAttribute)
-        {
-            return GroupMemberTypeDiagnostics.VectorTypeAlreadyGroupMember(specializedVectorAttribute, typeSymbol.Value);
-        }
-
-        return new Optional<Diagnostic>();
+        return CreateTypeAlreadyDefinedDiagnostics(input.Value.AttributeData, input.Value.Definition.Type, GroupMemberConflictingSharpMeasuresTypes);
     }
 
-    private static Optional<INamedTypeSymbol> ExtractSymbol<T1, T2>(Optional<(INamedTypeSymbol Symbol, T1, T2)> input, CancellationToken _) => input.HasValue ? new Optional<INamedTypeSymbol>(input.Value.Symbol) : new Optional<INamedTypeSymbol>();
+    private static Optional<Diagnostic> CreateTypeAlreadyDefinedAsVectorDiagnostics<T>(Optional<(IEnumerable<AttributeData> AttributeData, RawVectorBaseType Definition, T)> input, CancellationToken token)
+    {
+        if (token.IsCancellationRequested || input.HasValue is false)
+        {
+            return new Optional<Diagnostic>();
+        }
+
+        return CreateTypeAlreadyDefinedDiagnostics(input.Value.AttributeData, input.Value.Definition.Type, VectorConflictingSharpMeasuresTypes);
+    }
+
+    private static Optional<Diagnostic> CreateTypeAlreadyDefinedAsSpecializedVectorDiagnostics<T>(Optional<(IEnumerable<AttributeData> AttributeData, RawVectorSpecializationType Definition, T)> input, CancellationToken token)
+    {
+        if (token.IsCancellationRequested || input.HasValue is false)
+        {
+            return new Optional<Diagnostic>();
+        }
+
+        return CreateTypeAlreadyDefinedDiagnostics(input.Value.AttributeData, input.Value.Definition.Type, SpecializedVectorConflictingSharpMeasuresTypes);
+    }
+
     private static Optional<TDefinition> ExtractDefinition<TDefinition, T1, T2>(Optional<(T1, TDefinition Definition, T2)> input, CancellationToken _) => input.HasValue ? input.Value.Definition : new Optional<TDefinition>();
     private static IEnumerable<INamedTypeSymbol> ExtractForeignSymbols<T1, T2>(Optional<(T1, T2, IEnumerable<INamedTypeSymbol> ForeignSymbols)> input, CancellationToken _) => input.HasValue ? input.Value.ForeignSymbols : Array.Empty<INamedTypeSymbol>();
 

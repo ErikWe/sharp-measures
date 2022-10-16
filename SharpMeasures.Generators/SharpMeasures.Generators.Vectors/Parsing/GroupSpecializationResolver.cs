@@ -115,7 +115,7 @@ internal static class GroupSpecializationResolver
 
         void modify(IVectorGroupType vector)
         {
-            if (vector.UnitInstanceInclusions.Any())
+            if (vector.UnitInstanceInclusions.Count > 0)
             {
                 includedUnits.IntersectWith(vector.UnitInstanceInclusions.SelectMany(static (unitList) => unitList.UnitInstances));
 

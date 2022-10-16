@@ -24,8 +24,14 @@ public class ReadOnlyEquatableDictionary<TKey, TValue> : IReadOnlyDictionary<TKe
         Items = items;
     }
 
-    public bool TryGetValue(TKey key, out TValue value) => Items.TryGetValue(key, out value);
+    public ReadOnlyEquatableDictionary(IDictionary<TKey, TValue> items)
+    {
+        Items = new ReadOnlyWrappedDictionary<TKey, TValue>(items);
+    }
 
+    public ReadOnlyEquatableDictionary(Dictionary<TKey, TValue> items) : this((IReadOnlyDictionary<TKey, TValue>)items) { }
+
+    public bool TryGetValue(TKey key, out TValue value) => Items.TryGetValue(key, out value);
     public bool ContainsKey(TKey key) => Items.ContainsKey(key);
 
     public virtual bool Equals(ReadOnlyEquatableDictionary<TKey, TValue>? other) => other is not null && Items.OrderIndependentSequenceEquals(other.Items);

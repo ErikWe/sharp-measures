@@ -65,6 +65,6 @@ internal sealed class ScaledUnitInstanceProcesser : AModifiedUnitInstanceProcess
 
     private IValidityWithDiagnostics ValidateExpressionNotEmpty(IUnitInstanceProcessingContext context, RawScaledUnitInstanceDefinition definition)
     {
-        return ValidityWithDiagnostics.Conditional(definition.Expression!.Length is not 0, () => Diagnostics.EmptyExpression(context, definition));
+        return ValidityWithDiagnostics.Conditional(definition.Expression!.Length > 0, () => Diagnostics.EmptyExpression(context, definition));
     }
 }

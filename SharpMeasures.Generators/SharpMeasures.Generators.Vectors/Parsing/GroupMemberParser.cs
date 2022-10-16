@@ -23,9 +23,9 @@ internal sealed class GroupMemberParser : AVectorParser<RawSharpMeasuresVectorGr
         return new(type, definition, operations, vectorOperations, processes, constants, conversions, unitInstanceInclusions, unitInstanceExclusions);
     }
 
-    protected override (Optional<RawSharpMeasuresVectorGroupMemberDefinition>, IEnumerable<INamedTypeSymbol>) ParseVector(INamedTypeSymbol typeSymbol)
+    protected override (Optional<RawSharpMeasuresVectorGroupMemberDefinition>, IEnumerable<INamedTypeSymbol>) ParseVector(INamedTypeSymbol typeSymbol, IEnumerable<AttributeData> attributes)
     {
-        if (SharpMeasuresVectorGroupMemberParser.Parser.ParseFirstOccurrence(typeSymbol) is not SymbolicSharpMeasuresVectorGroupMemberDefinition symbolicVector)
+        if (SharpMeasuresVectorGroupMemberParser.Parser.ParseFirstOccurrence(attributes) is not SymbolicSharpMeasuresVectorGroupMemberDefinition symbolicVector)
         {
             return (new Optional<RawSharpMeasuresVectorGroupMemberDefinition>(), Array.Empty<INamedTypeSymbol>());
         }

@@ -5,9 +5,7 @@ using Microsoft.CodeAnalysis;
 using SharpMeasures.Equatables;
 using SharpMeasures.Generators.Attributes.Parsing;
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
 
 internal sealed record class SymbolicDerivableUnitDefinition : ARawAttributeDefinition<SymbolicDerivableUnitDefinition, DerivableUnitLocations>
 {
@@ -33,9 +31,15 @@ internal sealed record class SymbolicDerivableUnitDefinition : ARawAttributeDefi
     {
         if (Signature is null)
         {
-            return Array.Empty<INamedTypeSymbol>();
+            yield break;
         }
 
-        return Signature.Where((symbol) => symbol is not null && (alreadyInForeignAssembly || symbol.ContainingAssembly.Name != localAssemblyName)).Select(static (symbol) => symbol!);
+        foreach (var symbol in Signature)
+        {
+            if (symbol is not null && (alreadyInForeignAssembly || symbol.ContainingAssembly.Name != localAssemblyName))
+            {
+                yield return symbol;
+            }
+        }
     }
 }

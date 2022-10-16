@@ -8,7 +8,6 @@ using SharpMeasures.Generators.Vectors.ForeignVectorParsing;
 
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Linq;
 using System.Threading;
 
 internal sealed class ForeignTypeParser
@@ -64,9 +63,20 @@ internal sealed class ForeignTypeParser
 
             ParsedTypes.Add(foreignSymbol);
 
-            if (ParseUnit(foreignSymbol)) continue;
-            if (ParseScalar(foreignSymbol)) continue;
-            if (ParseVector(foreignSymbol)) continue;
+            if (ParseUnit(foreignSymbol))
+            {
+                continue;
+            }
+
+            if (ParseScalar(foreignSymbol))
+            {
+                continue;
+            }
+
+            if (ParseVector(foreignSymbol))
+            {
+                continue;
+            }
         }
 
         if (ForeignSymbols.Count > 0)

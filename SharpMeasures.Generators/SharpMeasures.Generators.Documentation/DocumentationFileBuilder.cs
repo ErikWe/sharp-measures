@@ -15,7 +15,12 @@ internal sealed class DocumentationFileBuilder
 {
     public static IResultWithDiagnostics<DocumentationDictionary> Build(IEnumerable<Optional<AdditionalText>> relevantFiles, IDiagnosticsStrategy diagnosticsStrategy, GlobalAnalyzerConfig configuration)
     {
-        Dictionary<string, DocumentationFileBuilder> builders = createBuilders().ToDictionary(static (builder) => builder.Name);
+        Dictionary<string, DocumentationFileBuilder> builders = new();
+
+        foreach (var builder in createBuilders())
+        {
+            builders.TryAdd(builder.Name, builder);
+        }
 
         foreach (DocumentationFileBuilder builder in builders.Values)
         {
@@ -49,7 +54,7 @@ internal sealed class DocumentationFileBuilder
             }
         }
 
-        DocumentationDictionary dictionary = new(builders.Values.ToDictionary(static (file) => file.Name, (file) => file.Finalize()));
+        DocumentationDictionary dictionary = new(builders.Transform(static (builder) => builder.Finalize()));
         IEnumerable<Diagnostic> diagnostics = builders.Values.SelectMany(static (file) => file.Diagnostics);
 
         return ResultWithDiagnostics.Construct(dictionary, diagnostics);
@@ -227,11 +232,11 @@ internal sealed class DocumentationFileBuilder
         {
             if (match.Groups["dependency"].Value == dependency)
             {
-                var line = FileText.ToString().Take(match.Index).Count(static (character) => character is '\n');
+                var line = FileText.ToString().Substring(0, match.Index).Count(static (character) => character is '\n');
 
                 if (line is 0)
                 {
-                    line = FileText.ToString().Take(match.Index).Count(static (character) => character is '\r');
+                    line = FileText.ToString().Substring(0, match.Index).Count(static (character) => character is '\r');
                 }
 
                 HasReportedOneUnresolvedDependency = true;

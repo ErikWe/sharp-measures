@@ -29,7 +29,7 @@ public readonly record struct NamedType(string Name, string Namespace, string As
 
         string containingNamespace = GetNamespace(symbol.ContainingNamespace);
 
-        if (containingNamespace.Length is not 0)
+        if (containingNamespace.Length > 0)
         {
             return $"{containingNamespace}.{symbol.ContainingNamespace.Name}";
         }

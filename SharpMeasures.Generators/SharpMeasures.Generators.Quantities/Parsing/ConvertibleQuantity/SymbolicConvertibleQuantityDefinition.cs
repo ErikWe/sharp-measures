@@ -4,9 +4,7 @@ using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Attributes.Parsing.ItemLists;
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
 
 public sealed record class SymbolicConvertibleQuantityDefinition : ARawItemListDefinition<INamedTypeSymbol?, SymbolicConvertibleQuantityDefinition, ConvertibleQuantityLocations>
 {
@@ -23,11 +21,12 @@ public sealed record class SymbolicConvertibleQuantityDefinition : ARawItemListD
 
     public IEnumerable<INamedTypeSymbol> ForeignSymbols(string localAssemblyName, bool alreadyInForeignAssembly)
     {
-        if (Quantities is null)
+        foreach (var symbol in Quantities)
         {
-            return Array.Empty<INamedTypeSymbol>();
+            if (symbol is not null && (alreadyInForeignAssembly || symbol.ContainingAssembly.Name != localAssemblyName))
+            {
+                yield return symbol;
+            }
         }
-
-        return Quantities.Where((symbol) => symbol is not null && (alreadyInForeignAssembly || symbol.ContainingAssembly.Name != localAssemblyName)).Select(static (symbol) => symbol!);
     }
 }

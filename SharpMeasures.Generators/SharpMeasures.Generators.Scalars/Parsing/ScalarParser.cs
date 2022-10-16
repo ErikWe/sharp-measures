@@ -10,7 +10,6 @@ using SharpMeasures.Generators.Scalars.Parsing.Diagnostics;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Linq;
 using System.Threading;
 
 public static class ScalarParser
@@ -32,8 +31,8 @@ public static class ScalarParser
         var scalarBaseForeignSymbols = scalarBasesAndForeignSymbols.Select(ExtractForeignSymbols).Collect();
         var scalarSpecializationForeignSymbols = scalarSpecializationsAndForeignSymbols.Select(ExtractForeignSymbols).Collect();
 
-        scalarBasesAndForeignSymbols.Select(ExtractSymbol).Select(CreateTypeAlreadyDefinedAsScalarDiagnostics).ReportDiagnostics(context);
-        scalarSpecializationsAndForeignSymbols.Select(ExtractSymbol).Select(CreateTypeAlreadyDefinedAsSpecializedScalarDiagnostics).ReportDiagnostics(context);
+        scalarBasesAndForeignSymbols.Select(CreateTypeAlreadyDefinedAsScalarDiagnostics).ReportDiagnostics(context);
+        scalarSpecializationsAndForeignSymbols.Select(CreateTypeAlreadyDefinedAsSpecializedScalarDiagnostics).ReportDiagnostics(context);
 
         var foreignSymbols = scalarBaseForeignSymbols.Concat(scalarSpecializationForeignSymbols).Expand();
 
@@ -61,62 +60,57 @@ public static class ScalarParser
         return data.Value.Declaration;
     }
 
-    private static Optional<Diagnostic> CreateTypeAlreadyDefinedAsScalarDiagnostics(Optional<INamedTypeSymbol> typeSymbol, CancellationToken token)
+    private static Dictionary<string, Func<AttributeData, DefinedType, Diagnostic>> ScalarConflictingSharpMeasuresTypes { get; } = new()
     {
-        if (token.IsCancellationRequested || typeSymbol.HasValue is false)
-        {
-            return new Optional<Diagnostic>();
-        }
+        { typeof(UnitAttribute).FullName, ScalarTypeDiagnostics.UnitTypeAlreadyScalar },
+        { typeof(SpecializedScalarQuantityAttribute).FullName, ScalarTypeDiagnostics.SpecializedScalarTypeAlreadyScalar },
+        { typeof(VectorQuantityAttribute).FullName, ScalarTypeDiagnostics.VectorTypeAlreadyScalar },
+        { typeof(SpecializedVectorQuantityAttribute).FullName, ScalarTypeDiagnostics.SpecializedVectorTypeAlreadyScalar },
+        { typeof(VectorGroupMemberAttribute).FullName, ScalarTypeDiagnostics.VectorGroupMemberTypeAlreadyScalar }
+    };
 
-        return CreateTypeAlreadyDefinedAsScalarDiagnostics(typeSymbol.Value, specializedScalar: false);
-    }
-
-    private static Optional<Diagnostic> CreateTypeAlreadyDefinedAsSpecializedScalarDiagnostics(Optional<INamedTypeSymbol> typeSymbol, CancellationToken token)
+    private static Dictionary<string, Func<AttributeData, DefinedType, Diagnostic>> SpecializedScalarConflictingSharpMeasuresTypes { get; } = new()
     {
-        if (token.IsCancellationRequested || typeSymbol.HasValue is false)
-        {
-            return new Optional<Diagnostic>();
-        }
+        { typeof(UnitAttribute).FullName, ScalarTypeDiagnostics.UnitTypeAlreadyScalar },
+        { typeof(ScalarQuantityAttribute).FullName, ScalarTypeDiagnostics.ScalarTypeAlreadyScalar },
+        { typeof(VectorQuantityAttribute).FullName, ScalarTypeDiagnostics.VectorTypeAlreadyScalar },
+        { typeof(SpecializedVectorQuantityAttribute).FullName, ScalarTypeDiagnostics.SpecializedVectorTypeAlreadyScalar },
+        { typeof(VectorGroupMemberAttribute).FullName, ScalarTypeDiagnostics.VectorGroupMemberTypeAlreadyScalar }
+    };
 
-        return CreateTypeAlreadyDefinedAsScalarDiagnostics(typeSymbol.Value, specializedScalar: true);
-    }
-
-    private static Optional<Diagnostic> CreateTypeAlreadyDefinedAsScalarDiagnostics(INamedTypeSymbol typeSymbol, bool specializedScalar)
+    private static Optional<Diagnostic> CreateTypeAlreadyDefinedDiagnostics(IEnumerable<AttributeData> attributeData, DefinedType type, IReadOnlyDictionary<string, Func<AttributeData, DefinedType, Diagnostic>> diagnosticsDictionary)
     {
-        if (typeSymbol.GetAttributeOfType<UnitAttribute>() is AttributeData unitAttribute)
+        foreach (var data in attributeData)
         {
-            return ScalarTypeDiagnostics.UnitTypeAlreadyScalar(unitAttribute, typeSymbol);
-        }
-
-        if (specializedScalar && typeSymbol.GetAttributeOfType<ScalarQuantityAttribute>() is AttributeData scalarAttribute)
-        {
-            return ScalarTypeDiagnostics.ScalarTypeAlreadyScalar(scalarAttribute, typeSymbol);
-        }
-
-        if (specializedScalar is false && typeSymbol.GetAttributeOfType<SpecializedScalarQuantityAttribute>() is AttributeData specializedScalarAttribute)
-        {
-            return ScalarTypeDiagnostics.ScalarTypeAlreadyScalar(specializedScalarAttribute, typeSymbol);
-        }
-
-        if (typeSymbol.GetAttributeOfType<VectorQuantityAttribute>() is AttributeData vectorAttribute)
-        {
-            return ScalarTypeDiagnostics.VectorTypeAlreadyScalar(vectorAttribute, typeSymbol);
-        }
-
-        if (typeSymbol.GetAttributeOfType<SpecializedVectorQuantityAttribute>() is AttributeData specializedVectorAttribute)
-        {
-            return ScalarTypeDiagnostics.SpecializedVectorTypeAlreadyScalar(specializedVectorAttribute, typeSymbol);
-        }
-
-        if (typeSymbol.GetAttributeOfType<VectorGroupMemberAttribute>() is AttributeData vectorGroupMemberAttribute)
-        {
-            return ScalarTypeDiagnostics.VectorGroupMemberTypeAlreadyScalar(vectorGroupMemberAttribute, typeSymbol);
+            if (data.AttributeClass?.ToDisplayString() is string attributeType && diagnosticsDictionary.TryGetValue(attributeType, out var diagnosticsDelegate))
+            {
+                return diagnosticsDelegate(data, type);
+            }
         }
 
         return new Optional<Diagnostic>();
     }
 
-    private static Optional<INamedTypeSymbol> ExtractSymbol<T1, T2>(Optional<(INamedTypeSymbol Symbol, T1, T2)> input, CancellationToken _) => input.HasValue ? new Optional<INamedTypeSymbol>(input.Value.Symbol) : new Optional<INamedTypeSymbol>();
+    private static Optional<Diagnostic> CreateTypeAlreadyDefinedAsScalarDiagnostics<T>(Optional<(IEnumerable<AttributeData> AttributeData, RawScalarBaseType Definition, T)> input, CancellationToken token)
+    {
+        if (token.IsCancellationRequested || input.HasValue is false)
+        {
+            return new Optional<Diagnostic>();
+        }
+
+        return CreateTypeAlreadyDefinedDiagnostics(input.Value.AttributeData, input.Value.Definition.Type, ScalarConflictingSharpMeasuresTypes);
+    }
+
+    private static Optional<Diagnostic> CreateTypeAlreadyDefinedAsSpecializedScalarDiagnostics<T>(Optional<(IEnumerable<AttributeData> AttributeData, RawScalarSpecializationType Definition, T)> input, CancellationToken token)
+    {
+        if (token.IsCancellationRequested || input.HasValue is false)
+        {
+            return new Optional<Diagnostic>();
+        }
+
+        return CreateTypeAlreadyDefinedDiagnostics(input.Value.AttributeData, input.Value.Definition.Type, SpecializedScalarConflictingSharpMeasuresTypes);
+    }
+
     private static Optional<TScalar> ExtractDefinition<TScalar, T1, T2>(Optional<(T1, TScalar Definition, T2)> input, CancellationToken _) => input.HasValue ? input.Value.Definition : new Optional<TScalar>();
     private static IEnumerable<INamedTypeSymbol> ExtractForeignSymbols<T1, T2>(Optional<(T1, T2, IEnumerable<INamedTypeSymbol> ForeignSymbols)> input, CancellationToken _) => input.HasValue ? input.Value.ForeignSymbols : Array.Empty<INamedTypeSymbol>();
 

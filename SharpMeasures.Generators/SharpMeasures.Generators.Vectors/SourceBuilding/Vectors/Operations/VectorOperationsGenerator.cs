@@ -2,7 +2,9 @@
 
 using Microsoft.CodeAnalysis;
 
-using System.Linq;
+using SharpMeasures.Generators.Quantities;
+
+using System.Collections.Generic;
 using System.Threading;
 
 internal static class VectorOperationsGenerator
@@ -21,6 +23,29 @@ internal static class VectorOperationsGenerator
             return new Optional<DataModel>();
         }
 
-        return new DataModel(model.Value.Vector.Type, model.Value.Vector.Dimension, model.Value.Vector.Operations.Concat(model.Value.Vector.InheritedOperations).ToList(), model.Value.Vector.VectorOperations.Concat(model.Value.Vector.InheritedVectorOperations).ToList(), model.Value.ScalarPopulation, model.Value.VectorPopulation, model.Value.SourceBuildingContext);
+        List<IQuantityOperation> operations = new(model.Value.Vector.Operations.Count + model.Value.Vector.InheritedOperations.Count);
+        List<IVectorOperation> vectorOperations = new(model.Value.Vector.VectorOperations.Count + model.Value.Vector.InheritedVectorOperations.Count);
+
+        foreach (var operation in model.Value.Vector.Operations)
+        {
+            operations.Add(operation);
+        }
+
+        foreach (var operation in model.Value.Vector.InheritedOperations)
+        {
+            operations.Add(operation);
+        }
+
+        foreach (var operation in model.Value.Vector.VectorOperations)
+        {
+            vectorOperations.Add(operation);
+        }
+
+        foreach (var operation in model.Value.Vector.InheritedVectorOperations)
+        {
+            vectorOperations.Add(operation);
+        }
+
+        return new DataModel(model.Value.Vector.Type, model.Value.Vector.Dimension, operations, vectorOperations, model.Value.ScalarPopulation, model.Value.VectorPopulation, model.Value.SourceBuildingContext);
     }
 }

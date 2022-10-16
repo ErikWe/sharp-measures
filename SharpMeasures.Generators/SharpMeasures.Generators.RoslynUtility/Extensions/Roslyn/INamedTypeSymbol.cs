@@ -59,11 +59,6 @@ public static partial class RoslynUtilityExtensions
     public static IEnumerable<AttributeData> GetAttributesOfType(this INamedTypeSymbol typeSymbol, Type attributeType) => typeSymbol.GetAttributesOfName(attributeType.FullName);
     public static IEnumerable<AttributeData> GetAttributesOfName(this INamedTypeSymbol typeSymbol, string attributeName)
     {
-        if (attributeName is null)
-        {
-            yield break;
-        }
-
         foreach (AttributeData attributeData in typeSymbol.GetAttributes())
         {
             if (attributeData.AttributeClass?.ToDisplayString() == attributeName)
@@ -74,12 +69,7 @@ public static partial class RoslynUtilityExtensions
     }
 
     public static AttributeData? GetAttributeOfType<TAttribute>(this INamedTypeSymbol typeSymbol) => typeSymbol.GetAttributeOfType(typeof(TAttribute));
-
-    public static AttributeData? GetAttributeOfType(this INamedTypeSymbol typeSymbol, Type attributeType)
-    {
-        return typeSymbol.GetAttributeOfName(attributeType.FullName);
-    }
-
+    public static AttributeData? GetAttributeOfType(this INamedTypeSymbol typeSymbol, Type attributeType) => typeSymbol.GetAttributeOfName(attributeType.FullName);
     public static AttributeData? GetAttributeOfName(this INamedTypeSymbol typeSymbol, string attributeName)
     {
         foreach (AttributeData attributeData in typeSymbol.GetAttributesOfName(attributeName))

@@ -3,21 +3,21 @@
 using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Quantities.Parsing.ConvertibleQuantity;
-using SharpMeasures.Generators.Quantities.Parsing.QuantityOperation;
 using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
 using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
+using SharpMeasures.Generators.Quantities.Parsing.QuantityOperation;
 using SharpMeasures.Generators.Quantities.Parsing.QuantityProcess;
 using SharpMeasures.Generators.Vectors.Parsing.VectorConstant;
+using SharpMeasures.Generators.Vectors.Parsing.VectorOperation;
 
 using System.Collections.Generic;
 using System.Linq;
-using SharpMeasures.Generators.Vectors.Parsing.VectorOperation;
 
 internal static class CommonParsing
 {
-    public static (IEnumerable<RawQuantityOperationDefinition> Definitions, IEnumerable<INamedTypeSymbol> ForeignSymbols) ParseOperations(INamedTypeSymbol typeSymbol)
+    public static (IEnumerable<RawQuantityOperationDefinition> Definitions, IEnumerable<INamedTypeSymbol> ForeignSymbols) ParseOperations(INamedTypeSymbol typeSymbol, IEnumerable<AttributeData> attributes)
     {
-        var symbolicOperations = QuantityOperationParser.Parser.ParseAllOccurrences(typeSymbol);
+        var symbolicOperations = QuantityOperationParser.Parser.ParseAllOccurrences(attributes);
 
         var rawOperations = symbolicOperations.Select(static (symbolicOperation) => RawQuantityOperationDefinition.FromSymbolic(symbolicOperation));
         var foreignSymbols = symbolicOperations.SelectMany((symbolicOperation) => symbolicOperation.ForeignSymbols(typeSymbol.ContainingAssembly.Name, alreadyInForeignAssembly: false));
@@ -25,9 +25,9 @@ internal static class CommonParsing
         return (rawOperations, foreignSymbols);
     }
 
-    public static (IEnumerable<RawVectorOperationDefinition> Definitions, IEnumerable<INamedTypeSymbol> ForeignSymbols) ParseVectorOperations(INamedTypeSymbol typeSymbol)
+    public static (IEnumerable<RawVectorOperationDefinition> Definitions, IEnumerable<INamedTypeSymbol> ForeignSymbols) ParseVectorOperations(INamedTypeSymbol typeSymbol, IEnumerable<AttributeData> attributes)
     {
-        var symbolicOperations = VectorOperationParser.Parser.ParseAllOccurrences(typeSymbol);
+        var symbolicOperations = VectorOperationParser.Parser.ParseAllOccurrences(attributes);
 
         var rawOperations = symbolicOperations.Select(static (symbolicOperation) => RawVectorOperationDefinition.FromSymbolic(symbolicOperation));
         var foreignSymbols = symbolicOperations.SelectMany((symbolicOperation) => symbolicOperation.ForeignSymbols(typeSymbol.ContainingAssembly.Name, alreadyInForeignAssembly: false));
@@ -35,11 +35,11 @@ internal static class CommonParsing
         return (rawOperations, foreignSymbols);
     }
 
-    public static IEnumerable<RawQuantityProcessDefinition> ParseProcesses(INamedTypeSymbol typeSymbol) => QuantityProcessParser.Parser.ParseAllOccurrences(typeSymbol);
-    public static IEnumerable<RawVectorConstantDefinition> ParseConstants(INamedTypeSymbol typeSymbol) => VectorConstantParser.Parser.ParseAllOccurrences(typeSymbol);
-    public static (IEnumerable<RawConvertibleQuantityDefinition> Definitions, IEnumerable<INamedTypeSymbol> ForeignSymbols) ParseConversions(INamedTypeSymbol typeSymbol)
+    public static IEnumerable<RawQuantityProcessDefinition> ParseProcesses(IEnumerable<AttributeData> attributes) => QuantityProcessParser.Parser.ParseAllOccurrences(attributes);
+    public static IEnumerable<RawVectorConstantDefinition> ParseConstants(IEnumerable<AttributeData> attributes) => VectorConstantParser.Parser.ParseAllOccurrences(attributes);
+    public static (IEnumerable<RawConvertibleQuantityDefinition> Definitions, IEnumerable<INamedTypeSymbol> ForeignSymbols) ParseConversions(INamedTypeSymbol typeSymbol, IEnumerable<AttributeData> attributes)
     {
-        var symbolicConversions = ConvertibleQuantityParser.Parser.ParseAllOccurrences(typeSymbol);
+        var symbolicConversions = ConvertibleQuantityParser.Parser.ParseAllOccurrences(attributes);
 
         var rawConversions = symbolicConversions.Select(static (symbolicConversion) => RawConvertibleQuantityDefinition.FromSymbolic(symbolicConversion));
         var foreignSymbols = symbolicConversions.SelectMany((symbolicConversion) => symbolicConversion.ForeignSymbols(typeSymbol.ContainingAssembly.Name, alreadyInForeignAssembly: false));
@@ -47,6 +47,6 @@ internal static class CommonParsing
         return (rawConversions, foreignSymbols);
     }
 
-    public static IEnumerable<RawIncludeUnitsDefinition> ParseIncludeUnitInstances(INamedTypeSymbol typeSymbol) => IncludeUnitsParser.Parser.ParseAllOccurrences(typeSymbol);
-    public static IEnumerable<RawExcludeUnitsDefinition> ParseExcludeUnitInstances(INamedTypeSymbol typeSymbol) => ExcludeUnitsParser.Parser.ParseAllOccurrences(typeSymbol);
+    public static IEnumerable<RawIncludeUnitsDefinition> ParseIncludeUnitInstances(IEnumerable<AttributeData> attributes) => IncludeUnitsParser.Parser.ParseAllOccurrences(attributes);
+    public static IEnumerable<RawExcludeUnitsDefinition> ParseExcludeUnitInstances(IEnumerable<AttributeData> attributes) => ExcludeUnitsParser.Parser.ParseAllOccurrences(attributes);
 }

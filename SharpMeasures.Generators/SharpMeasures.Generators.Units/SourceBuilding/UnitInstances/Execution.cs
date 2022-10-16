@@ -126,7 +126,7 @@ internal static class Execution
                     return Data.DerivationsByID[derivedUnit.DerivationID];
                 }
 
-                return Data.DerivationsByID.Values.Single();
+                return Data.DerivationsByID.Values.First();
             }
         }
 

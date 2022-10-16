@@ -6,7 +6,6 @@ using SharpMeasures.Generators.Units;
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 internal sealed class DocumentationTags : IDocumentationStrategy, IEquatable<DocumentationTags>
@@ -140,9 +139,21 @@ internal sealed class DocumentationTags : IDocumentationStrategy, IEquatable<Doc
     {
         StringBuilder tag = new();
 
-        IterativeBuilding.AppendEnumerable(tag, signature.Select(static (signatureElement) => signatureElement.Name), "_");
+        IterativeBuilding.AppendEnumerable(tag, transformSignature(), "_");
 
         return tag.ToString();
+
+        IReadOnlyList<string> transformSignature()
+        {
+            List<string> transformedSignature = new(signature.Count);
+
+            foreach (var signatureComponent in signature)
+            {
+                transformedSignature.Add(signatureComponent.Name);
+            }
+
+            return transformedSignature;
+        }
     }
 
     public bool Equals(DocumentationTags? other) => other is not null;

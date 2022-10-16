@@ -4,7 +4,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 
 public class EquatableEnumerable<T> : IEnumerable<T>, IEquatable<EquatableEnumerable<T>>
 {
@@ -18,7 +17,32 @@ public class EquatableEnumerable<T> : IEnumerable<T>, IEquatable<EquatableEnumer
         Items = items;
     }
 
-    public virtual bool Equals(EquatableEnumerable<T>? other) => other is not null && Items.SequenceEqual(other.Items);
+    public virtual bool Equals(EquatableEnumerable<T>? other)
+    {
+        if (other is null)
+        {
+            return false;
+        }
+
+        IEnumerator<T> thisEnumerator = GetEnumerator();
+        IEnumerator<T> otherEnumerator = other.GetEnumerator();
+
+        while (thisEnumerator.MoveNext() && otherEnumerator.MoveNext())
+        {
+            if (thisEnumerator.Current is null && otherEnumerator.Current is not null || thisEnumerator.Current is not null && otherEnumerator.Current is null)
+            {
+                return false;
+            }
+
+            if (thisEnumerator.Current!.Equals(otherEnumerator.Current) is false)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public override bool Equals(object? obj) => obj is EquatableEnumerable<T> other && Equals(other);
 
     public static bool operator ==(EquatableEnumerable<T>? lhs, EquatableEnumerable<T>? rhs) => lhs?.Equals(rhs) ?? rhs is null;

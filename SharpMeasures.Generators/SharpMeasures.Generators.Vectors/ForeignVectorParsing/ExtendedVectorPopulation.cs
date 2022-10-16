@@ -4,7 +4,6 @@ using SharpMeasures.Equatables;
 using SharpMeasures.Generators.Quantities;
 
 using System.Collections.Generic;
-using System.Linq;
 
 internal sealed record class ExtendedVectorPopulation : IVectorPopulation
 {
@@ -17,8 +16,50 @@ internal sealed record class ExtendedVectorPopulation : IVectorPopulation
 
     public IReadOnlyDictionary<NamedType, IGroupPopulation> GroupMembersByGroup { get; }
 
-    IReadOnlyDictionary<NamedType, IQuantityBaseType> IQuantityPopulation.QuantityBases => GroupBases.Transform(static (vector) => vector as IQuantityBaseType) .Concat(VectorBases.Transform(static (vector) => vector as IQuantityBaseType)).ToDictionary().AsEquatable();
-    IReadOnlyDictionary<NamedType, IQuantityType> IQuantityPopulation.Quantities => Groups.Transform(static (vector) => vector as IQuantityType) .Concat(Vectors.Transform(static (vector) => vector as IQuantityType)).Concat(GroupMembers.Transform(static (vector) => vector as IQuantityType)).ToDictionary().AsEquatable();
+    IReadOnlyDictionary<NamedType, IQuantityBaseType> IQuantityPopulation.QuantityBases
+    {
+        get
+        {
+            Dictionary<NamedType, IQuantityBaseType> quantityBases = new(GroupBases.Count + VectorBases.Count);
+
+            foreach (var group in GroupBases)
+            {
+                quantityBases.Add(group.Key, group.Value);
+            }
+
+            foreach (var vector in VectorBases)
+            {
+                quantityBases.TryAdd(vector.Key, vector.Value);
+            }
+
+            return quantityBases;
+        }
+    }
+
+    IReadOnlyDictionary<NamedType, IQuantityType> IQuantityPopulation.Quantities
+    {
+        get
+        {
+            Dictionary<NamedType, IQuantityType> quantities = new(Groups.Count + Vectors.Count + GroupMembers.Count);
+
+            foreach (var group in Groups)
+            {
+                quantities.Add(group.Key, group.Value);
+            }
+
+            foreach (var vector in Vectors)
+            {
+                quantities.TryAdd(vector.Key, vector.Value);
+            }
+
+            foreach (var member in GroupMembers)
+            {
+                quantities.TryAdd(member.Key, member.Value);
+            }
+
+            return quantities;
+        }
+    }
 
     private ExtendedVectorPopulation(IReadOnlyDictionary<NamedType, IVectorGroupBaseType> groupBases, IReadOnlyDictionary<NamedType, IVectorGroupType> groups, IReadOnlyDictionary<NamedType, IVectorGroupMemberType> groupMembers,
         IReadOnlyDictionary<NamedType, IVectorBaseType> vectorBases, IReadOnlyDictionary<NamedType, IVectorType> vectors, IReadOnlyDictionary<NamedType, IGroupPopulation> groupMembersByGroup)
@@ -33,16 +74,16 @@ internal sealed record class ExtendedVectorPopulation : IVectorPopulation
         GroupMembersByGroup = groupMembersByGroup.AsReadOnlyEquatable();
     }
 
-    public static ExtendedVectorPopulation Build(IVectorPopulation originalPopulation, ForeignVectorProcessingResult processingResult)
+    public static ExtendedVectorPopulation Build(IVectorPopulation originalPopulation, ForeignVectorProcessingResult foreignPopulation)
     {
-        Dictionary<NamedType, IVectorGroupBaseType> groupBasePopulation = new(originalPopulation.GroupBases.Count + processingResult.GroupBases.Count);
-        Dictionary<NamedType, IVectorGroupSpecializationType> additionalGroupSpecializationPopulation = new(processingResult.GroupSpecializations.Count);
-        Dictionary<NamedType, IVectorGroupMemberType> groupMemberPopulation = new(originalPopulation.GroupMembers.Count + processingResult.GroupMembers.Count);
+        Dictionary<NamedType, IVectorGroupBaseType> groupBasePopulation = new(originalPopulation.GroupBases.Count + foreignPopulation.GroupBases.Count);
+        Dictionary<NamedType, IVectorGroupSpecializationType> additionalGroupSpecializationPopulation = new(foreignPopulation.GroupSpecializations.Count);
+        Dictionary<NamedType, IVectorGroupMemberType> groupMemberPopulation = new(originalPopulation.GroupMembers.Count + foreignPopulation.GroupMembers.Count);
 
-        Dictionary<NamedType, Dictionary<int, IVectorGroupMemberType>> groupMembersByGroup = new(originalPopulation.GroupMembersByGroup.Count + processingResult.GroupBases.Count + processingResult.GroupSpecializations.Count);
+        Dictionary<NamedType, Dictionary<int, IVectorGroupMemberType>> groupMembersByGroup = new(originalPopulation.GroupMembersByGroup.Count + foreignPopulation.GroupBases.Count + foreignPopulation.GroupSpecializations.Count);
 
-        Dictionary<NamedType, IVectorBaseType> vectorBasePopulation = new(originalPopulation.VectorBases.Count + processingResult.VectorBases.Count);
-        Dictionary<NamedType, IVectorSpecializationType> additionalVectorSpecializationPopulation = new(processingResult.VectorSpecializations.Count);
+        Dictionary<NamedType, IVectorBaseType> vectorBasePopulation = new(originalPopulation.VectorBases.Count + foreignPopulation.VectorBases.Count);
+        Dictionary<NamedType, IVectorSpecializationType> additionalVectorSpecializationPopulation = new(foreignPopulation.VectorSpecializations.Count);
 
         foreach (var keyValue in originalPopulation.GroupBases)
         {
@@ -54,7 +95,7 @@ internal sealed record class ExtendedVectorPopulation : IVectorPopulation
             groupMembersByGroup[group] = new Dictionary<int, IVectorGroupMemberType>();
         }
 
-        foreach (var groupBase in processingResult.GroupBases)
+        foreach (var groupBase in foreignPopulation.GroupBases)
         {
             if (groupBasePopulation.TryAdd(groupBase.Type.AsNamedType(), groupBase))
             {
@@ -62,7 +103,7 @@ internal sealed record class ExtendedVectorPopulation : IVectorPopulation
             }
         }
 
-        foreach (var groupSpecialization in processingResult.GroupSpecializations)
+        foreach (var groupSpecialization in foreignPopulation.GroupSpecializations)
         {
             if (additionalGroupSpecializationPopulation.TryAdd(groupSpecialization.Type.AsNamedType(), groupSpecialization))
             {
@@ -85,7 +126,7 @@ internal sealed record class ExtendedVectorPopulation : IVectorPopulation
             groupMemberPopulation.Add(keyValue.Key, keyValue.Value);
         }
 
-        foreach (var groupMember in processingResult.GroupMembers)
+        foreach (var groupMember in foreignPopulation.GroupMembers)
         {
             if (groupMemberPopulation.TryAdd(groupMember.Type.AsNamedType(), groupMember))
             {
@@ -103,12 +144,12 @@ internal sealed record class ExtendedVectorPopulation : IVectorPopulation
             vectorBasePopulation.Add(keyValue.Key, keyValue.Value);
         }
 
-        foreach (var vectorBase in processingResult.VectorBases)
+        foreach (var vectorBase in foreignPopulation.VectorBases)
         {
             vectorBasePopulation.TryAdd(vectorBase.Type.AsNamedType(), vectorBase);
         }
 
-        foreach (var vectorSpecialization in processingResult.VectorSpecializations)
+        foreach (var vectorSpecialization in foreignPopulation.VectorSpecializations)
         {
             additionalVectorSpecializationPopulation.TryAdd(vectorSpecialization.Type.AsNamedType(), vectorSpecialization);
         }
@@ -146,13 +187,23 @@ internal sealed record class ExtendedVectorPopulation : IVectorPopulation
             vectorPopulation.TryAdd(keyValue.Key, keyValue.Value);
         }
 
-        var unassignedGroupSpecializations = additionalGroupSpecializationPopulation.Values.ToList();
-        var unassignedVectorSpecializations = additionalVectorSpecializationPopulation.Values.ToList();
+        List<IVectorGroupSpecializationType> unassignedGroupSpecializations = new(additionalGroupSpecializationPopulation.Count);
+        List<IVectorSpecializationType> unassignedVectorSpecializations = new(additionalVectorSpecializationPopulation.Count);
+
+        foreach (var additionalGroupSpecialization in additionalGroupSpecializationPopulation)
+        {
+            unassignedGroupSpecializations.Add(additionalGroupSpecialization.Value);
+        }
+
+        foreach (var additionalVectorSpecialization in additionalVectorSpecializationPopulation)
+        {
+            unassignedVectorSpecializations.Add(additionalVectorSpecialization.Value);
+        }
 
         iterativelySetBaseGroupForSpecializations();
         iterativelySetBaseVectorForSpecializations();
 
-        return new(groupBasePopulation, groupPopulation, groupMemberPopulation, vectorBasePopulation, vectorPopulation, groupMembersByGroup.Transform(static (group) => new GroupPopulation(group) as IGroupPopulation));
+        return new(groupBasePopulation, groupPopulation, groupMemberPopulation, vectorBasePopulation, vectorPopulation, (IReadOnlyDictionary<NamedType, IGroupPopulation>)groupMembersByGroup.Transform(static (group) => new GroupPopulation(group) as IGroupPopulation));
 
         void iterativelySetBaseGroupForSpecializations()
         {

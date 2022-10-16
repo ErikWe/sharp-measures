@@ -45,7 +45,7 @@ internal abstract class AModifiedUnitInstanceProcesser<TContext, TDefinition, TL
 
     private IValidityWithDiagnostics ValidateOriginalUnitInstanceNotEmpty(TContext context, TDefinition definition)
     {
-        return ValidityWithDiagnostics.Conditional(definition.OriginalUnitInstance!.Length is not 0, () => Diagnostics.EmptyOriginalUnitInstance(context, definition));
+        return ValidityWithDiagnostics.Conditional(definition.OriginalUnitInstance!.Length > 0, () => Diagnostics.EmptyOriginalUnitInstance(context, definition));
     }
 
     private IValidityWithDiagnostics ValidateOriginalUnitInstanceNotSelf(TContext context, TDefinition definition)

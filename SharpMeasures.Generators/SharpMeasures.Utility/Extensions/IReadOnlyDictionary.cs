@@ -1,5 +1,6 @@
 ﻿namespace SharpMeasures;
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,5 +37,17 @@ public static partial class UtilityExtensions
         }
 
         return true;
+    }
+
+    public static IReadOnlyDictionary<TKey, TOut> Transform<TKey, TIn, TOut>(this IReadOnlyDictionary<TKey, TIn> dictionary, Func<TIn, TOut> transform)
+    {
+        Dictionary<TKey, TOut> transformedDictionary = new(dictionary.Count);
+
+        foreach (var entry in dictionary)
+        {
+            transformedDictionary.Add(entry.Key, transform(entry.Value));
+        }
+
+        return transformedDictionary;
     }
 }

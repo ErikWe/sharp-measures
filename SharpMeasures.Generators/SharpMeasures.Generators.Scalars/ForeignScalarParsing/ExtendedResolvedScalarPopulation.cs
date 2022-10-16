@@ -17,7 +17,7 @@ internal sealed record class ExtendedResolvedScalarPopulation : IResolvedScalarP
         Scalars = scalars.AsReadOnlyEquatable();
     }
 
-    public static ExtendedResolvedScalarPopulation Build(IResolvedScalarPopulation originalPopulation, ForeignScalarResolutionResult resolutionResult)
+    public static ExtendedResolvedScalarPopulation Build(IResolvedScalarPopulation originalPopulation, ForeignScalarResolutionResult foreignPopulation)
     {
         Dictionary<NamedType, IResolvedScalarType> population = new();
 
@@ -26,7 +26,7 @@ internal sealed record class ExtendedResolvedScalarPopulation : IResolvedScalarP
             population.Add(keyValue.Key, keyValue.Value);
         }
 
-        foreach (var scalar in resolutionResult.Scalars)
+        foreach (var scalar in foreignPopulation.Scalars)
         {
             population.TryAdd(scalar.Type.AsNamedType(), scalar);
         }

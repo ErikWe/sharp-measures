@@ -5,7 +5,6 @@ using SharpMeasures.Generators.Quantities;
 using SharpMeasures.Generators.Scalars;
 
 using System.Collections.Generic;
-using System.Linq;
 
 internal sealed record class ExtendedScalarPopulation : IScalarPopulation
 {
@@ -21,22 +20,22 @@ internal sealed record class ExtendedScalarPopulation : IScalarPopulation
         Scalars = scalars.AsReadOnlyEquatable();
     }
 
-    public static ExtendedScalarPopulation Build(IScalarPopulation originalPopulation, ForeignScalarProcessingResult processingResult)
+    public static ExtendedScalarPopulation Build(IScalarPopulation originalPopulation, ForeignScalarProcessingResult foreignPopulation)
     {
-        Dictionary<NamedType, IScalarBaseType> scalarBasePopulation = new(originalPopulation.ScalarBases.Count + processingResult.ScalarBases.Count);
-        Dictionary<NamedType, IScalarSpecializationType> additionalScalarSpecializationPopulation = new(processingResult.ScalarSpecializations.Count);
+        Dictionary<NamedType, IScalarBaseType> scalarBasePopulation = new(originalPopulation.ScalarBases.Count + foreignPopulation.ScalarBases.Count);
+        Dictionary<NamedType, IScalarSpecializationType> additionalScalarSpecializationPopulation = new(foreignPopulation.ScalarSpecializations.Count);
 
         foreach (var keyValue in originalPopulation.ScalarBases)
         {
             scalarBasePopulation.TryAdd(keyValue.Key, keyValue.Value);
         }
 
-        foreach (var scalarBase in processingResult.ScalarBases)
+        foreach (var scalarBase in foreignPopulation.ScalarBases)
         {
             scalarBasePopulation.TryAdd(scalarBase.Type.AsNamedType(), scalarBase);
         }
 
-        foreach (var scalarSpecialization in processingResult.ScalarSpecializations)
+        foreach (var scalarSpecialization in foreignPopulation.ScalarSpecializations)
         {
             additionalScalarSpecializationPopulation.TryAdd(scalarSpecialization.Type.AsNamedType(), scalarSpecialization);
         }
@@ -58,7 +57,12 @@ internal sealed record class ExtendedScalarPopulation : IScalarPopulation
             scalarPopulation.TryAdd(keyValue.Key, keyValue.Value);
         }
 
-        var unassignedSpecializations = additionalScalarSpecializationPopulation.Values.ToList();
+        List<IScalarSpecializationType> unassignedSpecializations = new(additionalScalarSpecializationPopulation.Count);
+
+        foreach (var additionalScalarSpecialization in additionalScalarSpecializationPopulation)
+        {
+            unassignedSpecializations.Add(additionalScalarSpecialization.Value);
+        }
 
         iterativelySetBaseScalarForSpecializations();
 

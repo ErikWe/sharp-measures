@@ -6,6 +6,6 @@ internal static class Program
 {
     public static async Task Main()
     {
-        await Cached.Full.AddingQuantityProcess().ConfigureAwait(false);
+        await Uncached.Full.Run().ConfigureAwait(false);
     }
 }

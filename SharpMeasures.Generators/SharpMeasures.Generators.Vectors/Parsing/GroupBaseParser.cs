@@ -20,9 +20,9 @@ internal sealed class GroupBaseParser : AGroupParser<RawSharpMeasuresVectorGroup
         return new(type, definition, operations, vectorOperations, conversions, unitInstanceInclusions, unitInstanceExclusions);
     }
 
-    protected override (Optional<RawSharpMeasuresVectorGroupDefinition>, IEnumerable<INamedTypeSymbol>) ParseGroup(INamedTypeSymbol typeSymbol)
+    protected override (Optional<RawSharpMeasuresVectorGroupDefinition>, IEnumerable<INamedTypeSymbol>) ParseGroup(INamedTypeSymbol typeSymbol, IEnumerable<AttributeData> attributes)
     {
-        if (SharpMeasuresVectorGroupParser.Parser.ParseFirstOccurrence(typeSymbol) is not SymbolicSharpMeasuresVectorGroupDefinition symbolicGroup)
+        if (SharpMeasuresVectorGroupParser.Parser.ParseFirstOccurrence(attributes) is not SymbolicSharpMeasuresVectorGroupDefinition symbolicGroup)
         {
             return (new Optional<RawSharpMeasuresVectorGroupDefinition>(), Array.Empty<INamedTypeSymbol>());
         }

@@ -3,16 +3,16 @@
 using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Diagnostics;
-using SharpMeasures.Generators.Quantities.Parsing.QuantityOperation;
 using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
 using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
+using SharpMeasures.Generators.Quantities.Parsing.QuantityOperation;
 using SharpMeasures.Generators.Vectors.Parsing.ConvertibleVector;
+using SharpMeasures.Generators.Vectors.Parsing.VectorOperation;
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using SharpMeasures.Generators.Vectors.Parsing.VectorOperation;
 
 internal interface IGroupTypeProcessingDiagnostics
 {
