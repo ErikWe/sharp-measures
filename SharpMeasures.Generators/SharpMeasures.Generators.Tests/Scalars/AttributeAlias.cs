@@ -24,7 +24,7 @@ public class AttributeAlias
     public void Disabled() => Construct("false").AssertNoMatchingSourceNameGenerated($"Distance.Common.g.cs");
 
     private static GeneratorVerifier Construct() => GeneratorVerifier.Construct<SharpMeasuresGenerator>(Text).AssertNoDiagnosticsReported();
-    private static GeneratorVerifier Construct(string allowAliases) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(Text, Options(allowAliases)).AssertNoDiagnosticsReported();
+    private static GeneratorVerifier Construct(string allowAliases) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(Text, Configuration(allowAliases)).AssertNoDiagnosticsReported();
 
     private static string Text => """
         using SharpMeasures.Generators;
@@ -41,12 +41,14 @@ public class AttributeAlias
         public partial class UnitOfLength { }
         """;
 
-    private static AnalyzerConfigOptionsProvider Options(string allowAliases)
+    private static DriverConstructionConfiguration Configuration(string allowAliases)
     {
         var builder = ImmutableDictionary.CreateBuilder<string, string>();
 
         builder.Add("SharpMeasures_AllowAttributeAliases", allowAliases);
 
-        return new CustomAnalyzerConfigOptionsProvider(new CustomAnalyzerConfigOptions(builder.ToImmutable()));
+        AnalyzerConfigOptionsProvider provider = new CustomAnalyzerConfigOptionsProvider(new CustomAnalyzerConfigOptions(builder.ToImmutable()));
+
+        return DriverConstructionConfiguration.Empty with { OptionsProvider = provider };
     }
 }

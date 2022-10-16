@@ -2,17 +2,10 @@
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.Diagnostics;
 
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.IO;
 using System.Linq;
-
-public record class DriverConstructionConfiguration(bool AddDocumentationFiles, string DocumentationDirectory, AnalyzerConfigOptionsProvider OptionsProvider)
-{
-    public static DriverConstructionConfiguration Empty { get; } = new(false, string.Empty, CustomAnalyzerConfigOptionsProvider.Empty);
-}
 
 public static class DriverConstruction
 {
@@ -38,12 +31,7 @@ public static class DriverConstruction
     {
         GeneratorDriver driver = CSharpGeneratorDriver.Create(generator);
 
-        if (configuration.AddDocumentationFiles)
-        {
-            var additionalFiles = GetAdditionalFiles(configuration.DocumentationDirectory);
-
-            driver = driver.AddAdditionalTexts(additionalFiles);
-        }
+        driver = driver.AddAdditionalTexts(GetAdditionalFiles(configuration.DocumentationFiles));
 
         return driver.WithUpdatedAnalyzerConfigOptions(configuration.OptionsProvider).WithUpdatedParseOptions(ParseOptions);
     }
@@ -63,27 +51,15 @@ public static class DriverConstruction
     public static GeneratorDriver Run(string source, GeneratorDriver driver) => driver.RunGenerators(CreateCompilation(source));
     public static GeneratorDriver RunAndUpdateCompilation(string source, GeneratorDriver driver, out Compilation compilation) => driver.RunGeneratorsAndUpdateCompilation(CreateCompilation(source), out compilation, out _);
 
-    private static ImmutableArray<AdditionalText> GetAdditionalFiles(string documentationDirectory)
+    private static ImmutableArray<AdditionalText> GetAdditionalFiles(IReadOnlyDictionary<string, string> documentationFiles)
     {
-        ImmutableArray<AdditionalText>.Builder builder = ImmutableArray.CreateBuilder<AdditionalText>();
+        ImmutableArray<AdditionalText>.Builder builder = ImmutableArray.CreateBuilder<AdditionalText>(documentationFiles.Count);
 
-        foreach (string additionalTextPath in GetDocumentationFiles())
+        foreach (var documentationFile in documentationFiles)
         {
-            builder.Add(new CustomAdditionalText(additionalTextPath));
+            builder.Add(new CustomAdditionalText(documentationFile.Key, documentationFile.Value));
         }
 
         return builder.ToImmutable();
-
-        IEnumerable<string> GetDocumentationFiles()
-        {
-            try
-            {
-                return Directory.GetFiles(documentationDirectory, "*.txt", SearchOption.AllDirectories);
-            }
-            catch (DirectoryNotFoundException)
-            {
-                return Enumerable.Empty<string>();
-            }
-        }
     }
 }

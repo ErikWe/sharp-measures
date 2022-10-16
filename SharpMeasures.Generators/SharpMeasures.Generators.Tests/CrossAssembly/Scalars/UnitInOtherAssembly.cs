@@ -13,7 +13,7 @@ public class UnitInOtherAssembly
     [Fact]
     public async void RunTest()
     {
-        var driverAndCompilation = await CrossAssemblyDriverConstruction.ConstructAndRun<SharpMeasuresGenerator>(LocalSource, ForeignSource, ProjectPath.Path + @"\Documentation").ConfigureAwait(false);
+        var driverAndCompilation = await CrossAssemblyDriverConstruction.ConstructAndRun<SharpMeasuresGenerator>(LocalSource, ForeignSource).ConfigureAwait(false);
 
         Assert.NotNull(driverAndCompilation);
 

@@ -11,11 +11,12 @@ using System.Threading.Tasks;
 
 public sealed class IncrementalDriver
 {
-    public static async Task<IncrementalDriver> Build(string initialText, string documentationDirectory)
+    public static async Task<IncrementalDriver> Build(string initialText) => await Build(initialText, DriverConstructionConfiguration.Empty).ConfigureAwait(false);
+    public static async Task<IncrementalDriver> Build(string initialText, DriverConstructionConfiguration configuration)
     {
         AdhocWorkspace workspace = new();
 
-        var driver = DriverConstruction.Construct<SharpMeasuresGenerator>(DriverConstructionConfiguration.Empty with { DocumentationDirectory = documentationDirectory });
+        var driver = DriverConstruction.Construct<SharpMeasuresGenerator>(configuration);
 
         var solutionInfo = SolutionInfo.Create(SolutionId.CreateNewId(), VersionStamp.Default);
         var projectInfo = ProjectInfo.Create(ProjectId.CreateNewId(), VersionStamp.Default, "Test", "testassembly", "C#",

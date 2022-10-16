@@ -10,7 +10,7 @@ public class DefiningDerivableUnit
     [Fact]
     public async void RunTest()
     {
-        var driver = await IncrementalDriver.Build(InitialText, ProjectPath.Path + @"\Documentation").ConfigureAwait(false);
+        var driver = await IncrementalDriver.Build(InitialText).ConfigureAwait(false);
 
         driver.ApplyChange(SecondText);
         driver.ApplyChange(ThirdText);
