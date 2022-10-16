@@ -266,7 +266,7 @@ internal sealed class DocumentationFileBuilder
             return DiagnosticsStrategy.DocumentationFileDuplicateTag(Location.None, Name, tag);
         }
 
-        return DiagnosticsStrategy.DocumentationFileDuplicateTag(GetFirstLineLocation(), Name, tag);
+        return DiagnosticsStrategy.DocumentationFileDuplicateTag(GetLocation(), Name, tag);
     }
 
     private Diagnostic? CreateMissingTagDiagnostics(string tag)
@@ -283,13 +283,8 @@ internal sealed class DocumentationFileBuilder
             return DiagnosticsStrategy.DocumentationFileMissingRequestedTag(Location.None, Name, tag);
         }
 
-        return DiagnosticsStrategy.DocumentationFileMissingRequestedTag(GetFirstLineLocation(), Name, tag);
+        return DiagnosticsStrategy.DocumentationFileMissingRequestedTag(GetLocation(), Name, tag);
     }
 
-    private Location GetFirstLineLocation()
-    {
-        var textSpan = FileText.Lines[0].Span;
-        LinePositionSpan lineSpan = new(new LinePosition(0, 0), new LinePosition(0, textSpan.Length - 1));
-        return Location.Create(File.Path, textSpan, lineSpan);
-    }
+    private Location GetLocation() => Location.Create(File.Path, new TextSpan(), new LinePositionSpan());
 }
