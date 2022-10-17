@@ -88,7 +88,7 @@ internal static class Execution
 
             foreach (var operation in Data.Operations)
             {
-                if (operation.Implementation is QuantityOperationImplementation.OperatorAndMethod or QuantityOperationImplementation.Method)
+                if (operation.Implementation.HasFlag(QuantityOperationImplementation.Method))
                 {
                     AppendMethodOperation(indentation, operation);
                 }
@@ -96,7 +96,7 @@ internal static class Execution
 
             foreach (var operation in Data.Operations)
             {
-                if (operation.Implementation is QuantityOperationImplementation.OperatorAndMethod or QuantityOperationImplementation.Operator)
+                if (operation.Implementation.HasFlag(QuantityOperationImplementation.Operator))
                 {
                     AppendOperatorOperation(indentation, operation);
                 }

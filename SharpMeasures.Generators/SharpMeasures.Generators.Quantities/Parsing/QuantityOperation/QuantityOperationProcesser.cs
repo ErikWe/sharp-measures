@@ -145,7 +145,7 @@ public sealed class QuantityOperationProcesser : AActionableProcesser<IQuantityO
 
     private IValidityWithDiagnostics ValidateImplementationRecognized(IQuantityOperationProcessingContext context, RawQuantityOperationDefinition definition)
     {
-        var enumDefined = Enum.IsDefined(typeof(QuantityOperationImplementation), definition.Implementation);
+        var enumDefined = (QuantityOperationImplementation.OperatorAndMethod & definition.Implementation) == definition.Implementation;
 
         return ValidityWithDiagnostics.Conditional(enumDefined, () => Diagnostics.UnrecognizedImplementation(context, definition));
     }

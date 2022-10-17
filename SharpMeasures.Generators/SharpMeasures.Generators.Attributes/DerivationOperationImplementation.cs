@@ -1,14 +1,17 @@
 ﻿namespace SharpMeasures.Generators;
 
-/// <summary>Describes how an operation is implemented.</summary>
+using System;
+
+/// <summary>Describes how a quantity implements an operation.</summary>
+[Flags]
 public enum QuantityOperationImplementation
 {
-    /// <summary>The operation is not implemented.</summary>
-    None,
-    /// <summary>The operation is implemented both as an operator and a method.</summary>
-    OperatorAndMethod,
+    /// <summary>Indicates that the operation is not implemented.</summary>
+    None = 0,
     /// <summary>The operation is implemented as an operator.</summary>
-    Operator,
+    Operator = 1,
     /// <summary>The operation is implemented as a method.</summary>
-    Method
+    Method = 2,
+    /// <summary>The operation is implemented both as an operator and as a method.</summary>
+    OperatorAndMethod = Operator | Method
 }
