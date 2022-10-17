@@ -2,7 +2,7 @@
 
 using System;
 
-/// <summary>Defines a constant of the scalar quantity.</summary>
+/// <summary>Defines a constant value of a scalar quantity.</summary>
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, AllowMultiple = true)]
 public sealed class ScalarConstantAttribute : Attribute
 {

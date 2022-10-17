@@ -2,35 +2,12 @@
 
 using System;
 
-/// <summary>Marks the type as a specialized form of another vector quantity.
-/// For example, <i>GravitationalAcceleration</i> could be defined as a specialized form of <i>Acceleration</i>.</summary>
-/// <remarks>The following attributes may be used to modify how the vector is generated:
-/// <list type="bullet">
-/// <item>
-/// <term><see cref="QuantityOperationAttribute"/></term>
-/// <description>Describes how the vector may be derived from other quantities.</description>
-/// </item>
-/// <item>
-/// <term><see cref="VectorConstantAttribute"/></term>
-/// <description>Defines a constant of the vector.</description>
-/// </item>
-/// <item>
-/// <term><see cref="IncludeUnitsAttribute"/></term>
-/// <description>Dictates the units for which a property representing the magnitude is implemented.</description>
-/// </item>
-/// <item>
-/// <term><see cref="ExcludeUnitsAttribute"/></term>
-/// <description>Dictates the units for which a property representing the magnitude is <i>not</i> implemented.</description>
-/// </item>
-/// <item>
-/// <term><see cref="ConvertibleQuantityAttribute"/></term>
-/// <description>Lists other vectors that this vector may be converted to.</description>
-/// </item>
-/// </list></remarks>
+/// <summary>Marks the type as an auto-generated vector quantity, behaving as a specialized form of another quantity.</summary>
+/// <remarks><inheritdoc cref="VectorQuantityAttribute" path="/remarks"/></remarks>
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
 public sealed class SpecializedVectorQuantityAttribute : Attribute
 {
-    /// <summary>The original vector quantity, of which this is a specialized form.</summary>
+    /// <summary>The original vector quantity, of which this quantity is a specialized form.</summary>
     public Type OriginalVector { get; }
 
     /// <inheritdoc cref="SpecializedScalarQuantityAttribute.InheritOperations"/>
@@ -44,35 +21,30 @@ public sealed class SpecializedVectorQuantityAttribute : Attribute
     /// <inheritdoc cref="SpecializedScalarQuantityAttribute.InheritUnits"/>
     public bool InheritUnits { get; init; }
 
-    /// <summary>Determines the behaviour of the operator converting from the original quantity to this quantity. The default behaviour is <see cref="ConversionOperatorBehaviour.Explicit"/>.</summary>
+    /// <inheritdoc cref="SpecializedScalarQuantityAttribute.ForwardsCastOperatorBehaviour"/>
     public ConversionOperatorBehaviour ForwardsCastOperatorBehaviour { get; init; }
-    /// <summary>Determines the behaviour of the operator converting from this quantity to the original quantity. The default behaviour is <see cref="ConversionOperatorBehaviour.Implicit"/>.</summary>
+    /// <inheritdoc cref="SpecializedScalarQuantityAttribute.BackwardsCastOperatorBehaviour"/>
     public ConversionOperatorBehaviour BackwardsCastOperatorBehaviour { get; init; }
 
     /// <summary><inheritdoc cref="VectorQuantityAttribute.Scalar" path="/summary"/> By default, the value is inherited from the original quantity.</summary>
     /// <remarks>For example; <i>Speed</i> could be considered the scalar associated with <i>Velocity</i>.</remarks>
     public Type? Scalar { get; init; }
 
-    /// <summary>Dictates whether to implement support for computing the sum of two instances of this vector. By default, the behaviour is inherited from the original
-    /// quantity.</summary>
+    /// <inheritdoc cref="SpecializedScalarQuantityAttribute.ImplementSum"/>
     public bool ImplementSum { get; init; }
 
-    /// <summary>Dictates whether to implement support for computing the difference between two instances of this vector. By default, the behaviour is inherited from
-    /// the original quantity.</summary>
-    /// <remarks>To specify the vector quantity that represents the difference, use <see cref="Difference"/>.</remarks>
+    /// <summary><inheritdoc cref="SpecializedScalarQuantityAttribute.ImplementDifference" path="/summary"/></summary>
+    /// <remarks>To specify the quantity that represents the difference, use <see cref="Difference"/>.</remarks>
     public bool ImplementDifference { get; init; }
 
-    /// <summary>The vector quantity that is considered the difference between two instances of this vector. By default, the value is inherited from the
-    /// original quantity.</summary>
-    /// <remarks>To disable support for computing the difference in the first place, use <see cref="ImplementDifference"/>.</remarks>
+    /// <summary><inheritdoc cref="SpecializedScalarQuantityAttribute.Difference" path="/summary"/></summary>
+    /// <remarks>To disable support for computing the difference, use <see cref="ImplementDifference"/>.</remarks>
     public Type? Difference { get; init; }
 
-    /// <summary><inheritdoc cref="VectorQuantityAttribute.DefaultUnit" path="/summary"/> By default, the value is inherited from the original quantity.</summary>
-    /// <remarks><inheritdoc cref="VectorQuantityAttribute.DefaultUnit" path="/remarks"/></remarks>
+    /// <inheritdoc cref="SpecializedScalarQuantityAttribute.DefaultUnit"/>
     public string? DefaultUnit { get; init; }
 
-    /// <summary><inheritdoc cref="VectorQuantityAttribute.DefaultSymbol" path="/summary"/> By default, the value is inherited from the original quantity.</summary>
-    /// <remarks><inheritdoc cref="VectorQuantityAttribute.DefaultSymbol" path="/remarks"/></remarks>
+    /// <inheritdoc cref="SpecializedScalarQuantityAttribute.DefaultSymbol"/>
     public string? DefaultSymbol { get; init; }
 
     /// <inheritdoc cref="VectorQuantityAttribute"/>

@@ -13,11 +13,10 @@ public sealed class BiasedUnitInstanceAttribute : Attribute
     public string PluralForm { get; }
     /// <summary>The name of the original instance, relative to which this instance is biased.</summary>
     public string OriginalUnitInstance { get; }
-    /// <summary>The bias relative to the original instance. This is the value of this instance when the original instance is zero.</summary>
-    /// <remarks>For example; if <i>Kelvin</i> is the original instance, <i>Celsius</i> should have a bias of { -273.15 }.</remarks>
+    /// <summary>The bias relative to the original instance. This represents the value of this instance when the original instance is { 0 }.</summary>
+    /// <remarks>For example, if <i>Kelvin</i> is the original instance, <i>Celsius</i> should have a bias of { -273.15 }.</remarks>
     public double Bias { get; }
-    /// <summary>An expression that computes the bias relative to the original instance. The computed value should represent value of this instance when the original
-    /// instance is zero.</summary>
+    /// <summary>An expression that computes the bias relative to the original instance. The resulting value should represent the value of this instance when the original instance is { 0 }.</summary>
     /// <remarks><inheritdoc cref="Bias" path="/remarks"/></remarks>
     public string? Expression { get; }
 

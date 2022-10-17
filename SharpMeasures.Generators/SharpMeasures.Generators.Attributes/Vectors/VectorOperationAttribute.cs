@@ -2,17 +2,17 @@
 
 using System;
 
-/// <summary>Describes an operation { ⋅, ⨯ } that may be applied to vector quantities.</summary>
-/// <remarks>For the operators { +, -, *, / }, use <see cref="QuantityOperationAttribute"/>.</remarks>
+/// <summary>Describes an operation { ⋅ , ⨯ } supported by the quantity.</summary>
+/// <remarks>See <see cref="QuantityOperationAttribute"/> for operations not limited to vector quantities.</remarks>
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, AllowMultiple = true)]
 public sealed class VectorOperationAttribute : Attribute
 {
-    /// <summary>The result of the operation.</summary>
+    /// <summary>The quantity that is the result of the operation.</summary>
     public Type Result { get; }
     /// <summary>The other quantity in the operation.</summary>
     public Type Other { get; }
 
-    /// <summary>The operator type.</summary>
+    /// <summary>The operator that is applied to the quantities.</summary>
     public VectorOperatorType OperatorType { get; }
     /// <summary>The position of this quantity in the operation. By default, the position will be <see cref="OperatorPosition.Left"/>.</summary>
     /// <remarks>This is only relevant when using <see cref="VectorOperatorType.Cross"/>, where the result will be scaled by { -1 } if <see cref="OperatorPosition.Right"/> is used.</remarks>
@@ -22,9 +22,9 @@ public sealed class VectorOperationAttribute : Attribute
     /// <remarks>This is only relevant when using <see cref="VectorOperatorType.Cross"/>, where the result will be scaled by { -1 } when mirrored.</remarks>
     public bool Mirror { get; init; }
 
-    /// <summary>The name of the operation. By default, the name will be <i>Dot</i>, <i>Cross</i>, or <i>CrossInto</i> - depending on <see cref="OperatorType"/> and <see cref="Position"/>.</summary>
+    /// <summary>The name of the operation. By default, the name will be one of { <i>Dot</i>, <i>Cross</i>, <i>CrossInto</i> } - depending on <see cref="OperatorType"/> and <see cref="Position"/>.</summary>
     public string Name { get; init; } = string.Empty;
-    /// <summary>The name of the mirrored operation, if one is implemented. By default, the name will be <i>Cross</i> or <i>CrossInto</i> - depending on <see cref="OperatorType"/> and <see cref="Position"/>.</summary>
+    /// <summary>The name of the mirrored operation, if one is implemented. By default, the name will be one of {<i>Cross</i>, <i>CrossInto</i> } - depending on <see cref="OperatorType"/> and <see cref="Position"/>.</summary>
     public string MirroredName { get; init; } = string.Empty;
 
     /// <inheritdoc cref="VectorOperationAttribute"/>

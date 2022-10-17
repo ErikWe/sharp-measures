@@ -2,36 +2,32 @@
 
 using System;
 
-/// <summary>Marks the type as a scalar quantity.</summary>
-/// <remarks>The following attributes may be used to modify how the scalar is generated:
+/// <summary>Marks the type as an auto-generated scalar quantity.</summary>
+/// <remarks>The following attributes may be used to modify how the quantity is generated:
 /// <list type="bullet">
 /// <item>
 /// <term><see cref="QuantityOperationAttribute"/></term>
-/// <description>Describes how the scalar may be derived from other quantities.</description>
+/// <description>Describes operations { + , - , ⋅ , ÷ } supported by the quantity.</description>
+/// </item>
+/// <item>
+/// <term><see cref="QuantityProcessAttribute"/></term>
+/// <description>Describes a custom process involving the quantity.</description>
 /// </item>
 /// <item>
 /// <term><see cref="ScalarConstantAttribute"/></term>
-/// <description>Defines a constant of the scalar.</description>
-/// </item>
-/// <item>
-/// <term><see cref="IncludeUnitBasesAttribute"/></term>
-/// <description>Dictates the units for which a static property representing the value { 1 } is implemented.</description>
-/// </item>
-/// <item>
-/// <term><see cref="ExcludeUnitBasesAttribute"/></term>
-/// <description>Dictates the units for which a static property representing the value { 1 } is <i>not</i> implemented.</description>
-/// </item>
-/// <item>
-/// <term><see cref="IncludeUnitsAttribute"/></term>
-/// <description>Dictates the units for which a property representing the magnitude is implemented.</description>
-/// </item>
-/// <item>
-/// <term><see cref="ExcludeUnitsAttribute"/></term>
-/// <description>Dictates the units for which a property representing the magnitude is <i>not</i> implemented.</description>
+/// <description>Defines a constant value of the quantity.</description>
 /// </item>
 /// <item>
 /// <term><see cref="ConvertibleQuantityAttribute"/></term>
-/// <description>Lists other scalars that this scalar may be converted to.</description>
+/// <description>Lists other quantities that the quantity supports conversion to and/or from.</description>
+/// </item>
+/// <item>
+/// <term><see cref="IncludeUnitBasesAttribute"/>, <see cref="ExcludeUnitBasesAttribute"/></term>
+/// <description>Dictates the set of unit instances for which a static property representing the value { 1 } is implemented.</description>
+/// </item>
+/// <item>
+/// <term><see cref="IncludeUnitsAttribute"/>, <see cref="ExcludeUnitsAttribute"/></term>
+/// <description>Dictates the set of unit instances for which a property representing the magnitude is implemented.</description>
 /// </item>
 /// </list></remarks>
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
@@ -40,34 +36,29 @@ public sealed class ScalarQuantityAttribute : Attribute
     /// <summary>The unit that describes this quantity.</summary>
     public Type Unit { get; }
 
-    /// <summary>Dictates whether bias terms of the unit should be considered when computing the magnitude. This requires the specified unit to include a bias term.
-    /// The default behaviour is <see langword="false"/>.</summary>
-    /// <remarks>For example; <i>Temperature</i> would require access to a bias term to be able to express both <i>Celsius</i> and <i>Fahrenheit</i>, while
-    /// <i>TemperatureDifference</i> would ignore any bias terms.</remarks>
+    /// <summary>Dictates whether the bias term of the unit should be considered, if the unit includes one. The default behaviour is <see langword="false"/>.</summary>
+    /// <remarks>For example; <i>Temperature</i> would require a bias term to be able to express both <i>Celsius</i> and <i>Fahrenheit</i>, while <i>TemperatureDifference</i> would not.</remarks>
     public bool UseUnitBias { get; init; }
 
-    /// <summary>The vector quantity that is associated with this scalar quantity, if one exists. This is often the vector for which
-    /// this scalar represents the magnitude.</summary>
-    /// <remarks>For example; <i>Velocity</i> could be considered the vector associated with <i>Speed</i>.</remarks>
+    /// <summary>The vector quantity associated with this quantity, if one exists.</summary>
+    /// <remarks>For example, <i>Velocity</i> could be considered the vector associated with <i>Speed</i>.</remarks>
     public Type? Vector { get; init; }
 
-    /// <summary>Dictates whether to implement support for computing the sum of two instances of this scalar. The default behaviour is <see langword="true"/>.</summary>
+    /// <summary>Dictates whether this quantity should support addition of two instances. The default behaviour is <see langword="true"/>.</summary>
     public bool ImplementSum { get; init; }
 
-    /// <summary>Dictates whether to implement support for computing the difference between two instances of this scalar. The default behaviour is
-    /// <see langword="true"/>.</summary>
-    /// <remarks>To specify the scalar quantity that represents the difference, use <see cref="Difference"/>.</remarks>
+    /// <summary>Dictates whether this quantity should support subtraction of two instances. The default behaviour is <see langword="true"/>.</summary>
+    /// <remarks>To specify the quantity that represents the difference, use <see cref="Difference"/>.</remarks>
     public bool ImplementDifference { get; init; }
 
-    /// <summary>The scalar quantity that is considered the difference between two instances of this scalar. By default, and when <see langword="null"/>, the
-    /// quantity itself is used to describe the difference.</summary>
-    /// <remarks>To disable support for computing the difference in the first place, use <see cref="ImplementDifference"/>.</remarks>
+    /// <summary>Determines the quantity that is considered the difference between two instances of this quantity. By default, the quantity itself is used to describe the difference.</summary>
+    /// <remarks>To disable support for computing the difference, use <see cref="ImplementDifference"/>.</remarks>
     public Type? Difference { get; init; }
 
     /// <summary>The name of the default unit instance.</summary>
     public string? DefaultUnit { get; init; }
 
-    /// <summary>The symbol of the default unit instance.</summary>
+    /// <summary>The symbol representing the default unit instance.</summary>
     public string? DefaultSymbol { get; init; }
 
     /// <inheritdoc cref="ScalarQuantityAttribute"/>

@@ -9,10 +9,10 @@ public sealed class ConvertibleQuantityAttribute : Attribute
     /// <summary>The set of quantities to and/or from which this quantity supports conversion.</summary>
     public Type[] Quantities { get; }
 
-    /// <summary>Determines the direction in which the conversion is implemented. The default behaviour is <see cref="QuantityConversionDirection.Onedirectional"/>.</summary>
+    /// <summary>Determines the direction of the conversion. The default behaviour is <see cref="QuantityConversionDirection.Onedirectional"/>.</summary>
     public QuantityConversionDirection ConversionDirection { get; init; }
 
-    /// <summary>Determines the behaviour of the conversion operators. The default behaviour is <see cref="ConversionOperatorBehaviour.Explicit"/>.</summary>
+    /// <summary>Determines the behaviour of the conversion operator. The default behaviour is <see cref="ConversionOperatorBehaviour.Explicit"/>.</summary>
     public ConversionOperatorBehaviour CastOperatorBehaviour { get; init; }
 
     /// <inheritdoc cref="ConvertibleQuantityAttribute"/>

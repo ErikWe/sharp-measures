@@ -1,6 +1,6 @@
 ﻿namespace SharpMeasures.Generators;
 
-/// <summary>Defined possible behaviours for the conversion operator.</summary>
+/// <summary>Describes the behaviour of the conversion operator.</summary>
 public enum ConversionOperatorBehaviour
 {
     /// <summary>The conversion operation is not implemented.</summary>

@@ -10,9 +10,9 @@ public sealed class IncludeUnitBasesAttribute : Attribute
     /// <summary>Names of the units for which a static property representing the value { 1 } is generated.</summary>
     public string[] IncludedUnitBases { get; }
 
-    /// <summary>If the quantity is a specialized form of another quantity, this property determines how to treath units that were marked as included by the original quantity. The default behaviour is
+    /// <summary>If the quantity is a specialized form of another quantity, this property determines how to treat units that were marked as included by the original quantity. The default behaviour is
     /// <see cref="InclusionStackingMode.Intersection"/>.</summary>
-    /// <remarks>This does not apply to multiple instances of <see cref="IncludeUnitBasesAttribute"/> applied to the same quantity. In such cases, all instances will simply be combined.</remarks>
+    /// <remarks>This does not apply to multiple instances of <see cref="IncludeUnitBasesAttribute"/> applied to the same quantity - where <see cref="InclusionStackingMode.Union"/> is always used.</remarks>
     public InclusionStackingMode StackingMode { get; init; }
 
     /// <inheritdoc cref="IncludeUnitBasesAttribute"/>

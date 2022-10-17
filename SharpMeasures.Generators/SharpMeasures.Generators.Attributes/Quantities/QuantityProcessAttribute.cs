@@ -2,7 +2,7 @@
 
 using System;
 
-/// <summary>Describes a process associated with a quantity.</summary>
+/// <summary>Describes a custom process associated with the quantity.</summary>
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, AllowMultiple = true)]
 public sealed class QuantityProcessAttribute : Attribute
 {
@@ -18,7 +18,7 @@ public sealed class QuantityProcessAttribute : Attribute
     /// <summary>The types of the parameters passed to the process.</summary>
     public Type[] ParameterTypes { get; }
 
-    /// <summary>The names of the parameters passed to the process.</summary>
+    /// <summary>The names of the parameters passed to the process. By default, the name of each parameter will be derived from the type of the parameter.</summary>
     public string[] ParameterNames { get; }
 
     /// <summary>Indicates that the process should be implemented as a property, rather than as a method. The default behaviour is <see langword="false"/>.</summary>

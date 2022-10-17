@@ -2,7 +2,7 @@
 
 using System;
 
-/// <summary>Defines a constant of the vector quantity.</summary>
+/// <summary>Defines a constant value of a vector quantity.</summary>
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, AllowMultiple = true)]
 public sealed class VectorConstantAttribute : Attribute
 {

@@ -1,14 +1,16 @@
 ﻿namespace SharpMeasures.Generators;
 
-/// <summary>Describes available operators.</summary>
+/// <summary>Describes operators acting on two quantities.</summary>
+/// <remarks>See <see cref="VectorOperatorType"/> for operators limited to vector quantities.</remarks>
 public enum OperatorType
 {
-    /// <summary>The { + } operator.</summary>
+    /// <summary>The { + } operator, describing addition.</summary>
     Addition,
-    /// <summary>The { - } operator.</summary>
+    /// <summary>The { - } operator, describing subtraction.</summary>
     Subtraction,
-    /// <summary>The { * } operator.</summary>
+    /// <summary>The scalar { ⋅ } operator, describing multiplication.</summary>
+    /// <remarks>For the vector operators { ⋅ , ⨯ } see <see cref="VectorOperatorType.Dot"/> and <see cref="VectorOperatorType.Cross"/>, respectively.</remarks>
     Multiplication,
-    /// <summary>The { / } operator.</summary>
+    /// <summary>The { ÷ } operator, describing division.</summary>
     Division
 }
