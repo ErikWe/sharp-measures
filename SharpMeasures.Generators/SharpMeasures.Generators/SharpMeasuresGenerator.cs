@@ -51,9 +51,9 @@ public sealed class SharpMeasuresGenerator : IIncrementalGenerator
         (var scalarValidationResult, var unresolvedScalarPopulation) = ScalarValidator.Validate(context, scalarProcessingResult, extendedUnitPopulation, extendedScalarPopulation, extendedVectorPopulation);
         (var vectorValidationResult, var unresolvedVectorPopulation) = VectorValidator.Validate(context, vectorProcessingResult, extendedUnitPopulation, extendedScalarPopulation, extendedVectorPopulation);
 
-        var extendedValidatedUnitPopulation = ForeignTypeValidator.Validate(foreignUnitProcessingResult, unvalidatedUnitPopulation, unvalidatedScalarPopulation, validatedUnitPopulation);
-        (var foreignScalarValidationResult, var extendedUnresolvedScalarPopulation) = ForeignTypeValidator.Validate(foreignScalarProcessingResult, unvalidatedUnitPopulation, unvalidatedScalarPopulation, unvalidatedVectorPopulation, unresolvedScalarPopulation);
-        (var foreignVectorValidationResult, var extendedUnresolvedVectorPopulation) = ForeignTypeValidator.Validate(foreignVectorProcessingResult, unvalidatedUnitPopulation, unvalidatedScalarPopulation, unvalidatedVectorPopulation, unresolvedVectorPopulation);
+        var extendedValidatedUnitPopulation = ForeignTypeValidator.Validate(foreignUnitProcessingResult, extendedUnitPopulation, extendedScalarPopulation, validatedUnitPopulation);
+        (var foreignScalarValidationResult, var extendedUnresolvedScalarPopulation) = ForeignTypeValidator.Validate(foreignScalarProcessingResult, extendedUnitPopulation, extendedScalarPopulation, extendedVectorPopulation, unresolvedScalarPopulation);
+        (var foreignVectorValidationResult, var extendedUnresolvedVectorPopulation) = ForeignTypeValidator.Validate(foreignVectorProcessingResult, extendedUnitPopulation, extendedScalarPopulation, extendedVectorPopulation, unresolvedVectorPopulation);
 
         (var scalarResolutionResult, var resolvedScalarPopulation) = ScalarResolver.Resolve(scalarValidationResult, extendedValidatedUnitPopulation, extendedUnresolvedScalarPopulation);
         (var vectorResulutionResult, var resolvedVectorPopulation) = VectorResolver.Resolve(vectorValidationResult, extendedValidatedUnitPopulation, extendedUnresolvedVectorPopulation);

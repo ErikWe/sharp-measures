@@ -21,15 +21,17 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Threading;
 
-public static class UnitParser
+public sealed class UnitParser
 {
     public static (UnitParsingResult ParsingResult, IncrementalValueProvider<ImmutableArray<INamedTypeSymbol>> ForeignSymbols) Attach(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Optional<(TypeDeclarationSyntax Declaration, string Attribute)>> declarations)
     {
+        UnitParser parser = new(alreadyInForeignAssembly: false);
+
         var unitDeclarations = declarations.Select(ExtractUnitDeclarations);
         var filteredDeclarations = FilteredDeclarationProvider.Construct<TypeDeclarationSyntax>(DeclarationFilters).AttachAndReport(context, unitDeclarations);
         var symbols = DeclarationSymbolProvider.Construct<TypeDeclarationSyntax, INamedTypeSymbol>(ExtractSymbol).Attach(filteredDeclarations, context.CompilationProvider);
 
-        var unitsAndForeignSymbols = symbols.Select(Parse);
+        var unitsAndForeignSymbols = symbols.Select(parser.Parse);
 
         var units = unitsAndForeignSymbols.Select(ExtractDefinition);
         var foreignSymbols = unitsAndForeignSymbols.Select(ExtractForeignSymbols).Collect().Expand();
@@ -39,7 +41,14 @@ public static class UnitParser
         return (new UnitParsingResult(units), foreignSymbols);
     }
 
-    private static Optional<(IEnumerable<AttributeData>, RawUnitType, IEnumerable<INamedTypeSymbol>)> Parse(Optional<INamedTypeSymbol> typeSymbol, CancellationToken token)
+    private bool AlreadyInForeignAssembly { get; }
+
+    internal UnitParser(bool alreadyInForeignAssembly)
+    {
+        AlreadyInForeignAssembly = alreadyInForeignAssembly;
+    }
+
+    private Optional<(IEnumerable<AttributeData>, RawUnitType, IEnumerable<INamedTypeSymbol>)> Parse(Optional<INamedTypeSymbol> typeSymbol, CancellationToken token)
     {
         if (token.IsCancellationRequested || typeSymbol.HasValue is false)
         {
@@ -49,7 +58,7 @@ public static class UnitParser
         return Parse(typeSymbol.Value);
     }
 
-    internal static Optional<(IEnumerable<AttributeData> Attributes, RawUnitType Definition, IEnumerable<INamedTypeSymbol> ForeignSymbols)> Parse(INamedTypeSymbol typeSymbol)
+    internal Optional<(IEnumerable<AttributeData> Attributes, RawUnitType Definition, IEnumerable<INamedTypeSymbol> ForeignSymbols)> Parse(INamedTypeSymbol typeSymbol)
     {
         var attributes = typeSymbol.GetAttributes();
 
@@ -75,7 +84,7 @@ public static class UnitParser
         return (attributes, unitType, foreignSymbols);
     }
 
-    private static (Optional<RawSharpMeasuresUnitDefinition>, IEnumerable<INamedTypeSymbol>) ParseUnit(INamedTypeSymbol typeSymbol, IEnumerable<AttributeData> attributes)
+    private (Optional<RawSharpMeasuresUnitDefinition>, IEnumerable<INamedTypeSymbol>) ParseUnit(INamedTypeSymbol typeSymbol, IEnumerable<AttributeData> attributes)
     {
         if (SharpMeasuresUnitParser.Parser.ParseFirstOccurrence(attributes) is not SymbolicSharpMeasuresUnitDefinition symbolicUnit)
         {
@@ -83,17 +92,17 @@ public static class UnitParser
         }
 
         var rawUnit = RawSharpMeasuresUnitDefinition.FromSymbolic(symbolicUnit);
-        var foreignSymbols = symbolicUnit.ForeignSymbols(typeSymbol.ContainingAssembly.Name, alreadyInForeignAssembly: false);
+        var foreignSymbols = symbolicUnit.ForeignSymbols(typeSymbol.ContainingAssembly.Name, AlreadyInForeignAssembly);
 
         return (rawUnit, foreignSymbols);
     }
 
-    private static (IEnumerable<RawDerivableUnitDefinition>, IEnumerable<INamedTypeSymbol>) ParseDerivations(INamedTypeSymbol typeSymbol, IEnumerable<AttributeData> attributes)
+    private (IEnumerable<RawDerivableUnitDefinition>, IEnumerable<INamedTypeSymbol>) ParseDerivations(INamedTypeSymbol typeSymbol, IEnumerable<AttributeData> attributes)
     {
         var symbolicDerivations = DerivableUnitParser.Parser.ParseAllOccurrences(attributes);
 
         var rawDerivations = symbolicDerivations.Select(static (symbolicDerivation) => RawDerivableUnitDefinition.FromSymbolic(symbolicDerivation));
-        var foreignSymbols = symbolicDerivations.SelectMany((symbolicDerivation) => symbolicDerivation.ForeignSymbols(typeSymbol.ContainingAssembly.Name, alreadyInForeignAssembly: false));
+        var foreignSymbols = symbolicDerivations.SelectMany((symbolicDerivation) => symbolicDerivation.ForeignSymbols(typeSymbol.ContainingAssembly.Name, AlreadyInForeignAssembly));
 
         return (rawDerivations, foreignSymbols);
     }

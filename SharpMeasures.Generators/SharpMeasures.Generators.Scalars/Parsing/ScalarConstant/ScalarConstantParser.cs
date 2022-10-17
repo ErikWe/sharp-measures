@@ -1,11 +1,10 @@
 ﻿namespace SharpMeasures.Generators.Scalars.Parsing.ScalarConstant;
 
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 using SharpMeasures.Generators.Attributes.Parsing;
 
-using System.Collections.Immutable;
+using System.Collections.Generic;
 
 internal static class ScalarConstantParser
 {
@@ -17,11 +16,11 @@ internal static class ScalarConstantParser
     {
         public AttributeParser() : base(DefaultDefiniton, ScalarConstantProperties.AllProperties) { }
 
-        protected override RawScalarConstantDefinition AddCustomData(RawScalarConstantDefinition definition, AttributeData attributeData, AttributeSyntax attributeSyntax, ImmutableArray<IParameterSymbol> parameterSymbols)
+        protected override RawScalarConstantDefinition AddCustomData(RawScalarConstantDefinition definition, AttributeData attributeData, IReadOnlyList<IParameterSymbol> parameterSymbols)
         {
             definition = SetUnassignedDefaults(definition);
 
-            return base.AddCustomData(definition, attributeData, attributeSyntax, parameterSymbols);
+            return base.AddCustomData(definition, attributeData, parameterSymbols);
         }
 
         private static RawScalarConstantDefinition SetUnassignedDefaults(RawScalarConstantDefinition definition)

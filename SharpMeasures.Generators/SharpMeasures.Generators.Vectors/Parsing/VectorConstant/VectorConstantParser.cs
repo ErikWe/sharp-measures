@@ -1,11 +1,10 @@
 ﻿namespace SharpMeasures.Generators.Vectors.Parsing.VectorConstant;
 
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 using SharpMeasures.Generators.Attributes.Parsing;
 
-using System.Collections.Immutable;
+using System.Collections.Generic;
 
 internal static class VectorConstantParser
 {
@@ -17,11 +16,11 @@ internal static class VectorConstantParser
     {
         public AttributeParser() : base(DefaultDefiniton, VectorConstantProperties.AllProperties) { }
 
-        protected override RawVectorConstantDefinition AddCustomData(RawVectorConstantDefinition definition, AttributeData attributeData, AttributeSyntax attributeSyntax, ImmutableArray<IParameterSymbol> parameterSymbols)
+        protected override RawVectorConstantDefinition AddCustomData(RawVectorConstantDefinition definition, AttributeData attributeData, IReadOnlyList<IParameterSymbol> parameterSymbols)
         {
             definition = SetUnassignedDefaults(definition);
 
-            return base.AddCustomData(definition, attributeData, attributeSyntax, parameterSymbols);
+            return base.AddCustomData(definition, attributeData, parameterSymbols);
         }
 
         private static RawVectorConstantDefinition SetUnassignedDefaults(RawVectorConstantDefinition definition)

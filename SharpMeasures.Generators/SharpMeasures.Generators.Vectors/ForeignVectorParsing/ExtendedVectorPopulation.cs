@@ -187,17 +187,39 @@ internal sealed record class ExtendedVectorPopulation : IVectorPopulation
             vectorPopulation.TryAdd(keyValue.Key, keyValue.Value);
         }
 
-        List<IVectorGroupSpecializationType> unassignedGroupSpecializations = new(additionalGroupSpecializationPopulation.Count);
-        List<IVectorSpecializationType> unassignedVectorSpecializations = new(additionalVectorSpecializationPopulation.Count);
+        List<IVectorGroupSpecializationType> unassignedGroupSpecializations = new(additionalGroupSpecializationPopulation.Count + (originalPopulation.Groups.Count - originalPopulation.GroupBases.Count));
+        List<IVectorSpecializationType> unassignedVectorSpecializations = new(additionalVectorSpecializationPopulation.Count + (originalPopulation.Vectors.Count - originalPopulation.VectorBases.Count));
 
         foreach (var additionalGroupSpecialization in additionalGroupSpecializationPopulation)
         {
             unassignedGroupSpecializations.Add(additionalGroupSpecialization.Value);
         }
 
+        if (originalPopulation.GroupBases.Count != originalPopulation.Groups.Count)
+        {
+            foreach (var group in originalPopulation.Groups)
+            {
+                if (originalPopulation.GroupBases.ContainsKey(group.Key) is false)
+                {
+                    unassignedGroupSpecializations.Add((IVectorGroupSpecializationType)group.Value);
+                }
+            }
+        }
+
         foreach (var additionalVectorSpecialization in additionalVectorSpecializationPopulation)
         {
             unassignedVectorSpecializations.Add(additionalVectorSpecialization.Value);
+        }
+
+        if (originalPopulation.VectorBases.Count != originalPopulation.Vectors.Count)
+        {
+            foreach (var vector in originalPopulation.Vectors)
+            {
+                if (originalPopulation.GroupBases.ContainsKey(vector.Key) is false)
+                {
+                    unassignedVectorSpecializations.Add((IVectorSpecializationType)vector.Value);
+                }
+            }
         }
 
         iterativelySetBaseGroupForSpecializations();

@@ -105,7 +105,7 @@ internal sealed class SpecializedSharpMeasuresScalarValidator : IProcesser<ISpec
 
     private IValidityWithDiagnostics ValidateScalarRootResolved(ISpecializedSharpMeasuresScalarValidationContext context, SpecializedSharpMeasuresScalarDefinition definition)
     {
-        var correctlyResolvedScalarBase = context.ScalarPopulation.ScalarBases.ContainsKey(definition.OriginalQuantity);
+        var correctlyResolvedScalarBase = context.ScalarPopulation.ScalarBases.ContainsKey(context.Type.AsNamedType());
 
         return ValidityWithDiagnostics.Conditional(correctlyResolvedScalarBase, () => Diagnostics.RootScalarNotResolved(context, definition));
     }

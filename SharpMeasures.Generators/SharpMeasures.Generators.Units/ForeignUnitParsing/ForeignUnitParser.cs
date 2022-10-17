@@ -9,11 +9,13 @@ using System.Collections.Generic;
 
 public sealed class ForeignUnitParser
 {
+    private static UnitParser Parser { get; } = new(alreadyInForeignAssembly: true);
+
     private List<RawUnitType> Units { get; } = new();
 
     public (bool Success, IEnumerable<INamedTypeSymbol> ReferencedSymbols) TryParse(INamedTypeSymbol typeSymbol)
     {
-        var result = UnitParser.Parse(typeSymbol);
+        var result = Parser.Parse(typeSymbol);
 
         if (result.HasValue)
         {

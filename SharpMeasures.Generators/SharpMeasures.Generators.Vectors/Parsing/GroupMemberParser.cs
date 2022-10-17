@@ -17,6 +17,8 @@ using SharpMeasures.Generators.Vectors.Parsing.VectorOperation;
 
 internal sealed class GroupMemberParser : AVectorParser<RawSharpMeasuresVectorGroupMemberDefinition, RawGroupMemberType>
 {
+    public GroupMemberParser(bool alreadyInForeignAssembly) : base(alreadyInForeignAssembly) { }
+
     protected override RawGroupMemberType ProduceResult(DefinedType type, RawSharpMeasuresVectorGroupMemberDefinition definition, IEnumerable<RawQuantityOperationDefinition> operations, IEnumerable<RawVectorOperationDefinition> vectorOperations, IEnumerable<RawQuantityProcessDefinition> processes,
         IEnumerable<RawVectorConstantDefinition> constants, IEnumerable<RawConvertibleQuantityDefinition> conversions, IEnumerable<RawIncludeUnitsDefinition> unitInstanceInclusions, IEnumerable<RawExcludeUnitsDefinition> unitInstanceExclusions)
     {
@@ -31,7 +33,7 @@ internal sealed class GroupMemberParser : AVectorParser<RawSharpMeasuresVectorGr
         }
 
         var rawVector = RawSharpMeasuresVectorGroupMemberDefinition.FromSymbolic(symbolicVector);
-        var foreignSymbols = symbolicVector.ForeignSymbols(typeSymbol.ContainingAssembly.Name, alreadyInForeignAssembly: false);
+        var foreignSymbols = symbolicVector.ForeignSymbols(typeSymbol.ContainingAssembly.Name, AlreadyInForeignAssembly);
 
         return (rawVector, foreignSymbols);
     }

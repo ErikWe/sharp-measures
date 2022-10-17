@@ -52,22 +52,26 @@ public abstract class AAttributeParser<TDefinition, TLocations> : IAttributePars
 
     public TDefinition? Parse(AttributeData attributeData)
     {
-        if (attributeData.GetSyntax() is not AttributeSyntax attributeSyntax)
-        {
-            throw new InvalidOperationException("Could not retrieve AttributeSyntax from AttributeData");
-        }
-
-        TDefinition definition = DefaultValueConstructor();
-
         if (attributeData.AttributeConstructor?.Parameters is not ImmutableArray<IParameterSymbol> parameterSymbols)
         {
             return default;
+        }
+        
+        TDefinition definition = DefaultValueConstructor();
+        
+        if (attributeData.GetSyntax() is not AttributeSyntax attributeSyntax)
+        {
+            definition = AddConstructorArguments(definition, attributeData, parameterSymbols);
+            definition = AddNamedArguments(definition, attributeData);
+            definition = AddCustomData(definition, attributeData, parameterSymbols);
+
+            return definition;
         }
 
         definition = AddAttributeLocation(definition, attributeSyntax);
         definition = AddConstructorArguments(definition, attributeData, attributeSyntax, parameterSymbols);
         definition = AddNamedArguments(definition, attributeData, attributeSyntax, parameterSymbols);
-        definition = AddCustomData(definition, attributeData, attributeSyntax, parameterSymbols);
+        definition = AddCustomData(definition, attributeData, parameterSymbols);
 
         return definition;
     }
@@ -124,23 +128,23 @@ public abstract class AAttributeParser<TDefinition, TLocations> : IAttributePars
 
     public IEnumerable<TDefinition> ParseAllOccurrences(INamedTypeSymbol typeSymbol) => Parse(typeSymbol.GetAttributesOfType(AttributeType));
 
-    protected virtual TDefinition AddCustomData(TDefinition definition, AttributeData attributeData, AttributeSyntax attributeSyntax, ImmutableArray<IParameterSymbol> parameterSymbols) => definition;
+    protected virtual TDefinition AddCustomData(TDefinition definition, AttributeData attributeData, IReadOnlyList<IParameterSymbol> parameterSymbols) => definition;
  
-    private TDefinition AddConstructorArguments(TDefinition definition, AttributeData attributeData, AttributeSyntax attributeSyntax, ImmutableArray<IParameterSymbol> parameterSymbols)
+    private TDefinition AddConstructorArguments(TDefinition definition, AttributeData attributeData, AttributeSyntax attributeSyntax, IReadOnlyList<IParameterSymbol> parameterSymbols)
     {
         if (attributeData.ConstructorArguments.IsEmpty)
         {
             return definition;
         }
 
-        for (int i = 0; i < parameterSymbols.Length && i < attributeData.ConstructorArguments.Length && i < attributeSyntax.ArgumentList?.Arguments.Count; i++)
+        for (int i = 0; i < parameterSymbols.Count && i < attributeData.ConstructorArguments.Length && i < attributeSyntax.ArgumentList?.Arguments.Count; i++)
         {
             if (attributeData.ConstructorArguments[i].Kind is TypedConstantKind.Error || ConstructorParameters.TryGetValue(parameterSymbols[i].Name, out IAttributeProperty<TDefinition> property) is false)
             {
                 continue;
             }
 
-            if (i == parameterSymbols.Length - 1 && parameterSymbols.Length < attributeData.ConstructorArguments.Length)
+            if (i == parameterSymbols.Count - 1 && parameterSymbols.Count < attributeData.ConstructorArguments.Length)
             {
                 definition = SetLastConstructorArgument(definition, property, attributeData.ConstructorArguments, i);
                 definition = property.Locator(definition, attributeSyntax.ArgumentList!, i, true);
@@ -157,7 +161,36 @@ public abstract class AAttributeParser<TDefinition, TLocations> : IAttributePars
         return definition;
     }
 
-    private TDefinition AddNamedArguments(TDefinition definition, AttributeData attributeData, AttributeSyntax attributeSyntax, ImmutableArray<IParameterSymbol> parameterSymbols)
+    private TDefinition AddConstructorArguments(TDefinition definition, AttributeData attributeData, IReadOnlyList<IParameterSymbol> parameterSymbols)
+    {
+        if (attributeData.ConstructorArguments.IsEmpty)
+        {
+            return definition;
+        }
+
+        for (int i = 0; i < parameterSymbols.Count && i < attributeData.ConstructorArguments.Length; i++)
+        {
+            if (attributeData.ConstructorArguments[i].Kind is TypedConstantKind.Error || ConstructorParameters.TryGetValue(parameterSymbols[i].Name, out IAttributeProperty<TDefinition> property) is false)
+            {
+                continue;
+            }
+
+            if (i == parameterSymbols.Count - 1 && parameterSymbols.Count < attributeData.ConstructorArguments.Length)
+            {
+                definition = SetLastConstructorArgument(definition, property, attributeData.ConstructorArguments, i);
+                definition = property.ExplicitSetter(definition);
+
+                break;
+            }
+
+            definition = SetConstructorArgument(definition, property, attributeData.ConstructorArguments, i);
+            definition = property.ExplicitSetter(definition);
+        }
+
+        return definition;
+    }
+
+    private TDefinition AddNamedArguments(TDefinition definition, AttributeData attributeData, AttributeSyntax attributeSyntax, IReadOnlyList<IParameterSymbol> parameterSymbols)
     {
         if (attributeData.NamedArguments.IsEmpty)
         {
@@ -166,21 +199,41 @@ public abstract class AAttributeParser<TDefinition, TLocations> : IAttributePars
 
         int argumentIndexOffset = attributeData.ConstructorArguments.Length;
 
-        if (parameterSymbols[parameterSymbols.Length - 1].IsParams && attributeData.ConstructorArguments[attributeData.ConstructorArguments.Length - 1].Kind is TypedConstantKind.Array)
+        if (parameterSymbols[parameterSymbols.Count - 1].IsParams && attributeData.ConstructorArguments[attributeData.ConstructorArguments.Length - 1].Kind is TypedConstantKind.Array)
         {
             argumentIndexOffset += attributeData.ConstructorArguments[attributeData.ConstructorArguments.Length - 1].Values.Length - 1;
         }
 
         for (int i = 0; i < attributeData.NamedArguments.Length; i++)
         {
-            if (attributeData.NamedArguments[i].Value.Kind is TypedConstantKind.Error
-                || NamedParameters.TryGetValue(attributeData.NamedArguments[i].Key, out IAttributeProperty<TDefinition> property) is false)
+            if (attributeData.NamedArguments[i].Value.Kind is TypedConstantKind.Error || NamedParameters.TryGetValue(attributeData.NamedArguments[i].Key, out IAttributeProperty<TDefinition> property) is false)
             {
                 continue;
             }
 
             definition = SetNamedArgument(definition, property, attributeData.NamedArguments[i].Value);
             definition = property.Locator(definition, attributeSyntax.ArgumentList!, argumentIndexOffset + i);
+        }
+
+        return definition;
+    }
+
+    private TDefinition AddNamedArguments(TDefinition definition, AttributeData attributeData)
+    {
+        if (attributeData.NamedArguments.IsEmpty)
+        {
+            return definition;
+        }
+
+        for (int i = 0; i < attributeData.NamedArguments.Length; i++)
+        {
+            if (attributeData.NamedArguments[i].Value.Kind is TypedConstantKind.Error || NamedParameters.TryGetValue(attributeData.NamedArguments[i].Key, out IAttributeProperty<TDefinition> property) is false)
+            {
+                continue;
+            }
+
+            definition = SetNamedArgument(definition, property, attributeData.NamedArguments[i].Value);
+            definition = property.ExplicitSetter(definition);
         }
 
         return definition;

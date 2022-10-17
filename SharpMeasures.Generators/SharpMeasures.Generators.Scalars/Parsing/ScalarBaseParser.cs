@@ -18,6 +18,8 @@ using System.Collections.Generic;
 
 internal sealed class ScalarBaseParser : AScalarParser<RawSharpMeasuresScalarDefinition, RawScalarBaseType>
 {
+    public ScalarBaseParser(bool alreadyInForeignAssembly) : base(alreadyInForeignAssembly) { }
+
     protected override RawScalarBaseType ProduceResult(DefinedType type, RawSharpMeasuresScalarDefinition definition, IEnumerable<RawQuantityOperationDefinition> operations, IEnumerable<RawQuantityProcessDefinition> processes, IEnumerable<RawScalarConstantDefinition> constants,
         IEnumerable<RawConvertibleQuantityDefinition> conversions, IEnumerable<RawIncludeUnitBasesDefinition> baseInclusions, IEnumerable<RawExcludeUnitBasesDefinition> baseExclusions, IEnumerable<RawIncludeUnitsDefinition> unitInstanceInclusions, IEnumerable<RawExcludeUnitsDefinition> unitInstanceExclusions)
     {
@@ -32,7 +34,7 @@ internal sealed class ScalarBaseParser : AScalarParser<RawSharpMeasuresScalarDef
         }
 
         var rawScalar = RawSharpMeasuresScalarDefinition.FromSymbolic(symbolicScalar);
-        var foreignSymbols = symbolicScalar.ForeignSymbols(typeSymbol.ContainingAssembly.Name, alreadyInForeignAssembly: false);
+        var foreignSymbols = symbolicScalar.ForeignSymbols(typeSymbol.ContainingAssembly.Name, AlreadyInForeignAssembly);
 
         return (rawScalar, foreignSymbols);
     }

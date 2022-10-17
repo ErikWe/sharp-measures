@@ -23,12 +23,12 @@ public static class VectorParser
         var vectorBaseSymbols = AttachSymbolProvider<VectorQuantityAttribute>(context, declarations, VectorDeclarationFilters<VectorQuantityAttribute>());
         var vectorSpecializationSymbols = AttachSymbolProvider<SpecializedVectorQuantityAttribute>(context, declarations, VectorDeclarationFilters<SpecializedVectorQuantityAttribute>());
 
-        GroupBaseParser groupBaseParser = new();
-        GroupSpecializationParser groupSpecializationParser = new();
-        GroupMemberParser groupMemberParser = new();
+        GroupBaseParser groupBaseParser = new(alreadyInForeignAssembly: false);
+        GroupSpecializationParser groupSpecializationParser = new(alreadyInForeignAssembly: false);
+        GroupMemberParser groupMemberParser = new(alreadyInForeignAssembly: false);
 
-        VectorBaseParser vectorBaseParser = new();
-        VectorSpecializationParser vectorSpecializationParser = new();
+        VectorBaseParser vectorBaseParser = new(alreadyInForeignAssembly: false);
+        VectorSpecializationParser vectorSpecializationParser = new(alreadyInForeignAssembly: false);
 
         var groupBasesAndForeignSymbols = groupBaseSymbols.Select(groupBaseParser.Parse);
         var groupSpecializationsAndForeignSymbols = groupSpecializationSymbols.Select(groupSpecializationParser.Parse);

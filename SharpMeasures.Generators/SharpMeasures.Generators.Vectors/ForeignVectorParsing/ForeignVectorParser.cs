@@ -9,12 +9,12 @@ using System.Collections.Generic;
 
 public sealed class ForeignVectorParser
 {
-    private static GroupBaseParser GroupBaseParser { get; } = new();
-    private static GroupSpecializationParser GroupSpecializationParser { get; } = new();
-    private static GroupMemberParser GroupMemberParser { get; } = new();
+    private static GroupBaseParser GroupBaseParser { get; } = new(alreadyInForeignAssembly: true);
+    private static GroupSpecializationParser GroupSpecializationParser { get; } = new(alreadyInForeignAssembly: true);
+    private static GroupMemberParser GroupMemberParser { get; } = new(alreadyInForeignAssembly: true);
 
-    private static VectorBaseParser VectorBaseParser { get; } = new();
-    private static VectorSpecializationParser VectorSpecializationParser { get; } = new();
+    private static VectorBaseParser VectorBaseParser { get; } = new(alreadyInForeignAssembly: true);
+    private static VectorSpecializationParser VectorSpecializationParser { get; } = new(alreadyInForeignAssembly: true);
 
     private List<RawGroupBaseType> GroupBases { get; } = new();
     private List<RawGroupSpecializationType> GroupSpecializations { get; } = new();

@@ -9,8 +9,8 @@ using System.Collections.Generic;
 
 public sealed class ForeignScalarParser
 {
-    private static ScalarBaseParser ScalarBaseParser { get; } = new();
-    private static ScalarSpecializationParser ScalarSpecializationParser { get; } = new();
+    private static ScalarBaseParser ScalarBaseParser { get; } = new(alreadyInForeignAssembly: true);
+    private static ScalarSpecializationParser ScalarSpecializationParser { get; } = new(alreadyInForeignAssembly: true);
 
     private List<RawScalarBaseType> ScalarBases { get; } = new();
     private List<RawScalarSpecializationType> ScalarSpecializations { get; } = new();

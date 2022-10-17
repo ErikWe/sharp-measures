@@ -16,9 +16,12 @@ public interface IAttributeProperty<TDefinition> : IAttributeProperty
 {
     public delegate TDefinition DSetter(TDefinition definition, object? obj);
     public delegate TDefinition DLocator(TDefinition definition, AttributeArgumentListSyntax argumentList, int index, bool defenitelyParams = false);
+    public delegate TDefinition DExplicitSetter(TDefinition definition);
 
     public abstract DSetter Setter { get; }
     public abstract DLocator Locator { get; }
+
+    public abstract DExplicitSetter ExplicitSetter { get; }
 }
 
 public record class AttributeProperty<TDefinition> : IAttributeProperty<TDefinition>
@@ -32,18 +35,23 @@ public record class AttributeProperty<TDefinition> : IAttributeProperty<TDefinit
     public IAttributeProperty<TDefinition>.DSetter Setter { get; init; }
     public IAttributeProperty<TDefinition>.DLocator Locator { get; init; }
 
-    private AttributeProperty(string name, string parameterName, IAttributeProperty<TDefinition>.DSetter setter, IAttributeProperty<TDefinition>.DLocator locator)
+    public IAttributeProperty<TDefinition>.DExplicitSetter ExplicitSetter { get; init; }
+
+    private AttributeProperty(string name, string parameterName, IAttributeProperty<TDefinition>.DSetter setter, IAttributeProperty<TDefinition>.DLocator locator, IAttributeProperty<TDefinition>.DExplicitSetter explicitSetter)
     {
         Name = name;
         ParameterName = parameterName;
+
         Setter = setter;
         Locator = locator;
+
+        ExplicitSetter = explicitSetter;
     }
 
-    public AttributeProperty(string name, string parameterName, IAttributeProperty<TDefinition>.DSetter setter, DSingleLocator locator) : this(name, parameterName, setter, WrapLocator(locator)) { }
-    public AttributeProperty(string name, string parameterName, IAttributeProperty<TDefinition>.DSetter setter, DMultiLocator locator) : this(name, parameterName, setter, WrapLocator(locator)) { }
-    public AttributeProperty(string name, IAttributeProperty<TDefinition>.DSetter setter, DSingleLocator locator) : this(name, ToParameterName(name), setter, locator) { }
-    public AttributeProperty(string name, IAttributeProperty<TDefinition>.DSetter setter, DMultiLocator locator) : this(name, ToParameterName(name), setter, locator) { }
+    public AttributeProperty(string name, string parameterName, IAttributeProperty<TDefinition>.DSetter setter, DSingleLocator locator, IAttributeProperty<TDefinition>.DExplicitSetter explicitSetter) : this(name, parameterName, setter, WrapLocator(locator), explicitSetter) { }
+    public AttributeProperty(string name, string parameterName, IAttributeProperty<TDefinition>.DSetter setter, DMultiLocator locator, IAttributeProperty<TDefinition>.DExplicitSetter explicitSetter) : this(name, parameterName, setter, WrapLocator(locator), explicitSetter) { }
+    public AttributeProperty(string name, IAttributeProperty<TDefinition>.DSetter setter, DSingleLocator locator, IAttributeProperty<TDefinition>.DExplicitSetter explicitSetter) : this(name, ToParameterName(name), setter, locator, explicitSetter) { }
+    public AttributeProperty(string name, IAttributeProperty<TDefinition>.DSetter setter, DMultiLocator locator, IAttributeProperty<TDefinition>.DExplicitSetter explicitSetter) : this(name, ToParameterName(name), setter, locator, explicitSetter) { }
 
     private static IAttributeProperty<TDefinition>.DLocator WrapLocator(DSingleLocator locator)
     {
@@ -74,10 +82,10 @@ public record class AttributeProperty<TDefinition, TPropertyType> : AttributePro
 {
     public delegate TDefinition DTypeSetter(TDefinition definition, TPropertyType value);
 
-    public AttributeProperty(string name, string parameterName, DTypeSetter setter, DSingleLocator locator) : base(name, parameterName, WrapSetter(setter), locator) { }
-    public AttributeProperty(string name, DTypeSetter setter, DSingleLocator locator) : base(name, WrapSetter(setter), locator) { }
-    public AttributeProperty(string name, string parameterName, DTypeSetter setter, DMultiLocator locator) : base(name, parameterName, WrapSetter(setter), locator) { }
-    public AttributeProperty(string name, DTypeSetter setter, DMultiLocator locator) : base(name, WrapSetter(setter), locator) { }
+    public AttributeProperty(string name, string parameterName, DTypeSetter setter, DSingleLocator locator, IAttributeProperty<TDefinition>.DExplicitSetter explicitSetter) : base(name, parameterName, WrapSetter(setter), locator, explicitSetter) { }
+    public AttributeProperty(string name, DTypeSetter setter, DSingleLocator locator, IAttributeProperty<TDefinition>.DExplicitSetter explicitSetter) : base(name, WrapSetter(setter), locator, explicitSetter) { }
+    public AttributeProperty(string name, string parameterName, DTypeSetter setter, DMultiLocator locator, IAttributeProperty<TDefinition>.DExplicitSetter explicitSetter) : base(name, parameterName, WrapSetter(setter), locator, explicitSetter) { }
+    public AttributeProperty(string name, DTypeSetter setter, DMultiLocator locator, IAttributeProperty<TDefinition>.DExplicitSetter explicitSetter) : base(name, WrapSetter(setter), locator, explicitSetter) { }
 
     private static IAttributeProperty<TDefinition>.DSetter WrapSetter(DTypeSetter setter)
     {
@@ -145,13 +153,19 @@ public record class AttributeProperty<TDefinition, TLocations, TPropertyType> : 
     where TDefinition : IOpenAttributeDefinition<TDefinition, TLocations>
     where TLocations : IAttributeLocations
 {
-    public delegate TLocations DSingleLocationSetter(TLocations definition, MinimalLocation location);
-    public delegate TLocations DMultiLocationSetter(TLocations definition, MinimalLocation collectionLocation, IReadOnlyList<MinimalLocation> elementLocations);
+    public delegate TLocations DSingleLocationSetter(TLocations locations, MinimalLocation location);
+    public delegate TLocations DMultiLocationSetter(TLocations locations, MinimalLocation collectionLocation, IReadOnlyList<MinimalLocation> elementLocations);
+    public delegate TLocations DExplicitSetter(TLocations locations);
 
-    public AttributeProperty(string name, string parameterName, DTypeSetter setter, DSingleLocationSetter locator) : base(name, parameterName, setter, WrapLocator(locator)) { }
-    public AttributeProperty(string name, DTypeSetter setter, DSingleLocationSetter locator) : base(name, setter, WrapLocator(locator)) { }
-    public AttributeProperty(string name, string parameterName, DTypeSetter setter, DMultiLocationSetter locator) : base(name, parameterName, setter, WrapLocator(locator)) { }
-    public AttributeProperty(string name, DTypeSetter setter, DMultiLocationSetter locator) : base(name, setter, WrapLocator(locator)) { }
+    public AttributeProperty(string name, string parameterName, DTypeSetter setter, DSingleLocationSetter locator, DExplicitSetter explicitSetter) : base(name, parameterName, setter, WrapLocator(locator), WrapExplicitSetter(explicitSetter)) { }
+    public AttributeProperty(string name, DTypeSetter setter, DSingleLocationSetter locator, DExplicitSetter explicitSetter) : base(name, setter, WrapLocator(locator), WrapExplicitSetter(explicitSetter)) { }
+    public AttributeProperty(string name, string parameterName, DTypeSetter setter, DMultiLocationSetter locator, DExplicitSetter explicitSetter) : base(name, parameterName, setter, WrapLocator(locator), WrapExplicitSetter(explicitSetter)) { }
+    public AttributeProperty(string name, DTypeSetter setter, DMultiLocationSetter locator, DExplicitSetter explicitSetter) : base(name, setter, WrapLocator(locator), WrapExplicitSetter(explicitSetter)) { }
+
+    public AttributeProperty(string name, string parameterName, DTypeSetter setter, DSingleLocationSetter locator) : base(name, parameterName, setter, WrapLocator(locator), MarkExplicitAsNoLocation(locator)) { }
+    public AttributeProperty(string name, DTypeSetter setter, DSingleLocationSetter locator) : base(name, setter, WrapLocator(locator), MarkExplicitAsNoLocation(locator)) { }
+    public AttributeProperty(string name, string parameterName, DTypeSetter setter, DMultiLocationSetter locator) : base(name, parameterName, setter, WrapLocator(locator), MarkExplicitAsNoLocation(locator)) { }
+    public AttributeProperty(string name, DTypeSetter setter, DMultiLocationSetter locator) : base(name, setter, WrapLocator(locator), MarkExplicitAsNoLocation(locator)) { }
 
     private static DSingleLocator WrapLocator(DSingleLocationSetter locator)
     {
@@ -172,6 +186,42 @@ public record class AttributeProperty<TDefinition, TLocations, TPropertyType> : 
         TDefinition wrapper(TDefinition definition, MinimalLocation collectionLocation, IReadOnlyList<MinimalLocation> elementLocations)
         {
             var modifiedLocations = locator(definition.Locations, collectionLocation, elementLocations);
+
+            return definition.WithLocations(modifiedLocations);
+        }
+    }
+
+    private static IAttributeProperty<TDefinition>.DExplicitSetter WrapExplicitSetter(DExplicitSetter explicitSetter)
+    {
+        return wrapper;
+
+        TDefinition wrapper(TDefinition definition)
+        {
+            var modifiedLocations = explicitSetter(definition.Locations);
+
+            return definition.WithLocations(modifiedLocations);
+        }
+    }
+
+    private static IAttributeProperty<TDefinition>.DExplicitSetter MarkExplicitAsNoLocation(DSingleLocationSetter locator)
+    {
+        return wrapper;
+
+        TDefinition wrapper(TDefinition definition)
+        {
+            var modifiedLocations = locator(definition.Locations, MinimalLocation.None);
+
+            return definition.WithLocations(modifiedLocations);
+        }
+    }
+
+    private static IAttributeProperty<TDefinition>.DExplicitSetter MarkExplicitAsNoLocation(DMultiLocationSetter locator)
+    {
+        return wrapper;
+
+        TDefinition wrapper(TDefinition definition)
+        {
+            var modifiedLocations = locator(definition.Locations, MinimalLocation.None, Array.Empty<MinimalLocation>());
 
             return definition.WithLocations(modifiedLocations);
         }

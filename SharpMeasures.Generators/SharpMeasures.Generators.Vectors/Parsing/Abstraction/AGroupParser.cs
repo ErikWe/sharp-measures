@@ -14,6 +14,13 @@ using System.Threading;
 
 internal abstract class AGroupParser<TDefinition, TProduct>
 {
+    protected bool AlreadyInForeignAssembly { get; }
+
+    protected AGroupParser(bool alreadyInForeignAssembly)
+    {
+        AlreadyInForeignAssembly = alreadyInForeignAssembly;
+    }
+
     public Optional<(IEnumerable<AttributeData>, TProduct, IEnumerable<INamedTypeSymbol>)> Parse(Optional<INamedTypeSymbol> typeSymbol, CancellationToken token)
     {
         if (token.IsCancellationRequested || typeSymbol.HasValue is false)
@@ -35,9 +42,9 @@ internal abstract class AGroupParser<TDefinition, TProduct>
             return new Optional<(IEnumerable<AttributeData>, TProduct, IEnumerable<INamedTypeSymbol>)>();
         }
 
-        (var operations, var operationForeignSymbols) = CommonParsing.ParseOperations(typeSymbol, attributes);
-        (var vectorOperations, var vectorOperationForeignSymbols) = CommonParsing.ParseVectorOperations(typeSymbol, attributes);
-        (var conversions, var conversionForeignSymbols) = CommonParsing.ParseConversions(typeSymbol, attributes);
+        (var operations, var operationForeignSymbols) = CommonParsing.ParseOperations(typeSymbol, attributes, AlreadyInForeignAssembly);
+        (var vectorOperations, var vectorOperationForeignSymbols) = CommonParsing.ParseVectorOperations(typeSymbol, attributes, AlreadyInForeignAssembly);
+        (var conversions, var conversionForeignSymbols) = CommonParsing.ParseConversions(typeSymbol, attributes, AlreadyInForeignAssembly);
 
         var includeUnitInstances = CommonParsing.ParseIncludeUnitInstances(attributes);
         var excludeUnitInstances = CommonParsing.ParseExcludeUnitInstances(attributes);

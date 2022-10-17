@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures.Generators.Tests.CrossAssembly.Scalars;
+﻿namespace SharpMeasures.Generators.Tests.CrossAssembly.SpecializedScalars;
 
 using SharpMeasures.Generators.DriverUtility;
 using SharpMeasures.Generators.Tests.Verify;
@@ -8,7 +8,7 @@ using VerifyXunit;
 using Xunit;
 
 [UsesVerify]
-public class UnitInOtherAssembly
+public class BaseInOtherAssembly
 {
     [Fact]
     public async void RunTest()
@@ -23,7 +23,7 @@ public class UnitInOtherAssembly
     private static string LocalSource => """
         using SharpMeasures.Generators;
 
-        [ScalarQuantity(typeof(UnitOfLength))]
+        [SpecializedScalarQuantity(typeof(Length))]
         public partial class Distance { }
         """;
 

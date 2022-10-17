@@ -19,8 +19,8 @@ public static class ScalarParser
         var scalarBaseSymbols = AttachSymbolProvider<ScalarQuantityAttribute>(context, declarations);
         var scalarSpecializationSymbols = AttachSymbolProvider<SpecializedScalarQuantityAttribute>(context, declarations);
 
-        ScalarBaseParser scalarBaseParser = new();
-        ScalarSpecializationParser scalarSpecializationParser = new();
+        ScalarBaseParser scalarBaseParser = new(alreadyInForeignAssembly: false);
+        ScalarSpecializationParser scalarSpecializationParser = new(alreadyInForeignAssembly: false);
 
         var scalarBasesAndForeignSymbols = scalarBaseSymbols.Select(scalarBaseParser.Parse);
         var scalarSpecializationsAndForeignSymbols = scalarSpecializationSymbols.Select(scalarSpecializationParser.Parse);

@@ -17,6 +17,13 @@ using System.Threading;
 
 internal abstract class AScalarParser<TDefinition, TProduct>
 {
+    protected bool AlreadyInForeignAssembly { get; }
+
+    protected AScalarParser(bool alreadyInForeignAssembly)
+    {
+        AlreadyInForeignAssembly = alreadyInForeignAssembly;
+    }
+
     public Optional<(IEnumerable<AttributeData>, TProduct, IEnumerable<INamedTypeSymbol>)> Parse(Optional<INamedTypeSymbol> typeSymbol, CancellationToken token)
     {
         if (token.IsCancellationRequested || typeSymbol.HasValue is false)
@@ -60,24 +67,24 @@ internal abstract class AScalarParser<TDefinition, TProduct>
 
     protected abstract (Optional<TDefinition>, IEnumerable<INamedTypeSymbol>) ParseScalar(INamedTypeSymbol typeSymbol, IEnumerable<AttributeData> attributes);
 
-    private static (IEnumerable<RawQuantityOperationDefinition>, IEnumerable<INamedTypeSymbol>) ParseOperations(INamedTypeSymbol typeSymbol, IEnumerable<AttributeData> attributes)
+    private (IEnumerable<RawQuantityOperationDefinition>, IEnumerable<INamedTypeSymbol>) ParseOperations(INamedTypeSymbol typeSymbol, IEnumerable<AttributeData> attributes)
     {
         var symbolicOperations = QuantityOperationParser.Parser.ParseAllOccurrences(attributes);
 
         var rawOperations = symbolicOperations.Select(static (symbolicOperation) => RawQuantityOperationDefinition.FromSymbolic(symbolicOperation));
-        var foreignSymbols = symbolicOperations.SelectMany((symbolicOperation) => symbolicOperation.ForeignSymbols(typeSymbol.ContainingAssembly.Name, alreadyInForeignAssembly: false));
+        var foreignSymbols = symbolicOperations.SelectMany((symbolicOperation) => symbolicOperation.ForeignSymbols(typeSymbol.ContainingAssembly.Name, AlreadyInForeignAssembly));
 
         return (rawOperations, foreignSymbols);
     }
 
     private static IEnumerable<RawQuantityProcessDefinition> ParseProcesses(IEnumerable<AttributeData> attributes) => QuantityProcessParser.Parser.ParseAllOccurrences(attributes);
     private static IEnumerable<RawScalarConstantDefinition> ParseConstants(IEnumerable<AttributeData> attributes) => ScalarConstantParser.Parser.ParseAllOccurrences(attributes);
-    private static (IEnumerable<RawConvertibleQuantityDefinition> Definitions, IEnumerable<INamedTypeSymbol> ForeignSymbols) ParseConversions(INamedTypeSymbol typeSymbol, IEnumerable<AttributeData> attributes)
+    private (IEnumerable<RawConvertibleQuantityDefinition> Definitions, IEnumerable<INamedTypeSymbol> ForeignSymbols) ParseConversions(INamedTypeSymbol typeSymbol, IEnumerable<AttributeData> attributes)
     {
         var symbolicConversions = ConvertibleQuantityParser.Parser.ParseAllOccurrences(attributes);
 
         var rawConversions = symbolicConversions.Select(static (symbolicConversion) => RawConvertibleQuantityDefinition.FromSymbolic(symbolicConversion));
-        var foreignSymbols = symbolicConversions.SelectMany((symbolicConversion) => symbolicConversion.ForeignSymbols(typeSymbol.ContainingAssembly.Name, alreadyInForeignAssembly: false));
+        var foreignSymbols = symbolicConversions.SelectMany((symbolicConversion) => symbolicConversion.ForeignSymbols(typeSymbol.ContainingAssembly.Name, AlreadyInForeignAssembly));
 
         return (rawConversions, foreignSymbols);
     }

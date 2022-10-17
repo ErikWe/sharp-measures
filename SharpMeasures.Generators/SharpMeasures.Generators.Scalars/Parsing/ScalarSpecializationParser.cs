@@ -18,6 +18,8 @@ using SharpMeasures.Generators.Quantities.Parsing.QuantityProcess;
 
 internal sealed class ScalarSpecializationParser : AScalarParser<RawSpecializedSharpMeasuresScalarDefinition, RawScalarSpecializationType>
 {
+    public ScalarSpecializationParser(bool alreadyInForeignAssembly) : base(alreadyInForeignAssembly) { }
+
     protected override RawScalarSpecializationType ProduceResult(DefinedType type, RawSpecializedSharpMeasuresScalarDefinition definition, IEnumerable<RawQuantityOperationDefinition> operations, IEnumerable<RawQuantityProcessDefinition> processes, IEnumerable<RawScalarConstantDefinition> constants,
         IEnumerable<RawConvertibleQuantityDefinition> conversions,IEnumerable<RawIncludeUnitBasesDefinition> baseInclusions, IEnumerable<RawExcludeUnitBasesDefinition> baseExclusions, IEnumerable<RawIncludeUnitsDefinition> unitInstanceInclusions, IEnumerable<RawExcludeUnitsDefinition> unitInstanceExclusions)
     {
@@ -32,7 +34,7 @@ internal sealed class ScalarSpecializationParser : AScalarParser<RawSpecializedS
         }
 
         var rawScalar = RawSpecializedSharpMeasuresScalarDefinition.FromSymbolic(symbolicScalar);
-        var foreignSymbols = symbolicScalar.ForeignSymbols(typeSymbol.ContainingAssembly.Name, alreadyInForeignAssembly: false);
+        var foreignSymbols = symbolicScalar.ForeignSymbols(typeSymbol.ContainingAssembly.Name, AlreadyInForeignAssembly);
 
         return (rawScalar, foreignSymbols);
     }

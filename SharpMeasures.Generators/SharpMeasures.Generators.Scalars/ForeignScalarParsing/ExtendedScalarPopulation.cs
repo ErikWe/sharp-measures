@@ -57,11 +57,22 @@ internal sealed record class ExtendedScalarPopulation : IScalarPopulation
             scalarPopulation.TryAdd(keyValue.Key, keyValue.Value);
         }
 
-        List<IScalarSpecializationType> unassignedSpecializations = new(additionalScalarSpecializationPopulation.Count);
+        List<IScalarSpecializationType> unassignedSpecializations = new(additionalScalarSpecializationPopulation.Count + (originalPopulation.Scalars.Count - originalPopulation.ScalarBases.Count));
 
         foreach (var additionalScalarSpecialization in additionalScalarSpecializationPopulation)
         {
             unassignedSpecializations.Add(additionalScalarSpecialization.Value);
+        }
+
+        if (originalPopulation.ScalarBases.Count != originalPopulation.Scalars.Count)
+        {
+            foreach (var scalar in originalPopulation.Scalars)
+            {
+                if (originalPopulation.ScalarBases.ContainsKey(scalar.Key) is false)
+                {
+                    unassignedSpecializations.Add((IScalarSpecializationType)scalar.Value);
+                }
+            }
         }
 
         iterativelySetBaseScalarForSpecializations();
