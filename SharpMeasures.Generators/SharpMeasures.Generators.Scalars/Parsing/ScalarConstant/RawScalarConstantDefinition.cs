@@ -6,7 +6,8 @@ internal sealed record class RawScalarConstantDefinition : ARawQuantityConstantD
 {
     public static RawScalarConstantDefinition Empty { get; } = new();
 
-    public double Value { get; init; }
+    public double? Value { get; init; }
+    public string? Expression { get; init; }
 
     protected override RawScalarConstantDefinition Definition => this;
 

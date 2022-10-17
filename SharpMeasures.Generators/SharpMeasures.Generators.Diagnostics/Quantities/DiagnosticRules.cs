@@ -156,6 +156,16 @@ public static partial class DiagnosticRules
         customTags: WellKnownDiagnosticTags.Unnecessary
     );
 
+    public static readonly DiagnosticDescriptor InvalidExpressionForConstant = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.InvalidExpressionForConstant,
+        title: "Invalid expression for constant",
+        messageFormat: "The expression describing the value of the constant must be defined",
+        category: "Usage",
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true
+    );
+
     public static readonly DiagnosticDescriptor QuantityConvertibleToSelf = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.QuantityConvertibleToSelf,

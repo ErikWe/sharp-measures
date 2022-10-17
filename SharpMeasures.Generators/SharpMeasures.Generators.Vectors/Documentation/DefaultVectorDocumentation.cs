@@ -94,13 +94,24 @@ internal sealed class DefaultVectorDocumentation : IVectorDocumentationStrategy,
 
         IEnumerable<string> components()
         {
-            foreach (double value in constant.Value)
+            if (constant.Locations.ExplicitlySetValue)
             {
-                yield return value switch
+                foreach (var value in constant.Value!)
                 {
-                    > 10000 or < 0.0001 and > -0.0001 or < -10000 => value.ToString("0.000E0", CultureInfo.InvariantCulture),
-                    _ => value.ToString("0.####", CultureInfo.InvariantCulture)
-                };
+                    yield return value switch
+                    {
+                        > 10000 or < 0.0001 and > -0.0001 or < -10000 => value.ToString("0.000E0", CultureInfo.InvariantCulture),
+                        _ => value.ToString("0.####", CultureInfo.InvariantCulture)
+                    };
+                }
+            }
+
+            if (constant.Locations.ExplicitlySetExpressions)
+            {
+                foreach (var expression in constant.Expressions!)
+                {
+                    yield return expression;
+                }
             }
         }
     }

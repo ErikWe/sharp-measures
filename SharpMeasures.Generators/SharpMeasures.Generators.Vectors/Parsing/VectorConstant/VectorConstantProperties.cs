@@ -11,6 +11,7 @@ internal static class VectorConstantProperties
         Name,
         Unit,
         Value,
+        Expressions,
         GenerateMultiplesProperty,
         Multiples,
         MultiplesRegexSubstitution
@@ -38,6 +39,17 @@ internal static class VectorConstantProperties
         {
             ValueCollection = collectionLocation,
             ValueElements = elementLocations
+        }
+    );
+
+    private static VectorConstantProperty<string[]> Expressions { get; } = new
+    (
+        name: nameof(VectorConstantAttribute.Expressions),
+        setter: static (definition, expressions) => definition with { Expressions = expressions },
+        locator: static (locations, collectionLocation, elementLocations) => locations with
+        {
+            ExpressionCollection = collectionLocation,
+            ExpressionElements = elementLocations
         }
     );
 

@@ -5,6 +5,7 @@ using Microsoft.CodeAnalysis.Text;
 
 using SharpMeasures.Generators.SourceBuilding;
 
+using System.Globalization;
 using System.Text;
 
 internal static class Execution
@@ -73,7 +74,18 @@ internal static class Execution
                 SeparationHandler.AddIfNecessary();
 
                 AppendDocumentation(indentation, Data.SourceBuildingContext.Documentation.Constant(constant));
-                Builder.AppendLine($"{indentation}public static {Data.Scalar.FullyQualifiedName} {constant.Name} => new({constant.Value}, {Data.Unit.FullyQualifiedName}.{constant.UnitInstanceName});");
+
+                Builder.AppendLine($"{indentation}public static {Data.Scalar.FullyQualifiedName} {constant.Name} => new({getExpression(constant)}, {Data.Unit.FullyQualifiedName}.{constant.UnitInstanceName});");
+            }
+
+            static string getExpression(IScalarConstant constant)
+            {
+                if (constant.Locations.ExplicitlySetValue)
+                {
+                    return constant.Value!.Value.ToString(CultureInfo.InvariantCulture);
+                }
+
+                return constant.Expression!;
             }
         }
 

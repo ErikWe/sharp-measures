@@ -17,7 +17,7 @@ using Xunit;
 public class VectorConstantInvalidDimension
 {
     [Fact]
-    public Task VerifyVectorConstantInvalidDimensionDiagnosticsMessage() => AssertVector(ZeroValues).VerifyDiagnostics();
+    public Task VerifyVectorConstantInvalidDimensionDiagnosticsMessage() => AssertVector(NullValue).VerifyDiagnostics();
 
     [Theory]
     [MemberData(nameof(InvalidConstantValues))]
@@ -33,14 +33,21 @@ public class VectorConstantInvalidDimension
         
     public static IEnumerable<object[]> InvalidConstantValues => new object[][]
     {
-        new object[] { ZeroValues },
+        new object[] { NullValue },
         new object[] { TwoValues },
-        new object[] { FourValues }
+        new object[] { FourValues },
+        new object[] { NullExpressions },
+        new object[] { TwoExpressions },
+        new object[] { FourExpressions }
     };
 
-    private static TextConfig ZeroValues { get; } = new(SourceSubtext.Covered(string.Empty), true);
+    private static TextConfig NullValue { get; } = new(SourceSubtext.Covered("null", prefix: ", (double[])"), false);
     private static TextConfig TwoValues { get; } = new(SourceSubtext.Covered("1, 1", prefix: ", "), false);
     private static TextConfig FourValues { get; } = new(SourceSubtext.Covered("1, 1, 1, 1", prefix: ", "), false);
+
+    private static TextConfig NullExpressions { get; } = new(SourceSubtext.Covered("null", prefix: ", (string[])"), false);
+    private static TextConfig TwoExpressions { get; } = new(SourceSubtext.Covered("\"1\", \"1\"", prefix: ", "), false);
+    private static TextConfig FourExpressions { get; } = new(SourceSubtext.Covered("\"1\", \"1\", \"1\", \"1\"", prefix: ", "), false);
 
     public readonly record struct TextConfig(SourceSubtext Text, bool TargetAttribute);
 

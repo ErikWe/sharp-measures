@@ -2,6 +2,7 @@
 
 using Microsoft.CodeAnalysis;
 
+using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Quantities.Parsing.Diagnostics.Processing;
 using SharpMeasures.Generators.Quantities.Parsing.QuantityConstant;
 using SharpMeasures.Generators.Vectors.Parsing.VectorConstant;
@@ -19,6 +20,13 @@ internal sealed class VectorConstantProcessingDiagnostics : IVectorConstantProce
     {
         QuantityInstance = new();
     }
+
+    public Diagnostic? NullExpressionElement(IQuantityConstantProcessingContext context, RawVectorConstantDefinition definition, int index)
+    {
+        return DiagnosticConstruction.InvalidExpressionForConstant(definition.Locations.ExpressionElements[index].AsRoslynLocation());
+    }
+
+    public Diagnostic? EmptyExpressionElement(IQuantityConstantProcessingContext context, RawVectorConstantDefinition definition, int index) => NullExpressionElement(context, definition, index);
 
     public Diagnostic? NullName(IQuantityConstantProcessingContext context, RawVectorConstantDefinition definition) => QuantityInstance.NullName(context, definition);
     public Diagnostic? EmptyName(IQuantityConstantProcessingContext context, RawVectorConstantDefinition definition) => QuantityInstance.EmptyName(context, definition);

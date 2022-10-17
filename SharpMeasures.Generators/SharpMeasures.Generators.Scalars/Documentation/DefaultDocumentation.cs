@@ -58,13 +58,21 @@ internal sealed class DefaultDocumentation : IDocumentationStrategy, IEquatable<
 
     public string Constant(IScalarConstant constant)
     {
-        string value = constant.Value switch
-        {
-            > 10000 or < 0.0001 and > -0.0001 or < -10000 => constant.Value.ToString("0.000E0", CultureInfo.InvariantCulture),
-            _ => constant.Value.ToString("0.####", CultureInfo.InvariantCulture)
-        };
+        return $$"""/// <summary>The {{ScalarReference}} representing { {{produceDescription()}} } <see cref="{{Unit.FullyQualifiedName}}.{{constant.UnitInstanceName}}"/>.</summary>""";
 
-        return $$"""/// <summary>The {{ScalarReference}} representing { {{value}} } <see cref="{{Unit.FullyQualifiedName}}.{{constant.UnitInstanceName}}"/>.</summary>""";
+        string produceDescription()
+        {
+            if (constant.Locations.ExplicitlySetValue)
+            {
+                return constant.Value!.Value switch
+                {
+                    > 10000 or < 0.0001 and > -0.0001 or < -10000 => constant.Value.Value.ToString("0.000E0", CultureInfo.InvariantCulture),
+                    _ => constant.Value.Value.ToString("0.####", CultureInfo.InvariantCulture)
+                };
+            }
+
+            return constant.Expression!;
+        }
     }
 
     public string UnitBase(IUnitInstance unitInstance) => $$"""/// <summary>The {{ScalarReference}} representing { 1 } <see cref="{{Unit.FullyQualifiedName}}.{{unitInstance.Name}}"/>.</summary>""";

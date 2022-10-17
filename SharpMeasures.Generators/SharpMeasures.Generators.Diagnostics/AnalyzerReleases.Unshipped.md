@@ -52,7 +52,8 @@ Measures1221 | Naming | Error | Invalid name for multiples of constant
 Measures1222 | Naming | Error | Duplicate name of constant
 Measures1223 | Naming | Error | Constant shares name with unit
 Measures1224 | Usage | Info | Constant multiples is disabled
-Measures1225 | Usage | Error | Quantity convertible to itself
+Measures1225 | Usage | Error | Invalid expression for constant
+Measures1226 | Usage | Error | Quantity convertible to itself
 Measures1240 | Usage | Warning | Contradictory attributes
 Measures1241 | Usage | Warning | Inclusion or exclusion had no effect
 Measures1242 | Usage | Info | Union inclusion stacking mode is redundant

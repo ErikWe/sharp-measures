@@ -87,9 +87,20 @@ internal static class Execution
 
             IEnumerable<string> components()
             {
-                foreach (double component in constant.Value)
+                if (constant.Locations.ExplicitlySetValue)
                 {
-                    yield return component.ToString(CultureInfo.InvariantCulture);
+                    foreach (var value in constant.Value!)
+                    {
+                        yield return value.ToString(CultureInfo.InvariantCulture);
+                    }
+                }
+
+                if (constant.Locations.ExplicitlySetExpressions)
+                {
+                    foreach (var expression in constant.Expressions!)
+                    {
+                        yield return expression;
+                    }
                 }
             }
         }
@@ -112,23 +123,26 @@ internal static class Execution
         {
             StringBuilder source = new();
 
-            IterativeBuilding.AppendEnumerable(source, Data.Scalar is null ? scalarComponents() : typeComponents(), ", ");
+            IterativeBuilding.AppendEnumerable(source, Data.Scalar is null ? components(componentValue: "Value") : components(componentValue: "Magnitude.Value"), ", ");
 
             return source.ToString();
 
-            IEnumerable<string> scalarComponents()
+            IEnumerable<string> components(string componentValue)
             {
-                for (int i = 0; i < constant.Value.Count; i++)
+                if (constant.Locations.ExplicitlySetValue)
                 {
-                    yield return $"{VectorTextBuilder.GetUpperCasedComponentName(i, Data.Dimension)}.Value / {constant.Value[i]}";
+                    for (int i = 0; i < constant.Value!.Count; i++)
+                    {
+                        yield return $"{VectorTextBuilder.GetUpperCasedComponentName(i, Data.Dimension)}.{componentValue} / {constant.Value[i]}";
+                    }
                 }
-            }
 
-            IEnumerable<string> typeComponents()
-            {
-                for (int i = 0; i < constant.Value.Count; i++)
+                if (constant.Locations.ExplicitlySetExpressions)
                 {
-                    yield return $"{VectorTextBuilder.GetUpperCasedComponentName(i, Data.Dimension)}.Magnitude.Value / {constant.Value[i]}";
+                    for (int i = 0; i < constant.Expressions!.Count; i++)
+                    {
+                        yield return $"{VectorTextBuilder.GetUpperCasedComponentName(i, Data.Dimension)}.{componentValue} / ({constant.Expressions[i]})";
+                    }
                 }
             }
         }

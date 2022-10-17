@@ -2,6 +2,7 @@
 
 using Microsoft.CodeAnalysis;
 
+using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Quantities.Parsing.Diagnostics.Processing;
 using SharpMeasures.Generators.Quantities.Parsing.QuantityConstant;
 using SharpMeasures.Generators.Scalars.Parsing.ScalarConstant;
@@ -19,6 +20,13 @@ internal sealed class ScalarConstantProcessingDiagnostics : IScalarConstantProce
     {
         QuantityInstance = new();
     }
+
+    public Diagnostic NullExpression(IQuantityConstantProcessingContext context, RawScalarConstantDefinition definition)
+    {
+        return DiagnosticConstruction.InvalidExpressionForConstant(definition.Locations.Expression?.AsRoslynLocation());
+    }
+
+    public Diagnostic EmptyExpression(IQuantityConstantProcessingContext context, RawScalarConstantDefinition definition) => NullExpression(context, definition);
 
     public Diagnostic? NullName(IQuantityConstantProcessingContext context, RawScalarConstantDefinition definition) => QuantityInstance.NullName(context, definition);
     public Diagnostic? EmptyName(IQuantityConstantProcessingContext context, RawScalarConstantDefinition definition) => QuantityInstance.EmptyName(context, definition);

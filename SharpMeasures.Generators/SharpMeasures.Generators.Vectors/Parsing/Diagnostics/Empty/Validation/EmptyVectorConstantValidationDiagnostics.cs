@@ -11,7 +11,8 @@ internal sealed class EmptyVectorConstantValidationDiagnostics : IVectorConstant
 
     private EmptyVectorConstantValidationDiagnostics() { }
 
-    public Diagnostic? InvalidConstantDimensionality(IVectorConstantValidationContext context, VectorConstantDefinition definition) => null;
+    public Diagnostic? InvalidValueDimensionality(IVectorConstantValidationContext context, VectorConstantDefinition definition) => null;
+    public Diagnostic? InvalidExpressionsDimensionality(IVectorConstantValidationContext context, VectorConstantDefinition definition) => null;
     public Diagnostic? UnrecognizedUnitInstanceName(IQuantityConstantValidationContext context, VectorConstantDefinition definition) => null;
     public Diagnostic? DuplicateName(IQuantityConstantValidationContext context, VectorConstantDefinition definition) => null;
     public Diagnostic? NameReservedByMultiples(IQuantityConstantValidationContext context, VectorConstantDefinition definition) => null;

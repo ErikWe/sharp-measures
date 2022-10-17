@@ -23,13 +23,23 @@ internal sealed class VectorConstantValidationDiagnostics : IVectorConstantValid
     public Diagnostic? NameReservedByUnitInstancePluralForm(IQuantityConstantValidationContext context, VectorConstantDefinition definition) => QuantityInstance.NameReservedByUnitInstancePluralForm(context, definition);
     public Diagnostic? MultiplesReservedByUnitInstancePluralForm(IQuantityConstantValidationContext context, VectorConstantDefinition definition) => QuantityInstance.MultiplesReservedByUnitInstancePluralForm(context, definition);
 
-    public Diagnostic InvalidConstantDimensionality(IVectorConstantValidationContext context, VectorConstantDefinition definition)
+    public Diagnostic InvalidValueDimensionality(IVectorConstantValidationContext context, VectorConstantDefinition definition)
     {
         if (definition.Locations.ExplicitlySetValue)
         {
-            return DiagnosticConstruction.VectorConstantInvalidDimension(definition.Locations.ValueCollection?.AsRoslynLocation(), context.Dimension, definition.Value.Count, context.Type.Name);
+            return DiagnosticConstruction.VectorConstantInvalidDimension(definition.Locations.ValueCollection?.AsRoslynLocation(), context.Dimension, definition.Value?.Count ?? 0, context.Type.Name);
         }
 
-        return DiagnosticConstruction.VectorConstantInvalidDimension(definition.Locations.AttributeName.AsRoslynLocation(), context.Dimension, definition.Value.Count, context.Type.Name);
+        return DiagnosticConstruction.VectorConstantInvalidDimension(definition.Locations.AttributeName.AsRoslynLocation(), context.Dimension, 0, context.Type.Name);
+    }
+
+    public Diagnostic InvalidExpressionsDimensionality(IVectorConstantValidationContext context, VectorConstantDefinition definition)
+    {
+        if (definition.Locations.ExplicitlySetExpressions)
+        {
+            return DiagnosticConstruction.VectorConstantInvalidDimension(definition.Locations.ExpressionCollection?.AsRoslynLocation(), context.Dimension, definition.Expressions?.Count ?? 0, context.Type.Name);
+        }
+
+        return DiagnosticConstruction.VectorConstantInvalidDimension(definition.Locations.AttributeName.AsRoslynLocation(), context.Dimension, 0, context.Type.Name);
     }
 }

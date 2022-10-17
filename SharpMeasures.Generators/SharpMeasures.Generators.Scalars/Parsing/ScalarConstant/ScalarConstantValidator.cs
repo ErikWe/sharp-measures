@@ -28,7 +28,7 @@ internal sealed class ScalarConstantValidator : AQuantityConstantValidator<IScal
         Diagnostics = diagnostics;
     }
 
-    protected override ScalarConstantDefinition ProduceResult(ScalarConstantDefinition definition, bool generateMultiples) => new(definition.Name, definition.UnitInstanceName, definition.Value, generateMultiples, definition.Multiples, definition.Locations);
+    protected override ScalarConstantDefinition ProduceResult(ScalarConstantDefinition definition, bool generateMultiples) => new(definition.Name, definition.UnitInstanceName, definition.Value, definition.Expression, generateMultiples, definition.Multiples, definition.Locations);
 
     protected override IValidityWithDiagnostics ValidateConstant(IScalarConstantValidationContext context, ScalarConstantDefinition definition)
     {

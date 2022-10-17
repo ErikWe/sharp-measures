@@ -25,4 +25,6 @@ internal sealed class EmptyVectorConstantProcessingDiagnostics : IVectorConstant
     public Diagnostic? NullName(IQuantityConstantProcessingContext context, RawVectorConstantDefinition definition) => null;
     public Diagnostic? NullUnitInstanceName(IQuantityConstantProcessingContext context, RawVectorConstantDefinition definition) => null;
     public Diagnostic? SetRegexSubstitutionButNotPattern(IQuantityConstantProcessingContext context, RawVectorConstantDefinition definition) => null;
+    public Diagnostic? NullExpressionElement(IQuantityConstantProcessingContext context, RawVectorConstantDefinition definition, int index) => null;
+    public Diagnostic? EmptyExpressionElement(IQuantityConstantProcessingContext context, RawVectorConstantDefinition definition, int index) => null;
 }

@@ -25,4 +25,6 @@ internal sealed class EmptyScalarConstantProcessingDiagnostics : IScalarConstant
     public Diagnostic? NullName(IQuantityConstantProcessingContext context, RawScalarConstantDefinition definition) => null;
     public Diagnostic? NullUnitInstanceName(IQuantityConstantProcessingContext context, RawScalarConstantDefinition definition) => null;
     public Diagnostic? SetRegexSubstitutionButNotPattern(IQuantityConstantProcessingContext context, RawScalarConstantDefinition definition) => null;
+    public Diagnostic? NullExpression(IQuantityConstantProcessingContext context, RawScalarConstantDefinition definition) => null;
+    public Diagnostic? EmptyExpression(IQuantityConstantProcessingContext context, RawScalarConstantDefinition definition) => null;
 }

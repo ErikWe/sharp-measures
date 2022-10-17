@@ -1,6 +1,6 @@
 ﻿[
   {
-    Id: Measures1225,
+    Id: Measures1226,
     Title: Quantity convertible to itself,
     Severity: Error,
     WarningLevel: 0,

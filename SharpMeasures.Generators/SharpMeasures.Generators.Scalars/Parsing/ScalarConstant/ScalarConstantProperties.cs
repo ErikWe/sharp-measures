@@ -11,6 +11,7 @@ internal static class ScalarConstantProperties
         Name,
         UnitInstanceName,
         Value,
+        Expression,
         GenerateMultiplesProperty,
         Multiples,
         MultiplesRegexSubstitution
@@ -35,6 +36,13 @@ internal static class ScalarConstantProperties
         name: nameof(ScalarConstantAttribute.Value),
         setter: static (definition, value) => definition with { Value = value },
         locator: static (locations, valueLocation) => locations with { Value = valueLocation }
+    );
+
+    private static ScalarConstantProperty<string> Expression { get; } = new
+    (
+        name: nameof(ScalarConstantAttribute.Expression),
+        setter: static (definition, expression) => definition with { Expression = expression },
+        locator: static (locations, expressionLocation) => locations with { Expression = expressionLocation }
     );
 
     private static ScalarConstantProperty<bool> GenerateMultiplesProperty { get; } = new

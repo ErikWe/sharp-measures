@@ -18,6 +18,7 @@ public interface IQuantityConstantProcessingDiagnostics<TDefinition, TLocations>
     public abstract Diagnostic? NameReservedByMultiples(IQuantityConstantProcessingContext context, TDefinition definition);
     public abstract Diagnostic? NullUnitInstanceName(IQuantityConstantProcessingContext context, TDefinition definition);
     public abstract Diagnostic? EmptyUnitInstanceName(IQuantityConstantProcessingContext context, TDefinition definition);
+
     public abstract Diagnostic? NullMultiples(IQuantityConstantProcessingContext context, TDefinition definition);
     public abstract Diagnostic? EmptyMultiples(IQuantityConstantProcessingContext context, TDefinition definition);
     public abstract Diagnostic? InvalidMultiples(IQuantityConstantProcessingContext context, TDefinition definition);
@@ -25,6 +26,7 @@ public interface IQuantityConstantProcessingDiagnostics<TDefinition, TLocations>
     public abstract Diagnostic? MultiplesReservedByName(IQuantityConstantProcessingContext context, TDefinition definition, string interpretedMultiples);
     public abstract Diagnostic? NameAndMultiplesIdentical(IQuantityConstantProcessingContext context, TDefinition definition);
     public abstract Diagnostic? MultiplesDisabledButNameSpecified(IQuantityConstantProcessingContext context, TDefinition definition);
+
     public abstract Diagnostic? SetRegexSubstitutionButNotPattern(IQuantityConstantProcessingContext context, TDefinition definition);
 }
 

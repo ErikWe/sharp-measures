@@ -9,13 +9,20 @@ internal sealed record class RawVectorConstantDefinition : ARawQuantityConstantD
 {
     public static RawVectorConstantDefinition Empty { get; } = new();
 
-    public IReadOnlyList<double> Value
+    public IReadOnlyList<double>? Value
     {
         get => value;
-        init => this.value = value.AsReadOnlyEquatable();
+        init => this.value = value?.AsReadOnlyEquatable();
     }
 
-    private IReadOnlyList<double> value { get; init; } = ReadOnlyEquatableList<double>.Empty;
+    public IReadOnlyList<string>? Expressions
+    {
+        get => expressions;
+        init => expressions = value?.AsReadOnlyEquatable();
+    }
+
+    private IReadOnlyList<double>? value { get; init; }
+    private IReadOnlyList<string>? expressions { get; init; }
 
     protected override RawVectorConstantDefinition Definition => this;
 

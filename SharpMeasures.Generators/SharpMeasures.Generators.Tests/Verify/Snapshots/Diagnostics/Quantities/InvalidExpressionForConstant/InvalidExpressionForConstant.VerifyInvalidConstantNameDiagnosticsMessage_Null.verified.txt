@@ -1,0 +1,15 @@
+﻿[
+  {
+    Id: Measures1225,
+    Title: Invalid expression for constant,
+    Severity: Error,
+    WarningLevel: 0,
+    Location: : (2,41)-(2,45),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: The expression describing the value of the constant must be defined,
+    Message: The expression describing the value of the constant must be defined,
+    Category: Usage,
+    CustomTags: []
+  }
+]

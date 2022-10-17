@@ -81,6 +81,11 @@ public static partial class DiagnosticConstruction
         return Diagnostic.Create(DiagnosticRules.ConstantMultiplesDisabledButNameSpecified, location, singularForm);
     }
 
+    public static Diagnostic InvalidExpressionForConstant(Location? location)
+    {
+        return Diagnostic.Create(DiagnosticRules.InvalidExpressionForConstant, location);
+    }
+
     public static Diagnostic QuantityConvertibleToSelf(Location? location, string quantityTypeName)
     {
         return Diagnostic.Create(DiagnosticRules.QuantityConvertibleToSelf, location, quantityTypeName);
