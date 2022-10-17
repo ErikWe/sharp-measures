@@ -1,12 +1,17 @@
 ﻿namespace SharpMeasures.Generators;
 
-/// <summary>Possible directions for conversions between quantities.</summary>
+using System;
+
+/// <summary>Describes the direction of conversion between two quantities.</summary>
+[Flags]
 public enum QuantityConversionDirection
 {
-    /// <summary>A given quantity may be converted to another quantity.</summary>
-    Onedirectional,
-    /// <summary>Two quantities may be converted to each other.</summary>
-    Bidirectional,
-    /// <summary>Another quantity may be converted to the given quantity.</summary>
-    Antidirectional
+    /// <summary>Indicates that neither quantity may be converted to the other quantity.</summary>
+    None = 0,
+    /// <summary>Indicates that a given quantity may be converted to another quantity, but the reverse conversion (<see cref="Antidirectional"/>) is not supported.</summary>
+    Onedirectional = 1,
+    /// <summary>Indicates that another quantity may be converted to the given quantity, but the reverse conversion (<see cref="Onedirectional"/>) is not supported.</summary>
+    Antidirectional = 2,
+    /// <summary>Indicates that both quantities may be converted to the other quantity.</summary>
+    Bidirectional = Onedirectional | Antidirectional
 }

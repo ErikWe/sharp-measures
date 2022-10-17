@@ -90,7 +90,7 @@ internal static class Execution
             {
                 foreach (var scalar in definition.Quantities)
                 {
-                    if (definition.ConversionDirection is QuantityConversionDirection.Onedirectional or QuantityConversionDirection.Bidirectional)
+                    if (definition.ConversionDirection.HasFlag(QuantityConversionDirection.Onedirectional))
                     {
                         if (implementedOutgoingConversions.Add(scalar))
                         {
@@ -98,7 +98,7 @@ internal static class Execution
                         }
                     }
 
-                    if (definition.ConversionDirection is QuantityConversionDirection.Antidirectional or QuantityConversionDirection.Bidirectional)
+                    if (definition.ConversionDirection.HasFlag(QuantityConversionDirection.Antidirectional))
                     {
                         if (implementedIngoingConversions.Add(scalar))
                         {
@@ -182,7 +182,7 @@ internal static class Execution
 
                 foreach (var scalar in definition.Quantities)
                 {
-                    if (definition.ConversionDirection is QuantityConversionDirection.Onedirectional or QuantityConversionDirection.Bidirectional)
+                    if (definition.ConversionDirection.HasFlag(QuantityConversionDirection.Onedirectional))
                     {
                         if (implementedOutgoingConversions.Add(scalar) && definition.CastOperatorBehaviour is not ConversionOperatorBehaviour.None)
                         {
@@ -190,7 +190,7 @@ internal static class Execution
                         }
                     }
 
-                    if (definition.ConversionDirection is QuantityConversionDirection.Antidirectional or QuantityConversionDirection.Bidirectional)
+                    if (definition.ConversionDirection.HasFlag(QuantityConversionDirection.Antidirectional))
                     {
                         if (implementedIngoingConversions.Add(scalar) && definition.CastOperatorBehaviour is not ConversionOperatorBehaviour.None)
                         {

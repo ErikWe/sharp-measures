@@ -113,7 +113,7 @@ public abstract class AConvertibleQuantityProcesser<TContext, TProduct> : AActio
 
     private IValidityWithDiagnostics ValidateConversionDirectionDefined(TContext context, RawConvertibleQuantityDefinition definition)
     {
-        var enumDefined = Enum.IsDefined(typeof(QuantityConversionDirection), definition.ConversionDirection);
+        var enumDefined = (QuantityConversionDirection.Bidirectional & definition.ConversionDirection) == definition.ConversionDirection;
 
         return ValidityWithDiagnostics.Conditional(enumDefined, () => Diagnostics.UnrecognizedConversionDirection(context, definition));
     }

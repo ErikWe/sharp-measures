@@ -127,7 +127,7 @@ internal static class Execution
 
                 void appendMethodConversionForQuantity(NamedType quantity)
                 {
-                    if (definition.ConversionDirection is QuantityConversionDirection.Onedirectional or QuantityConversionDirection.Bidirectional)
+                    if (definition.ConversionDirection.HasFlag(QuantityConversionDirection.Onedirectional))
                     {
                         if (implementedOutgoingConversions.Add(quantity))
                         {
@@ -135,7 +135,7 @@ internal static class Execution
                         }
                     }
 
-                    if (definition.ConversionDirection is QuantityConversionDirection.Antidirectional or QuantityConversionDirection.Bidirectional)
+                    if (definition.ConversionDirection.HasFlag(QuantityConversionDirection.Antidirectional))
                     {
                         if (implementedIngoingConversions.Add(quantity))
                         {
@@ -263,7 +263,7 @@ internal static class Execution
 
                 void appendOperatorConversionForQuantity(NamedType quantity)
                 {
-                    if (definition.ConversionDirection is QuantityConversionDirection.Onedirectional or QuantityConversionDirection.Bidirectional)
+                    if (definition.ConversionDirection.HasFlag(QuantityConversionDirection.Onedirectional))
                     {
                         if (implementedOutgoingConversions.Add(quantity) && definition.CastOperatorBehaviour is not ConversionOperatorBehaviour.None)
                         {
@@ -271,7 +271,7 @@ internal static class Execution
                         }
                     }
 
-                    if (definition.ConversionDirection is QuantityConversionDirection.Antidirectional or QuantityConversionDirection.Bidirectional)
+                    if (definition.ConversionDirection.HasFlag(QuantityConversionDirection.Antidirectional))
                     {
                         if (implementedIngoingConversions.Add(quantity) && definition.CastOperatorBehaviour is not ConversionOperatorBehaviour.None)
                         {
