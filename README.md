@@ -85,6 +85,10 @@ XML documentation for generated members can easily be injected using a simple sy
 
 [Read more](SharpMeasures.Generators/Documentation/DocumentationInjection.md) about XML documentation injection.
 
+### Documentation
+
+Documentation regarding the source generator can be found [here](SharpMeasures.Generators/Documentation/README.md).
+
 ## Similar Projects
 
    - [QuantityTypes](https://github.com/QuantityTypes/QuantityTypes)
