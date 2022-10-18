@@ -334,13 +334,13 @@ internal static class Execution
 
         private (NamedType Result, NamedType Other)? GetQuantityCombination(NamedType result, NamedType other)
         {
-            if (Data.ScalarPopulation.Scalars.ContainsKey(result))
+            if (Data.ScalarPopulation.Scalars.ContainsKey(result) || Data.VectorPopulation.Vectors.ContainsKey(result))
             {
-                return (result, other);
-            }
+                if (Data.ScalarPopulation.Scalars.ContainsKey(other))
+                {
+                    return (result, other);
+                }
 
-            if (Data.VectorPopulation.Vectors.ContainsKey(result))
-            {
                 if (Data.VectorPopulation.Vectors.ContainsKey(other))
                 {
                     return (result, other);
@@ -354,6 +354,11 @@ internal static class Execution
 
             if (Data.VectorPopulation.Groups.TryGetValue(result, out var resultGroup) && resultGroup.MembersByDimension.TryGetValue(Data.Dimension, out var resultMember))
             {
+                if (Data.ScalarPopulation.Scalars.ContainsKey(other))
+                {
+                    return (resultMember, other);
+                }
+
                 if (Data.VectorPopulation.Vectors.ContainsKey(other))
                 {
                     return (resultMember, other);
