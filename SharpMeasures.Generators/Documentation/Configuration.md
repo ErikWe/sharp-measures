@@ -39,7 +39,7 @@ The following keys can be used to configure the SharpMeasures source generator:
 
 ### Generated File Header Content
 
-The key `SharpMeasures_GeneratedFileHeaderContent` is used to configure the content of the *"auto-generated-file-header"* present in each generated file. Expects a comma-separated list of items. The default value is `all`. The following items are supported:
+The key `SharpMeasures_GeneratedFileHeaderContent` is used to configure the content of the *"auto-generated-file-header"* present in each generated file. Expects a comma-separated list of items. The default value is `all`. If the generated files are included in version control, `tool` is recommended. The following items are supported:
 
 |   Item  | Header content           |
 |--------:|--------------------------|
