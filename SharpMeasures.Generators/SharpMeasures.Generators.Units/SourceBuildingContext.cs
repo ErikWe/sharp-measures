@@ -1,16 +1,17 @@
 ﻿namespace SharpMeasures.Generators.Units;
 
+using SharpMeasures.Generators.Configuration;
 using SharpMeasures.Generators.Units.Documentation;
 
 internal sealed record class SourceBuildingContext
 {
-    public int HeaderContentLevel { get; }
+    public GeneratedFileHeaderContent HeaderContent { get; }
 
     public IDocumentationStrategy Documentation { get; }
 
-    public SourceBuildingContext(int headerContentLevel, IDocumentationStrategy documentation)
+    public SourceBuildingContext(GeneratedFileHeaderContent headerContent, IDocumentationStrategy documentation)
     {
-        HeaderContentLevel = headerContentLevel;
+        HeaderContent = headerContent;
 
         Documentation = documentation;
     }

@@ -48,7 +48,7 @@ public static class ScalarGenerator
             return new Optional<DataModel>();
         }
 
-        SourceBuildingContext sourceBuildingContext = new(input.Config.GeneratedFileHeaderLevel, GetDocumentationStrategy(input.Scalar.Value, input.UnitPopulation, input.DocumentationDictionary, input.Config));
+        SourceBuildingContext sourceBuildingContext = new(input.Config.GeneratedFileHeaderContent, GetDocumentationStrategy(input.Scalar.Value, input.UnitPopulation, input.DocumentationDictionary, input.Config));
         return new DataModel(input.Scalar.Value, input.UnitPopulation, input.ScalarPopulation, input.VectorPopulation, sourceBuildingContext);
     }
 

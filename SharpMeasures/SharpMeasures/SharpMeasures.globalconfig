@@ -5,3 +5,5 @@ SharpMeasures_PrintDocumentationTags = true
 SharpMeasures_DocumentationFileExtension = doc.txt
 
 SharpMeasures_GeneratedFileHeaderLevel = -1
+
+SharpMeasures_AllowAttributeAliases = false

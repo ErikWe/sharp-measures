@@ -52,7 +52,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <None Include="..\README.nupkg.md" Pack="true" PackagePath="\" />
+        <None Include="..\Documentation\README.nupkg.md" Pack="true" PackagePath="\" />
     </ItemGroup>
 
 </Project>

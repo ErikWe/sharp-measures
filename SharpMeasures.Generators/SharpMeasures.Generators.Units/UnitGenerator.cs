@@ -30,7 +30,7 @@ public static class UnitGenerator
             return new Optional<DataModel>();
         }
 
-        SourceBuildingContext sourceBuildingContext = new(input.Config.GeneratedFileHeaderLevel, GetDocumentationStrategy(input.Unit.Value, input.DocumentationDictionary, input.Config));
+        SourceBuildingContext sourceBuildingContext = new(input.Config.GeneratedFileHeaderContent, GetDocumentationStrategy(input.Unit.Value, input.DocumentationDictionary, input.Config));
         return new DataModel(input.Unit.Value, input.UnitPopulation, sourceBuildingContext);
     }
 

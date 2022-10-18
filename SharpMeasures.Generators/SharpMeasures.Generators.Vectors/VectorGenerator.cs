@@ -58,7 +58,7 @@ public static class VectorGenerator
             return new Optional<VectorDataModel>();
         }
 
-        VectorSourceBuildingContext sourceBuildingContext = new(input.Config.GeneratedFileHeaderLevel, GetDocumentationStrategy(input.Vector.Value, input.UnitPopulation, input.ScalarPopulation, input.DocumentationDictionary, input.Config));
+        VectorSourceBuildingContext sourceBuildingContext = new(input.Config.GeneratedFileHeaderContent, GetDocumentationStrategy(input.Vector.Value, input.UnitPopulation, input.ScalarPopulation, input.DocumentationDictionary, input.Config));
         return new VectorDataModel(input.Vector.Value, input.UnitPopulation, input.ScalarPopulation, input.VectorPopulation, sourceBuildingContext);
     }
 
@@ -69,7 +69,7 @@ public static class VectorGenerator
             return new Optional<GroupDataModel>();
         }
 
-        GroupSourceBuildingContext sourceBuildingContext = new(input.Config.GeneratedFileHeaderLevel, GetDocumentationStrategy(input.Group.Value, input.UnitPopulation, input.ScalarPopulation, input.DocumentationDictionary, input.Config));
+        GroupSourceBuildingContext sourceBuildingContext = new(input.Config.GeneratedFileHeaderContent, GetDocumentationStrategy(input.Group.Value, input.UnitPopulation, input.ScalarPopulation, input.DocumentationDictionary, input.Config));
         return new GroupDataModel(input.Group.Value, input.UnitPopulation, input.ScalarPopulation, input.VectorPopulation, sourceBuildingContext);
     }
 

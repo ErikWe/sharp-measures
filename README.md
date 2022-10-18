@@ -73,12 +73,19 @@ Area area = length * length;
 Console.WriteLine(area); // "163.10150605439995 [m²]"
 ```
 
-### Documentation Injection
+### XML Documentation Injection
 
-TODO
+XML documentation for generated members can easily be injected using a simple syntax:
+
+```
+# UnitInstance_SquareMetre
+<summary>The SI unit, representing { <see cref="UnitOfLength.Metre"/>² }.</summary>
+/#
+```
+
+[Read more](SharpMeasures.Generators/Documentation/DocumentationInjection.md) about XML documentation injection.
 
 ## Similar Projects
-
 
    - [QuantityTypes](https://github.com/QuantityTypes/QuantityTypes)
    - [UnitsNet](https://github.com/angularsen/UnitsNet)

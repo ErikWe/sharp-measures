@@ -8,7 +8,7 @@ public readonly record struct GlobalAnalyzerConfig
         PrintDocumentationTags = false,
         GenerateDocumentation = true,
         LimitOneErrorPerDocumentationFile = true,
-        GeneratedFileHeaderLevel = -1,
+        GeneratedFileHeaderContent = GeneratedFileHeaderContent.All,
         AllowAttributeAliases = false
     };
 
@@ -17,7 +17,7 @@ public readonly record struct GlobalAnalyzerConfig
     public bool GenerateDocumentation { get; init; }
     public bool LimitOneErrorPerDocumentationFile { get; init; }
 
-    public int GeneratedFileHeaderLevel { get; init; }
+    public GeneratedFileHeaderContent GeneratedFileHeaderContent { get; init; }
 
     public bool AllowAttributeAliases { get; init; }
 }

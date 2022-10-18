@@ -5,6 +5,7 @@ using Microsoft.CodeAnalysis.Diagnostics;
 
 using SharpMeasures.Generators.Providers.AnalyzerConfig;
 
+using System.Collections.Generic;
 using System.Threading;
 
 public static class GlobalAnalyzerConfigProvider
@@ -35,7 +36,7 @@ public static class GlobalAnalyzerConfigProvider
                 PrintDocumentationTags = printDocumentationTags,
                 GenerateDocumentation = generateDocumentation,
                 LimitOneErrorPerDocumentationFile = limitOneErrorPerDocumentationFile,
-                GeneratedFileHeaderLevel = generatedFileHeaderContent,
+                GeneratedFileHeaderContent = generatedFileHeaderContent,
                 AllowAttributeAliases = allowAttributeAliases
             };
         }
@@ -85,19 +86,24 @@ public static class GlobalAnalyzerConfigProvider
             return BooleanTransforms.TrueByDefault(value);
         }
 
-        private static int ParseGeneratedFileHeaderContent(AnalyzerConfigOptionsProvider provider)
+        private static GeneratedFileHeaderContent ParseGeneratedFileHeaderContent(AnalyzerConfigOptionsProvider provider)
         {
-            if (provider.GlobalOptions.TryGetValue(ConfigKeys.GeneratedFileHeaderLevel, out var value) is false || value is null)
+            if (provider.GlobalOptions.TryGetValue(ConfigKeys.GeneratedFileHeaderContent, out var value) is false || value is null)
             {
-                return -1;
+                return GeneratedFileHeaderContent.All;
             }
 
-            if (int.TryParse(value.Trim(), out var integerValue))
+            var content = GeneratedFileHeaderContent.None;
+
+            foreach (var component in value.Replace(" ", string.Empty).Split(','))
             {
-                return integerValue;
+                if (GeneratedFileHeaderContentKeys.TryGetValue(component.ToUpperInvariant(), out var key))
+                {
+                    content |= key;
+                }
             }
 
-            return -1;
+            return content;
         }
 
         private static bool ParseAllowAttributeAliases(AnalyzerConfigOptionsProvider provider)
@@ -109,5 +115,16 @@ public static class GlobalAnalyzerConfigProvider
 
             return BooleanTransforms.FalseByDefault(value);
         }
+
+        private static Dictionary<string, GeneratedFileHeaderContent> GeneratedFileHeaderContentKeys { get; } = new()
+        {
+            { "NONE", GeneratedFileHeaderContent.None },
+            { "HEADER", GeneratedFileHeaderContent.Header },
+            { "TOOL", GeneratedFileHeaderContent.Tool },
+            { "VERSION", GeneratedFileHeaderContent.Version },
+            { "DATE", GeneratedFileHeaderContent.Date },
+            { "TIME", GeneratedFileHeaderContent.Time },
+            { "ALL", GeneratedFileHeaderContent.All }
+        };
     }
 }

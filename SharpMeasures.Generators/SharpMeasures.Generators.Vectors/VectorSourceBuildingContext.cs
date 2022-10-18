@@ -1,16 +1,17 @@
 ﻿namespace SharpMeasures.Generators.Vectors;
 
+using SharpMeasures.Generators.Configuration;
 using SharpMeasures.Generators.Vectors.Documentation;
 
 internal sealed record class VectorSourceBuildingContext
 {
-    public int HeaderContentLevel { get; }
+    public GeneratedFileHeaderContent HeaderContent { get; }
 
     public IVectorDocumentationStrategy Documentation { get; }
 
-    public VectorSourceBuildingContext(int headerContentLevel, IVectorDocumentationStrategy documentation)
+    public VectorSourceBuildingContext(GeneratedFileHeaderContent headerContent, IVectorDocumentationStrategy documentation)
     {
-        HeaderContentLevel = headerContentLevel;
+        HeaderContent = headerContent;
 
         Documentation = documentation;
     }
