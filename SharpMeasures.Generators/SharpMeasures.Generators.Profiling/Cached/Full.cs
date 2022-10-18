@@ -8,7 +8,7 @@ internal static class Full
 {
     public static async Task AddingQuantityProcess()
     {
-        var driver = await ExistingSolutionDriver.Build(ProjectPath.Path + @"\..\..\SharpMeasures\SharpMeasures.sln").ConfigureAwait(false);
+        var driver = await ExistingSolutionDriver.Build(ProjectPath.Path + @"\..\..\SharpMeasures\SharpMeasures.sln", "SharpMeasures").ConfigureAwait(false);
 
         driver.ApplyChange(ProjectPath.Path + @"\..\..\SharpMeasures\SharpMeasures\Scalars\Angle.cs", AddingQuantityProcessText);
     }

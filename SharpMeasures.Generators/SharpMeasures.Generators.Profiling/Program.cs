@@ -6,6 +6,6 @@ internal static class Program
 {
     public static async Task Main()
     {
-        await Uncached.Full.Run().ConfigureAwait(false);
+        await Uncached.Full.ExtensionTest().ConfigureAwait(false);
     }
 }

@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 public class ExistingSolutionDriver
 {
-    public static async Task<ExistingSolutionDriver> Build(string solutionPath)
+    public static async Task<ExistingSolutionDriver> Build(string solutionPath, string projectName)
     {
         var driver = DriverConstruction.Construct<SharpMeasuresGenerator>();
 
@@ -23,7 +23,7 @@ public class ExistingSolutionDriver
 
         var solution = await workspace.OpenSolutionAsync(solutionPath).ConfigureAwait(false);
 
-        var projectID = solution.Projects.Where(static (project) => project.Name is "SharpMeasures").Single().Id;
+        var projectID = solution.Projects.Where((project) => project.Name == projectName).Single().Id;
 
         var compilation = await solution.GetProject(projectID)!.GetCompilationAsync().ConfigureAwait(false);
 
