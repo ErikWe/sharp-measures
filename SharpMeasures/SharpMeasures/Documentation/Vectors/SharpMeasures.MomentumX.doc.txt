@@ -1,0 +1,5 @@
+﻿# Utility: true
+
+# Header
+<summary>A measure of the #WrittenDimension/#-dimensional vector quantity Momentum, describing mass in motion { <see cref="Mass"/> ∙ <see cref="Velocity#NumeralDimension/#"/> }. The quantity is expressed in <see cref="UnitOfMomentum"/>.</summary>
+/#

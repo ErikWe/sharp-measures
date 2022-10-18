@@ -1,0 +1,3 @@
+﻿# Header
+<summary>Contains utility related to the vector quantity Displacement, describing the distance between two <see cref="PositionN"/>. The quantity is expressed in <see cref="UnitOfLength"/>.</summary>
+/#

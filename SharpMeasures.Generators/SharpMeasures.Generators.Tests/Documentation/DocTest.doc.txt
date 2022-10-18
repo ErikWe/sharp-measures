@@ -1,3 +1,0 @@
-﻿# Header
-<summary>Used extension .doc.txt</summary>
-/#

@@ -1,4 +1,3 @@
 ﻿# Header
-<summary>A measure of the scalar quantity Temperature Difference, describing a difference in <see cref="Temperature"/>. The quantity is expressed in <see cref="UnitOfTemperature"/>,
-with the SI unit being <see cref="UnitOfTemperature.Kelvin"/>.</summary>
+<summary>A measure of the scalar quantity Temperature Difference, describing a difference in <see cref="Temperature"/>. The quantity is expressed in <see cref="UnitOfTemperature"/>.</summary>
 /#

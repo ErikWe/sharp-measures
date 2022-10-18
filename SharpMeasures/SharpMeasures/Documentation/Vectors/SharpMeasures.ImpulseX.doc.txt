@@ -1,0 +1,5 @@
+﻿# Utility: true
+
+# Header
+<summary>A measure of the #WrittenDimension/#-dimensional vector quantity Impulse, describing change in <see cref="Momentum#NumeralDimension/#"/>. The quantity is expressed in <see cref="UnitOfMomentum"/>.</summary>
+/#

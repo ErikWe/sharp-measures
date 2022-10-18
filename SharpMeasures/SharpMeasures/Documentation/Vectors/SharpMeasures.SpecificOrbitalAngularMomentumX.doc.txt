@@ -1,0 +1,5 @@
+﻿# Utility: true
+
+# Header
+<summary>A measure of the #WrittenDimension/#-dimensional vector quantity Specific Orbital Angular Momentum, describing <see cref="SpecificAngularMomentum#NumeralDimension/#"/> of an object in rotation about an external center of rotation. The quantity is expressed in <see cref="UnitOfSpecificAngularMomentum"/>.</summary>
+/#

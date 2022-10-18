@@ -1,0 +1,5 @@
+﻿# Utility: true
+
+# Header
+<summary>A measure of the #WrittenDimension/#-dimensional vector quantity Length - expressed in <see cref="UnitOfLength"/>.</summary>
+/#

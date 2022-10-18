@@ -1,0 +1,5 @@
+﻿# Utility: true
+
+# Header
+<summary>A measure of the #WrittenDimension/#-dimensional vector quantity Gravitational Acceleration, describing <see cref="Acceleration#NumeralDimension/#"/> caused by gravitational forces. The quantity is expressed in <see cref="UnitOfAcceleration"/>.</summary>
+/#

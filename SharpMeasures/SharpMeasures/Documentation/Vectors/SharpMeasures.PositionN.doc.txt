@@ -1,0 +1,3 @@
+﻿# Header
+<summary>Contains utility related to the vector quantity Position - expressed in <see cref="UnitOfLength"/>.</summary>
+/#

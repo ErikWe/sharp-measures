@@ -1,0 +1,5 @@
+﻿# Utility: true
+
+# Header
+<summary>A measure of the #WrittenDimension/#-dimensional vector quantity Specific Spin Angular Momentum, describing <see cref="SpecificAngularMomentum#NumeralDimension/#"/> of an object in rotation about its center of mass. The quantity is expressed in <see cref="UnitOfSpecificAngularMomentum"/>.</summary>
+/#

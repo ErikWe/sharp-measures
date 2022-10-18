@@ -1,0 +1,3 @@
+﻿# Header
+<summary>Contains utility related to the vector quantity Force - expressed in <see cref="UnitOfForce"/>.</summary>
+/#

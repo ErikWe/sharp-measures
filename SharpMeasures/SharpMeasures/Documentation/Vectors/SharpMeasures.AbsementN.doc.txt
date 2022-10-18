@@ -1,0 +1,3 @@
+﻿# Header
+<summary>Contains utility related to the vector quantity Absement, describing sustained displacement { <see cref="DisplacementN"/> ∙ <see cref="Time"/> }. The quantity is expressed in <see cref="UnitOfAbsement"/>.</summary>
+/#

@@ -1,6 +1,5 @@
 ﻿# Requires: Generic
 
 # Header
-<summary>A measure of the scalar quantity Speed Squared, describing squared speed { <see cref="Speed"/> ² }. The quantity is expressed in <see cref="UnitOfSpeedSquared"/>,
-with the SI unit being <see cref="UnitOfSpeedSquared.SquareMetrePerSecondSquared"/>.</summary>
+<summary>A measure of the scalar quantity Speed Squared, describing squared speed { <see cref="Speed"/> ² }. The quantity is expressed in <see cref="UnitOfSpeedSquared"/>.</summary>
 /#

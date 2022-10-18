@@ -1,0 +1,5 @@
+﻿# Utility: true
+
+# Header
+<summary>A measure of the #WrittenDimension/#-dimensional vector quantity Angular Momentum, describing the rotational version of <see cref="Momentum#NumeralDimension/#"/>. The quantity is expressed in <see cref="UnitOfAngularMomentum"/>.</summary>
+/#

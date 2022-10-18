@@ -1,0 +1,2 @@
+﻿# Requires: 3D
+# Requires: SharpMeasures.AngularMomentumX

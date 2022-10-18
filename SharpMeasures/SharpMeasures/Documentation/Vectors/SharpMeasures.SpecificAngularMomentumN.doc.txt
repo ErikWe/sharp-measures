@@ -1,0 +1,3 @@
+﻿# Header
+<summary>Contains utility related to the vector quantity Specific Angular Momentum, describing angular momentum per unit of mass { <see cref="AngularMomentumN"/> / <see cref="Mass"/> }. The quantity is expressed in <see cref="UnitOfSpecificAngularMomentum"/>.</summary>
+/#

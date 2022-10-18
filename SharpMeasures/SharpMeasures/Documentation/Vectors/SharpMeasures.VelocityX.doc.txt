@@ -1,0 +1,5 @@
+﻿# Utility: true
+
+# Header
+<summary>A measure of the #WrittenDimension/#-dimensional vector quantity Velocity, describing linear motion { <see cref="Displacement#NumeralDimension/#"/> / <see cref="Time"/> }. The quantity is expressed in <see cref="UnitOfSpeed"/>.</summary>
+/#

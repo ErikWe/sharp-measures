@@ -1,0 +1,5 @@
+﻿# Utility: true
+
+# Header
+<summary>A measure of the #WrittenDimension/#-dimensional vector quantity Angular Acceleration, describing change in angular velocity over time { <see cref="AngularVelocity#NumeralDimension/#"/> / <see cref="Time"/> }. The quantity is expressed in <see cref="UnitOfAngularAcceleration"/>.</summary>
+/#

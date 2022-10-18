@@ -1,0 +1,2 @@
+﻿# Requires: 2D
+# Requires: SharpMeasures.AccelerationX

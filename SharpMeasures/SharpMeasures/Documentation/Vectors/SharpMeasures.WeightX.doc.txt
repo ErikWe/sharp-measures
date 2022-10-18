@@ -1,0 +1,5 @@
+﻿# Utility: true
+
+# Header
+<summary>A measure of the #WrittenDimension/#-dimensional vector quantity Weight, describing the gravitational <see cref="Force#NumeralDimension/#"/> on an object. The quantity is expressed in <see cref="UnitOfForce"/>.</summary>
+/#

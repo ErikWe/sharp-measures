@@ -1,6 +1,5 @@
 ﻿# Header
-<summary>A measure of the scalar quantity Acceleration, describing change in speed over time { <see cref="Speed"/> / <see cref="Time"/> }. The quantity is expressed in <see cref="UnitOfAcceleration"/>,
-with the SI unit being <see cref="UnitOfAcceleration.MetrePerSecondSquared"/>.</summary>
+<summary>A measure of the scalar quantity Acceleration, describing change in speed over time { <see cref="Speed"/> / <see cref="Time"/> }. The quantity is expressed in <see cref="UnitOfAcceleration"/>.</summary>
 /#
 
 # Constant_StandardGravity

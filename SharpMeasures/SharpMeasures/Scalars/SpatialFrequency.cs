@@ -28,6 +28,7 @@ public readonly partial record struct SpatialFrequency { }
 [QuantityOperation(typeof(ArealDensity), typeof(LinearDensity), OperatorType.Multiplication)]
 [QuantityOperation(typeof(Area), typeof(Volume), OperatorType.Multiplication)]
 [QuantityOperation(typeof(Area), typeof(VolumetricFrequency), OperatorType.Division)]
+[QuantityOperation(typeof(Acceleration), typeof(SpeedSquared), OperatorType.Multiplication)]
 public readonly partial record struct SpatialFrequency { }
 
 [QuantityProcess("Cube", typeof(VolumetricFrequency), "new(Magnitude * Magnitude * Magnitude)")]

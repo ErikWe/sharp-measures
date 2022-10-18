@@ -11,6 +11,7 @@ public readonly partial record struct Length { }
 [QuantityOperation(typeof(Time), typeof(Pace), OperatorType.Multiplication)]
 [QuantityOperation(typeof(Time), typeof(Speed), OperatorType.Division)]
 [QuantityOperation(typeof(TemperatureDifference), typeof(TemperatureGradient), OperatorType.Multiplication)]
+[QuantityOperation(typeof(SpeedSquared), typeof(Acceleration), OperatorType.Multiplication)]
 [QuantityOperation(typeof(Speed), typeof(Frequency), OperatorType.Multiplication)]
 [QuantityOperation(typeof(Speed), typeof(Time), OperatorType.Division)]
 [QuantityOperation(typeof(SpecificVolume), typeof(ArealDensity), OperatorType.Division)]

@@ -1,0 +1,5 @@
+﻿# Utility: true
+
+# Header
+<summary>A measure of the #WrittenDimension/#-dimensional vector quantity Force - expressed in <see cref="UnitOfForce"/>.</summary>
+/#

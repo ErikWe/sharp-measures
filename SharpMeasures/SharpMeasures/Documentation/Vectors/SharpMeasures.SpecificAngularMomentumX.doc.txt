@@ -1,0 +1,5 @@
+﻿# Utility: true
+
+# Header
+<summary>A measure of the #WrittenDimension/#-dimensional vector quantity Specific Angular Momentum, describing angular momentum per unit of mass { <see cref="AngularMomentum#NumeralDimension/#"/> / <see cref="Mass"/> }. The quantity is expressed in <see cref="UnitOfSpecificAngularMomentum"/>.</summary>
+/#

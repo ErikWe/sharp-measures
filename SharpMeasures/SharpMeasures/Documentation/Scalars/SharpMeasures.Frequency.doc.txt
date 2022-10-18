@@ -1,5 +1,5 @@
 ﻿# Requires: Generic
 
 # Header
-<summary>A measure of the scalar quantity Frequency, describing { 1 / <see cref="Time"/> }. The quantity is expressed in <see cref="UnitOfFrequency"/>, with the SI unit being <see cref="UnitOfFrequency.Hertz"/>.</summary>
+<summary>A measure of the scalar quantity Frequency, describing { 1 / <see cref="Time"/> }. The quantity is expressed in <see cref="UnitOfFrequency"/>.</summary>
 /#

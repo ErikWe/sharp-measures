@@ -6,6 +6,8 @@ using SharpMeasures.Generators;
 public readonly partial record struct Acceleration { }
 
 [QuantityOperation(typeof(Time), typeof(Jerk), OperatorType.Division)]
+[QuantityOperation(typeof(SpeedSquared), typeof(Length), OperatorType.Multiplication)]
+[QuantityOperation(typeof(SpeedSquared), typeof(SpatialFrequency), OperatorType.Division)]
 [QuantityOperation(typeof(Speed), typeof(Time), OperatorType.Multiplication)]
 [QuantityOperation(typeof(Speed), typeof(Frequency), OperatorType.Division)]
 [QuantityOperation(typeof(Jerk), typeof(Frequency), OperatorType.Multiplication)]

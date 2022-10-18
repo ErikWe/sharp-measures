@@ -1,0 +1,5 @@
+﻿# Utility: true
+
+# Header
+<summary>A measure of the #WrittenDimension/#-dimensional vector quantity Acceleration, describing change in velocity over time { <see cref="Velocity#NumeralDimension/#"/> / <see cref="Time"/> }. The quantity is expressed in <see cref="UnitOfAcceleration"/>.</summary>
+/#

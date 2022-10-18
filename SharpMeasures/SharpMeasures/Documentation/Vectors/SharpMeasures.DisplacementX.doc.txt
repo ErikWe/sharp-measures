@@ -1,0 +1,5 @@
+﻿# Utility: true
+
+# Header
+<summary>A measure of the #WrittenDimension/#-dimensional vector quantity Displacement, describing the distance between two <see cref="Position#NumeralDimension/#"/>. The quantity is expressed in <see cref="UnitOfLength"/>.</summary>
+/#

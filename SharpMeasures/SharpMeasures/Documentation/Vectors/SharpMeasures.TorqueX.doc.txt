@@ -1,0 +1,5 @@
+﻿# Utility: true
+
+# Header
+<summary>A measure of the #WrittenDimension/#-dimensional vector quantity Torque, describing the rotational version of <see cref="Force#NumeralDimension/#"/>. The quantity is expressed in <see cref="UnitOfTorque"/>.</summary>
+/#

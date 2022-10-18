@@ -1,0 +1,3 @@
+﻿# Header
+<summary>Contains utility related to the vector quantity Jerk, describing change in acceleration over time { <see cref="AccelerationN"/> / <see cref="Time"/> }. The quantity is expressed in <see cref="UnitOfJerk"/>.</summary>
+/#

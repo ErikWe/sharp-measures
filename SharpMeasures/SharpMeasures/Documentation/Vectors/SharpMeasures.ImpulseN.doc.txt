@@ -1,0 +1,3 @@
+﻿# Header
+<summary>Contains utility related to the vector quantity Impulse, describing change in <see cref="MomentumN"/>. The quantity is expressed in <see cref="UnitOfMomentum"/>.</summary>
+/#

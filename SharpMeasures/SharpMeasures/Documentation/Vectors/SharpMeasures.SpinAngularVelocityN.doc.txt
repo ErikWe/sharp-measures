@@ -1,0 +1,3 @@
+﻿# Header
+<summary>Contains utility related to the vector quantity Spin Angular Velocity, describing <see cref="AngularVelocityN"/> about the center of mass. The quantity is expressed in <see cref="UnitOfAngularSpeed"/>.</summary>
+/#

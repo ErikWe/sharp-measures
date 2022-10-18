@@ -1,6 +1,5 @@
 ﻿# Requires: Generic
 
 # Header
-<summary>A measure of the scalar quantity SpatialFrequency Frequency, describing { 1 / <see cref="Length"/> }. The quantity is expressed in <see cref="UnitOfSpatialFrequency"/>,
-with the SI unit being <see cref="UnitOfSpatialFrequency.PerMetre"/>.</summary>
+<summary>A measure of the scalar quantity SpatialFrequency Frequency, describing { 1 / <see cref="Length"/> }. The quantity is expressed in <see cref="UnitOfSpatialFrequency"/>.</summary>
 /#

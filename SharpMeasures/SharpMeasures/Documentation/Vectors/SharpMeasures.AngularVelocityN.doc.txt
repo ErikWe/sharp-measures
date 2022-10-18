@@ -1,0 +1,3 @@
+﻿# Header
+<summary>Contains utility related to the vector quantity Angular Velocity, describing rotational motion { <see cref="AngleN"/> / <see cref="Time"/> }. The quantity is expressed in <see cref="UnitOfAngularSpeed"/>.</summary>
+/#

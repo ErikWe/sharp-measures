@@ -1,0 +1,3 @@
+﻿# Header
+<summary>Contains utility related to the vector quantity Orbital Angular Acceleration, describing <see cref="AngularAccelerationN"/> about an external center of rotation. The quantity is expressed in <see cref="UnitOfAngularAcceleration"/>.</summary>
+/#

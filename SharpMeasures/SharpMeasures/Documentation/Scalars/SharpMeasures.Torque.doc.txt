@@ -1,6 +1,5 @@
 ﻿# Requires: Generic
 
 # Header
-<summary>A measure of the scalar quantity Torque, describing the rotational version of <see cref="Force"/>. The quantity is expressed in <see cref="UnitOfTorque"/>, with the SI unit being
-<see cref="UnitOfTorque.NewtonMetre"/>.</summary>
+<summary>A measure of the scalar quantity Torque, describing the rotational version of <see cref="Force"/>. The quantity is expressed in <see cref="UnitOfTorque"/>.</summary>
 /#

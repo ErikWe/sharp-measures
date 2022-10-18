@@ -1,0 +1,3 @@
+﻿# Header
+<summary>Contains utility related to the vector quantity Spin Angular Momentum, describing <see cref="AngularMomentumN"/> about the center of mass. The quantity is expressed in <see cref="UnitOfAngularMomentum"/>.</summary>
+/#

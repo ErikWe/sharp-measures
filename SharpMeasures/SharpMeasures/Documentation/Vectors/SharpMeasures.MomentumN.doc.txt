@@ -1,0 +1,3 @@
+﻿# Header
+<summary>Contains utility related to the vector quantity Momentum, describing mass in motion { <see cref="Mass"/> ∙ <see cref="VelocityN"/> }. The quantity is expressed in <see cref="UnitOfMomentum"/>.</summary>
+/#
