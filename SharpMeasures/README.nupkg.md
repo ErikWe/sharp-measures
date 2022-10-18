@@ -19,7 +19,7 @@ See [GitHub](https://github.com/ErikWe/sharp-measures) for more information.
 The source generator used to implement SharpMeasures allows you to easily extend the existing set of quantities, or make new units and quantities from scratch:
 
 ```csharp
-using SharpMeasures.Generators.Scalars;
+using SharpMeasures.Generators;
 
 [SpecializedScalarQuantity(typeof(Length))]
 public partial class Altitude { }
