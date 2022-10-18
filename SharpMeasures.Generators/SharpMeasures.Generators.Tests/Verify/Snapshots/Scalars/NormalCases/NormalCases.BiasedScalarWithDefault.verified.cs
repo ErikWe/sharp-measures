@@ -49,7 +49,7 @@ public partial class Temperature :
     }
 
     /// <summary>Produces a description of <see langword="this"/> containing the represented <see cref="Magnitude"/>, expressed in <see cref="global::UnitOfTemperature.Kelvin"/> and followed by the symbol [K].</summary>
-    public override string ToString() => "{InUnit(global::UnitOfTemperature.Kelvin)} [K]";
+    public override string ToString() => $"{InUnit(global::UnitOfTemperature.Kelvin)} [K]";
 
     /// <inheritdoc/>
     public virtual bool Equals(global::Temperature? other) => other is not null && Magnitude.Value == other.Magnitude.Value;

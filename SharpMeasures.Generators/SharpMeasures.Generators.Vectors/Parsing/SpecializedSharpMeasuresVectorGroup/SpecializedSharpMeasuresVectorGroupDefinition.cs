@@ -8,7 +8,6 @@ internal sealed record class SpecializedSharpMeasuresVectorGroupDefinition : AAt
     public NamedType OriginalQuantity { get; }
 
     public bool InheritOperations { get; }
-    public bool InheritConstants { get; }
     public bool InheritConversions { get; }
     public bool InheritUnits { get; }
 
@@ -31,13 +30,12 @@ internal sealed record class SpecializedSharpMeasuresVectorGroupDefinition : AAt
     IVectorGroupSpecializationLocations IVectorGroupSpecialization.Locations => Locations;
     IDefaultUnitInstanceLocations IDefaultUnitInstanceDefinition.DefaultUnitInstanceLocations => Locations;
 
-    public SpecializedSharpMeasuresVectorGroupDefinition(NamedType originalQuantity, bool inheritOperations, bool inheritConstants, bool inheritConversions, bool inheritUnits, ConversionOperatorBehaviour forwardsCastOperatorBehaviour, ConversionOperatorBehaviour backwardsCastOperatorBehaviour,
+    public SpecializedSharpMeasuresVectorGroupDefinition(NamedType originalQuantity, bool inheritOperations, bool inheritConversions, bool inheritUnits, ConversionOperatorBehaviour forwardsCastOperatorBehaviour, ConversionOperatorBehaviour backwardsCastOperatorBehaviour,
         NamedType? scalar, bool? implementSum, bool? implementDifference, NamedType? difference, string? defaultUnitInstanceName, string? defaultUnitInstanceSymbol, SpecializedSharpMeasuresVectorGroupLocations locations) : base(locations)
     {
         OriginalQuantity = originalQuantity;
 
         InheritOperations = inheritOperations;
-        InheritConstants = inheritConstants;
         InheritConversions = inheritConversions;
         InheritUnits = inheritUnits;
 

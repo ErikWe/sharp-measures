@@ -12,7 +12,6 @@ internal static class SpecializedSharpMeasuresVectorGroupProperties
     {
         OriginalVectorGroup,
         InheritOperations,
-        InheritConstants,
         InheritConversions,
         InheritUnits,
         ForwardsCastOperatorBehaviour,
@@ -37,13 +36,6 @@ internal static class SpecializedSharpMeasuresVectorGroupProperties
         name: nameof(SpecializedVectorGroupAttribute.InheritOperations),
         setter: static (definition, inheritOperations) => definition with { InheritOperations = inheritOperations },
         locator: static (locations, inheritOperationsLocation) => locations with { InheritOperations = inheritOperationsLocation }
-    );
-
-    private static SpecializedSharpMeasuresVectorGroupProperty<bool> InheritConstants { get; } = new
-    (
-        name: nameof(SpecializedVectorGroupAttribute.InheritConstants),
-        setter: static (definition, inheritConstants) => definition with { InheritConstants = inheritConstants },
-        locator: static (locations, inheritConstantsLocation) => locations with { InheritConstants = inheritConstantsLocation }
     );
 
     private static SpecializedSharpMeasuresVectorGroupProperty<bool> InheritConversions { get; } = new

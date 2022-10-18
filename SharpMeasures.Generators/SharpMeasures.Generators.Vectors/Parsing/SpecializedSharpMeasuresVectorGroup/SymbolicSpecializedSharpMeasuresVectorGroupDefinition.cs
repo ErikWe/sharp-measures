@@ -13,7 +13,6 @@ internal sealed record class SymbolicSpecializedSharpMeasuresVectorGroupDefiniti
     public INamedTypeSymbol? OriginalQuantity { get; init; }
 
     public bool InheritOperations { get; init; } = true;
-    public bool InheritConstants { get; init; } = true;
     public bool InheritConversions { get; init; } = true;
     public bool InheritUnits { get; init; } = true;
 

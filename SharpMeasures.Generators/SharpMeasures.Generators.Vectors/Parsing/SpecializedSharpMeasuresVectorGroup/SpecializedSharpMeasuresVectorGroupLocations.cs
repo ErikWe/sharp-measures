@@ -10,7 +10,6 @@ internal sealed record class SpecializedSharpMeasuresVectorGroupLocations : AAtt
     public MinimalLocation? OriginalQuantity { get; init; }
 
     public MinimalLocation? InheritOperations { get; init; }
-    public MinimalLocation? InheritConstants { get; init; }
     public MinimalLocation? InheritConversions { get; init; }
     public MinimalLocation? InheritUnits { get; init; }
 
@@ -29,7 +28,6 @@ internal sealed record class SpecializedSharpMeasuresVectorGroupLocations : AAtt
     public bool ExplicitlySetOriginalQuantity => OriginalQuantity is not null;
 
     public bool ExplicitlySetInheritOperations => InheritOperations is not null;
-    public bool ExplicitlySetInheritConstants => InheritConstants is not null;
     public bool ExplicitlySetInheritConversions => InheritConversions is not null;
     public bool ExplicitlySetInheritUnits => InheritUnits is not null;
 

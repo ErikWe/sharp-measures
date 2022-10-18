@@ -368,7 +368,7 @@ internal static class Execution
             if (Data.DefaultUnitInstanceSymbol is not null)
             {
                 Builder.AppendLine($$"""
-                    "{InUnit({{Data.Unit.FullyQualifiedName}}.{{Data.DefaultUnitInstanceName}})} [{{Data.DefaultUnitInstanceSymbol}}]";
+                    $"{InUnit({{Data.Unit.FullyQualifiedName}}.{{Data.DefaultUnitInstanceName}})} [{{Data.DefaultUnitInstanceSymbol}}]";
                     """);
 
                 return;

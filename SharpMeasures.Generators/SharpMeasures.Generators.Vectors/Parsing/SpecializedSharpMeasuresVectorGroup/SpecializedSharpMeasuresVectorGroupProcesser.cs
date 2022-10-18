@@ -48,7 +48,7 @@ internal sealed class SpecializedSharpMeasuresVectorGroupProcesser : AProcesser<
 
     private static SpecializedSharpMeasuresVectorGroupDefinition ProduceResult(RawSpecializedSharpMeasuresVectorGroupDefinition definition, string? defaultUnitInstanceName, string? defaultUnitInstanceSymbol)
     {
-        return new(definition.OriginalQuantity!.Value, definition.InheritDerivations, definition.InheritConstants, definition.InheritConversions, definition.InheritUnits, definition.ForwardsCastOperatorBehaviour, definition.BackwardsCastOperatorBehaviour, definition.Scalar,
+        return new(definition.OriginalQuantity!.Value, definition.InheritDerivations, definition.InheritConversions, definition.InheritUnits, definition.ForwardsCastOperatorBehaviour, definition.BackwardsCastOperatorBehaviour, definition.Scalar,
             definition.ImplementSum, definition.ImplementDifference, definition.Difference, defaultUnitInstanceName, defaultUnitInstanceSymbol, definition.Locations);
     }
 

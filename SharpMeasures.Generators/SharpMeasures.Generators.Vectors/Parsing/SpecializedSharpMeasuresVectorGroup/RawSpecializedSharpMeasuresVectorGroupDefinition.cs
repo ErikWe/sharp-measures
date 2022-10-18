@@ -9,7 +9,6 @@ internal sealed record class RawSpecializedSharpMeasuresVectorGroupDefinition : 
     {
         OriginalQuantity = symbolicDefinition.OriginalQuantity?.AsNamedType(),
         InheritDerivations = symbolicDefinition.InheritOperations,
-        InheritConstants = symbolicDefinition.InheritConstants,
         InheritConversions = symbolicDefinition.InheritConversions,
         InheritUnits = symbolicDefinition.InheritUnits,
         ForwardsCastOperatorBehaviour = symbolicDefinition.ForwardsCastOperatorBehaviour,
@@ -25,7 +24,6 @@ internal sealed record class RawSpecializedSharpMeasuresVectorGroupDefinition : 
     public NamedType? OriginalQuantity { get; init; }
 
     public bool InheritDerivations { get; init; } = true;
-    public bool InheritConstants { get; init; } = true;
     public bool InheritConversions { get; init; } = true;
     public bool InheritUnits { get; init; } = true;
 
