@@ -104,6 +104,8 @@ internal static class Execution
                 return;
             }
 
+            SeparationHandler.AddIfNecessary();
+
             ImplementedMethodNames.Add(process.Name);
 
             var methodNameAndModifiers = $"public {GetPotentialStaticKeyword(process)}{GetResultingType(process).FullyQualifiedName} {process.Name}";

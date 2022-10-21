@@ -15,7 +15,7 @@
     <PropertyGroup>
         <Owners>ErikWe</Owners>
         <Authors>ErikWe</Authors>
-        <Version>0.3.60</Version>
+        <Version>0.3.61</Version>
         <PackageProjectUrl>https://github.com/ErikWe/sharp-measures</PackageProjectUrl>
         <RepositoryUrl>https://github.com/ErikWe/sharp-measures</RepositoryUrl>
     </PropertyGroup>
