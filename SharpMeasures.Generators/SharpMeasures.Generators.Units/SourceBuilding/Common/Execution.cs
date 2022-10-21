@@ -46,12 +46,12 @@ internal static class Execution
 
             if (Data.BiasTerm is false)
             {
-                InterfaceCollector.AddInterface($"global::System.IComparable<{Data.Unit.Name}>");
+                InterfaceCollector.AddInterface($"global::System.IComparable<{Data.Unit.FullyQualifiedName}>");
             }
 
             if (Data.Unit.IsRecord is false)
             {
-                InterfaceCollector.AddInterface($"global::System.IEquatable<{Data.Unit.Name}>");
+                InterfaceCollector.AddInterface($"global::System.IEquatable<{Data.Unit.FullyQualifiedName}>");
             }
         }
 
@@ -186,7 +186,7 @@ internal static class Execution
             SeparationHandler.AddIfNecessary();
 
             AppendDocumentation(indentation, Data.SourceBuildingContext.Documentation.WithBias());
-            Builder.AppendLine($"{indentation}public {Data.Unit.Name} WithBias(global::SharpMeasures.Scalar bias) => new({Data.Quantity.Name}, Bias + bias);");
+            Builder.AppendLine($"{indentation}public {Data.Unit.FullyQualifiedName} WithBias(global::SharpMeasures.Scalar bias) => new({Data.Quantity.Name}, Bias + bias);");
         }
 
         private void AppendToString(Indentation indentation)

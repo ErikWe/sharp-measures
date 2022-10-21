@@ -11,23 +11,23 @@
 
 public partial class Position3
 {
-    /// <summary>Converts <see langword="this"/> to the equivalent <see cref="Size3"/>.</summary>
+    /// <summary>Converts <see langword="this"/> to the equivalent <see cref="global::Size3"/>.</summary>
     public global::Size3 AsSize3 => new(Components);
 
     /// <summary>Converts <paramref name="size"/> to the equivalent <see cref="global::Position3"/>.</summary>
     /// <param name="size">This <see cref="global::Size3"/> is converted to the equivalent <see cref="global::Position3"/>.</param>
     /// <exception cref="global::System.ArgumentNullException"/>
-    public Position3 From(global::Size3 size)
+    public global::Position3 From(global::Size3 size)
     {
         global::System.ArgumentNullException.ThrowIfNull(size);
 
         return new(size.Components);
     }
 
-    /// <summary>Converts <paramref name="a"/> to the equivalent <see cref="Size3"/>.</summary>
-    /// <param name="a">This <see cref="global::Position3"/> is converted to the equivalent <see cref="Size3"/>.</param>
+    /// <summary>Converts <paramref name="a"/> to the equivalent <see cref="global::Size3"/>.</summary>
+    /// <param name="a">This <see cref="global::Position3"/> is converted to the equivalent <see cref="global::Size3"/>.</param>
     /// <exception cref="global::System.ArgumentNullException"/>
-    public static implicit operator Size3(global::Position3 a)
+    public static implicit operator global::Size3(global::Position3 a)
     {
         global::System.ArgumentNullException.ThrowIfNull(a);
 
@@ -37,7 +37,7 @@ public partial class Position3
     /// <summary>Converts <paramref name="a"/> to the equivalent <see cref="global::Position3"/>.</summary>
     /// <param name="a">This <see cref="global::Size3"/> is converted to the equivalent <see cref="global::Position3"/>.</param>
     /// <exception cref="global::System.ArgumentNullException"/>
-    public static explicit operator Position3(global::Size3 a)
+    public static explicit operator global::Position3(global::Size3 a)
     {
         global::System.ArgumentNullException.ThrowIfNull(a);
 

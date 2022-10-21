@@ -216,7 +216,7 @@ internal static class Execution
 
             AppendDocumentation(indentation, Data.SourceBuildingContext.Documentation.AntidirectionalConversion(vector));
 
-            StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, $"public {Data.Vector.Name} From", $"new({parameterName}.Components)", (vector, parameterName));
+            StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, $"public {Data.Vector.FullyQualifiedName} From", $"new({parameterName}.Components)", (vector, parameterName));
         }
 
         private void AppendOperatorConversions(Indentation indentation)
@@ -345,7 +345,7 @@ internal static class Execution
 
             AppendDocumentation(indentation, Data.SourceBuildingContext.Documentation.CastConversion(vector));
 
-            StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, $"public static {behaviour} operator {vector.Name}", "new(a.Components)", (Data.Vector.AsNamedType(), "a"));
+            StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, $"public static {behaviour} operator {vector.FullyQualifiedName}", "new(a.Components)", (Data.Vector.AsNamedType(), "a"));
         }
 
         private void AppendIngoingOperatorConversion(Indentation indentation, NamedType vector, string behaviour)
@@ -359,7 +359,7 @@ internal static class Execution
 
             AppendDocumentation(indentation, Data.SourceBuildingContext.Documentation.AntidirectionalCastConversion(vector));
 
-            StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, $"public static {behaviour} operator {Data.Vector.Name}", "new(a.Components)", (vector, "a"));
+            StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, $"public static {behaviour} operator {Data.Vector.FullyQualifiedName}", "new(a.Components)", (vector, "a"));
         }
 
         private void AppendDocumentation(Indentation indentation, string text) => DocumentationBuilding.AppendDocumentation(Builder, indentation, text);

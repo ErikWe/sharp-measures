@@ -17,7 +17,7 @@ public partial class Temperature2
     /// <summary>Converts <paramref name="temperature"/> to the equivalent <see cref="global::Temperature2"/>.</summary>
     /// <param name="temperature">This <see cref="global::Temperature"/> is converted to the original <see cref="global::Temperature2"/>.</param>
     /// <exception cref="global::System.ArgumentNullException"/>
-    public Temperature2 From(global::Temperature temperature)
+    public global::Temperature2 From(global::Temperature temperature)
     {
         global::System.ArgumentNullException.ThrowIfNull(temperature);
 
@@ -27,7 +27,7 @@ public partial class Temperature2
     /// <summary>Converts <paramref name="x"/> to the equivalent <see cref="global::Temperature"/>.</summary>
     /// <param name="x">This <see cref="global::Temperature2"/> is converted to the equivalent <see cref="global::Temperature"/>.</param>
     /// <exception cref="global::System.ArgumentNullException"/>
-    public static implicit operator Temperature(global::Temperature2 x)
+    public static implicit operator global::Temperature(global::Temperature2 x)
     {
         global::System.ArgumentNullException.ThrowIfNull(x);
 
@@ -37,7 +37,7 @@ public partial class Temperature2
     /// <summary>Converts <paramref name="x"/> to the equivalent <see cref="global::Temperature2"/>.</summary>
     /// <param name="x">This <see cref="global::Temperature"/> is converted to the equivalent <see cref="global::Temperature2"/>.</param>
     /// <exception cref="global::System.ArgumentNullException"/>
-    public static implicit operator Temperature2(global::Temperature x)
+    public static implicit operator global::Temperature2(global::Temperature x)
     {
         global::System.ArgumentNullException.ThrowIfNull(x);
 

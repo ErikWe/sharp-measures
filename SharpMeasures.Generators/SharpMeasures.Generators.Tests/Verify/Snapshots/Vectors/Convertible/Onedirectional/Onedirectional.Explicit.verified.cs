@@ -11,13 +11,13 @@
 
 public partial class Displacement3
 {
-    /// <summary>Converts <see langword="this"/> to the equivalent <see cref="Position3"/>.</summary>
+    /// <summary>Converts <see langword="this"/> to the equivalent <see cref="global::Position3"/>.</summary>
     public global::Position3 AsPosition3 => new(Components);
 
-    /// <summary>Converts <paramref name="a"/> to the equivalent <see cref="Position3"/>.</summary>
-    /// <param name="a">This <see cref="global::Displacement3"/> is converted to the equivalent <see cref="Position3"/>.</param>
+    /// <summary>Converts <paramref name="a"/> to the equivalent <see cref="global::Position3"/>.</summary>
+    /// <param name="a">This <see cref="global::Displacement3"/> is converted to the equivalent <see cref="global::Position3"/>.</param>
     /// <exception cref="global::System.ArgumentNullException"/>
-    public static explicit operator Position3(global::Displacement3 a)
+    public static explicit operator global::Position3(global::Displacement3 a)
     {
         global::System.ArgumentNullException.ThrowIfNull(a);
 

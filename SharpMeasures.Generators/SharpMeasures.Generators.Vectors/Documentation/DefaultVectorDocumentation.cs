@@ -219,7 +219,7 @@ internal sealed class DefaultVectorDocumentation : IVectorDocumentationStrategy,
         """;
 
     public string Conversion(NamedType vector) => $"""
-        /// <summary>Converts <see langword="this"/> to the equivalent <see cref="{vector.Name}"/>.</summary>
+        /// <summary>Converts <see langword="this"/> to the equivalent <see cref="{vector.FullyQualifiedName}"/>.</summary>
         """;
 
     public string AntidirectionalConversion(NamedType vector) => $"""
@@ -227,8 +227,8 @@ internal sealed class DefaultVectorDocumentation : IVectorDocumentationStrategy,
         /// <param name="{SourceBuildingUtility.ToParameterName(vector.Name)}">This <see cref="{vector.FullyQualifiedName}"/> is converted to the equivalent {VectorReference}.</param>
         """;
     public string CastConversion(NamedType vector) => $"""
-        /// <summary>Converts <paramref name="a"/> to the equivalent <see cref="{vector.Name}"/>.</summary>
-        /// <param name="a">This {VectorReference} is converted to the equivalent <see cref="{vector.Name}"/>.</param>
+        /// <summary>Converts <paramref name="a"/> to the equivalent <see cref="{vector.FullyQualifiedName}"/>.</summary>
+        /// <param name="a">This {VectorReference} is converted to the equivalent <see cref="{vector.FullyQualifiedName}"/>.</param>
         """;
 
     public string AntidirectionalCastConversion(NamedType vector) => $"""

@@ -13,8 +13,8 @@ namespace Test.Testing.Tests.UnitTests;
 
 /// <summary>A unit of measurement, primarily describing <see cref="global::Test.Testing.Tests.UnitTests.Length"/>.</summary>
 public partial class UnitOfLength :
-    global::System.IComparable<UnitOfLength>,
-    global::System.IEquatable<UnitOfLength>
+    global::System.IComparable<global::Test.Testing.Tests.UnitTests.UnitOfLength>,
+    global::System.IEquatable<global::Test.Testing.Tests.UnitTests.UnitOfLength>
 {
     /// <summary>The <see cref="global::Test.Testing.Tests.UnitTests.Length"/> described by <see langword="this"/>.</summary>
     public global::Test.Testing.Tests.UnitTests.Length Length { get; }

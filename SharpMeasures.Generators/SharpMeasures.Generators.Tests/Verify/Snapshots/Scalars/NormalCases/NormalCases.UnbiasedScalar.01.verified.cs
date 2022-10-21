@@ -29,7 +29,7 @@ public partial class Length
     public bool IsNegativeInfinity => double.IsNegativeInfinity(Magnitude.Value);
 
     /// <inheritdoc cref="global::SharpMeasures.Scalar.Absolute"/>
-    public Length Absolute() => new(global::System.Math.Abs(Magnitude.Value));
+    public global::Length Absolute() => new(global::System.Math.Abs(Magnitude.Value));
 
     /// <inheritdoc cref="global::SharpMeasures.Scalar.Sign"/>
     public int Sign() => global::System.Math.Sign(Magnitude.Value);

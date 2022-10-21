@@ -12,11 +12,11 @@
 public partial class Length
 {
     /// <inheritdoc cref="Scalar.Multiply(global::SharpMeasures.Vector3)"/>
-    public Position3 Multiply(global::SharpMeasures.Vector3 factor) => new(Magnitude.Value * factor);
+    public global::Position3 Multiply(global::SharpMeasures.Vector3 factor) => new(Magnitude.Value * factor);
 
     /// <inheritdoc cref="global::SharpMeasures.Vector3.operator *(global::SharpMeasures.Scalar, global::SharpMeasures.Vector3)"/>
     /// <exception cref="global::System.ArgumentNullException"/>
-    public static Position3 operator *(global::Length a, global::SharpMeasures.Vector3 b)
+    public static global::Position3 operator *(global::Length a, global::SharpMeasures.Vector3 b)
     {
         global::System.ArgumentNullException.ThrowIfNull(a);
 
@@ -25,7 +25,7 @@ public partial class Length
 
     /// <inheritdoc cref="global::SharpMeasures.Vector3.operator *(global::SharpMeasures.Vector3, global::SharpMeasures.Scalar)"/>
     /// <exception cref="global::System.ArgumentNullException"/>
-    public static Position3 operator *(global::SharpMeasures.Vector3 a, global::Length b)
+    public static global::Position3 operator *(global::SharpMeasures.Vector3 a, global::Length b)
     {
         global::System.ArgumentNullException.ThrowIfNull(b);
 
@@ -33,11 +33,11 @@ public partial class Length
     }
 
     /// <inheritdoc cref="Scalar.Multiply(global::SharpMeasures.Vector2)"/>
-    public Position2 Multiply(global::SharpMeasures.Vector2 factor) => new(Magnitude.Value * factor);
+    public global::Position2 Multiply(global::SharpMeasures.Vector2 factor) => new(Magnitude.Value * factor);
 
     /// <inheritdoc cref="global::SharpMeasures.Vector2.operator *(global::SharpMeasures.Scalar, global::SharpMeasures.Vector2)"/>
     /// <exception cref="global::System.ArgumentNullException"/>
-    public static Position2 operator *(global::Length a, global::SharpMeasures.Vector2 b)
+    public static global::Position2 operator *(global::Length a, global::SharpMeasures.Vector2 b)
     {
         global::System.ArgumentNullException.ThrowIfNull(a);
 
@@ -46,7 +46,7 @@ public partial class Length
 
     /// <inheritdoc cref="global::SharpMeasures.Vector2.operator *(global::SharpMeasures.Vector2, global::SharpMeasures.Scalar)"/>
     /// <exception cref="global::System.ArgumentNullException"/>
-    public static Position2 operator *(global::SharpMeasures.Vector2 a, global::Length b)
+    public static global::Position2 operator *(global::SharpMeasures.Vector2 a, global::Length b)
     {
         global::System.ArgumentNullException.ThrowIfNull(b);
 

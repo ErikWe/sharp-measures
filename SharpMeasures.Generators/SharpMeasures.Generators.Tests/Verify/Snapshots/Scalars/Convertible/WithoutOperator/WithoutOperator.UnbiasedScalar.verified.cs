@@ -17,7 +17,7 @@ public partial class Distance
     /// <summary>Converts <paramref name="length"/> to the equivalent <see cref="global::Distance"/>.</summary>
     /// <param name="length">This <see cref="global::Length"/> is converted to the original <see cref="global::Distance"/>.</param>
     /// <exception cref="global::System.ArgumentNullException"/>
-    public Distance From(global::Length length)
+    public global::Distance From(global::Length length)
     {
         global::System.ArgumentNullException.ThrowIfNull(length);
 

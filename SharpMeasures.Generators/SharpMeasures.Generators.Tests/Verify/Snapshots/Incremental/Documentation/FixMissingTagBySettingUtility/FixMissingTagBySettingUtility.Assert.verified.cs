@@ -11,8 +11,8 @@
 
 /// <summary>Hej!</summary>
 public partial class UnitOfLength :
-    global::System.IComparable<UnitOfLength>,
-    global::System.IEquatable<UnitOfLength>
+    global::System.IComparable<global::UnitOfLength>,
+    global::System.IEquatable<global::UnitOfLength>
 {
     /// <summary>The <see cref="global::Length"/> described by <see langword="this"/>.</summary>
     public global::Length Length { get; }

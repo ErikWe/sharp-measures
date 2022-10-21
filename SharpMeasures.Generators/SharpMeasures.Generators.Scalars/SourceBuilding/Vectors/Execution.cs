@@ -71,7 +71,7 @@ internal static class Execution
             SeparationHandler.AddIfNecessary();
 
             AppendDocumentation(indentation, Data.SourceBuildingContext.Documentation.MultiplyVectorMethod(dimension));
-            Builder.AppendLine($"{indentation}public {vector.Name} Multiply(global::SharpMeasures.Vector{dimension} factor) => new(Magnitude.Value * factor);");
+            Builder.AppendLine($"{indentation}public {vector.FullyQualifiedName} Multiply(global::SharpMeasures.Vector{dimension} factor) => new(Magnitude.Value * factor);");
         }
 
         private void AppendMultiplyVectorOperators(Indentation indentation, NamedType vector, int dimension)
@@ -80,7 +80,7 @@ internal static class Execution
 
             NamedType vectorType = new($"Vector{dimension}", "SharpMeasures", "SharpMeasures.Base", true);
 
-            var methodNameAndModifiers = $"public static {vector.Name} operator *";
+            var methodNameAndModifiers = $"public static {vector.FullyQualifiedName} operator *";
             
             var lhsExpression = "new(a.Magnitude.Value * b)";
             var rhsExpression = "new(a * b.Magnitude.Value)";

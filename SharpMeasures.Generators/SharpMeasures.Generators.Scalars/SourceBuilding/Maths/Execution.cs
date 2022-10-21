@@ -129,7 +129,7 @@ internal static class Execution
             SeparationHandler.Add();
 
             AppendDocumentation(indentation, Data.SourceBuildingContext.Documentation.Absolute());
-            Builder.AppendLine($"{indentation}public {Data.Scalar.Name} Absolute() => new(global::System.Math.Abs(Magnitude.Value));");
+            Builder.AppendLine($"{indentation}public {Data.Scalar.FullyQualifiedName} Absolute() => new(global::System.Math.Abs(Magnitude.Value));");
 
             SeparationHandler.Add();
 

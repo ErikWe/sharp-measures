@@ -17,7 +17,7 @@ public partial class Temperature2
     /// <summary>Converts <paramref name="temperature"/> to the equivalent <see cref="global::Temperature2"/>.</summary>
     /// <param name="temperature">This <see cref="global::Temperature"/> is converted to the original <see cref="global::Temperature2"/>.</param>
     /// <exception cref="global::System.ArgumentNullException"/>
-    public Temperature2 From(global::Temperature temperature)
+    public global::Temperature2 From(global::Temperature temperature)
     {
         global::System.ArgumentNullException.ThrowIfNull(temperature);
 

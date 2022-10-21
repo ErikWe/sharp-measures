@@ -14,7 +14,7 @@ public partial class Distance
     /// <summary>Converts <paramref name="length"/> to the equivalent <see cref="global::Distance"/>.</summary>
     /// <param name="length">This <see cref="global::Length"/> is converted to the original <see cref="global::Distance"/>.</param>
     /// <exception cref="global::System.ArgumentNullException"/>
-    public Distance From(global::Length length)
+    public global::Distance From(global::Length length)
     {
         global::System.ArgumentNullException.ThrowIfNull(length);
 
@@ -24,7 +24,7 @@ public partial class Distance
     /// <summary>Converts <paramref name="x"/> to the equivalent <see cref="global::Distance"/>.</summary>
     /// <param name="x">This <see cref="global::Length"/> is converted to the equivalent <see cref="global::Distance"/>.</param>
     /// <exception cref="global::System.ArgumentNullException"/>
-    public static explicit operator Distance(global::Length x)
+    public static explicit operator global::Distance(global::Length x)
     {
         global::System.ArgumentNullException.ThrowIfNull(x);
 

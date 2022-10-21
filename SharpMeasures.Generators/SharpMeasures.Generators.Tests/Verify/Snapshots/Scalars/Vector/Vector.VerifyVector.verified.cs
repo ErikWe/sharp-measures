@@ -12,11 +12,11 @@
 public partial class Length
 {
     /// <inheritdoc cref="Scalar.Multiply(global::SharpMeasures.Vector3)"/>
-    public Position3 Multiply(global::SharpMeasures.Vector3 factor) => new(Magnitude.Value * factor);
+    public global::Position3 Multiply(global::SharpMeasures.Vector3 factor) => new(Magnitude.Value * factor);
 
     /// <inheritdoc cref="global::SharpMeasures.Vector3.operator *(global::SharpMeasures.Scalar, global::SharpMeasures.Vector3)"/>
     /// <exception cref="global::System.ArgumentNullException"/>
-    public static Position3 operator *(global::Length a, global::SharpMeasures.Vector3 b)
+    public static global::Position3 operator *(global::Length a, global::SharpMeasures.Vector3 b)
     {
         global::System.ArgumentNullException.ThrowIfNull(a);
 
@@ -25,7 +25,7 @@ public partial class Length
 
     /// <inheritdoc cref="global::SharpMeasures.Vector3.operator *(global::SharpMeasures.Vector3, global::SharpMeasures.Scalar)"/>
     /// <exception cref="global::System.ArgumentNullException"/>
-    public static Position3 operator *(global::SharpMeasures.Vector3 a, global::Length b)
+    public static global::Position3 operator *(global::SharpMeasures.Vector3 a, global::Length b)
     {
         global::System.ArgumentNullException.ThrowIfNull(b);
 

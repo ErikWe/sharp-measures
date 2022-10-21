@@ -29,7 +29,7 @@ public partial class Temperature
     public bool IsNegativeInfinity => double.IsNegativeInfinity(Magnitude.Value);
 
     /// <inheritdoc cref="global::SharpMeasures.Scalar.Absolute"/>
-    public Temperature Absolute() => new(global::System.Math.Abs(Magnitude.Value));
+    public global::Temperature Absolute() => new(global::System.Math.Abs(Magnitude.Value));
 
     /// <inheritdoc cref="global::SharpMeasures.Scalar.Sign"/>
     public int Sign() => global::System.Math.Sign(Magnitude.Value);

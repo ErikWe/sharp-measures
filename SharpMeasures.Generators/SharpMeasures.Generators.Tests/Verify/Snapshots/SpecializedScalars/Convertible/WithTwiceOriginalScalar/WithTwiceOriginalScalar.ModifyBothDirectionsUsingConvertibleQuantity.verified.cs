@@ -17,7 +17,7 @@ public partial class Altitude
     /// <summary>Converts <paramref name="length"/> to the equivalent <see cref="global::Altitude"/>.</summary>
     /// <param name="length">This <see cref="global::Length"/> is converted to the original <see cref="global::Altitude"/>.</param>
     /// <exception cref="global::System.ArgumentNullException"/>
-    public Altitude From(global::Length length)
+    public global::Altitude From(global::Length length)
     {
         global::System.ArgumentNullException.ThrowIfNull(length);
 
@@ -30,7 +30,7 @@ public partial class Altitude
     /// <summary>Converts <paramref name="distance"/> to the equivalent <see cref="global::Altitude"/>.</summary>
     /// <param name="distance">This <see cref="global::Distance"/> is converted to the original <see cref="global::Altitude"/>.</param>
     /// <exception cref="global::System.ArgumentNullException"/>
-    public Altitude From(global::Distance distance)
+    public global::Altitude From(global::Distance distance)
     {
         global::System.ArgumentNullException.ThrowIfNull(distance);
 
@@ -40,7 +40,7 @@ public partial class Altitude
     /// <summary>Converts <paramref name="x"/> to the equivalent <see cref="global::Length"/>.</summary>
     /// <param name="x">This <see cref="global::Altitude"/> is converted to the equivalent <see cref="global::Length"/>.</param>
     /// <exception cref="global::System.ArgumentNullException"/>
-    public static explicit operator Length(global::Altitude x)
+    public static explicit operator global::Length(global::Altitude x)
     {
         global::System.ArgumentNullException.ThrowIfNull(x);
 
@@ -50,7 +50,7 @@ public partial class Altitude
     /// <summary>Converts <paramref name="x"/> to the equivalent <see cref="global::Altitude"/>.</summary>
     /// <param name="x">This <see cref="global::Length"/> is converted to the equivalent <see cref="global::Altitude"/>.</param>
     /// <exception cref="global::System.ArgumentNullException"/>
-    public static implicit operator Altitude(global::Length x)
+    public static implicit operator global::Altitude(global::Length x)
     {
         global::System.ArgumentNullException.ThrowIfNull(x);
 
@@ -60,7 +60,7 @@ public partial class Altitude
     /// <summary>Converts <paramref name="x"/> to the equivalent <see cref="global::Distance"/>.</summary>
     /// <param name="x">This <see cref="global::Altitude"/> is converted to the equivalent <see cref="global::Distance"/>.</param>
     /// <exception cref="global::System.ArgumentNullException"/>
-    public static implicit operator Distance(global::Altitude x)
+    public static implicit operator global::Distance(global::Altitude x)
     {
         global::System.ArgumentNullException.ThrowIfNull(x);
 
@@ -70,7 +70,7 @@ public partial class Altitude
     /// <summary>Converts <paramref name="x"/> to the equivalent <see cref="global::Altitude"/>.</summary>
     /// <param name="x">This <see cref="global::Distance"/> is converted to the equivalent <see cref="global::Altitude"/>.</param>
     /// <exception cref="global::System.ArgumentNullException"/>
-    public static explicit operator Altitude(global::Distance x)
+    public static explicit operator global::Altitude(global::Distance x)
     {
         global::System.ArgumentNullException.ThrowIfNull(x);
 

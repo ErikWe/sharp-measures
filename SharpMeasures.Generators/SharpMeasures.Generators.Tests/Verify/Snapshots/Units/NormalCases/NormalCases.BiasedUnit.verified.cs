@@ -11,7 +11,7 @@
 
 /// <summary>A unit of measurement, describing <see cref="global::TemperatureDifference"/> together with a <see cref="global::SharpMeasures.Scalar"/> bias term.</summary>
 public partial class UnitOfTemperature :
-    global::System.IEquatable<UnitOfTemperature>
+    global::System.IEquatable<global::UnitOfTemperature>
 {
     /// <summary>The <see cref="global::TemperatureDifference"/> described by <see langword="this"/>.</summary>
     public global::TemperatureDifference TemperatureDifference { get; }
@@ -54,7 +54,7 @@ public partial class UnitOfTemperature :
     /// <summary>Derives a new <see cref="global::UnitOfTemperature"/> that has bias <paramref name="bias"/> relative to <see langword="this"/>.</summary>
     /// <param name="bias">The bias of the derived <see cref="global::UnitOfTemperature"/> relative to <see langword="this"/>.</param>
     /// <remarks>When used together with <see cref="ScaledBy(global::SharpMeasures.Scalar)"/> or <see cref="WithPrefix{TPrefix}(TPrefix)"/>, the order matters.</remarks>
-    public UnitOfTemperature WithBias(global::SharpMeasures.Scalar bias) => new(TemperatureDifference, Bias + bias);
+    public global::UnitOfTemperature WithBias(global::SharpMeasures.Scalar bias) => new(TemperatureDifference, Bias + bias);
 
     ///<summary>Produces a description of <see langword="this"/> containing the described <see cref="global::TemperatureDifference"/> and the associated bias.</summary>
     public override string ToString() => "{TemperatureDifference} + {Bias}";
