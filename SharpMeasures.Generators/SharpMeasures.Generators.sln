@@ -7,9 +7,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		..\.editorconfig = ..\.editorconfig
 		Directory.Build.props = Directory.Build.props
-		..\Directory.Build.props = ..\Directory.Build.props
 		Directory.Build.targets = Directory.Build.targets
-		..\Directory.Build.targets = ..\Directory.Build.targets
+		..\SharpMeasures.Build.props = ..\SharpMeasures.Build.props
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpMeasures.Equatables", "SharpMeasures.Equatables\SharpMeasures.Equatables.csproj", "{3249DE05-9C9F-4E8F-A737-8150F487B2AA}"
@@ -46,7 +45,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpMeasures.Utility", "Sh
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpMeasures.Generators.Attributes.API", "SharpMeasures.Generators.Attributes.API\SharpMeasures.Generators.Attributes.API.csproj", "{3580D0E5-83FA-409D-96C8-9412381DC172}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpMeasures.Generators.Profiling", "SharpMeasures.Generators.Profiling\SharpMeasures.Generators.Profiling.csproj", "{450D240A-6DF9-478C-B351-3FEFA9BCF554}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpMeasures.Generators.Profiling", "SharpMeasures.Generators.Profiling\SharpMeasures.Generators.Profiling.csproj", "{450D240A-6DF9-478C-B351-3FEFA9BCF554}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
