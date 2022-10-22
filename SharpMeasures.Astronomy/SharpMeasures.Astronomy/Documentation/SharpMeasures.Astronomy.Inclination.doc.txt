@@ -1,0 +1,11 @@
+﻿# Header
+<summary>A measure of the scalar quantity Inclination, measuring the vertical <see cref="Angle"/> to the zenith in a spherical coordinate system. The quantity is expressed in <see cref="UnitOfAngle"/>.</summary>
+/#
+
+# Process_Square
+<summary>Computes { <see langword="this"/> ² }.</summary>
+/#
+
+# Process_AsElevation
+<summary>Computes the equivalent <see cref="ElevationAngle"/>, according to { 90 ⋅ <see cref="Angle.OneDegree"/> - <see langword="this"/> }.</summary>
+/#

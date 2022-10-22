@@ -1,0 +1,5 @@
+﻿<Project>
+
+    <Import Project="$([MSBuild]::GetPathOfFileAbove('SharpMeasures.Build.props', '$(MSBuildThisFileDirectory)../'))" />
+
+</Project>

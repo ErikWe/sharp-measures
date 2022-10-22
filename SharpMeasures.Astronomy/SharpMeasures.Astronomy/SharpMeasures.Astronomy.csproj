@@ -1,0 +1,41 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <RootNamespace>SharpMeasures.Astronomy</RootNamespace>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <Title>SharpMeasures.Astronomy</Title>
+        <Description>
+            Extends SharpMeasures with astronomy-related quantities.
+        </Description>
+        <PackageReadmeFile>README.nupkg.md</PackageReadmeFile>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <IsPackable>true</IsPackable>
+        <IsPublishable>true</IsPublishable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="SharpMeasures" />
+        <PackageReference Include="SharpMeasures.Base" />
+        <PackageReference Include="SharpMeasures.Generators" PrivateAssets="all" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <AdditionalFiles Include="Documentation/**/*.doc.txt" />
+        <None Remove="Documentation/**/*.doc.txt" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <GlobalAnalyzerConfigFiles Include="SharpMeasures.Astronomy.globalconfig" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="..\README.nupkg.md" Pack="true" PackagePath="\" />
+    </ItemGroup>
+
+</Project>

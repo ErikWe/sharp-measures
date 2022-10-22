@@ -16,6 +16,10 @@ Console.WriteLine(velocity.KilometresPerHour); // ~ "(0, 10.8, -28.8)"
 
 SharpMeasures is implemented entirely using a source generator, which means that it's trivial to extend the existing set of quantities and units. It is especially simple to construct specialized forms of existing quantities - for example a quantity `Altitude` as a specialized form of `Height`. Read more about the generator [here](SharpMeasures.Generators/Documentation/README.md).
 
+Some extensions can be found here:
+
+- [SharpMeasures.Astronomy](https://www.nuget.org/packages/SharpMeasures.Astronomy/) [![NuGet version (SharpMeasures.Generators)](https://img.shields.io/nuget/v/SharpMeasures.Astronomy.svg?style=plastic)](https://www.nuget.org/packages/SharpMeasures.Astronomy/) ![GitHub](https://img.shields.io/github/license/ErikWe/sharp-measures?style=plastic)
+
 ### Limitations
 
 Dimensional analysis is not performed when evaluating mathematical expressions, which means that mathematical operations require all involved quantities (even intermediate) to be explicitly implemented in SharpMeasures. If this is not the case, a catch-all quantity `Unhandled` will be the result of the operation - which will need to be explicitly converted to the desired type. Currently, the set of supported operations is fairly limited - so this issue could be encountered relatively frequently.

@@ -1,0 +1,11 @@
+﻿# Header
+<summary>A measure of the scalar quantity Elevation Angle, also known as Altitude Angle, measuring the vertical <see cref="Angle"/> to the horizontal reference plane in a spherical coordinate system. The quantity is expressed in <see cref="UnitOfAngle"/>.</summary>
+/#
+
+# Process_Square
+<summary>Computes { <see langword="this"/> ² }.</summary>
+/#
+
+# Process_AsInclination
+<summary>Computes the equivalent <see cref="Inclination"/>, according to { 90 ⋅ <see cref="Angle.OneDegree"/> - <see langword="this"/> }.</summary>
+/#

@@ -1,0 +1,7 @@
+﻿# Header
+<summary>A measure of the scalar quantity Latitude, measuring the vertical <see cref="Angle"/> between a point and the equator in a geographic coordinate system. The quantity is expressed in <see cref="UnitOfAngle"/>.</summary>
+/#
+
+# Process_Square
+<summary>Computes { <see langword="this"/> ² }.</summary>
+/#

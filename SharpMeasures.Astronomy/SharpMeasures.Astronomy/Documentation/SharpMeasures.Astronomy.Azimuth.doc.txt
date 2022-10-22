@@ -1,0 +1,7 @@
+﻿# Header
+<summary>A measure of the scalar quantity Azimuth, measuring a horizontal <see cref="Angle"/> in a spherical or cylindrical coordinate system. The quantity is expressed in <see cref="UnitOfAngle"/>.</summary>
+/#
+
+# Process_Square
+<summary>Computes { <see langword="this"/> ² }.</summary>
+/#
