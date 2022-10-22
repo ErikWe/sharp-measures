@@ -79,7 +79,7 @@ The above declarations would make the following code valid:
 Length length = 41.9 * Length.OneFoot;
 Area area = length * length;
 
-Console.WriteLine(area); // "163.10150605439995 [m²]"
+Console.WriteLine(area); // ~ "163.1015 [m²]"
 ```
 
 ### XML Documentation Injection
