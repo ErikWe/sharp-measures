@@ -1,6 +1,6 @@
 # SharpMeasures
 
-SharpMeasures is an easily extendable C# tool that aims to encourage explicit usage of physical quantities and units of measurement during development. This is done by providing concrete types, such as `Time`, `UnitOfLength`, and `Acceleration3` - together with a custom-built source generator. While SharpMeasures is mainly designed as a treatment for *primitive obsession*, common matematical operations are also implemented, allowing quantities to be derived from other quantities - as demonstrated below.
+SharpMeasures is an easily extended C# library that aims to encourage explicit usage of physical quantities and units of measurement during development. This is done by providing concrete types, such as `Time`, `UnitOfLength`, and `Acceleration3` - together with a custom-built source generator. While SharpMeasures is mainly designed as a treatment for *primitive obsession*, common matematical operations are also implemented, allowing quantities to be derived from other quantities - as demonstrated below.
 
 ```csharp
 Displacement3 displacement = (0, 1.5, -4) * Distance.OneMetre;

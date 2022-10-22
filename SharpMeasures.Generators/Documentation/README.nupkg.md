@@ -5,7 +5,7 @@ The source generator used to implement [SharpMeasures](https://www.nuget.org/pac
 ```csharp
 using SharpMeasures.Generators;
 
-[SpecializedScalarQuantity(typeof(Length))]
+[SpecializedScalarQuantity(typeof(Distance))]
 public partial class Altitude { }
 ```
 
@@ -20,4 +20,4 @@ SharpMeasures.Generators has a soft dependency on [SharpMeasures.Base](https://w
 </ItemGroup>
 ```
 
-See [GitHub](https://github.com/ErikWe/sharp-measures) for more information.
+See [GitHub](https://github.com/ErikWe/sharp-measures/tree/main/SharpMeasures.Generators/Documentation) for more information.
