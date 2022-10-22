@@ -1,8 +1,9 @@
 is_global = true
 
 SharpMeasures_GenerateDocumentation = true
-SharpMeasures_PrintDocumentationTags = true
 SharpMeasures_DocumentationFileExtension = doc.txt
+SharpMeasures_PrintDocumentationTags = false
+SharpMeasures_LimitOneErrorPerDocumentationFile = true
 
 SharpMeasures_GeneratedFileHeaderContent = all
 

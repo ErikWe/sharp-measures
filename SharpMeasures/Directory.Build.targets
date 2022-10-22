@@ -10,7 +10,7 @@
     
     <ItemGroup>
         <PackageReference Update="SharpMeasures.Base" Version="0.3.58" />
-        <PackageReference Update="SharpMeasures.Generators" Version="0.3.60" />
+        <PackageReference Update="SharpMeasures.Generators" Version="0.3.61" />
     </ItemGroup>
 
     <ItemGroup>

@@ -1,0 +1,5 @@
+﻿# Requires: Generic
+
+# Header
+<summary>A measure of the scalar quantity Height, describing the vertical <see cref="Distance"/> between two points, or the vertical extent of an object. The quantity is expressed in <see cref="UnitOfLength"/>.</summary>
+/#
