@@ -18,7 +18,7 @@ SharpMeasures is implemented almost entirely using a source generator, which mea
 
 Some extensions to SharpMeasures can be found here:
 
-- [SharpMeasures.Astronomy](https://www.nuget.org/packages/SharpMeasures.Astronomy/) [![NuGet version (SharpMeasures.Generators)](https://img.shields.io/nuget/v/SharpMeasures.Astronomy.svg?style=plastic)](https://www.nuget.org/packages/SharpMeasures.Astronomy/) ![GitHub](https://img.shields.io/github/license/ErikWe/sharp-measures?style=plastic)
+- [SharpMeasures.Astronomy](https://www.nuget.org/packages/SharpMeasures.Astronomy/)
 
 ### Limitations
 
