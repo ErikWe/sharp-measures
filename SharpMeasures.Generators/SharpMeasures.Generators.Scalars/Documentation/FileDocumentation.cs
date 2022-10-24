@@ -60,7 +60,10 @@ internal sealed class FileDocumentation : IDocumentationStrategy, IEquatable<Fil
     public string Absolute() => FromFileOrDefault(static (strategy) => strategy.Absolute());
     public string Sign() => FromFileOrDefault(static (strategy) => strategy.Sign());
 
-    public string ToStringDocumentation() => FromFileOrDefault(static (strategy) => strategy.ToStringDocumentation());
+    public string ToStringMethod() => FromFileOrDefault(static (strategy) => strategy.ToStringMethod());
+    public string ToStringFormat() => FromFileOrDefault(static (strategy) => strategy.ToStringFormat());
+    public string ToStringProvider() => FromFileOrDefault(static (strategy) => strategy.ToStringProvider());
+    public string ToStringFormatAndProvider() => FromFileOrDefault(static (strategy) => strategy.ToStringFormatAndProvider());
 
     public string EqualsSameTypeMethod() => FromFileOrDefault(static (strategy) => strategy.EqualsSameTypeMethod());
     public string EqualsObjectMethod() => FromFileOrDefault(static (strategy) => strategy.EqualsObjectMethod());

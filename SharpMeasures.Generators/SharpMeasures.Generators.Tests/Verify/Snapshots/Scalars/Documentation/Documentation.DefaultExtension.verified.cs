@@ -48,8 +48,17 @@ public partial class DocTest :
         return new(Magnitude / unitOfDocTest.DocTest.Magnitude);
     }
 
-    /// <summary>Produces a description of <see langword="this"/> containing the represented <see cref="Magnitude"/>, expressed in an arbitrary unit.</summary>
-    public override string ToString() => Magnitude.ToString();
+    /// <summary>Formats the represented <see cref="Magnitude"/> using the current culture.</summary>
+    public override string ToString() => ToString(global::System.Globalization.CultureInfo.CurrentCulture);
+
+    /// <summary>Formats the represented <see cref="Magnitude"/> according to <paramref name="format"/>, using the current culture.</summary>
+    public string ToString(string? format) => ToString(format, global::System.Globalization.CultureInfo.CurrentCulture);
+
+    /// <summary>Formats the represented <see cref="Magnitude"/> using the culture-specific formatting information provided by <paramref name="formatProvider"/>.</summary>
+    public string ToString(global::System.IFormatProvider? formatProvider) => ToString("G", formatProvider);
+
+    /// <summary>Formats the represented <see cref="Magnitude"/> according to <paramref name="format"/>, using the culture-specific formatting information provided by <paramref name="formatProvider"/>.</summary>
+    public string ToString(string? format, global::System.IFormatProvider? formatProvider) => Magnitude.ToString(format, formatProvider);
 
     /// <inheritdoc/>
     public virtual bool Equals(global::DocTest? other) => other is not null && Magnitude.Value == other.Magnitude.Value;

@@ -4,9 +4,10 @@ using SharpMeasures.Maths;
 
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 
 /// <summary>A measure of a scalar quantity that is not covered by a designated type.</summary>
-public readonly record struct Unhandled : IScalarQuantity<Unhandled>, IComparable<Unhandled>
+public readonly record struct Unhandled : IScalarQuantity<Unhandled>, IComparable<Unhandled>, IFormattable
 {
     /// <summary>The <see cref="Unhandled"/> representing { 0 }.</summary>
     public static Unhandled Zero { get; } = new(0);
@@ -65,8 +66,23 @@ public readonly record struct Unhandled : IScalarQuantity<Unhandled>, IComparabl
 
     /// <inheritdoc cref="Scalar.CompareTo(Scalar)"/>
     public int CompareTo(Unhandled other) => Magnitude.CompareTo(other.Magnitude);
-    /// <summary>Produces a description of <see langword="this"/> containing the represented <see cref="Magnitude"/>.</summary>
-    public override string ToString() => Magnitude.ToString();
+
+    /// <summary>Formats the represented <see cref="Magnitude"/> using the current culture.</summary>
+    /// <remarks>The behaviour is consistent with <see cref="double.ToString()"/>.</remarks>
+    public override string ToString() => ToString(CultureInfo.CurrentCulture);
+    /// <summary>Formats the represented <see cref="Magnitude"/> according to <paramref name="format"/>, using the current culture.</summary>
+    /// <param name="format">The format.</param>
+    /// <remarks>The behaviour is consistent with <see cref="double.ToString(string?)"/>.</remarks>
+    public string ToString(string? format) => ToString(format, CultureInfo.CurrentCulture);
+    /// <summary>Formats the represented represented <see cref="Magnitude"/> using culture-specific formatting information provided by <paramref name="formatProvider"/>.</summary>
+    /// <param name="formatProvider">Provides culture-specific formatting information.</param>
+    /// <remarks>The behaviour is consistent with <see cref="double.ToString(IFormatProvider?)"/>.</remarks>
+    public string ToString(IFormatProvider? formatProvider) => ToString("G", formatProvider);
+    /// <summary>Formats the represented <see cref="Magnitude"/> according to <paramref name="format"/>, using culture-specific formatting information provided by <paramref name="formatProvider"/>.</summary>
+    /// <param name="format">The format.</param>
+    /// <param name="formatProvider">Provides culture-specific formatting information.</param>
+    /// <remarks>The behaviour is consistent with <see cref="double.ToString(string?, IFormatProvider?)"/>.</remarks>
+    public string ToString(string? format, IFormatProvider? formatProvider) => Magnitude.ToString(format, formatProvider);
 
     /// <inheritdoc/>
     public Unhandled Plus() => this;

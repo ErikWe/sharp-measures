@@ -7,7 +7,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 
 /// <summary>A pure scalar.</summary>
-public readonly record struct Scalar : IScalarQuantity<Scalar>, IComparable<Scalar>
+public readonly record struct Scalar : IScalarQuantity<Scalar>, IComparable<Scalar>, IFormattable
 {
     /// <summary>The <see cref="Scalar"/> representing { 0 }.</summary>
     public static Scalar Zero { get; } = 0;
@@ -80,8 +80,23 @@ public readonly record struct Scalar : IScalarQuantity<Scalar>, IComparable<Scal
     /// <param name="other"><see langword="this"/> is compared to this value.</param>
     /// <remarks>The behaviour is consistent with <see cref="double.CompareTo(double)"/>.</remarks>
     public int CompareTo(Scalar other) => Value.CompareTo(other.Value);
-    /// <summary>Produces a description of <see langword="this"/> containing the represented <see cref="Value"/>, using the current culture.</summary>
-    public override string ToString() => Value.ToString(CultureInfo.CurrentCulture);
+
+    /// <summary>Formats the represented <see cref="Value"/> using the current culture.</summary>
+    /// <remarks>The behaviour is consistent with <see cref="double.ToString()"/>.</remarks>
+    public override string ToString() => ToString(CultureInfo.CurrentCulture);
+    /// <summary>Formats the represented <see cref="Value"/> according to <paramref name="format"/>, using the current culture.</summary>
+    /// <param name="format">The format.</param>
+    /// <remarks>The behaviour is consistent with <see cref="double.ToString(string?)"/>.</remarks>
+    public string ToString(string? format) => ToString(format, CultureInfo.CurrentCulture);
+    /// <summary>Formats the represented represented <see cref="Value"/> using culture-specific formatting information provided by <paramref name="formatProvider"/>.</summary>
+    /// <param name="formatProvider">Provides culture-specific formatting information.</param>
+    /// <remarks>The behaviour is consistent with <see cref="double.ToString(IFormatProvider?)"/>.</remarks>
+    public string ToString(IFormatProvider? formatProvider) => ToString("G", formatProvider);
+    /// <summary>Formats the represented <see cref="Value"/> according to <paramref name="format"/>, using culture-specific formatting information provided by <paramref name="formatProvider"/>.</summary>
+    /// <param name="format">The format.</param>
+    /// <param name="formatProvider">Provides culture-specific formatting information.</param>
+    /// <remarks>The behaviour is consistent with <see cref="double.ToString(string?, IFormatProvider?)"/>.</remarks>
+    public string ToString(string? format, IFormatProvider? formatProvider) => Value.ToString(format, formatProvider);
 
     /// <inheritdoc/>
     public Scalar Plus() => this;

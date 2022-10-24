@@ -67,7 +67,10 @@ internal sealed class VectorDocumentationTags : IVectorDocumentationStrategy, IE
     public string Normalize() => "Normalize";
     public string Transform() => "Transform";
 
-    public string ToStringDocumentation() => "ToString";
+    public string ToStringMethod() => "ToString";
+    public string ToStringFormat() => "ToString_Format";
+    public string ToStringProvider() => "ToString_Provider";
+    public string ToStringFormatAndProvider() => "ToString_Format_Provider";
 
     public string EqualsSameTypeMethod() => "Method_Equals_SameType";
     public string EqualsObjectMethod() => "Method_Equals_Object";

@@ -97,8 +97,17 @@ public partial class Position2 :
     /// <inheritdoc/>
     public global::Position2 Normalize() => VectorMaths.Normalize(this);
 
-    /// <summary>Produces a description of <see langword="this"/> containing the represented (<see cref="X"/>, <see cref="Y"/>), expressed in an arbitrary unit.</summary>
-    public override string ToString() => Components.ToString();
+    /// <summary>Formats the represented <see cref="Components"/> using the current culture.</summary>
+    public override string ToString() => ToString(global::System.Globalization.CultureInfo.CurrentCulture);
+
+    /// <summary>Formats the represented <see cref="Components"/> according to <paramref name="format"/>, using the current culture.</summary>
+    public string ToString(string? format) => ToString(format, global::System.Globalization.CultureInfo.CurrentCulture);
+
+    /// <summary>Formats the represented <see cref="Components"/> using the culture-specific formatting information provided by <paramref name="formatProvider"/>.</summary>
+    public string ToString(global::System.IFormatProvider? formatProvider) => ToString("G", formatProvider);
+
+    /// <summary>Formats the represented <see cref="Components"/> according to <paramref name="format"/>, using the culture-specific formatting information provided by <paramref name="formatProvider"/>.</summary>
+    public string ToString(string? format, global::System.IFormatProvider? formatProvider) => Components.ToString(format, formatProvider);
 
     /// <summary>Deconstructs <see langword="this"/> into the components (<see cref="X"/>, <see cref="Y"/>).</summary>
     /// <param name="x">The X-component of <see langword="this"/>.</param>

@@ -189,26 +189,39 @@ internal static class Execution
         {
             SeparationHandler.AddIfNecessary();
 
-            AppendDocumentation(indentation, Data.SourceBuildingContext.Documentation.ToStringDocumentation());
-            Builder.Append($$"""{{indentation}}public override string ToString() => """);
+            AppendDocumentation(indentation, Data.SourceBuildingContext.Documentation.ToStringMethod());
+            Builder.AppendLine($"{indentation}public override string ToString() => ToString(global::System.Globalization.CultureInfo.CurrentCulture);");
+
+            SeparationHandler.Add();
+
+            AppendDocumentation(indentation, Data.SourceBuildingContext.Documentation.ToStringFormat());
+            Builder.AppendLine($"{indentation}public string ToString(string? format) => ToString(format, global::System.Globalization.CultureInfo.CurrentCulture);");
+
+            SeparationHandler.Add();
+
+            AppendDocumentation(indentation, Data.SourceBuildingContext.Documentation.ToStringProvider());
+            Builder.AppendLine($"""{indentation}public string ToString(global::System.IFormatProvider? formatProvider) => ToString("G", formatProvider);""");
+
+            SeparationHandler.Add();
+
+            AppendDocumentation(indentation, Data.SourceBuildingContext.Documentation.ToStringFormatAndProvider());
+            Builder.Append($"{indentation}public string ToString(string? format, global::System.IFormatProvider? formatProvider) => ");
 
             if (Data.DefaultUnitInstanceSymbol is not null)
             {
-                Builder.AppendLine($$"""
-                    $"{InUnit({{Data.Unit.FullyQualifiedName}}.{{Data.DefaultUnitInstanceName}})} [{{Data.DefaultUnitInstanceSymbol}}]";
-                    """);
+                Builder.AppendLine($$"""$"{InUnit({{Data.Unit.FullyQualifiedName}}.{{Data.DefaultUnitInstanceName}}).ToString(format, formatProvider)} [{{Data.DefaultUnitInstanceSymbol}}]";""");
 
                 return;
             }
 
             if (Data.DefaultUnitInstanceName is not null)
             {
-                Builder.AppendLine($"InUnit({Data.Unit.FullyQualifiedName}.{Data.DefaultUnitInstanceName}).ToString();");
+                Builder.AppendLine($"InUnit({Data.Unit.FullyQualifiedName}.{Data.DefaultUnitInstanceName}).ToString(format, formatProvider);");
 
                 return;
             }
 
-            Builder.AppendLine("Magnitude.ToString();");
+            Builder.AppendLine("Magnitude.ToString(format, formatProvider);");
         }
 
         private void AppendEquality(Indentation indentation)

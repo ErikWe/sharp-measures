@@ -45,7 +45,10 @@ internal interface IDocumentationStrategy
     public abstract string Absolute();
     public abstract string Sign();
 
-    public abstract string ToStringDocumentation();
+    public abstract string ToStringMethod();
+    public abstract string ToStringFormat();
+    public abstract string ToStringProvider();
+    public abstract string ToStringFormatAndProvider();
 
     public abstract string EqualsSameTypeMethod();
     public abstract string EqualsObjectMethod();

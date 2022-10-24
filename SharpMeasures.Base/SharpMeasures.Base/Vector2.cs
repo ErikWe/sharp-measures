@@ -2,10 +2,12 @@
 
 using SharpMeasures.Maths;
 
+using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 
 /// <summary>A pure two-dimensional vector, representing { X, Y }.</summary>
-public readonly record struct Vector2 : IVector2Quantity<Vector2>
+public readonly record struct Vector2 : IVector2Quantity<Vector2>, IFormattable
 {
     /// <summary>The <see cref="Vector2"/> representing { 0, 0 }.</summary>
     public static Vector2 Zero { get; } = (0, 0);
@@ -51,8 +53,18 @@ public readonly record struct Vector2 : IVector2Quantity<Vector2>
     /// <inheritdoc/>
     public Vector2 Normalize() => VectorMaths.Normalize(this);
 
-    /// <summary>Produces a description of <see langword="this"/> containing the represented (<see cref="X"/>, <see cref="Y"/>).</summary>
-    public override string ToString() => $"({X.Value}, {Y.Value})";
+    /// <summary>Formats the represented (<see cref="X"/>, <see cref="Y"/>) using the current culture.</summary>
+    public override string ToString() => ToString(CultureInfo.CurrentCulture);
+    /// <summary>Formats the represented (<see cref="X"/>, <see cref="Y"/>) according to <paramref name="format"/>, using the current culture.</summary>
+    /// <param name="format">The format of the components <see cref="X"/> and <see cref="Y"/>.</param>
+    public string ToString(string? format) => ToString(format, CultureInfo.CurrentCulture);
+    /// <summary>Formats the represented (<see cref="X"/>, <see cref="Y"/>) using culture-specific formatting information provided by <paramref name="formatProvider"/>.</summary>
+    /// <param name="formatProvider">Provides culture-specific formatting information.</param>
+    public string ToString(IFormatProvider? formatProvider) => ToString("G", formatProvider);
+    /// <summary>Formats the represented (<see cref="X"/>, <see cref="Y"/>) according to <paramref name="format"/>, using culture-specific formatting information provided by <paramref name="formatProvider"/>.</summary>
+    /// <param name="format">The format of the components <see cref="X"/> and <see cref="Y"/>.</param>
+    /// <param name="formatProvider">Provides culture-specific formatting information.</param>
+    public string ToString(string? format, IFormatProvider? formatProvider) => $"({X.ToString(format, formatProvider)}, {Y.ToString(format, formatProvider)})";
 
     /// <summary>Deconstructs <see langword="this"/> into the components (<see cref="X"/>, <see cref="Y"/>).</summary>
     /// <param name="x">The X-component of <see langword="this"/>.</param>

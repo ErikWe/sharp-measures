@@ -1,6 +1,7 @@
 ﻿namespace SharpMeasures;
 
 using System;
+using System.Globalization;
 
 /// <summary>Describes a binary prefix. Common <see cref="BinaryPrefix"/> exists as static properties.</summary>
 public readonly record struct BinaryPrefix : IPrefix, IComparable<BinaryPrefix>
@@ -44,8 +45,23 @@ public readonly record struct BinaryPrefix : IPrefix, IComparable<BinaryPrefix>
 
     /// <inheritdoc cref="MetricPrefix.CompareTo(MetricPrefix)"/>
     public int CompareTo(BinaryPrefix other) => Factor.CompareTo(other.Factor);
-    /// <summary>Produces a description of <see langword="this"/> containing the represented <see cref="Factor"/>.</summary>
-    public override string ToString() => $"{Factor}";
+
+    /// <summary>Formats the represented <see cref="Factor"/> using the current culture.</summary>
+    /// <remarks>The behaviour is consistent with <see cref="double.ToString()"/>.</remarks>
+    public override string ToString() => ToString(CultureInfo.CurrentCulture);
+    /// <summary>Formats the represented <see cref="Factor"/> according to <paramref name="format"/>, using the current culture.</summary>
+    /// <param name="format">The format.</param>
+    /// <remarks>The behaviour is consistent with <see cref="double.ToString(string?)"/>.</remarks>
+    public string ToString(string? format) => ToString(format, CultureInfo.CurrentCulture);
+    /// <summary>Formats the represented represented <see cref="Factor"/> using culture-specific formatting information provided by <paramref name="formatProvider"/>.</summary>
+    /// <param name="formatProvider">Provides culture-specific formatting information.</param>
+    /// <remarks>The behaviour is consistent with <see cref="double.ToString(IFormatProvider?)"/>.</remarks>
+    public string ToString(IFormatProvider? formatProvider) => ToString("G", formatProvider);
+    /// <summary>Formats the represented <see cref="Factor"/> according to <paramref name="format"/>, using culture-specific formatting information provided by <paramref name="formatProvider"/>.</summary>
+    /// <param name="format">The format.</param>
+    /// <param name="formatProvider">Provides culture-specific formatting information.</param>
+    /// <remarks>The behaviour is consistent with <see cref="double.ToString(string?, IFormatProvider?)"/>.</remarks>
+    public string ToString(string? format, IFormatProvider? formatProvider) => Factor.ToString(format, formatProvider);
 
     /// <inheritdoc cref="MetricPrefix.operator &lt;"/>
     public static bool operator <(BinaryPrefix x, BinaryPrefix y) => x.Factor < y.Factor;

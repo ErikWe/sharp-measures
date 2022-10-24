@@ -48,7 +48,10 @@ internal sealed class EmptyDocumentation : IGroupDocumentationStrategy, IVectorD
     string IVectorDocumentationStrategy.ScalarSquaredMagnitude() => string.Empty;
     string IVectorDocumentationStrategy.Normalize() => string.Empty;
     string IVectorDocumentationStrategy.Transform() => string.Empty;
-    string IVectorDocumentationStrategy.ToStringDocumentation() => string.Empty;
+    string IVectorDocumentationStrategy.ToStringMethod() => string.Empty;
+    string IVectorDocumentationStrategy.ToStringFormat() => string.Empty;
+    string IVectorDocumentationStrategy.ToStringProvider() => string.Empty;
+    string IVectorDocumentationStrategy.ToStringFormatAndProvider() => string.Empty;
     string IVectorDocumentationStrategy.EqualsSameTypeMethod() => string.Empty;
     string IVectorDocumentationStrategy.EqualsObjectMethod() => string.Empty;
     string IVectorDocumentationStrategy.EqualitySameTypeOperator() => string.Empty;

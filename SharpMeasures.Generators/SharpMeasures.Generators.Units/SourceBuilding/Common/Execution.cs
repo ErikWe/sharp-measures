@@ -193,9 +193,7 @@ internal static class Execution
         {
             SeparationHandler.AddIfNecessary();
 
-            string expression = Data.BiasTerm
-                ? $"\"{{{Data.Quantity.Name}}} + {{Bias}}\""
-                : $"{Data.Quantity.Name}.ToString()";
+            string expression = Data.BiasTerm ? $"\"{{{Data.Quantity.Name}}} + {{Bias}}\"" : $"{Data.Quantity.Name}.ToString()";
 
             AppendDocumentation(indentation, Data.SourceBuildingContext.Documentation.ToStringDocumentation());
             Builder.AppendLine($"{indentation}public override string ToString() => {expression};");

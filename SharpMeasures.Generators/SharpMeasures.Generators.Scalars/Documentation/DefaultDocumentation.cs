@@ -13,7 +13,7 @@ internal sealed class DefaultDocumentation : IDocumentationStrategy, IEquatable<
     private DefinedType Type { get; }
     private NamedType Unit { get; }
 
-    private string? DefaultUnitInstanceName { get; }
+    private string? DefaultUnitInstancePluralForm { get; }
     private string? DefaultUnitInstanceSymbol { get; }
 
     private string UnitParameterName { get; }
@@ -26,13 +26,23 @@ internal sealed class DefaultDocumentation : IDocumentationStrategy, IEquatable<
         Type = scalar.Type;
         Unit = scalar.Unit;
 
-        DefaultUnitInstanceName = scalar.DefaultUnitInstanceName;
+        DefaultUnitInstancePluralForm = GetDefaultUnitPluralForm(scalar, unitPopulation);
         DefaultUnitInstanceSymbol = scalar.DefaultUnitInstanceSymbol;
 
         UnitParameterName = SourceBuildingUtility.ToParameterName(Unit.Name);
 
         ExampleUnitBaseInstanceName = GetExampleUnitInstance(scalar, unitPopulation, scalar.IncludedUnitBaseInstanceNames)?.Name;
         ExampleUnitInstancePluralForm = GetExampleUnitInstance(scalar, unitPopulation, scalar.IncludedUnitInstanceNames)?.PluralForm;
+    }
+
+    private static string? GetDefaultUnitPluralForm(ResolvedScalarType scalar, IUnitPopulation unitPopulation)
+    {
+        if (scalar.DefaultUnitInstanceName is null || unitPopulation.Units.TryGetValue(scalar.Unit, out var unit) is false || unit.UnitInstancesByName.TryGetValue(scalar.DefaultUnitInstanceName, out var defaultUnit) is false)
+        {
+            return null;
+        }
+
+        return defaultUnit.PluralForm;
     }
 
     private static IUnitInstance? GetExampleUnitInstance(ResolvedScalarType scalar, IUnitPopulation unitPopulation, IReadOnlyList<string> includedUnitInstanceNames)
@@ -257,21 +267,64 @@ internal sealed class DefaultDocumentation : IDocumentationStrategy, IEquatable<
     public string Absolute() => """/// <inheritdoc cref="global::SharpMeasures.Scalar.Absolute"/>""";
     public string Sign() => """/// <inheritdoc cref="global::SharpMeasures.Scalar.Sign"/>""";
 
-    public string ToStringDocumentation()
+    public string ToStringMethod()
     {
-        var commonText = $"""/// <summary>Produces a description of <see langword="this"/> containing the represented <see cref="Magnitude"/>, expressed in """;
-
-        if (DefaultUnitInstanceName is not null && DefaultUnitInstanceSymbol is not null)
+        if (DefaultUnitInstancePluralForm is not null && DefaultUnitInstanceSymbol is not null)
         {
-            return $"""{commonText}<see cref="{Unit.FullyQualifiedName}.{DefaultUnitInstanceName}"/> and followed by the symbol [{DefaultUnitInstanceSymbol}].</summary>""";
+            return $"""/// <summary>Formats the represented <see cref="{DefaultUnitInstancePluralForm}"/> using the current culture, followed by the symbol [{DefaultUnitInstanceSymbol}].</summary>""";
         }
 
-        if (DefaultUnitInstanceName is not null)
+        if (DefaultUnitInstancePluralForm is not null)
         {
-            return $"""{commonText}<see cref="{Unit.FullyQualifiedName}.{DefaultUnitInstanceName}"/>.</summary>""";
+            return $"""/// <summary>Formats the represented <see cref="{DefaultUnitInstancePluralForm}"/> using the current culture.</summary>""";
         }
 
-        return $"""{commonText}an arbitrary unit.</summary>""";
+        return $"""/// <summary>Formats the represented <see cref="Magnitude"/> using the current culture.</summary>""";
+    }
+
+    public string ToStringFormat()
+    {
+        if (DefaultUnitInstancePluralForm is not null && DefaultUnitInstanceSymbol is not null)
+        {
+            return $"""/// <summary>Formats the represented <see cref="{DefaultUnitInstancePluralForm}"/> according to <paramref name="format"/>, using the current culture - and followed by the symbol [{DefaultUnitInstanceSymbol}].</summary>""";
+        }
+
+        if (DefaultUnitInstancePluralForm is not null)
+        {
+            return $"""/// <summary>Formats the represented <see cref="{DefaultUnitInstancePluralForm}"/> according to <paramref name="format"/>, using the current culture.</summary>""";
+        }
+
+        return $"""/// <summary>Formats the represented <see cref="Magnitude"/> according to <paramref name="format"/>, using the current culture.</summary>""";
+    }
+
+    public string ToStringProvider()
+    {
+        if (DefaultUnitInstancePluralForm is not null && DefaultUnitInstanceSymbol is not null)
+        {
+            return $"""/// <summary>Formats the represented <see cref="{DefaultUnitInstancePluralForm}"/> using the culture-specific formatting information provided by <paramref name="formatProvider"/> - and followed by the symbol [{DefaultUnitInstanceSymbol}].</summary>""";
+        }
+
+        if (DefaultUnitInstancePluralForm is not null)
+        {
+            return $"""/// <summary>Formats the represented <see cref="{DefaultUnitInstancePluralForm}"/> using the culture-specific formatting information provided by <paramref name="formatProvider"/>.</summary>""";
+        }
+
+        return $"""/// <summary>Formats the represented <see cref="Magnitude"/> using the culture-specific formatting information provided by <paramref name="formatProvider"/>.</summary>""";
+    }
+
+    public string ToStringFormatAndProvider()
+    {
+        if (DefaultUnitInstancePluralForm is not null && DefaultUnitInstanceSymbol is not null)
+        {
+            return $"""/// <summary>Formats the represented <see cref="{DefaultUnitInstancePluralForm}"/> according to <paramref name="format"/>, using the culture-specific formatting information provided by <paramref name="formatProvider"/> - and followed by the symbol [{DefaultUnitInstanceSymbol}].</summary>""";
+        }
+
+        if (DefaultUnitInstancePluralForm is not null)
+        {
+            return $"""/// <summary>Formats the represented <see cref="{DefaultUnitInstancePluralForm}"/> according to <paramref name="format"/>, using the culture-specific formatting information provided by <paramref name="formatProvider"/>.</summary>""";
+        }
+
+        return $"""/// <summary>Formats the represented <see cref="Magnitude"/> according to <paramref name="format"/>, using the culture-specific formatting information provided by <paramref name="formatProvider"/>.</summary>""";
     }
 
     public string EqualsSameTypeMethod() => InheritDoc;
@@ -411,7 +464,7 @@ internal sealed class DefaultDocumentation : IDocumentationStrategy, IEquatable<
 
     private static string InheritDoc => "/// <inheritdoc/>";
 
-    public bool Equals(DefaultDocumentation? other) => other is not null && Type == other.Type && Unit == other.Unit && DefaultUnitInstanceName == other.DefaultUnitInstanceName && DefaultUnitInstanceSymbol == other.DefaultUnitInstanceSymbol && UnitParameterName == other.UnitParameterName
+    public bool Equals(DefaultDocumentation? other) => other is not null && Type == other.Type && Unit == other.Unit && DefaultUnitInstancePluralForm == other.DefaultUnitInstancePluralForm && DefaultUnitInstanceSymbol == other.DefaultUnitInstanceSymbol && UnitParameterName == other.UnitParameterName
         && ExampleUnitBaseInstanceName == other.ExampleUnitBaseInstanceName && ExampleUnitInstancePluralForm == other.ExampleUnitInstancePluralForm;
 
     public override bool Equals(object? obj) => obj is DefaultDocumentation other && Equals(other);
@@ -419,5 +472,5 @@ internal sealed class DefaultDocumentation : IDocumentationStrategy, IEquatable<
     public static bool operator ==(DefaultDocumentation? lhs, DefaultDocumentation? rhs) => lhs?.Equals(rhs) ?? rhs is null;
     public static bool operator !=(DefaultDocumentation? lhs, DefaultDocumentation? rhs) => (lhs == rhs) is false;
 
-    public override int GetHashCode() => (Type, Unit, DefaultUnitInstanceName, DefaultUnitInstanceSymbol, UnitParameterName, ExampleUnitBaseInstanceName, ExampleUnitInstancePluralForm).GetHashCode();
+    public override int GetHashCode() => (Type, Unit, DefaultUnitInstancePluralForm, DefaultUnitInstanceSymbol, UnitParameterName, ExampleUnitBaseInstanceName, ExampleUnitInstancePluralForm).GetHashCode();
 }

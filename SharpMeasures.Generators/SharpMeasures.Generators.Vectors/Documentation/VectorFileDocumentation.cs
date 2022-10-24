@@ -75,7 +75,10 @@ internal sealed class VectorFileDocumentation : IVectorDocumentationStrategy, IE
     public string Normalize() => FromFileOrDefault(static (strategy) => strategy.Normalize());
     public string Transform() => FromFileOrDefault(static (strategy) => strategy.Transform());
 
-    public string ToStringDocumentation() => FromFileOrDefault(static (strategy) => strategy.ToStringDocumentation());
+    public string ToStringMethod() => FromFileOrDefault(static (strategy) => strategy.ToStringMethod());
+    public string ToStringFormat() => FromFileOrDefault(static (strategy) => strategy.ToStringFormat());
+    public string ToStringProvider() => FromFileOrDefault(static (strategy) => strategy.ToStringProvider());
+    public string ToStringFormatAndProvider() => FromFileOrDefault(static (strategy) => strategy.ToStringFormatAndProvider());
 
     public string EqualsSameTypeMethod() => FromFileOrDefault(static (strategy) => strategy.EqualsSameTypeMethod());
     public string EqualsObjectMethod() => FromFileOrDefault(static (strategy) => strategy.EqualsObjectMethod());

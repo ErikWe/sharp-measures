@@ -48,8 +48,17 @@ public partial class Temperature :
         return new(Magnitude / unitOfTemperature.TemperatureDifference.Magnitude + unitOfTemperature.Bias);
     }
 
-    /// <summary>Produces a description of <see langword="this"/> containing the represented <see cref="Magnitude"/>, expressed in <see cref="global::UnitOfTemperature.Kelvin"/> and followed by the symbol [K].</summary>
-    public override string ToString() => $"{InUnit(global::UnitOfTemperature.Kelvin)} [K]";
+    /// <summary>Formats the represented <see cref="Kelvin"/> using the current culture, followed by the symbol [K].</summary>
+    public override string ToString() => ToString(global::System.Globalization.CultureInfo.CurrentCulture);
+
+    /// <summary>Formats the represented <see cref="Kelvin"/> according to <paramref name="format"/>, using the current culture - and followed by the symbol [K].</summary>
+    public string ToString(string? format) => ToString(format, global::System.Globalization.CultureInfo.CurrentCulture);
+
+    /// <summary>Formats the represented <see cref="Kelvin"/> using the culture-specific formatting information provided by <paramref name="formatProvider"/> - and followed by the symbol [K].</summary>
+    public string ToString(global::System.IFormatProvider? formatProvider) => ToString("G", formatProvider);
+
+    /// <summary>Formats the represented <see cref="Kelvin"/> according to <paramref name="format"/>, using the culture-specific formatting information provided by <paramref name="formatProvider"/> - and followed by the symbol [K].</summary>
+    public string ToString(string? format, global::System.IFormatProvider? formatProvider) => $"{InUnit(global::UnitOfTemperature.Kelvin).ToString(format, formatProvider)} [K]";
 
     /// <inheritdoc/>
     public virtual bool Equals(global::Temperature? other) => other is not null && Magnitude.Value == other.Magnitude.Value;

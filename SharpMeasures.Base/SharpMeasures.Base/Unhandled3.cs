@@ -4,10 +4,11 @@ using SharpMeasures.Maths;
 
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Numerics;
 
 /// <summary>A measure of a three-dimensional vector quantity that is not covered by a designated type.</summary>
-public readonly record struct Unhandled3 : IVector3Quantity<Unhandled3>
+public readonly record struct Unhandled3 : IVector3Quantity<Unhandled3>, IFormattable
 {
     /// <summary>The <see cref="Unhandled3"/> representing { 0, 0, 0 }.</summary>
     public static readonly Unhandled3 Zero = new(0, 0, 0);
@@ -82,8 +83,18 @@ public readonly record struct Unhandled3 : IVector3Quantity<Unhandled3>
     /// <inheritdoc/>
     public Unhandled3 Transform(Matrix4x4 transform) => VectorMaths.Transform(this, transform);
 
-    /// <summary>Produces a description of <see langword="this"/> containing the represented components.</summary>
-    public override string ToString() => $"({X.Magnitude.Value}, {Y.Magnitude.Value}, {Z.Magnitude.Value})";
+    /// <summary>Formats the represented (<see cref="X"/>, <see cref="Y"/>, <see cref="Z"/>) using the current culture.</summary>
+    public override string ToString() => ToString(CultureInfo.CurrentCulture);
+    /// <summary>Formats the represented (<see cref="X"/>, <see cref="Y"/>, <see cref="Z"/>) according to <paramref name="format"/>, using the current culture.</summary>
+    /// <param name="format">The format of the components <see cref="X"/>, <see cref="Y"/>, and <see cref="Z"/>.</param>
+    public string ToString(string? format) => ToString(format, CultureInfo.CurrentCulture);
+    /// <summary>Formats the represented (<see cref="X"/>, <see cref="Y"/>, <see cref="Z"/>) using culture-specific formatting information provided by <paramref name="formatProvider"/>.</summary>
+    /// <param name="formatProvider">Provides culture-specific formatting information.</param>
+    public string ToString(IFormatProvider? formatProvider) => ToString("G", formatProvider);
+    /// <summary>Formats the represented (<see cref="X"/>, <see cref="Y"/>, <see cref="Z"/>) according to <paramref name="format"/>, using culture-specific formatting information provided by <paramref name="formatProvider"/>.</summary>
+    /// <param name="format">The format of the components <see cref="X"/>, <see cref="Y"/>, and <see cref="Z"/>.</param>
+    /// <param name="formatProvider">Provides culture-specific formatting information.</param>
+    public string ToString(string? format, IFormatProvider? formatProvider) => $"({X.ToString(format, formatProvider)}, {Y.ToString(format, formatProvider)}, {Z.ToString(format, formatProvider)})";
 
     /// <summary>Deconstructs <see langword="this"/> into the components X, Y, and Z.</summary>
     /// <param name="x">The X-component of <see langword="this"/>.</param>

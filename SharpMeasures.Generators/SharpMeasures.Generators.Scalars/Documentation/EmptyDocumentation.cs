@@ -41,7 +41,10 @@ internal sealed class EmptyDocumentation : IDocumentationStrategy, IEquatable<Em
     string IDocumentationStrategy.IsNegativeInfinity() => string.Empty;
     string IDocumentationStrategy.Absolute() => string.Empty;
     string IDocumentationStrategy.Sign() => string.Empty;
-    string IDocumentationStrategy.ToStringDocumentation() => string.Empty;
+    string IDocumentationStrategy.ToStringMethod() => string.Empty;
+    string IDocumentationStrategy.ToStringFormat() => string.Empty;
+    string IDocumentationStrategy.ToStringProvider() => string.Empty;
+    string IDocumentationStrategy.ToStringFormatAndProvider() => string.Empty;
     string IDocumentationStrategy.EqualsSameTypeMethod() => string.Empty;
     string IDocumentationStrategy.EqualsObjectMethod() => string.Empty;
     string IDocumentationStrategy.EqualitySameTypeOperator() => string.Empty;

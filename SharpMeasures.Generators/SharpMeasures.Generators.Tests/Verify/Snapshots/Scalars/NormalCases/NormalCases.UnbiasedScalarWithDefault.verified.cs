@@ -51,8 +51,17 @@ public partial class Length :
         return new(Magnitude / unitOfLength.Length.Magnitude);
     }
 
-    /// <summary>Produces a description of <see langword="this"/> containing the represented <see cref="Magnitude"/>, expressed in <see cref="global::UnitOfLength.Metre"/> and followed by the symbol [m].</summary>
-    public override string ToString() => $"{InUnit(global::UnitOfLength.Metre)} [m]";
+    /// <summary>Formats the represented <see cref="Metres"/> using the current culture, followed by the symbol [m].</summary>
+    public override string ToString() => ToString(global::System.Globalization.CultureInfo.CurrentCulture);
+
+    /// <summary>Formats the represented <see cref="Metres"/> according to <paramref name="format"/>, using the current culture - and followed by the symbol [m].</summary>
+    public string ToString(string? format) => ToString(format, global::System.Globalization.CultureInfo.CurrentCulture);
+
+    /// <summary>Formats the represented <see cref="Metres"/> using the culture-specific formatting information provided by <paramref name="formatProvider"/> - and followed by the symbol [m].</summary>
+    public string ToString(global::System.IFormatProvider? formatProvider) => ToString("G", formatProvider);
+
+    /// <summary>Formats the represented <see cref="Metres"/> according to <paramref name="format"/>, using the culture-specific formatting information provided by <paramref name="formatProvider"/> - and followed by the symbol [m].</summary>
+    public string ToString(string? format, global::System.IFormatProvider? formatProvider) => $"{InUnit(global::UnitOfLength.Metre).ToString(format, formatProvider)} [m]";
 
     /// <inheritdoc/>
     public virtual bool Equals(global::Length? other) => other is not null && Magnitude.Value == other.Magnitude.Value;
