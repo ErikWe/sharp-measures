@@ -1,6 +1,6 @@
 # The SharpMeasures Source Generator
 
-> The actual API is currently only documented through XML documentation on the actual C# types. To learn how to use the generator, a good place to start might be the definitions in SharpMeasures, found [here](https://github.com/ErikWe/sharp-measures/tree/main/SharpMeasures/SharpMeasures).
+> The actual API is currently only documented through XML documentation on the actual C# types. To learn how to use the generator, a good place to start might be the definitions in SharpMeasures - found [here](https://github.com/ErikWe/sharp-measures/tree/main/SharpMeasures/SharpMeasures).
 
 ### Articles
 * [Installation](Installation.md)
