@@ -1,4 +1,4 @@
-namespace SharpMeasures;
+﻿namespace SharpMeasures;
 
 using SharpMeasures.Maths;
 
@@ -233,6 +233,9 @@ public readonly record struct Unhandled4 : IVector4Quantity<Unhandled4>, IFormat
 
     /// <summary>Constructs the <see cref="Unhandled4"/> with the elements of <paramref name="components"/> as components.</summary>
     public static implicit operator Unhandled4((Unhandled X, Unhandled Y, Unhandled Z, Unhandled W) components) => new(components.X, components.Y, components.Z, components.W);
+
+    /// <summary>Constructs the tuple (<see cref="Unhandled"/>, <see cref="Unhandled"/>, <see cref="Unhandled"/>, <see cref="Unhandled"/>) with the elements of <paramref name="vector"/>.</summary>
+    public static implicit operator (Unhandled X, Unhandled Y, Unhandled Z, Unhandled W)(Unhandled4 vector) => (vector.X, vector.Y, vector.Z, vector.W);
 
     /// <summary>Describes mathematical operations that result in a pure <see cref="Scalar"/>.</summary>
     private static IScalarResultingMaths<Scalar> PureScalarMaths { get; } = MathFactory.ScalarResult();
