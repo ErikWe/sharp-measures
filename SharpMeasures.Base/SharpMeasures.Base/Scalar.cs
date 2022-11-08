@@ -1,4 +1,4 @@
-namespace SharpMeasures;
+﻿namespace SharpMeasures;
 
 using SharpMeasures.Maths;
 
@@ -158,6 +158,13 @@ public readonly record struct Scalar : IScalarQuantity<Scalar>, IComparable<Scal
     public static Scalar operator +(Scalar x) => x;
     /// <inheritdoc/>
     public static Scalar operator -(Scalar x) => -x.Value;
+
+    /// <summary>Increments <paramref name="value"/>, { <paramref name="value"/> + 1 }.</summary>
+    /// <param name="value">The incremented value.</param>
+    public static Scalar operator ++(Scalar value) => value + 1;
+    /// <summary>Decrements <paramref name="value"/>, { <paramref name="value"/> - 1 }.</summary>
+    /// <param name="value">The decremented value.</param>
+    public static Scalar operator --(Scalar value) => value - 1;
 
     /// <summary>Computes { <paramref name="x"/> + <paramref name="y"/> }.</summary>
     /// <param name="x">The first term of { <paramref name="x"/> + <paramref name="y"/> }.</param>
