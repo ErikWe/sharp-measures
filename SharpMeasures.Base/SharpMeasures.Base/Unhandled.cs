@@ -3,7 +3,6 @@
 using SharpMeasures.Maths;
 
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 
 /// <summary>A measure of a scalar quantity that is not covered by a designated type.</summary>
@@ -378,11 +377,9 @@ public readonly record struct Unhandled : IScalarQuantity<Unhandled>, IComparabl
     }
 
     /// <summary>Produces the <see cref="Scalar"/> representing <paramref name="x"/>.</summary>
-    [SuppressMessage("Usage", "CA2225", Justification = "Available as constructor")]
     public static explicit operator Unhandled(Scalar x) => new(x);
 
     /// <summary>Produces the <see cref="double"/> equivalent to <paramref name="x"/>.</summary>
-    [SuppressMessage("Usage", "CA2225", Justification = "Available as 'Magnitude'")]
     public static explicit operator Scalar(Unhandled x) => x.Magnitude;
 
     /// <inheritdoc cref="Scalar.operator &lt;(Scalar, Scalar)"/>

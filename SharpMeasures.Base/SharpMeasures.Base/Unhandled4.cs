@@ -1,9 +1,8 @@
-﻿namespace SharpMeasures;
+namespace SharpMeasures;
 
 using SharpMeasures.Maths;
 
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 
 /// <summary>A measure of a four-dimensional vector quantity that is not covered by a designated type.</summary>
@@ -233,7 +232,6 @@ public readonly record struct Unhandled4 : IVector4Quantity<Unhandled4>, IFormat
     }
 
     /// <summary>Constructs the <see cref="Unhandled4"/> with the elements of <paramref name="components"/> as components.</summary>
-    [SuppressMessage("Usage", "CA2225", Justification = "Behaviour can be achieved through a constructor")]
     public static implicit operator Unhandled4((Unhandled X, Unhandled Y, Unhandled Z, Unhandled W) components) => new(components.X, components.Y, components.Z, components.W);
 
     /// <summary>Describes mathematical operations that result in a pure <see cref="Scalar"/>.</summary>

@@ -3,7 +3,6 @@
 using SharpMeasures.Maths;
 
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 
 /// <summary>A pure scalar.</summary>
@@ -255,11 +254,9 @@ public readonly record struct Scalar : IScalarQuantity<Scalar>, IComparable<Scal
     public static bool operator >=(Scalar x, Scalar y) => x.Value >= y.Value;
 
     /// <summary>Produces the <see cref="Scalar"/> representing <paramref name="x"/>.</summary>
-    [SuppressMessage("Usage", "CA2225", Justification = "Available as constructor")]
     public static implicit operator Scalar(double x) => new(x);
 
     /// <summary>Produces the <see cref="double"/> equivalent to <paramref name="x"/>.</summary>
-    [SuppressMessage("Usage", "CA2225", Justification = "Available as 'Value'")]
     public static implicit operator double(Scalar x) => x.Value;
 
     /// <summary>Describes mathematical operations that result in a pure <see cref="Scalar"/>.</summary>
