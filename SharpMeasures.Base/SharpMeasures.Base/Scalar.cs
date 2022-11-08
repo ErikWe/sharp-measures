@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures;
+namespace SharpMeasures;
 
 using SharpMeasures.Maths;
 
@@ -34,9 +34,9 @@ public readonly record struct Scalar : IScalarQuantity<Scalar>, IComparable<Scal
     /// <summary>Indicates whether <see langword="this"/> represents { 0 }.</summary>
     public bool IsZero => Value is 0;
     /// <summary>Indicates whether <see langword="this"/> represents a value greater than { 0 }.</summary>
-    public bool IsPositive => Value > 0 || IsPositiveInfinity;
+    public bool IsPositive => double.IsPositive(Value);
     /// <summary>Indicates whether <see langword="this"/> represents a value smaller than { 0 }.</summary>
-    public bool IsNegative => Value < 0 || IsNegativeInfinity;
+    public bool IsNegative => double.IsNegative(Value);
     /// <summary>Indicates whether <see langword="this"/> represents a finite value.</summary>
     public bool IsFinite => double.IsFinite(Value);
     /// <summary>Indicates whether <see langword="this"/> represents an infinite value.</summary>
