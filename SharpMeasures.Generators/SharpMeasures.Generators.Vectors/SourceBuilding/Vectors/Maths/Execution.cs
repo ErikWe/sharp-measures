@@ -96,8 +96,6 @@ internal static class Execution
 
             AppendGenericOperators(indentation);
             AppendUnhandledOperators(indentation);
-
-            AppendMathUtility(indentation);
         }
 
         private void AppendUnaryMethods(Indentation indentation)
@@ -474,27 +472,6 @@ internal static class Execution
 
             AppendDocumentation(indentation, Data.SourceBuildingContext.Documentation.DivideUnhandledOperatorLHS());
             StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers("/"), scalarDivisionExpressionLHS, scalarParametersLHS);
-        }
-
-        private void AppendMathUtility(Indentation indentation)
-        {
-            SeparationHandler.AddIfNecessary();
-
-            Builder.AppendLine($"{indentation}/// <summary>Describes mathematical operations that result in a pure <see cref=\"global::SharpMeasures.Scalar\"/>.</summary>");
-            Builder.AppendLine($"{indentation}private static global::SharpMeasures.Maths.IScalarResultingMaths<global::SharpMeasures.Scalar> PureScalarMaths {{ get; }} = global::SharpMeasures.Maths.MathFactory.ScalarResult();");
-            
-            if (Data.Scalar is not null)
-            {
-                SeparationHandler.Add();
-
-                Builder.AppendLine($"{indentation}/// <summary>Describes mathematical operations that result in <see cref=\"{Data.Scalar.Value.FullyQualifiedName}\"/>.</summary>");
-                Builder.AppendLine($"{indentation}private static global::SharpMeasures.Maths.IScalarResultingMaths<{Data.Scalar.Value.FullyQualifiedName}> ScalarMaths {{ get; }} = global::SharpMeasures.Maths.MathFactory.ScalarResult<{Data.Scalar.Value.FullyQualifiedName}>();");
-            }
-
-            SeparationHandler.Add();
-
-            Builder.AppendLine($"{indentation}/// <summary>Describes mathematical operations that result in <see cref=\"{Data.Vector.FullyQualifiedName}\"/>.</summary>");
-            Builder.AppendLine($"{indentation}private static global::SharpMeasures.Maths.IVector{Data.Dimension}ResultingMaths<{Data.Vector.FullyQualifiedName}> VectorMaths {{ get; }} = global::SharpMeasures.Maths.MathFactory.Vector{Data.Dimension}Result<{Data.Vector.FullyQualifiedName}>();");
         }
 
         private void AppendDocumentation(Indentation indentation, string text) => DocumentationBuilding.AppendDocumentation(Builder, indentation, text);

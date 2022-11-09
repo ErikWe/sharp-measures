@@ -35,8 +35,7 @@ public partial class DocTest :
     /// <param name="magnitude">The magnitude represented by the constructed <see cref="global::DocTest"/>, when expressed in <paramref name="unitOfDocTest"/>.</param>
     /// <param name="unitOfDocTest">The <see cref="global::UnitOfDocTest"/> in which <paramref name="magnitude"/> is expressed.</param>
     /// <exception cref="global::System.ArgumentNullException"/>
-    public DocTest(global::SharpMeasures.Scalar magnitude, global::UnitOfDocTest unitOfDocTest)
-        : this(ComputeRepresentedMagnitude(magnitude, unitOfDocTest)) { }
+    public DocTest(global::SharpMeasures.Scalar magnitude, global::UnitOfDocTest unitOfDocTest) : this(ComputeRepresentedMagnitude(magnitude, unitOfDocTest)) { }
 
     /// <summary>The magnitude of <see langword="this"/>, expressed in <paramref name="unitOfDocTest"/>.</summary>
     /// <param name="unitOfDocTest">The <see cref="global::UnitOfDocTest"/> in which the magnitude of <see langword="this"/> is expressed.</param>
@@ -94,8 +93,7 @@ public partial class DocTest :
     /// <inheritdoc/>
     static global::DocTest global::SharpMeasures.IScalarQuantity<global::DocTest>.WithMagnitude(global::SharpMeasures.Scalar magnitude) => new(magnitude);
 
-    /// <summary>Computes the represented magnitude based on a magnitude, <paramref name="magnitude"/>, expressed in
-    /// a certain unit <paramref name="unitOfDocTest"/>.</summary>
+    /// <summary>Computes the represented magnitude based on a magnitude, <paramref name="magnitude"/>, expressed in a certain unit <paramref name="unitOfDocTest"/>.</summary>
     /// <param name="magnitude">The magnitude expressed in a certain unit <paramref name="unitOfDocTest"/>.</param>
     /// <param name="unitOfDocTest">The <see cref="global::UnitOfDocTest"/> in which <paramref name="magnitude"/> is expressed.</param>
     /// <exception cref="global::System.ArgumentNullException"/>

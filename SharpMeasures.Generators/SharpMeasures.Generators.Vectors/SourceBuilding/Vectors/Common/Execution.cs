@@ -112,6 +112,8 @@ internal static class Execution
             {
                 AppendComputationUtilityMethod(indentation);
             }
+
+            AppendMathUtilityMethod(indentation);
         }
 
         private void AppendZero(Indentation indentation)
@@ -232,8 +234,7 @@ internal static class Execution
             SeparationHandler.Add();
 
             AppendDocumentation(indentation, Data.SourceBuildingContext.Documentation.ScalarsConstructor());
-            Builder.AppendLine($"{indentation}public {Data.Vector.Name}({ConstantVectorTexts.Lower.Scalar(Data.Dimension)})");
-            Builder.AppendLine($"{indentation.Increased}: this({Texts.Lower.NewComponent}) {{ }}");
+            Builder.AppendLine($"{indentation}public {Data.Vector.Name}({ConstantVectorTexts.Lower.Scalar(Data.Dimension)}) : this({Texts.Lower.NewComponent}) {{ }}");
         }
 
         private void AppendConstructorBlock(Indentation indentation)
@@ -249,8 +250,7 @@ internal static class Execution
             SeparationHandler.AddIfNecessary();
 
             AppendDocumentation(indentation, Data.SourceBuildingContext.Documentation.VectorConstructor());
-            Builder.AppendLine($"{indentation}public {Data.Vector.Name}(global::SharpMeasures.Vector{Data.Dimension} components)");
-            Builder.AppendLine($"{indentation.Increased}: this({ConstantVectorTexts.Upper.ComponentsAccess(Data.Dimension)}) {{ }}");
+            Builder.AppendLine($"{indentation}public {Data.Vector.Name}(global::SharpMeasures.Vector{Data.Dimension} components) : this({ConstantVectorTexts.Upper.ComponentsAccess(Data.Dimension)}) {{ }}");
 
             SeparationHandler.Add();
 
@@ -261,22 +261,21 @@ internal static class Execution
                 DocumentationBuilding.AppendArgumentNullExceptionTag(Builder, indentation);
             }
 
-            Builder.AppendLine($"{indentation}public {Data.Vector.Name}({ConstantVectorTexts.Lower.Scalar(Data.Dimension)}, {Data.Unit.FullyQualifiedName} {Data.UnitParameterName})");
+            Builder.Append($"{indentation}public {Data.Vector.Name}({ConstantVectorTexts.Lower.Scalar(Data.Dimension)}, {Data.Unit.FullyQualifiedName} {Data.UnitParameterName}) ");
 
             if (Data.Unit.IsReferenceType)
             {
-                Builder.AppendLine($"{indentation.Increased}: this(ComputeRepresentedComponents({ConstantVectorTexts.Lower.Name(Data.Dimension)}, {Data.UnitParameterName})) {{ }}");
+                Builder.AppendLine($": this(ComputeRepresentedComponents({ConstantVectorTexts.Lower.Name(Data.Dimension)}, {Data.UnitParameterName})) {{ }}");
             }
             else
             {
-                Builder.AppendLine($"{indentation.Increased}: this({Texts.Lower.ScalarMultiplyUnit}) {{ }}");
+                Builder.AppendLine($": this({Texts.Lower.ScalarMultiplyUnit}) {{ }}");
             }
 
             SeparationHandler.Add();
 
             AppendDocumentation(indentation, Data.SourceBuildingContext.Documentation.VectorAndUnitConstructor());
-            Builder.AppendLine($"{indentation}public {Data.Vector.Name}(global::SharpMeasures.Vector{Data.Dimension} components, {Data.Unit.FullyQualifiedName} {Data.UnitParameterName})");
-            Builder.AppendLine($"{indentation.Increased}: this({ConstantVectorTexts.Upper.ComponentsAccess(Data.Dimension)}, {Data.UnitParameterName}) {{ }}");
+            Builder.AppendLine($"{indentation}public {Data.Vector.Name}(global::SharpMeasures.Vector{Data.Dimension} components, {Data.Unit.FullyQualifiedName} {Data.UnitParameterName}) : this({ConstantVectorTexts.Upper.ComponentsAccess(Data.Dimension)}, {Data.UnitParameterName}) {{ }}");
         }
 
         private void AppendMagnitude(Indentation indentation)
@@ -593,6 +592,27 @@ internal static class Execution
             parameters.Add((Data.Unit, Data.UnitParameterName));
 
             StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers, expression, parameters);
+        }
+
+        private void AppendMathUtilityMethod(Indentation indentation)
+        {
+            SeparationHandler.AddIfNecessary();
+
+            Builder.AppendLine($"{indentation}/// <summary>Describes mathematical operations that result in a pure <see cref=\"global::SharpMeasures.Scalar\"/>.</summary>");
+            Builder.AppendLine($"{indentation}public static global::SharpMeasures.Maths.IScalarResultingMaths<global::SharpMeasures.Scalar> PureScalarMaths {{ get; }} = global::SharpMeasures.Maths.MathFactory.ScalarResult();");
+
+            if (Data.Scalar is not null)
+            {
+                SeparationHandler.Add();
+
+                Builder.AppendLine($"{indentation}/// <summary>Describes mathematical operations that result in <see cref=\"{Data.Scalar.Value.FullyQualifiedName}\"/>.</summary>");
+                Builder.AppendLine($"{indentation}public static global::SharpMeasures.Maths.IScalarResultingMaths<{Data.Scalar.Value.FullyQualifiedName}> ScalarMaths {{ get; }} = global::SharpMeasures.Maths.MathFactory.ScalarResult<{Data.Scalar.Value.FullyQualifiedName}>();");
+            }
+
+            SeparationHandler.Add();
+
+            Builder.AppendLine($"{indentation}/// <summary>Describes mathematical operations that result in <see cref=\"{Data.Vector.FullyQualifiedName}\"/>.</summary>");
+            Builder.AppendLine($"{indentation}public static global::SharpMeasures.Maths.IVector{Data.Dimension}ResultingMaths<{Data.Vector.FullyQualifiedName}> VectorMaths {{ get; }} = global::SharpMeasures.Maths.MathFactory.Vector{Data.Dimension}Result<{Data.Vector.FullyQualifiedName}>();");
         }
 
         private void AppendDocumentation(Indentation indentation, string text) => DocumentationBuilding.AppendDocumentation(Builder, indentation, text);

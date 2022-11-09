@@ -35,8 +35,7 @@ public partial class SelfType :
     /// <param name="magnitude">The magnitude represented by the constructed <see cref="global::SelfType"/>, when expressed in <paramref name="unitOfDocTest"/>.</param>
     /// <param name="unitOfDocTest">The <see cref="global::UnitOfDocTest"/> in which <paramref name="magnitude"/> is expressed.</param>
     /// <exception cref="global::System.ArgumentNullException"/>
-    public SelfType(global::SharpMeasures.Scalar magnitude, global::UnitOfDocTest unitOfDocTest)
-        : this(ComputeRepresentedMagnitude(magnitude, unitOfDocTest)) { }
+    public SelfType(global::SharpMeasures.Scalar magnitude, global::UnitOfDocTest unitOfDocTest) : this(ComputeRepresentedMagnitude(magnitude, unitOfDocTest)) { }
 
     /// <summary>The magnitude of <see langword="this"/>, expressed in <paramref name="unitOfDocTest"/>.</summary>
     /// <param name="unitOfDocTest">The <see cref="global::UnitOfDocTest"/> in which the magnitude of <see langword="this"/> is expressed.</param>
@@ -94,8 +93,7 @@ public partial class SelfType :
     /// <inheritdoc/>
     static global::SelfType global::SharpMeasures.IScalarQuantity<global::SelfType>.WithMagnitude(global::SharpMeasures.Scalar magnitude) => new(magnitude);
 
-    /// <summary>Computes the represented magnitude based on a magnitude, <paramref name="magnitude"/>, expressed in
-    /// a certain unit <paramref name="unitOfDocTest"/>.</summary>
+    /// <summary>Computes the represented magnitude based on a magnitude, <paramref name="magnitude"/>, expressed in a certain unit <paramref name="unitOfDocTest"/>.</summary>
     /// <param name="magnitude">The magnitude expressed in a certain unit <paramref name="unitOfDocTest"/>.</param>
     /// <param name="unitOfDocTest">The <see cref="global::UnitOfDocTest"/> in which <paramref name="magnitude"/> is expressed.</param>
     /// <exception cref="global::System.ArgumentNullException"/>

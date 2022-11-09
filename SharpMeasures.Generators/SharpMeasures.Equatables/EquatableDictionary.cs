@@ -2,12 +2,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Runtime.Serialization;
 
 public class EquatableDictionary<TKey, TValue> : Dictionary<TKey, TValue>, IEquatable<EquatableDictionary<TKey, TValue>>
 {
-    [SuppressMessage("Design", "CA1000", Justification = "Property")]
     public static EquatableDictionary<TKey, TValue> Empty => new();
 
     public EquatableDictionary() : base() { }

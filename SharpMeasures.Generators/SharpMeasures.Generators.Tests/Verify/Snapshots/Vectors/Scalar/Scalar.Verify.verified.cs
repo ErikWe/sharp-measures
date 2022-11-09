@@ -59,15 +59,13 @@ public partial class Position3 :
     /// <param name="z">The magnitude of the Z-component of the constructed <see cref="global::Position3"/>, expressed in an arbitrary unit.</param>
     /// <remarks>Consider preferring construction through <see cref="global::Position3(global::SharpMeasures.Scalar, global::SharpMeasures.Scalar, global::SharpMeasures.Scalar, global::UnitOfLength)"/>,
     /// where the components are expressed in a specified <see cref="global::UnitOfLength"/>.</remarks>
-    public Position3(global::SharpMeasures.Scalar x, global::SharpMeasures.Scalar y, global::SharpMeasures.Scalar z)
-        : this(new Length(x), new Length(y), new Length(z)) { }
+    public Position3(global::SharpMeasures.Scalar x, global::SharpMeasures.Scalar y, global::SharpMeasures.Scalar z) : this(new Length(x), new Length(y), new Length(z)) { }
 
     /// <summary>Constructs a new <see cref="global::Position3"/> representing { <paramref name="components"/> }, expressed in an arbitrary unit.</summary>
     /// <param name="components">The magnitudes of the components of the constructed <see cref="global::Position3"/>, expressed in an arbitrary unit.</param>
     /// <remarks>Consider preferring construction through <see cref="global::Position3(global::SharpMeasures.Vector3, global::UnitOfLength)"/>,
     /// where the components are expressed in a specified <see cref="global::UnitOfLength"/>.</remarks>
-    public Position3(global::SharpMeasures.Vector3 components)
-        : this(components.X, components.Y, components.Z) { }
+    public Position3(global::SharpMeasures.Vector3 components) : this(components.X, components.Y, components.Z) { }
 
     /// <summary>Constructs a new <see cref="global::Position3"/> representing { <paramref name="x"/>, <paramref name="y"/>, <paramref name="z"/> }, when expressed in <paramref name="unitOfLength"/>.</summary>
     /// <param name="x">The magnitude of the X-component of the constructed <see cref="global::Position3"/>, expressed in <paramref name="unitOfLength"/>.</param>
@@ -75,14 +73,12 @@ public partial class Position3 :
     /// <param name="z">The magnitude of the Z-component of the constructed <see cref="global::Position3"/>, expressed in <paramref name="unitOfLength"/>.</param>
     /// <param name="unitOfLength">The <see cref="global::UnitOfLength"/> in which the magnitudes of the components are expressed.</param>
     /// <exception cref="global::System.ArgumentNullException"/>
-    public Position3(global::SharpMeasures.Scalar x, global::SharpMeasures.Scalar y, global::SharpMeasures.Scalar z, global::UnitOfLength unitOfLength)
-        : this(ComputeRepresentedComponents(x, y, z, unitOfLength)) { }
+    public Position3(global::SharpMeasures.Scalar x, global::SharpMeasures.Scalar y, global::SharpMeasures.Scalar z, global::UnitOfLength unitOfLength) : this(ComputeRepresentedComponents(x, y, z, unitOfLength)) { }
 
     /// <summary>Constructs a new <see cref="global::Position3"/> representing { <paramref name="components"/> }, when expressed in <paramref name="unitOfLength"/>.</summary>
     /// <param name="components">The magnitudes of the components of the constructed <see cref="global::Position3"/>, expressed in <paramref name="unitOfLength"/>.</param>
     /// <param name="unitOfLength">The <see cref="global::UnitOfLength"/> in which <paramref name="components"/> is expressed.</param>
-    public Position3(global::SharpMeasures.Vector3 components, global::UnitOfLength unitOfLength)
-        : this(components.X, components.Y, components.Z, unitOfLength) { }
+    public Position3(global::SharpMeasures.Vector3 components, global::UnitOfLength unitOfLength) : this(components.X, components.Y, components.Z, unitOfLength) { }
 
     /// <inheritdoc cref="global::SharpMeasures.IVector3Quantity.Magnitude()"/>
     public global::Length Magnitude() => ScalarMaths.Magnitude3(this);
@@ -182,4 +178,13 @@ public partial class Position3 :
 
         return (x * unitOfLength.Length.Magnitude, y * unitOfLength.Length.Magnitude, z * unitOfLength.Length.Magnitude);
     }
+
+    /// <summary>Describes mathematical operations that result in a pure <see cref="global::SharpMeasures.Scalar"/>.</summary>
+    public static global::SharpMeasures.Maths.IScalarResultingMaths<global::SharpMeasures.Scalar> PureScalarMaths { get; } = global::SharpMeasures.Maths.MathFactory.ScalarResult();
+
+    /// <summary>Describes mathematical operations that result in <see cref="global::Length"/>.</summary>
+    public static global::SharpMeasures.Maths.IScalarResultingMaths<global::Length> ScalarMaths { get; } = global::SharpMeasures.Maths.MathFactory.ScalarResult<global::Length>();
+
+    /// <summary>Describes mathematical operations that result in <see cref="global::Position3"/>.</summary>
+    public static global::SharpMeasures.Maths.IVector3ResultingMaths<global::Position3> VectorMaths { get; } = global::SharpMeasures.Maths.MathFactory.Vector3Result<global::Position3>();
 }

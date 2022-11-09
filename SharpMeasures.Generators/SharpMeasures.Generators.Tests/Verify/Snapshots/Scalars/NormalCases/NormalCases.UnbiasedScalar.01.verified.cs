@@ -16,9 +16,9 @@ public partial class Length
     /// <inheritdoc cref="global::SharpMeasures.Scalar.IsZero"/>
     public bool IsZero => Magnitude.Value is 0;
     /// <inheritdoc cref="global::SharpMeasures.Scalar.IsPositive"/>
-    public bool IsPositive => Magnitude.Value > 0;
+    public bool IsPositive => double.IsPositive(Magnitude.Value);
     /// <inheritdoc cref="global::SharpMeasures.Scalar.IsNegative"/>
-    public bool IsNegative => Magnitude.Value < 0;
+    public bool IsNegative =>double.IsNegative(Magnitude.Value);
     /// <inheritdoc cref="global::SharpMeasures.Scalar.IsFinite"/>
     public bool IsFinite => double.IsFinite(Magnitude.Value);
     /// <inheritdoc cref="global::SharpMeasures.Scalar.IsInfinite"/>

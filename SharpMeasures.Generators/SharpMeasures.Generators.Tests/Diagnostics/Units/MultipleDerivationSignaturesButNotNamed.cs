@@ -29,14 +29,14 @@ public class MultipleDerivationSignaturesButNotNamed
     [MemberData(nameof(BothInvalid))]
     public void Both(string firstID, string secondID) => Assert_Both(firstID, secondID);
 
-    public static IEnumerable<object[]> InvalidNames => new object[][]
+    private static IEnumerable<object[]> InvalidNames => new object[][]
     {
         new[] { IgnoredName },
         new[] { NullName },
         new[] { EmptyName }
     };
 
-    private static IEnumerable<object[]> FirstInvalid()
+    public static IEnumerable<object[]> FirstInvalid()
     {
         foreach (var invalidName in InvalidNames)
         {
@@ -44,7 +44,7 @@ public class MultipleDerivationSignaturesButNotNamed
         }
     }
 
-    private static IEnumerable<object[]> SecondInvalid()
+    public static IEnumerable<object[]> SecondInvalid()
     {
         foreach (var invalidName in InvalidNames)
         {
@@ -52,7 +52,7 @@ public class MultipleDerivationSignaturesButNotNamed
         }
     }
 
-    private static IEnumerable<object[]> BothInvalid()
+    public static IEnumerable<object[]> BothInvalid()
     {
         foreach (var firstInvalidName in InvalidNames)
         {

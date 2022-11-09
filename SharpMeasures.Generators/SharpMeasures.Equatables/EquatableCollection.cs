@@ -3,18 +3,15 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 
 public class EquatableCollection<T> : ICollection<T>, IReadOnlyCollection<T>, IEquatable<EquatableCollection<T>>
 {
-    [SuppressMessage("Design", "CA1000", Justification = "Property")]
     public static EquatableCollection<T> Empty => new(new List<T>());
 
     private ICollection<T> Items { get; }
 
     public int Count => Items.Count;
 
-    [SuppressMessage("Design", "CA1033", Justification = "Available through Items")]
     bool ICollection<T>.IsReadOnly => Items.IsReadOnly;
 
     public EquatableCollection(ICollection<T> items)
@@ -30,7 +27,6 @@ public class EquatableCollection<T> : ICollection<T>, IReadOnlyCollection<T>, IE
 
     public bool Contains(T item) => Items.Contains(item);
 
-    [SuppressMessage("Design", "CA1033", Justification = "Available through Items")]
     void ICollection<T>.CopyTo(T[] array, int arrayIndex) => Items.CopyTo(array, arrayIndex);
 
     public bool Equals(EquatableCollection<T>? other)

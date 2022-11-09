@@ -97,7 +97,7 @@ internal static class Execution
 
             if (Data.Unit.IsReferenceType)
             {
-                AppendComputeRepresentedMagnitude(indentation);
+                AppendComputationUtilityMethod(indentation);
             }
         }
 
@@ -144,15 +144,15 @@ internal static class Execution
                 DocumentationBuilding.AppendArgumentNullExceptionTag(Builder, indentation);
             }
 
-            Builder.AppendLine($"{indentation}public {Data.Scalar.Name}(global::SharpMeasures.Scalar magnitude, {Data.Unit.FullyQualifiedName} {Data.UnitParameterName})");
+            Builder.Append($"{indentation}public {Data.Scalar.Name}(global::SharpMeasures.Scalar magnitude, {Data.Unit.FullyQualifiedName} {Data.UnitParameterName}) ");
 
             if (Data.Unit.IsReferenceType)
             {
-                Builder.AppendLine($"{indentation.Increased}: this(ComputeRepresentedMagnitude(magnitude, {Data.UnitParameterName})) {{ }}");
+                Builder.AppendLine($": this(ComputeRepresentedMagnitude(magnitude, {Data.UnitParameterName})) {{ }}");
             }
             else
             {
-                Builder.AppendLine($"{indentation.Increased}: this({ConstructorComputation(Data)}) {{ }}");
+                Builder.AppendLine($": this({ConstructorComputation(Data)}) {{ }}");
             }
         }
 
@@ -167,10 +167,12 @@ internal static class Execution
                 DocumentationBuilding.AppendArgumentNullExceptionTag(Builder, indentation);
             }
 
-            Builder.AppendLine($"{indentation}public global::SharpMeasures.Scalar InUnit({Data.Unit.FullyQualifiedName} {Data.UnitParameterName})");
+            Builder.Append($"{indentation}public global::SharpMeasures.Scalar InUnit({Data.Unit.FullyQualifiedName} {Data.UnitParameterName})");
             
             if (Data.Unit.IsReferenceType)
             {
+                Builder.AppendLine();
+
                 Builder.AppendLine($$"""
                     {{indentation}}{
                     {{indentation.Increased}}{{StaticBuilding.NullArgumentGuard(Data.UnitParameterName)}}
@@ -181,7 +183,7 @@ internal static class Execution
             }
             else
             {
-                Builder.AppendLine($"{indentation.Increased}=> new({InUnitComputation(Data)});");
+                Builder.AppendLine($" => new({InUnitComputation(Data)});");
             }
         }
 
@@ -358,13 +360,12 @@ internal static class Execution
             Builder.AppendLine($"{indentation}static {Data.Scalar.FullyQualifiedName} global::SharpMeasures.IScalarQuantity<{Data.Scalar.FullyQualifiedName}>.WithMagnitude(global::SharpMeasures.Scalar magnitude) => new(magnitude);");
         }
 
-        private void AppendComputeRepresentedMagnitude(Indentation indentation)
+        private void AppendComputationUtilityMethod(Indentation indentation)
         {
             SeparationHandler.AddIfNecessary();
 
             Builder.AppendLine($$"""
-                {{indentation}}/// <summary>Computes the represented magnitude based on a magnitude, <paramref name="magnitude"/>, expressed in
-                {{indentation}}/// a certain unit <paramref name="{{Data.UnitParameterName}}"/>.</summary>
+                {{indentation}}/// <summary>Computes the represented magnitude based on a magnitude, <paramref name="magnitude"/>, expressed in a certain unit <paramref name="{{Data.UnitParameterName}}"/>.</summary>
                 {{indentation}}/// <param name="magnitude">The magnitude expressed in a certain unit <paramref name="{{Data.UnitParameterName}}"/>.</param>
                 {{indentation}}/// <param name="{{Data.UnitParameterName}}">The <see cref="{{Data.Unit.FullyQualifiedName}}"/> in which <paramref name="magnitude"/> is expressed.</param>
                 """);

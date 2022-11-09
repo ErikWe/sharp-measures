@@ -3,11 +3,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 
 public class EquatableEnumerable<T> : IEnumerable<T>, IEquatable<EquatableEnumerable<T>>
 {
-    [SuppressMessage("Design", "CA1000", Justification = "Property")]
     public static EquatableEnumerable<T> Empty => new(Array.Empty<T>());
 
     private IEnumerable<T> Items { get; }

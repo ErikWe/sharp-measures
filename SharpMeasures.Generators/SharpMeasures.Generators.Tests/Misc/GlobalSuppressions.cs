@@ -6,3 +6,4 @@
 [assembly: SuppressMessage("Design", "CA1034", Justification = "Not intended for public use")]
 [assembly: SuppressMessage("Naming", "CA1711", Justification = "Not intended for public use")]
 [assembly: SuppressMessage("Naming", "CA1724", Justification = "Not intended for public use")]
+[assembly: SuppressMessage("GeneratedRegex", "SYSLIB1045", Justification = "Not intended for public use")]

@@ -114,9 +114,9 @@ internal static class Execution
             AppendDocumentation(indentation, Data.SourceBuildingContext.Documentation.IsZero());
             Builder.AppendLine($"{indentation}public bool IsZero => Magnitude.Value is 0;");
             AppendDocumentation(indentation, Data.SourceBuildingContext.Documentation.IsPositive());
-            Builder.AppendLine($"{indentation}public bool IsPositive => Magnitude.Value > 0;");
+            Builder.AppendLine($"{indentation}public bool IsPositive => double.IsPositive(Magnitude.Value);");
             AppendDocumentation(indentation, Data.SourceBuildingContext.Documentation.IsNegative());
-            Builder.AppendLine($"{indentation}public bool IsNegative => Magnitude.Value < 0;");
+            Builder.AppendLine($"{indentation}public bool IsNegative =>double.IsNegative(Magnitude.Value);");
             AppendDocumentation(indentation, Data.SourceBuildingContext.Documentation.IsFinite());
             Builder.AppendLine($"{indentation}public bool IsFinite => double.IsFinite(Magnitude.Value);");
             AppendDocumentation(indentation, Data.SourceBuildingContext.Documentation.IsInfinite());

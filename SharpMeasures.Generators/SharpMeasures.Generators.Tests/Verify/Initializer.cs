@@ -59,7 +59,7 @@ internal static class Initializer
         return new("cs", data);
     }
 
-    private static PathInfo DerivePathInfo(string sourceFile, string projectDirectory, Type type, MethodInfo method)
+    private static PathInfo DerivePathInfo(string _, string projectDirectory, Type type, MethodInfo method)
     {
         string[] path = new string[]
         {

@@ -3,11 +3,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 
 public class ReadOnlyEquatableDictionary<TKey, TValue> : IReadOnlyDictionary<TKey, TValue>, IEquatable<ReadOnlyEquatableDictionary<TKey, TValue>>
 {
-    [SuppressMessage("Design", "CA1000", Justification = "Property")]
     public static ReadOnlyEquatableDictionary<TKey, TValue> Empty => new(new Dictionary<TKey, TValue>());
 
     public int Count => Items.Count;

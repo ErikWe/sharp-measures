@@ -1,7 +1,6 @@
 ﻿namespace SharpMeasures.Generators.SourceBuilding;
 
 using System;
-using System.Diagnostics.CodeAnalysis;
 
 public static class ConstantVectorTexts
 {
@@ -11,7 +10,6 @@ public static class ConstantVectorTexts
     public static string DeconstructScalarHeader(int dimension) => Builders.DeconstructScalarHeader.GetText(dimension);
     public static string MultiplyScalarLHS(int dimension) => Builders.MultiplyScalarLHS.GetText(dimension);
 
-    [SuppressMessage("Design", "CA1034", Justification = "Static")]
     public static class Upper
     {
         public static string Name(int dimension) => Builders.Upper.Name.GetText(dimension);
@@ -33,7 +31,6 @@ public static class ConstantVectorTexts
         public static string DivideAByScalarB(int dimension, bool component, bool magnitude) => Builders.Upper.DivideAByScalarB(component, magnitude).GetText(dimension);
     }
 
-    [SuppressMessage("Design", "CA1034", Justification = "Static")]
     public static class Lower
     {
         public static string Name(int dimension) => Builders.Lower.Name.GetText(dimension);
@@ -42,7 +39,6 @@ public static class ConstantVectorTexts
         public static string NewScalar(int dimension) => Builders.Lower.NewScalar.GetText(dimension);
     }
 
-    [SuppressMessage("Design", "CA1034", Justification = "Static")]
     public static class Builders
     {
         public static VectorTextBuilder Zeros { get; } = new("0", ", ");
@@ -52,7 +48,6 @@ public static class ConstantVectorTexts
         public static VectorTextBuilder MultiplyScalarLHS { get; } = new(MultiplyScalarLHSDelegate, ", ");
         public static VectorTextBuilder MultiplyScalarRHS { get; } = new(MultiplyScalarRHSDelegate, ", ");
 
-        [SuppressMessage("Design", "CA1034", Justification = "Static")]
         public static class Upper
         {
             public static VectorTextBuilder Name { get; } = new(NameDelegate, ", ");
@@ -151,7 +146,6 @@ public static class ConstantVectorTexts
             private static string GetComponentName(int componentIndex, int dimension) => VectorTextBuilder.GetUpperCasedComponentName(componentIndex, dimension);
         }
 
-        [SuppressMessage("Design", "CA1034", Justification = "Static")]
         public static class Lower
         {
             public static VectorTextBuilder Name { get; } = new(NameDelegate, ", ");

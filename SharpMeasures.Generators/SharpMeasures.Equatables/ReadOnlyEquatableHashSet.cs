@@ -2,11 +2,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 
 public class ReadOnlyEquatableHashSet<T> : ReadOnlyEquatableCollection<T>, IReadOnlyHashSet<T>, IEquatable<ReadOnlyEquatableHashSet<T>>
 {
-    [SuppressMessage("Design", "CA1000", Justification = "Property")]
     new public static ReadOnlyEquatableHashSet<T> Empty => new(new HashSet<T>());
 
     private HashSet<T> Items { get; }

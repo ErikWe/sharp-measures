@@ -2,11 +2,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 
 public class ReadOnlyEquatableList<T> : ReadOnlyEquatableCollection<T>, IReadOnlyList<T>, IEquatable<ReadOnlyEquatableList<T>>
 {
-    [SuppressMessage("Design", "CA1000", Justification = "Property")]
     new public static ReadOnlyEquatableList<T> Empty => new(Array.Empty<T>());
 
     public T this[int index] => Items[index];

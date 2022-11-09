@@ -2,12 +2,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Runtime.Serialization;
 
 public class EquatableHashSet<T> : HashSet<T>, IReadOnlyHashSet<T>, IEquatable<EquatableHashSet<T>>
 {
-    [SuppressMessage("Design", "CA1000", Justification = "Property")]
     public static EquatableHashSet<T> Empty => new();
 
     public EquatableHashSet() : base() { }

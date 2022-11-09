@@ -2,11 +2,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 
 public class EquatableList<T> : List<T>, IReadOnlyList<T>, IEquatable<EquatableList<T>>
 {
-    [SuppressMessage("Design", "CA1000", Justification = "Property")]
     public static EquatableList<T> Empty => new();
 
     public EquatableList() : base() { }

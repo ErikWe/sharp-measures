@@ -2,6 +2,8 @@
 
 public readonly record struct Indentation(int Level, string Text)
 {
+    public static Indentation Zero { get; } = new(0);
+
     public Indentation(int level) : this(level, GetIndentationString(level)) { }
 
     public Indentation Increased => new(Level + 1);

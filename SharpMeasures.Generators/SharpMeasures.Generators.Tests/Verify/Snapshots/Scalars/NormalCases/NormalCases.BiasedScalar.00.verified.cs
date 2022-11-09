@@ -32,8 +32,7 @@ public partial class Temperature :
     /// <param name="magnitude">The magnitude represented by the constructed <see cref="global::Temperature"/>, when expressed in <paramref name="unitOfTemperature"/>.</param>
     /// <param name="unitOfTemperature">The <see cref="global::UnitOfTemperature"/> in which <paramref name="magnitude"/> is expressed.</param>
     /// <exception cref="global::System.ArgumentNullException"/>
-    public Temperature(global::SharpMeasures.Scalar magnitude, global::UnitOfTemperature unitOfTemperature)
-        : this(ComputeRepresentedMagnitude(magnitude, unitOfTemperature)) { }
+    public Temperature(global::SharpMeasures.Scalar magnitude, global::UnitOfTemperature unitOfTemperature) : this(ComputeRepresentedMagnitude(magnitude, unitOfTemperature)) { }
 
     /// <summary>The magnitude of <see langword="this"/>, expressed in <paramref name="unitOfTemperature"/>.</summary>
     /// <param name="unitOfTemperature">The <see cref="global::UnitOfTemperature"/> in which the magnitude of <see langword="this"/> is expressed.</param>
@@ -91,8 +90,7 @@ public partial class Temperature :
     /// <inheritdoc/>
     static global::Temperature global::SharpMeasures.IScalarQuantity<global::Temperature>.WithMagnitude(global::SharpMeasures.Scalar magnitude) => new(magnitude);
 
-    /// <summary>Computes the represented magnitude based on a magnitude, <paramref name="magnitude"/>, expressed in
-    /// a certain unit <paramref name="unitOfTemperature"/>.</summary>
+    /// <summary>Computes the represented magnitude based on a magnitude, <paramref name="magnitude"/>, expressed in a certain unit <paramref name="unitOfTemperature"/>.</summary>
     /// <param name="magnitude">The magnitude expressed in a certain unit <paramref name="unitOfTemperature"/>.</param>
     /// <param name="unitOfTemperature">The <see cref="global::UnitOfTemperature"/> in which <paramref name="magnitude"/> is expressed.</param>
     /// <exception cref="global::System.ArgumentNullException"/>

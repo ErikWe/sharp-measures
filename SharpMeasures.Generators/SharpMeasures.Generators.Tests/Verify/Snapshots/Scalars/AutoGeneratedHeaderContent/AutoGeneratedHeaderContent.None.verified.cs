@@ -27,8 +27,7 @@ public partial class Length :
     /// <param name="magnitude">The magnitude represented by the constructed <see cref="global::Length"/>, when expressed in <paramref name="unitOfLength"/>.</param>
     /// <param name="unitOfLength">The <see cref="global::UnitOfLength"/> in which <paramref name="magnitude"/> is expressed.</param>
     /// <exception cref="global::System.ArgumentNullException"/>
-    public Length(global::SharpMeasures.Scalar magnitude, global::UnitOfLength unitOfLength)
-        : this(ComputeRepresentedMagnitude(magnitude, unitOfLength)) { }
+    public Length(global::SharpMeasures.Scalar magnitude, global::UnitOfLength unitOfLength) : this(ComputeRepresentedMagnitude(magnitude, unitOfLength)) { }
 
     /// <summary>The magnitude of <see langword="this"/>, expressed in <paramref name="unitOfLength"/>.</summary>
     /// <param name="unitOfLength">The <see cref="global::UnitOfLength"/> in which the magnitude of <see langword="this"/> is expressed.</param>
@@ -86,8 +85,7 @@ public partial class Length :
     /// <inheritdoc/>
     static global::Length global::SharpMeasures.IScalarQuantity<global::Length>.WithMagnitude(global::SharpMeasures.Scalar magnitude) => new(magnitude);
 
-    /// <summary>Computes the represented magnitude based on a magnitude, <paramref name="magnitude"/>, expressed in
-    /// a certain unit <paramref name="unitOfLength"/>.</summary>
+    /// <summary>Computes the represented magnitude based on a magnitude, <paramref name="magnitude"/>, expressed in a certain unit <paramref name="unitOfLength"/>.</summary>
     /// <param name="magnitude">The magnitude expressed in a certain unit <paramref name="unitOfLength"/>.</param>
     /// <param name="unitOfLength">The <see cref="global::UnitOfLength"/> in which <paramref name="magnitude"/> is expressed.</param>
     /// <exception cref="global::System.ArgumentNullException"/>
