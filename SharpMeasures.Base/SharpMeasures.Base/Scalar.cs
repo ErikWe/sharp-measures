@@ -33,7 +33,7 @@ public readonly record struct Scalar : IScalarQuantity<Scalar>, IComparable<Scal
     public bool IsNaN => double.IsNaN(Value);
     /// <summary>Indicates whether <see langword="this"/> represents { 0 }.</summary>
     public bool IsZero => Value is 0;
-    /// <summary>Indicates whether <see langword="this"/> represents a value greater than { 0 }.</summary>
+    /// <summary>Indicates whether <see langword="this"/> represents a value greater than or equal to { 0 }.</summary>
     public bool IsPositive => double.IsPositive(Value);
     /// <summary>Indicates whether <see langword="this"/> represents a value smaller than { 0 }.</summary>
     public bool IsNegative => double.IsNegative(Value);
