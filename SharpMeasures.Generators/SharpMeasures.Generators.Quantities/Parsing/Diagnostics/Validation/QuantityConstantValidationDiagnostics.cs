@@ -5,9 +5,7 @@ using Microsoft.CodeAnalysis;
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Quantities.Parsing.QuantityConstant;
 
-public sealed class QuantityConstantValidationDiagnostics<TDefinition, TLocations> : IQuantityConstantValidationDiagnostics<TDefinition, TLocations>
-    where TDefinition : AQuantityConstantDefinition<TLocations>
-    where TLocations : AQuantityConstantLocations<TLocations>
+public sealed class QuantityConstantValidationDiagnostics<TDefinition, TLocations> : IQuantityConstantValidationDiagnostics<TDefinition, TLocations> where TDefinition : AQuantityConstantDefinition<TLocations> where TLocations : AQuantityConstantLocations<TLocations>
 {
     public static QuantityConstantValidationDiagnostics<TDefinition, TLocations> Instance { get; } = new();
 

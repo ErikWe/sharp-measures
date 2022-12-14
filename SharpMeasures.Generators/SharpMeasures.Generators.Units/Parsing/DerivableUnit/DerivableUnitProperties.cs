@@ -27,7 +27,7 @@ internal static class DerivableUnitProperties
     (
         name: nameof(DerivableUnitAttribute.Expression),
         setter: static (definition, expression) => definition with { Expression = expression },
-        locator: static(locations, expressionLocation) => locations with { Expression = expressionLocation }
+        locator: static (locations, expressionLocation) => locations with { Expression = expressionLocation }
     );
 
     private static DerivableUnitProperty<INamedTypeSymbol[]> Signature { get; } = new

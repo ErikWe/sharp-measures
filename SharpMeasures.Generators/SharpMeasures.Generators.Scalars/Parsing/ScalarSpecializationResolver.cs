@@ -135,7 +135,7 @@ internal static class ScalarSpecializationResolver
         T? recursivelySearch(IScalarType scalar)
         {
             var item = itemDelegate(scalar);
-            
+
             if (predicate(scalar, item))
             {
                 return item;

@@ -34,7 +34,7 @@ internal static class ScalarValidationDiagnosticsStrategies
     public static IScalarValidationDiagnosticsStrategy Default { get; } = new DefaultValidationDiagnosticsStrategy();
     public static IScalarValidationDiagnosticsStrategy EmptyDiagnostics { get; } = new EmptyValidationDiagnosticsStrategy();
 
-    private class DefaultValidationDiagnosticsStrategy : IScalarValidationDiagnosticsStrategy
+    private sealed class DefaultValidationDiagnosticsStrategy : IScalarValidationDiagnosticsStrategy
     {
         public ISharpMeasuresScalarValidationDiagnostics SharpMeasuresScalarDiagnostics => SharpMeasuresScalarValidationDiagnostics.Instance;
         public ISpecializedSharpMeasuresScalarValidationDiagnostics SpecializedSharpMeasuresScalarDiagnostics => SpecializedSharpMeasuresScalarValidationDiagnostics.Instance;
@@ -49,7 +49,7 @@ internal static class ScalarValidationDiagnosticsStrategies
         public IExcludeUnitsFilteringDiagnostics ExcludeUnitsDiagnostics => ExcludeUnitsFilteringDiagnostics.Instance;
     }
 
-    private class EmptyValidationDiagnosticsStrategy : IScalarValidationDiagnosticsStrategy
+    private sealed class EmptyValidationDiagnosticsStrategy : IScalarValidationDiagnosticsStrategy
     {
         public ISharpMeasuresScalarValidationDiagnostics SharpMeasuresScalarDiagnostics => EmptySharpMeasuresScalarValidationDiagnostics.Instance;
         public ISpecializedSharpMeasuresScalarValidationDiagnostics SpecializedSharpMeasuresScalarDiagnostics => SpecializedSharpMeasuresScalarValidationDiagnostics.Instance;

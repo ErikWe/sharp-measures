@@ -30,7 +30,7 @@ internal static class UnitProcessingDiagnosticsStrategies
     public static IUnitProcessingDiagnosticsStrategy Default { get; } = new DefaultProcessingDiagnosticsStrategy();
     public static IUnitProcessingDiagnosticsStrategy EmptyDiagnostics { get; } = new EmptyProcessingDiagnosticsStrategy();
 
-    private class DefaultProcessingDiagnosticsStrategy : IUnitProcessingDiagnosticsStrategy
+    private sealed class DefaultProcessingDiagnosticsStrategy : IUnitProcessingDiagnosticsStrategy
     {
         public ISharpMeasuresUnitProcessingDiagnostics SharpMeasuresUnitDiagnostics => SharpMeasuresUnitProcessingDiagnostics.Instance;
 
@@ -44,7 +44,7 @@ internal static class UnitProcessingDiagnosticsStrategies
         public IScaledUnitInstanceProcessingDiagnostics ScaledUnitInstanceDiagnostics => ScaledUnitInstanceProcessingDiagnostics.Instance;
     }
 
-    private class EmptyProcessingDiagnosticsStrategy : IUnitProcessingDiagnosticsStrategy
+    private sealed class EmptyProcessingDiagnosticsStrategy : IUnitProcessingDiagnosticsStrategy
     {
         public ISharpMeasuresUnitProcessingDiagnostics SharpMeasuresUnitDiagnostics => EmptySharpMeasuresUnitProcessingDiagnostics.Instance;
 

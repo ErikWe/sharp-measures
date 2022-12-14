@@ -130,7 +130,7 @@ public sealed class QuantityProcessProcesser : AActionableProcesser<IQuantityPro
     {
         var parameterTypes = new NamedType[definition.ParameterTypes.Count];
 
-        for (int i = 0; i < definition.ParameterTypes.Count; i++)
+        for (var i = 0; i < definition.ParameterTypes.Count; i++)
         {
             if (definition.ParameterTypes[i] is not NamedType parameterType)
             {
@@ -148,7 +148,7 @@ public sealed class QuantityProcessProcesser : AActionableProcesser<IQuantityPro
         var parameterNames = new string[definition.ParameterNames.Count];
         HashSet<string> listedNames = new();
 
-        for (int i = 0; i < definition.ParameterNames.Count; i++)
+        for (var i = 0; i < definition.ParameterNames.Count; i++)
         {
             if (definition.ParameterNames[i] is not string parameterName)
             {
@@ -173,7 +173,7 @@ public sealed class QuantityProcessProcesser : AActionableProcesser<IQuantityPro
 
     private IValidityWithDiagnostics ValidateNotDuplicate(IQuantityProcessProcessingContext context, RawQuantityProcessDefinition definition, IReadOnlyList<NamedType> parameterTypes)
     {
-        var nameIsDuplicate = context.ReservedNames.Contains(definition.Name!) || definition.ImplementAsProperty is false && context.ReservedMethodSignatures.Contains((definition.Name!, parameterTypes));
+        var nameIsDuplicate = context.ReservedNames.Contains(definition.Name!) || (definition.ImplementAsProperty is false && context.ReservedMethodSignatures.Contains((definition.Name!, parameterTypes)));
 
         return ValidityWithDiagnostics.Conditional(nameIsDuplicate is false, () => Diagnostics.DuplicateProcess(context, definition));
     }

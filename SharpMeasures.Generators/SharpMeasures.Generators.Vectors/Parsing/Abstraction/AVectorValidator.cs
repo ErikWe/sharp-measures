@@ -79,7 +79,7 @@ internal abstract class AVectorValidatorr<TVector, TDefinition>
         var constants = CommonValidation.ValidateConstants(vectorType.Type, vectorBase.Definition.Dimension, unit, allUnitInstances, vectorType.Constants, inheritedConstants, DiagnosticsStrategy);
         var conversions = CommonValidation.ValidateConversions(vectorType.Type, vectorBase.Definition.Dimension, vectorType.Conversions, vectorPopulation, DiagnosticsStrategy);
 
-        TVector product = ProduceResult(vectorType.Type, vector.Result, operations.Result, vectorOperations.Result, vectorType.Processes, constants.Result, conversions.Result, unitInstanceInclusions.Result, unitInstanceExclusions.Result);
+        var product = ProduceResult(vectorType.Type, vector.Result, operations.Result, vectorOperations.Result, vectorType.Processes, constants.Result, conversions.Result, unitInstanceInclusions.Result, unitInstanceExclusions.Result);
 
         var allDiagnostics = vector.Concat(operations).Concat(vectorOperations).Concat(constants).Concat(conversions).Concat(unitInstanceInclusions).Concat(unitInstanceExclusions);
 

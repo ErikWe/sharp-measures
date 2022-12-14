@@ -41,7 +41,7 @@ public sealed class UnitAttribute : Attribute
     /// <remarks>For units that include a bias term, this should represent an associated unbiased quantity. For example; <i>UnitOfTemperature</i>,
     /// should be described by <i>TemperatureDifference</i> rather than <i>Temperature</i>.</remarks>
     public Type Quantity { get; }
-    
+
     /// <summary>Dictates whether this unit should include a bias term. The default behaviour is <see langword="false"/>.</summary>
     /// <remarks>This allows units to use different definitions for zero. For example; <i>UnitOfTemperature</i> would require a bias term
     /// to be able to express both <i>Celsius</i> and <i>Fahrenheit</i>.</remarks>

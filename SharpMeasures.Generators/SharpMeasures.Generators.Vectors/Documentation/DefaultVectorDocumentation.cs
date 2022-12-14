@@ -110,7 +110,7 @@ internal sealed class DefaultVectorDocumentation : IVectorDocumentationStrategy,
                 {
                     yield return value switch
                     {
-                        > 10000 or < 0.0001 and > -0.0001 or < -10000 => value.ToString("0.000E0", CultureInfo.InvariantCulture),
+                        > 10000 or (< 0.0001 and > -0.0001) or < -10000 => value.ToString("0.000E0", CultureInfo.InvariantCulture),
                         _ => value.ToString("0.####", CultureInfo.InvariantCulture)
                     };
                 }
@@ -216,7 +216,7 @@ internal sealed class DefaultVectorDocumentation : IVectorDocumentationStrategy,
 
         return $"{commonText}.</remarks>";
     }
-    
+
     public string InUnit() => $"""
         /// <summary>The magnitudes of the components of <see langword="this"/>, expressed in <paramref name="{UnitParameterName}"/>.</summary>
         /// <param name="{UnitParameterName}">The {UnitReference} in which the components of <see langword="this"/> are expressed.</param>
@@ -270,7 +270,7 @@ internal sealed class DefaultVectorDocumentation : IVectorDocumentationStrategy,
 
         if (operation.OperatorType is OperatorType.Subtraction)
         {
-            if (operation.Position is OperatorPosition.Left && mirrored is false || operation.Position is OperatorPosition.Right && mirrored)
+            if ((operation.Position is OperatorPosition.Left && mirrored is false) || (operation.Position is OperatorPosition.Right && mirrored))
             {
                 return $$"""
                     /// <summary>Computes { <see langword="this"/> - <paramref name="{{parameterName}}"/> }.</summary>
@@ -284,7 +284,7 @@ internal sealed class DefaultVectorDocumentation : IVectorDocumentationStrategy,
                 """;
         }
 
-        if (operation.Position is OperatorPosition.Left && mirrored is false || operation.Position is OperatorPosition.Right && mirrored)
+        if ((operation.Position is OperatorPosition.Left && mirrored is false) || (operation.Position is OperatorPosition.Right && mirrored))
         {
             return $$"""
                 /// <summary>Computes { <see langword="this"/> / <paramref name="{{parameterName}}"/> }.</summary>
@@ -312,7 +312,7 @@ internal sealed class DefaultVectorDocumentation : IVectorDocumentationStrategy,
                 """;
         }
 
-        if (operation.Position is OperatorPosition.Left && mirrored is false || operation.Position is OperatorPosition.Right && mirrored)
+        if ((operation.Position is OperatorPosition.Left && mirrored is false) || (operation.Position is OperatorPosition.Right && mirrored))
         {
             return $$"""
                 /// <summary>Computes { <see langword="this"/> ⨯ <paramref name="{{parameterName}}"/> }.</summary>
@@ -592,7 +592,7 @@ internal sealed class DefaultVectorDocumentation : IVectorDocumentationStrategy,
 
             static string parameterTupleComponent(int componentIndex, int dimension)
             {
-                string componentName = VectorTextBuilder.GetLowerCasedComponentName(componentIndex, dimension);
+                var componentName = VectorTextBuilder.GetLowerCasedComponentName(componentIndex, dimension);
 
                 return $"""<paramref name="{componentName}"/>""";
             }
@@ -604,8 +604,8 @@ internal sealed class DefaultVectorDocumentation : IVectorDocumentationStrategy,
 
             string componentsConstructorComponent(int componentIndex, int dimension)
             {
-                string componentLowerCase = VectorTextBuilder.GetLowerCasedComponentName(componentIndex, dimension);
-                string componentUpperCase = VectorTextBuilder.GetUpperCasedComponentName(componentIndex, dimension);
+                var componentLowerCase = VectorTextBuilder.GetLowerCasedComponentName(componentIndex, dimension);
+                var componentUpperCase = VectorTextBuilder.GetUpperCasedComponentName(componentIndex, dimension);
 
                 return $"""/// <param name="{componentLowerCase}">The {componentUpperCase}-component of the constructed {vectorReference}.</param>""";
             }
@@ -617,8 +617,8 @@ internal sealed class DefaultVectorDocumentation : IVectorDocumentationStrategy,
 
             string scalarsConstructorComponent(int componentIndex, int dimension)
             {
-                string componentLowerCase = VectorTextBuilder.GetLowerCasedComponentName(componentIndex, dimension);
-                string componentUpperCase = VectorTextBuilder.GetUpperCasedComponentName(componentIndex, dimension);
+                var componentLowerCase = VectorTextBuilder.GetLowerCasedComponentName(componentIndex, dimension);
+                var componentUpperCase = VectorTextBuilder.GetUpperCasedComponentName(componentIndex, dimension);
 
                 return $"""/// <param name="{componentLowerCase}">The magnitude of the {componentUpperCase}-component of the constructed {vectorReference}, expressed in an arbitrary unit.</param>""";
             }
@@ -630,8 +630,8 @@ internal sealed class DefaultVectorDocumentation : IVectorDocumentationStrategy,
 
             string scalarsAndUnitConstructorComponent(int componentIndex, int dimension)
             {
-                string componentLowerCase = VectorTextBuilder.GetLowerCasedComponentName(componentIndex, dimension);
-                string componentUpperCase = VectorTextBuilder.GetUpperCasedComponentName(componentIndex, dimension);
+                var componentLowerCase = VectorTextBuilder.GetLowerCasedComponentName(componentIndex, dimension);
+                var componentUpperCase = VectorTextBuilder.GetUpperCasedComponentName(componentIndex, dimension);
 
                 return $"""/// <param name="{componentLowerCase}">The magnitude of the {componentUpperCase}-component of the constructed {vectorReference}, expressed in <paramref name="{unitParameterName}"/>.</param>""";
             }
@@ -643,8 +643,8 @@ internal sealed class DefaultVectorDocumentation : IVectorDocumentationStrategy,
 
             static string deconstructComponent(int componentIndex, int dimension)
             {
-                string componentLowerCase = VectorTextBuilder.GetLowerCasedComponentName(componentIndex, dimension);
-                string componentUpperCase = VectorTextBuilder.GetUpperCasedComponentName(componentIndex, dimension);
+                var componentLowerCase = VectorTextBuilder.GetLowerCasedComponentName(componentIndex, dimension);
+                var componentUpperCase = VectorTextBuilder.GetUpperCasedComponentName(componentIndex, dimension);
 
                 return $"""/// <param name="{componentLowerCase}">The {componentUpperCase}-component of <see langword="this"/>.</param>""";
             }
@@ -670,7 +670,7 @@ internal sealed class DefaultVectorDocumentation : IVectorDocumentationStrategy,
 
     public bool Equals(DefaultVectorDocumentation? other) => other is not null && Type == other.Type && Dimension == other.Dimension && Unit == other.Unit && Scalar == other.Scalar && DefaultUnitInstancePluralForm == other.DefaultUnitInstancePluralForm && DefaultUnitInstanceSymbol == other.DefaultUnitInstanceSymbol;
     public override bool Equals(object? obj) => obj is DefaultVectorDocumentation other && Equals(other);
-    
+
     public static bool operator ==(DefaultVectorDocumentation? lhs, DefaultVectorDocumentation? rhs) => lhs?.Equals(rhs) ?? rhs is null;
     public static bool operator !=(DefaultVectorDocumentation? lhs, DefaultVectorDocumentation? rhs) => (lhs == rhs) is false;
 

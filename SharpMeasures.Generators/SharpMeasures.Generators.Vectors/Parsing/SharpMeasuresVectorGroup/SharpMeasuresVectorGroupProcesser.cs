@@ -58,7 +58,7 @@ internal sealed class SharpMeasuresVectorGroupProcesser : AProcesser<IProcessing
 
     private IValidityWithDiagnostics ValidateNameNotSuggestingDimension(IProcessingContext context, RawSharpMeasuresVectorGroupDefinition definition)
     {
-        int? interpretedDimension = DimensionParsingUtility.InterpretDimensionFromName(context.Type.Name);
+        var interpretedDimension = DimensionParsingUtility.InterpretDimensionFromName(context.Type.Name);
 
         return ValidityWithDiagnostics.ValidWithConditionalDiagnostics(interpretedDimension is not null, () => Diagnostics.NameSuggestsDimension(context, definition, interpretedDimension!.Value));
     }

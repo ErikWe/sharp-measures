@@ -128,7 +128,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.DerivableUnitShouldNotUseFixed,
         title: "Derivable unit should not use FixedUnit",
-        messageFormat: $"As {{0}} can be derived from other units, defining instances through {Utility.AttributeName(typeof(FixedUnitInstanceAttribute).Name)} would result in independent units",
+        messageFormat: $"As {{0}} can be derived from other units, defining instances through {Utility.AttributeName(nameof(FixedUnitInstanceAttribute))} would result in independent units",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true

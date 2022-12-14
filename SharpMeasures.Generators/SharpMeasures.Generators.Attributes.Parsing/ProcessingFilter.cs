@@ -55,7 +55,7 @@ public static class ProcessingFilter
             List<TProduct> products = new();
             IEnumerable<Diagnostic> diagnostics = Array.Empty<Diagnostic>();
 
-            foreach (TDefinition definition in definitions)
+            foreach (var definition in definitions)
             {
                 var result = Process(context, definition);
                 diagnostics = diagnostics.Concat(result.Diagnostics);
@@ -107,7 +107,7 @@ public static class ProcessingFilter
 
                 return;
             }
-                
+
             Processer.OnUnsuccessfulProcess(context, definition);
         }
     }
@@ -123,10 +123,10 @@ public static class ProcessingFilter
 
         public IOptionalWithDiagnostics<TProduct> Filter(TContext context, IEnumerable<TDefinition> definitions, TProduct product)
         {
-            IOptionalWithDiagnostics<TProduct> result = OptionalWithDiagnostics.Result(product);
-            IEnumerable<Diagnostic> allDiagnostics = result.Diagnostics;
+            var result = OptionalWithDiagnostics.Result(product);
+            var allDiagnostics = result.Diagnostics;
 
-            foreach (TDefinition definition in definitions)
+            foreach (var definition in definitions)
             {
                 result = Reprocess(context, definition, result.Result);
                 allDiagnostics = allDiagnostics.Concat(result.Diagnostics);

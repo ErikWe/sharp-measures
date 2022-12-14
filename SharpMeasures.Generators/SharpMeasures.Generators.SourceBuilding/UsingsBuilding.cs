@@ -46,7 +46,7 @@ public static class UsingsBuilding
     {
         HashSet<string> definedUsings = new();
 
-        bool anyUsings = false;
+        var anyUsings = false;
 
         IterativeBuilding.AppendEnumerable(source, usings(), Environment.NewLine);
 
@@ -58,7 +58,7 @@ public static class UsingsBuilding
 
         IEnumerable<string> usings()
         {
-            foreach (string usingsName in usingsNames)
+            foreach (var usingsName in usingsNames)
             {
                 if (definedUsings.Contains(usingsName) || ignoreDelegate(usingsName))
                 {

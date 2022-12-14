@@ -17,7 +17,7 @@ internal static class Execution
             return;
         }
 
-        string source = Composer.Compose(data.Value);
+        var source = Composer.Compose(data.Value);
 
         context.AddSource($"{data.Value.Scalar.QualifiedName}.Common.g.cs", SourceText.From(source, Encoding.UTF8));
     }
@@ -106,7 +106,7 @@ internal static class Execution
             if (Data.UseUnitBias is false)
             {
                 SeparationHandler.AddIfNecessary();
-                
+
                 AppendDocumentation(indentation, Data.SourceBuildingContext.Documentation.Zero());
                 Builder.AppendLine($"{indentation}public static {Data.Scalar.FullyQualifiedName} Zero {{ get; }} = new(0);");
             }
@@ -149,11 +149,11 @@ internal static class Execution
             if (Data.Unit.IsReferenceType)
             {
                 Builder.AppendLine($": this(ComputeRepresentedMagnitude(magnitude, {Data.UnitParameterName})) {{ }}");
+
+                return;
             }
-            else
-            {
-                Builder.AppendLine($": this({ConstructorComputation(Data)}) {{ }}");
-            }
+
+            Builder.AppendLine($": this({ConstructorComputation(Data)}) {{ }}");
         }
 
         private void AppendInUnit(Indentation indentation)
@@ -168,7 +168,7 @@ internal static class Execution
             }
 
             Builder.Append($"{indentation}public global::SharpMeasures.Scalar InUnit({Data.Unit.FullyQualifiedName} {Data.UnitParameterName})");
-            
+
             if (Data.Unit.IsReferenceType)
             {
                 Builder.AppendLine();
@@ -180,11 +180,11 @@ internal static class Execution
                     {{indentation.Increased}}return new({{InUnitComputation(Data)}});
                     {{indentation}}}
                     """);
+
+                return;
             }
-            else
-            {
-                Builder.AppendLine($" => new({InUnitComputation(Data)});");
-            }
+
+            Builder.AppendLine($" => new({InUnitComputation(Data)});");
         }
 
         private void AppendToString(Indentation indentation)
@@ -231,18 +231,18 @@ internal static class Execution
             if (Data.Scalar.IsReferenceType)
             {
                 AppendReferenceTypeEquality(indentation);
+
+                return;
             }
-            else
-            {
-                AppendValueTypeEquality(indentation);
-            }
+
+            AppendValueTypeEquality(indentation);
         }
 
         private void AppendReferenceTypeEquality(Indentation indentation)
         {
             SeparationHandler.AddIfNecessary();
 
-            string virtualText = Data.Scalar.IsSealed ? string.Empty : " virtual";
+            var virtualText = Data.Scalar.IsSealed ? string.Empty : " virtual";
 
             AppendDocumentation(indentation, Data.SourceBuildingContext.Documentation.EqualsSameTypeMethod());
             Builder.AppendLine($"{indentation}public{virtualText} bool Equals({Data.Scalar.FullyQualifiedName}? other) => other is not null && Magnitude.Value == other.Magnitude.Value;");
@@ -299,11 +299,11 @@ internal static class Execution
             if (Data.Scalar.IsReferenceType)
             {
                 AppendReferenceTypeComparisons(indentation);
+
+                return;
             }
-            else
-            {
-                AppendValueTypeComparisons(indentation);
-            }
+
+            AppendValueTypeComparisons(indentation);
         }
 
         private void AppendReferenceTypeComparisons(Indentation indentation)
@@ -376,7 +376,7 @@ internal static class Execution
 
         private static string ConstructorComputation(DataModel data)
         {
-            string unitMagnitude = $"{data.UnitParameterName}.{data.UnitQuantity.Name}.Magnitude";
+            var unitMagnitude = $"{data.UnitParameterName}.{data.UnitQuantity.Name}.Magnitude";
 
             if (data.UseUnitBias)
             {
@@ -388,7 +388,7 @@ internal static class Execution
 
         private static string InUnitComputation(DataModel data)
         {
-            string scaled = $"Magnitude / {data.UnitParameterName}.{data.UnitQuantity.Name}.Magnitude";
+            var scaled = $"Magnitude / {data.UnitParameterName}.{data.UnitQuantity.Name}.Magnitude";
 
             if (data.UseUnitBias)
             {

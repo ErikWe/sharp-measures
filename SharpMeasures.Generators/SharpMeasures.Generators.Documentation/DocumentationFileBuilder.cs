@@ -22,7 +22,7 @@ internal sealed class DocumentationFileBuilder
             builders.TryAdd(builder.Name, builder);
         }
 
-        foreach (DocumentationFileBuilder builder in builders.Values)
+        foreach (var builder in builders.Values)
         {
             if (builder.IsUtility is false)
             {
@@ -30,7 +30,7 @@ internal sealed class DocumentationFileBuilder
             }
         }
 
-        foreach (DocumentationFileBuilder builder in builders.Values)
+        foreach (var builder in builders.Values)
         {
             if (builder.IsUtility is false)
             {
@@ -38,7 +38,7 @@ internal sealed class DocumentationFileBuilder
             }
         }
 
-        foreach (DocumentationFileBuilder builder in builders.Values)
+        foreach (var builder in builders.Values)
         {
             if (builder.IsUtility is false)
             {
@@ -46,7 +46,7 @@ internal sealed class DocumentationFileBuilder
             }
         }
 
-        foreach (DocumentationFileBuilder builder in builders.Values)
+        foreach (var builder in builders.Values)
         {
             if (builder.IsUtility is false)
             {
@@ -55,7 +55,7 @@ internal sealed class DocumentationFileBuilder
         }
 
         DocumentationDictionary dictionary = new(builders.Transform(static (builder) => builder.Finalize()));
-        IEnumerable<Diagnostic> diagnostics = builders.Values.SelectMany(static (file) => file.Diagnostics);
+        var diagnostics = builders.Values.SelectMany(static (file) => file.Diagnostics);
 
         return ResultWithDiagnostics.Construct(dictionary, diagnostics);
 
@@ -118,7 +118,7 @@ internal sealed class DocumentationFileBuilder
     {
         foreach (var dependency in Dependencies)
         {
-            if (documentationFiles.TryGetValue(dependency, out DocumentationFileBuilder file))
+            if (documentationFiles.TryGetValue(dependency, out var file))
             {
                 ResolvedDependencies.Add(file);
                 continue;
@@ -133,7 +133,7 @@ internal sealed class DocumentationFileBuilder
 
     private void AddTagsFromDependencies()
     {
-        foreach (DocumentationFileBuilder dependency in ResolvedDependencies)
+        foreach (var dependency in ResolvedDependencies)
         {
             foreach (var tag in dependency.Content)
             {
@@ -176,6 +176,7 @@ internal sealed class DocumentationFileBuilder
     private void ResolveTagContent(string tag)
     {
         ResolvedTags.Add(tag); // This is done before actually resolving, otherwise recursive tags loop indefinitely
+
         Content[tag] = ResolveText(Content[tag]);
     }
 
@@ -205,7 +206,7 @@ internal sealed class DocumentationFileBuilder
 
     private string? ReadTag(string tag)
     {
-        if (Content.TryGetValue(tag, out string text))
+        if (Content.TryGetValue(tag, out var text))
         {
             if (ResolvedTags.Contains(tag))
             {
@@ -221,12 +222,12 @@ internal sealed class DocumentationFileBuilder
 
     private Diagnostic? CreateUnresolvedDependencyDiagnostics(string dependency)
     {
-        if (DiagnosticsStrategy.GenerateDiagnostics is false || Configuration.LimitOneErrorPerDocumentationFile && HasReportedOneUnresolvedDependency) 
+        if (DiagnosticsStrategy.GenerateDiagnostics is false || (Configuration.LimitOneErrorPerDocumentationFile && HasReportedOneUnresolvedDependency))
         {
             return null;
         }
 
-        MatchCollection matches = DocumentationParsing.MatchDependencies(FileText.ToString());
+        var matches = DocumentationParsing.MatchDependencies(FileText.ToString());
 
         foreach (Match match in matches)
         {
@@ -254,7 +255,7 @@ internal sealed class DocumentationFileBuilder
 
     private Diagnostic? CreateDuplicateTagDiagnostics(string tag)
     {
-        if (DiagnosticsStrategy.GenerateDiagnostics is false || Configuration.LimitOneErrorPerDocumentationFile && HasReportedOneDuplicateTag)
+        if (DiagnosticsStrategy.GenerateDiagnostics is false || (Configuration.LimitOneErrorPerDocumentationFile && HasReportedOneDuplicateTag))
         {
             return null;
         }
@@ -271,7 +272,7 @@ internal sealed class DocumentationFileBuilder
 
     private Diagnostic? CreateMissingTagDiagnostics(string tag)
     {
-        if (DiagnosticsStrategy.GenerateDiagnostics is false || Configuration.LimitOneErrorPerDocumentationFile && HasReportedOneMissingTag)
+        if (DiagnosticsStrategy.GenerateDiagnostics is false || (Configuration.LimitOneErrorPerDocumentationFile && HasReportedOneMissingTag))
         {
             return null;
         }

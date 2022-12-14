@@ -290,9 +290,9 @@ internal sealed record class VectorPopulation : IVectorPopulation
 
         void iterativelySetGroupBaseForSpecializations()
         {
-            int startLength = unassignedGroupSpecializations.Count;
+            var startLength = unassignedGroupSpecializations.Count;
 
-            for (int i = 0; i < unassignedGroupSpecializations.Count; i++)
+            for (var i = 0; i < unassignedGroupSpecializations.Count; i++)
             {
                 if (groupBasePopulation.TryGetValue(unassignedGroupSpecializations[i].Definition.OriginalQuantity, out var groupBase))
                 {
@@ -323,9 +323,9 @@ internal sealed record class VectorPopulation : IVectorPopulation
 
         void iterativelySetVectorBaseForSpecializations()
         {
-            int startLength = unassignedVectorSpecializations.Count;
+            var startLength = unassignedVectorSpecializations.Count;
 
-            for (int i = 0; i < unassignedVectorSpecializations.Count; i++)
+            for (var i = 0; i < unassignedVectorSpecializations.Count; i++)
             {
                 if (vectorBasePopulation.TryGetValue(unassignedVectorSpecializations[i].Definition.OriginalQuantity, out var vectorBase))
                 {

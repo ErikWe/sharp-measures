@@ -49,7 +49,7 @@ public static partial class Extensions
     public static (AttributeSyntax Syntax, Type Target)? GetAttributeOfAnyType<TAttribute1, TAttribute2, TAttribute3>(this MemberDeclarationSyntax declarationSyntax, SemanticModel semanticModel, bool checkForAlias) => declarationSyntax.GetAttributeOfAnyType(semanticModel, checkForAlias, typeof(TAttribute1), typeof(TAttribute2), typeof(TAttribute3));
 
     public static (AttributeSyntax Syntax, Type Target)? GetAttributeOfAnyType(this MemberDeclarationSyntax declarationSyntax, SemanticModel semanticModel, params Type[] candidateTypes) => declarationSyntax.GetAttributeOfAnyType(semanticModel, checkForAlias: true, candidateTypes);
-    public static (AttributeSyntax Syntax, Type Target)? GetAttributeOfAnyType(this MemberDeclarationSyntax declarationSyntax, SemanticModel semanticModel, bool checkForAlias, params Type[] candidateTypes) => declarationSyntax.GetAttributeOfAnyType(semanticModel, candidateTypes as IEnumerable<Type>, checkForAlias);
+    public static (AttributeSyntax Syntax, Type Target)? GetAttributeOfAnyType(this MemberDeclarationSyntax declarationSyntax, SemanticModel semanticModel, bool checkForAlias, params Type[] candidateTypes) => declarationSyntax.GetAttributeOfAnyType(semanticModel, candidateTypes, checkForAlias);
 
     public static (AttributeSyntax Syntax, Type Target)? GetAttributeOfAnyType(this MemberDeclarationSyntax declarationSyntax, SemanticModel semanticModel, IEnumerable<Type> candidateTypes) => declarationSyntax.GetAttributeOfAnyType(semanticModel, candidateTypes, checkForAlias: true);
     public static (AttributeSyntax Syntax, Type Target)? GetAttributeOfAnyType(this MemberDeclarationSyntax declarationSyntax, SemanticModel semanticModel, IEnumerable<Type> candidateTypes, bool checkForAlias)
@@ -77,7 +77,7 @@ public static partial class Extensions
     }
 
     public static (AttributeSyntax Syntax, string Target)? GetAttributeWithAnyName(this MemberDeclarationSyntax declarationSyntax, SemanticModel semanticModel, params string[] candidateNames) => declarationSyntax.GetAttributeWithAnyName(semanticModel, checkForAlias: true, candidateNames);
-    public static (AttributeSyntax Syntax, string Target)? GetAttributeWithAnyName(this MemberDeclarationSyntax declarationSyntax, SemanticModel semanticModel, bool checkForAlias, params string[] candidateNames) => declarationSyntax.GetAttributeWithAnyName(semanticModel, candidateNames as IEnumerable<string>, checkForAlias);
+    public static (AttributeSyntax Syntax, string Target)? GetAttributeWithAnyName(this MemberDeclarationSyntax declarationSyntax, SemanticModel semanticModel, bool checkForAlias, params string[] candidateNames) => declarationSyntax.GetAttributeWithAnyName(semanticModel, candidateNames, checkForAlias);
 
     public static (AttributeSyntax Syntax, string Target)? GetAttributeWithAnyName(this MemberDeclarationSyntax declarationSyntax, SemanticModel semanticModel, IEnumerable<string> candidateNames) => declarationSyntax.GetAttributeWithAnyName(semanticModel, candidateNames, checkForAlias: true);
     public static (AttributeSyntax Syntax, string Target)? GetAttributeWithAnyName(this MemberDeclarationSyntax declarationSyntax, SemanticModel semanticModel, IEnumerable<string> candidateNames, bool checkForAlias)

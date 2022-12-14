@@ -19,13 +19,13 @@ internal sealed record class RawDerivableUnitDefinition : ARawAttributeDefinitio
     public string? Expression { get; init; }
     public IReadOnlyList<NamedType?>? Signature
     {
-        get => signature;
-        init => signature = value?.AsReadOnlyEquatable();
+        get => signatureField;
+        init => signatureField = value?.AsReadOnlyEquatable();
     }
 
     public bool Permutations { get; init; }
 
-    private IReadOnlyList<NamedType?>? signature { get; init; }
+    private readonly IReadOnlyList<NamedType?>? signatureField;
 
     protected override RawDerivableUnitDefinition Definition => this;
 

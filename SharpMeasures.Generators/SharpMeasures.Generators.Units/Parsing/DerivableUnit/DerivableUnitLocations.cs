@@ -15,8 +15,8 @@ internal sealed record class DerivableUnitLocations : AAttributeLocations<Deriva
     public MinimalLocation? SignatureCollection { get; init; }
     public IReadOnlyList<MinimalLocation> SignatureElements
     {
-        get => signatureElements;
-        init => signatureElements = value.AsReadOnlyEquatable();
+        get => signatureElementsField;
+        init => signatureElementsField = value.AsReadOnlyEquatable();
     }
 
     public MinimalLocation? Permutations { get; init; }
@@ -28,7 +28,7 @@ internal sealed record class DerivableUnitLocations : AAttributeLocations<Deriva
 
     protected override DerivableUnitLocations Locations => this;
 
-    private IReadOnlyList<MinimalLocation> signatureElements { get; init; } = ReadOnlyEquatableList<MinimalLocation>.Empty;
+    private readonly IReadOnlyList<MinimalLocation> signatureElementsField = ReadOnlyEquatableList<MinimalLocation>.Empty;
 
     private DerivableUnitLocations() { }
 }

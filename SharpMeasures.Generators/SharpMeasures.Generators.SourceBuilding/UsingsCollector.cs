@@ -8,7 +8,7 @@ public sealed class UsingsCollector
     public static UsingsCollector Start(StringBuilder source, string fromNamespace)
     {
         UsingsCollector collector = new(source, fromNamespace);
-        collector.MarkInsertionPoint();
+
         return collector;
     }
 
@@ -37,7 +37,7 @@ public sealed class UsingsCollector
     public void AddUsings(params string[] names) => AddUsings(names as IEnumerable<string>);
     public void AddUsings(IEnumerable<string> names)
     {
-        foreach (string name in names)
+        foreach (var name in names)
         {
             AddUsing(name);
         }

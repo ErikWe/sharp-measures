@@ -15,13 +15,13 @@ internal sealed record class SymbolicDerivableUnitDefinition : ARawAttributeDefi
     public string? Expression { get; init; }
     public IReadOnlyList<INamedTypeSymbol?>? Signature
     {
-        get => signature;
-        init => signature = value?.AsReadOnlyEquatable();
+        get => signatureField;
+        init => signatureField = value?.AsReadOnlyEquatable();
     }
 
     public bool Permutations { get; init; }
 
-    private IReadOnlyList<INamedTypeSymbol?>? signature { get; init; }
+    private readonly IReadOnlyList<INamedTypeSymbol?>? signatureField;
 
     protected override SymbolicDerivableUnitDefinition Definition => this;
 

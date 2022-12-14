@@ -12,22 +12,22 @@ internal sealed record class VectorConstantLocations : AQuantityConstantLocation
     public MinimalLocation? ValueCollection { get; init; }
     public IReadOnlyList<MinimalLocation> ValueElements
     {
-        get => valueElements;
-        init => valueElements = value.AsReadOnlyEquatable();
+        get => valueElementsField;
+        init => valueElementsField = value.AsReadOnlyEquatable();
     }
 
     public MinimalLocation? ExpressionCollection { get; init; }
     public IReadOnlyList<MinimalLocation> ExpressionElements
     {
-        get => expressionElements;
-        init => expressionElements = value.AsReadOnlyEquatable();
+        get => expressionElementsField;
+        init => expressionElementsField = value.AsReadOnlyEquatable();
     }
 
     public bool ExplicitlySetValue => ValueCollection is not null;
     public bool ExplicitlySetExpressions => ExpressionCollection is not null;
 
-    private IReadOnlyList<MinimalLocation> valueElements { get; init; } = ReadOnlyEquatableList<MinimalLocation>.Empty;
-    private IReadOnlyList<MinimalLocation> expressionElements { get; init; } = ReadOnlyEquatableList<MinimalLocation>.Empty;
+    private readonly IReadOnlyList<MinimalLocation> valueElementsField = ReadOnlyEquatableList<MinimalLocation>.Empty;
+    private readonly IReadOnlyList<MinimalLocation> expressionElementsField = ReadOnlyEquatableList<MinimalLocation>.Empty;
 
     protected override VectorConstantLocations Locations => this;
 

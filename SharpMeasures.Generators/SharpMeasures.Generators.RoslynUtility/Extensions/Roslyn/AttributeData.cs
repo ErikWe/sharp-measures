@@ -5,8 +5,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 public static partial class RoslynUtilityExtensions
 {
-    public static AttributeSyntax? GetSyntax(this AttributeData attributeData)
-        => attributeData?.ApplicationSyntaxReference?.GetSyntax() as AttributeSyntax;
+    public static AttributeSyntax? GetSyntax(this AttributeData attributeData) => attributeData?.ApplicationSyntaxReference?.GetSyntax() as AttributeSyntax;
 
     public static AttributeArgumentSyntax? GetArgumentSyntax(this AttributeData attributeData, int index)
     {

@@ -40,7 +40,7 @@ internal static class ScalarProcessingDiagnosticsStrategies
     public static IScalarProcessingDiagnosticsStrategy Default { get; } = new DefaultProcessingDiagnosticsStrategy();
     public static IScalarProcessingDiagnosticsStrategy EmptyDiagnostics { get; } = new EmptyProcessingDiagnosticsStrategy();
 
-    private class DefaultProcessingDiagnosticsStrategy : IScalarProcessingDiagnosticsStrategy
+    private sealed class DefaultProcessingDiagnosticsStrategy : IScalarProcessingDiagnosticsStrategy
     {
         public IScalarTypeProcessingDiagnostics ScalarTypeDiagnostics => ScalarTypeProcessingDiagnostics.Instance;
 
@@ -59,7 +59,7 @@ internal static class ScalarProcessingDiagnosticsStrategies
         public IExcludeUnitsProcessingDiagnostics ExcludeUnitsDiagnostics => ExcludeUnitsProcessingDiagnostics.Instance;
     }
 
-    private class EmptyProcessingDiagnosticsStrategy : IScalarProcessingDiagnosticsStrategy
+    private sealed class EmptyProcessingDiagnosticsStrategy : IScalarProcessingDiagnosticsStrategy
     {
         public IScalarTypeProcessingDiagnostics ScalarTypeDiagnostics => EmptyScalarTypeProcessingDiagnostics.Instance;
 

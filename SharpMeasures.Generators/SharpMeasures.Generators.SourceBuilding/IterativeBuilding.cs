@@ -12,8 +12,9 @@ public static class IterativeBuilding
     {
         source.Append(prefix);
 
-        bool anyTexts = false;
-        foreach (string text in texts)
+        var anyTexts = false;
+
+        foreach (var text in texts)
         {
             anyTexts = true;
             source.Append(text + separator);

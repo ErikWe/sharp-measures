@@ -11,7 +11,7 @@ internal readonly record struct DataModel
     public int Dimension { get; }
 
     public NamedType? Scalar { get; }
-    
+
     public NamedType Unit { get; }
     public NamedType UnitQuantity { get; }
 

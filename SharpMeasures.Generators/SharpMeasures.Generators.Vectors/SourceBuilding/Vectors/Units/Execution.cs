@@ -18,7 +18,7 @@ internal static class Execution
             return;
         }
 
-        string source = Composer.Compose(data.Value);
+        var source = Composer.Compose(data.Value);
 
         context.AddSource($"{data.Value.Vector.QualifiedName}.Units.g.cs", SourceText.From(source, Encoding.UTF8));
     }
@@ -68,7 +68,7 @@ internal static class Execution
 
         private void AppendConstants(Indentation indentation)
         {
-            foreach (IVectorConstant constant in Data.Constants)
+            foreach (var constant in Data.Constants)
             {
                 SeparationHandler.AddIfNecessary();
 
@@ -107,7 +107,7 @@ internal static class Execution
 
         private void AppendConstantMultiples(Indentation indentation)
         {
-            foreach (IVectorConstant constant in Data.Constants)
+            foreach (var constant in Data.Constants)
             {
                 if (constant.GenerateMultiplesProperty)
                 {
@@ -131,7 +131,7 @@ internal static class Execution
             {
                 if (constant.Locations.ExplicitlySetValue)
                 {
-                    for (int i = 0; i < constant.Value!.Count; i++)
+                    for (var i = 0; i < constant.Value!.Count; i++)
                     {
                         yield return $"{VectorTextBuilder.GetUpperCasedComponentName(i, Data.Dimension)}.{componentValue} / {constant.Value[i]}";
                     }
@@ -139,7 +139,7 @@ internal static class Execution
 
                 if (constant.Locations.ExplicitlySetExpressions)
                 {
-                    for (int i = 0; i < constant.Expressions!.Count; i++)
+                    for (var i = 0; i < constant.Expressions!.Count; i++)
                     {
                         yield return $"{VectorTextBuilder.GetUpperCasedComponentName(i, Data.Dimension)}.{componentValue} / ({constant.Expressions[i]})";
                     }

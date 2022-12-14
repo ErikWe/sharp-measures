@@ -18,7 +18,7 @@ internal static class Execution
             return;
         }
 
-        string source = Composer.Compose(data.Value);
+        var source = Composer.Compose(data.Value);
 
         if (source.Length is 0)
         {
@@ -110,10 +110,10 @@ internal static class Execution
 
             var methodNameAndModifiers = $"public {GetPotentialStaticKeyword(process)}{GetResultingType(process).FullyQualifiedName} {process.Name}";
 
-            (NamedType, string)[] parameters = new (NamedType, string)[process.ParameterTypes.Count];
+            var parameters = new (NamedType, string)[process.ParameterTypes.Count];
             var parameterNames = GetParameterNames(process);
 
-            for (int i = 0; i < parameters.Length; i++)
+            for (var i = 0; i < parameters.Length; i++)
             {
                 parameters[i] = (process.ParameterTypes[i], parameterNames[i]);
             }
@@ -141,7 +141,8 @@ internal static class Execution
 
             var parameterNames = new string[process.ParameterTypes.Count];
 
-            int index = 0;
+            var index = 0;
+
             foreach (var parameterType in process.ParameterTypes)
             {
                 var name = SourceBuildingUtility.ToParameterName(parameterType.Name);
@@ -155,7 +156,7 @@ internal static class Execution
 
             void countParameter(NamedType parameterType)
             {
-                if (counts.TryGetValue(parameterType.Name, out int count))
+                if (counts.TryGetValue(parameterType.Name, out var count))
                 {
                     counts[parameterType.Name] = count - 1;
 

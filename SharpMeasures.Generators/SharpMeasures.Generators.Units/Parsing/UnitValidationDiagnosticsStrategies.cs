@@ -28,7 +28,7 @@ internal static class UnitValidationDiagnosticsStrategies
     public static IUnitValidationDiagnosticsStrategy Default { get; } = new DefaultValidationDiagnosticsStrategy();
     public static IUnitValidationDiagnosticsStrategy EmptyDiagnostics { get; } = new EmptyValidationDiagnosticsStrategy();
 
-    private class DefaultValidationDiagnosticsStrategy : IUnitValidationDiagnosticsStrategy
+    private sealed class DefaultValidationDiagnosticsStrategy : IUnitValidationDiagnosticsStrategy
     {
         public ISharpMeasuresUnitValidationDiagnostics SharpMeasuresUnitDiagnostics => SharpMeasuresUnitValidationDiagnostics.Instance;
 
@@ -41,7 +41,7 @@ internal static class UnitValidationDiagnosticsStrategies
         public IScaledUnitInstanceValidationDiagnostics ScaledUnitInstanceDiagnostics => ScaledUnitInstanceValidationDiagnostics.Instance;
     }
 
-    private class EmptyValidationDiagnosticsStrategy : IUnitValidationDiagnosticsStrategy
+    private sealed class EmptyValidationDiagnosticsStrategy : IUnitValidationDiagnosticsStrategy
     {
         public ISharpMeasuresUnitValidationDiagnostics SharpMeasuresUnitDiagnostics => EmptySharpMeasuresUnitValidationDiagnostics.Instance;
 

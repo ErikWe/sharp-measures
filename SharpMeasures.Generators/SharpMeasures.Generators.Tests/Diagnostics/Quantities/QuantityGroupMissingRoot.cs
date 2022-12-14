@@ -48,7 +48,7 @@ public class QuantityGroupMissingRoot
 
     private static IEnumerable<string> ExpectedDiagnostics(int diagnosticsCount)
     {
-        for (int i = 0; i < diagnosticsCount; i++)
+        for (var i = 0; i < diagnosticsCount; i++)
         {
             yield return DiagnosticIDs.QuantityGroupMissingRoot;
         }

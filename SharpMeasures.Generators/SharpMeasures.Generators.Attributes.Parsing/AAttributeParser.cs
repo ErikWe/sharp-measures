@@ -19,9 +19,7 @@ public interface IAttributeParser<TDefinition>
     public abstract IEnumerable<TDefinition> ParseAllOccurrences(INamedTypeSymbol typeSymbol);
 }
 
-public abstract class AAttributeParser<TDefinition, TLocations, TAttribute> : AAttributeParser<TDefinition, TLocations>
-    where TDefinition : IOpenAttributeDefinition<TDefinition, TLocations>
-    where TLocations : IOpenAttributeLocations<TLocations>
+public abstract class AAttributeParser<TDefinition, TLocations, TAttribute> : AAttributeParser<TDefinition, TLocations> where TDefinition : IOpenAttributeDefinition<TDefinition, TLocations> where TLocations : IOpenAttributeLocations<TLocations>
 {
     protected override Type AttributeType { get; } = typeof(TAttribute);
 
@@ -29,9 +27,7 @@ public abstract class AAttributeParser<TDefinition, TLocations, TAttribute> : AA
     protected AAttributeParser(Func<TDefinition> defaultValueConstructor, IEnumerable<IAttributeProperty<TDefinition>> properties) : base(defaultValueConstructor, properties) { }
 }
 
-public abstract class AAttributeParser<TDefinition, TLocations> : IAttributeParser<TDefinition>
-    where TDefinition : IOpenAttributeDefinition<TDefinition, TLocations>
-    where TLocations : IOpenAttributeLocations<TLocations>
+public abstract class AAttributeParser<TDefinition, TLocations> : IAttributeParser<TDefinition> where TDefinition : IOpenAttributeDefinition<TDefinition, TLocations> where TLocations : IOpenAttributeLocations<TLocations>
 {
     protected abstract Type AttributeType { get; }
 
@@ -56,9 +52,9 @@ public abstract class AAttributeParser<TDefinition, TLocations> : IAttributePars
         {
             return default;
         }
-        
-        TDefinition definition = DefaultValueConstructor();
-        
+
+        var definition = DefaultValueConstructor();
+
         if (attributeData.GetSyntax() is not AttributeSyntax attributeSyntax)
         {
             definition = AddConstructorArguments(definition, attributeData, parameterSymbols);
@@ -129,7 +125,7 @@ public abstract class AAttributeParser<TDefinition, TLocations> : IAttributePars
     public IEnumerable<TDefinition> ParseAllOccurrences(INamedTypeSymbol typeSymbol) => Parse(typeSymbol.GetAttributesOfType(AttributeType));
 
     protected virtual TDefinition AddCustomData(TDefinition definition, AttributeData attributeData, IReadOnlyList<IParameterSymbol> parameterSymbols) => definition;
- 
+
     private TDefinition AddConstructorArguments(TDefinition definition, AttributeData attributeData, AttributeSyntax attributeSyntax, IReadOnlyList<IParameterSymbol> parameterSymbols)
     {
         if (attributeData.ConstructorArguments.IsEmpty)
@@ -137,9 +133,9 @@ public abstract class AAttributeParser<TDefinition, TLocations> : IAttributePars
             return definition;
         }
 
-        for (int i = 0; i < parameterSymbols.Count && i < attributeData.ConstructorArguments.Length && i < attributeSyntax.ArgumentList?.Arguments.Count; i++)
+        for (var i = 0; i < parameterSymbols.Count && i < attributeData.ConstructorArguments.Length && i < attributeSyntax.ArgumentList?.Arguments.Count; i++)
         {
-            if (attributeData.ConstructorArguments[i].Kind is TypedConstantKind.Error || ConstructorParameters.TryGetValue(parameterSymbols[i].Name, out IAttributeProperty<TDefinition> property) is false)
+            if (attributeData.ConstructorArguments[i].Kind is TypedConstantKind.Error || ConstructorParameters.TryGetValue(parameterSymbols[i].Name, out var property) is false)
             {
                 continue;
             }
@@ -152,7 +148,7 @@ public abstract class AAttributeParser<TDefinition, TLocations> : IAttributePars
                 break;
             }
 
-            bool definitelyParams = parameterSymbols[i].IsParams && attributeSyntax.ArgumentList!.Arguments.Count > i + 1 && attributeSyntax.ArgumentList!.Arguments[i + 1].NameColon is null;
+            var definitelyParams = parameterSymbols[i].IsParams && attributeSyntax.ArgumentList!.Arguments.Count > i + 1 && attributeSyntax.ArgumentList!.Arguments[i + 1].NameColon is null;
 
             definition = SetConstructorArgument(definition, property, attributeData.ConstructorArguments, i);
             definition = property.Locator(definition, attributeSyntax.ArgumentList!, i, definitelyParams);
@@ -168,9 +164,9 @@ public abstract class AAttributeParser<TDefinition, TLocations> : IAttributePars
             return definition;
         }
 
-        for (int i = 0; i < parameterSymbols.Count && i < attributeData.ConstructorArguments.Length; i++)
+        for (var i = 0; i < parameterSymbols.Count && i < attributeData.ConstructorArguments.Length; i++)
         {
-            if (attributeData.ConstructorArguments[i].Kind is TypedConstantKind.Error || ConstructorParameters.TryGetValue(parameterSymbols[i].Name, out IAttributeProperty<TDefinition> property) is false)
+            if (attributeData.ConstructorArguments[i].Kind is TypedConstantKind.Error || ConstructorParameters.TryGetValue(parameterSymbols[i].Name, out var property) is false)
             {
                 continue;
             }
@@ -197,16 +193,16 @@ public abstract class AAttributeParser<TDefinition, TLocations> : IAttributePars
             return definition;
         }
 
-        int argumentIndexOffset = attributeData.ConstructorArguments.Length;
+        var argumentIndexOffset = attributeData.ConstructorArguments.Length;
 
         if (parameterSymbols[parameterSymbols.Count - 1].IsParams && attributeData.ConstructorArguments[attributeData.ConstructorArguments.Length - 1].Kind is TypedConstantKind.Array)
         {
             argumentIndexOffset += attributeData.ConstructorArguments[attributeData.ConstructorArguments.Length - 1].Values.Length - 1;
         }
 
-        for (int i = 0; i < attributeData.NamedArguments.Length; i++)
+        for (var i = 0; i < attributeData.NamedArguments.Length; i++)
         {
-            if (attributeData.NamedArguments[i].Value.Kind is TypedConstantKind.Error || NamedParameters.TryGetValue(attributeData.NamedArguments[i].Key, out IAttributeProperty<TDefinition> property) is false)
+            if (attributeData.NamedArguments[i].Value.Kind is TypedConstantKind.Error || NamedParameters.TryGetValue(attributeData.NamedArguments[i].Key, out var property) is false)
             {
                 continue;
             }
@@ -225,9 +221,9 @@ public abstract class AAttributeParser<TDefinition, TLocations> : IAttributePars
             return definition;
         }
 
-        for (int i = 0; i < attributeData.NamedArguments.Length; i++)
+        for (var i = 0; i < attributeData.NamedArguments.Length; i++)
         {
-            if (attributeData.NamedArguments[i].Value.Kind is TypedConstantKind.Error || NamedParameters.TryGetValue(attributeData.NamedArguments[i].Key, out IAttributeProperty<TDefinition> property) is false)
+            if (attributeData.NamedArguments[i].Value.Kind is TypedConstantKind.Error || NamedParameters.TryGetValue(attributeData.NamedArguments[i].Key, out var property) is false)
             {
                 continue;
             }
@@ -251,9 +247,9 @@ public abstract class AAttributeParser<TDefinition, TLocations> : IAttributePars
 
     private static TDefinition SetLastConstructorArgument(TDefinition definition, IAttributeProperty<TDefinition> property, IReadOnlyList<TypedConstant> arguments, int firstIndex)
     {
-        object?[] array = new object?[arguments.Count - firstIndex];
+        var array = new object?[arguments.Count - firstIndex];
 
-        for (int i = 0; i < array.Length; i++)
+        for (var i = 0; i < array.Length; i++)
         {
             array[i] = arguments[firstIndex + i].Value;
         }
@@ -288,11 +284,12 @@ public abstract class AAttributeParser<TDefinition, TLocations> : IAttributePars
             return null;
         }
 
-        ImmutableArray<TypedConstant> arrayConstants = value.Values;
-        object?[] arrayValues = new object[arrayConstants.Length];
-        for (int j = 0; j < arrayConstants.Length; j++)
+        var arrayConstants = value.Values;
+        var arrayValues = new object?[arrayConstants.Length];
+
+        for (var i = 0; i < arrayConstants.Length; i++)
         {
-            arrayValues[j] = arrayConstants[j].Value;
+            arrayValues[i] = arrayConstants[i].Value;
         }
 
         return arrayValues;

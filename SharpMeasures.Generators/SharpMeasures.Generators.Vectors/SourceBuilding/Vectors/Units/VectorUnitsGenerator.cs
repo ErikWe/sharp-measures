@@ -18,7 +18,7 @@ internal static class VectorUnitsGenerator
 
     private static Optional<DataModel> Reduce(Optional<VectorDataModel> model, CancellationToken _)
     {
-        if (model.HasValue is false || model.Value.Vector.IncludedUnitInstanceNames.Count is 0 && model.Value.Vector.Constants.Count is 0 && model.Value.Vector.InheritedConstants.Count is 0)
+        if (model.HasValue is false || (model.Value.Vector.IncludedUnitInstanceNames.Count is 0 && model.Value.Vector.Constants.Count is 0 && model.Value.Vector.InheritedConstants.Count is 0))
         {
             return new Optional<DataModel>();
         }

@@ -13,6 +13,6 @@ public interface IUnitInstanceListLocations
 {
     public abstract MinimalLocation? UnitInstancesCollection { get; }
     public abstract IReadOnlyList<MinimalLocation> UnitInstancesElements { get; }
-    
+
     public abstract bool ExplicitlySetUnitInstances { get; }
 }

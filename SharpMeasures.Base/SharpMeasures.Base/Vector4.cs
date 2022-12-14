@@ -78,7 +78,7 @@ public readonly record struct Vector4 : IVector4Quantity<Vector4>, IFormattable
     /// <param name="y">The Y-component of <see langword="this"/>.</param>
     /// <param name="z">The Z-component of <see langword="this"/>.</param>
     /// <param name="w">The W-component of <see langword="this"/>.</param>
-    public void Deconstruct(out Scalar x, out Scalar y, out Scalar z, out  Scalar w)
+    public void Deconstruct(out Scalar x, out Scalar y, out Scalar z, out Scalar w)
     {
         x = X;
         y = Y;

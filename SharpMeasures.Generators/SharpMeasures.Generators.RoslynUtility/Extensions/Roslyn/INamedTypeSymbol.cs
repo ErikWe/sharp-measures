@@ -44,7 +44,7 @@ public static partial class RoslynUtilityExtensions
     public static bool HasAttributeOfType(this INamedTypeSymbol typeSymbol, Type attributeType) => typeSymbol.HasAttributeOfName(attributeType.FullName);
     public static bool HasAttributeOfName(this INamedTypeSymbol typeSymbol, string attributeName)
     {
-        foreach (AttributeData attributeData in typeSymbol.GetAttributes())
+        foreach (var attributeData in typeSymbol.GetAttributes())
         {
             if (attributeData.AttributeClass?.ToDisplayString() == attributeName)
             {
@@ -59,7 +59,7 @@ public static partial class RoslynUtilityExtensions
     public static IEnumerable<AttributeData> GetAttributesOfType(this INamedTypeSymbol typeSymbol, Type attributeType) => typeSymbol.GetAttributesOfName(attributeType.FullName);
     public static IEnumerable<AttributeData> GetAttributesOfName(this INamedTypeSymbol typeSymbol, string attributeName)
     {
-        foreach (AttributeData attributeData in typeSymbol.GetAttributes())
+        foreach (var attributeData in typeSymbol.GetAttributes())
         {
             if (attributeData.AttributeClass?.ToDisplayString() == attributeName)
             {
@@ -72,7 +72,7 @@ public static partial class RoslynUtilityExtensions
     public static AttributeData? GetAttributeOfType(this INamedTypeSymbol typeSymbol, Type attributeType) => typeSymbol.GetAttributeOfName(attributeType.FullName);
     public static AttributeData? GetAttributeOfName(this INamedTypeSymbol typeSymbol, string attributeName)
     {
-        foreach (AttributeData attributeData in typeSymbol.GetAttributesOfName(attributeName))
+        foreach (var attributeData in typeSymbol.GetAttributesOfName(attributeName))
         {
             return attributeData;
         }
@@ -82,10 +82,11 @@ public static partial class RoslynUtilityExtensions
 
     private static IReadOnlyList<TResult?> AsTransformed<TResult, TCollection>(this TCollection typeSymbols, Func<INamedTypeSymbol?, TResult?> transform) where TCollection : IReadOnlyCollection<INamedTypeSymbol?>
     {
-        TResult?[] result = new TResult?[typeSymbols.Count];
+        var result = new TResult?[typeSymbols.Count];
 
-        int index = 0;
-        foreach (INamedTypeSymbol? typeSymbol in typeSymbols)
+        var index = 0;
+
+        foreach (var typeSymbol in typeSymbols)
         {
             result[index++] = transform(typeSymbol);
         }

@@ -103,7 +103,7 @@ public sealed class UnitValidator
 
         while (true)
         {
-            int initialLength = unresolvedUnitInstances.Count;
+            var initialLength = unresolvedUnitInstances.Count;
 
             List<IModifiedUnitInstance> toRemove = new();
 

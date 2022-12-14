@@ -82,7 +82,7 @@ public static class VectorGenerator
 
         DefaultVectorDocumentation defaultDocumentation = new(vector, unitPopulation, scalarPopulation);
 
-        documentationDictionary.TryGetValue(vector.Type.QualifiedName, out DocumentationFile documentationFile);
+        documentationDictionary.TryGetValue(vector.Type.QualifiedName, out var documentationFile);
 
         return new VectorFileDocumentation(config.PrintDocumentationTags, vector.Dimension, documentationFile, defaultDocumentation);
     }
@@ -96,7 +96,7 @@ public static class VectorGenerator
 
         DefaultGroupDocumentation defaultDocumentation = new(group, unitPopulation, scalarPopulation);
 
-        documentationDictionary.TryGetValue(group.Type.QualifiedName, out DocumentationFile documentationFile);
+        documentationDictionary.TryGetValue(group.Type.QualifiedName, out var documentationFile);
 
         return new GroupFileDocumentation(config.PrintDocumentationTags, documentationFile, defaultDocumentation);
     }

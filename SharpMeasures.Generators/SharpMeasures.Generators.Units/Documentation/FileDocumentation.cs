@@ -56,7 +56,7 @@ internal sealed class FileDocumentation : IDocumentationStrategy, IEquatable<Fil
 
     private string FromFileOrDefault(Func<IDocumentationStrategy, string> target)
     {
-        string tag = target(DocumentationTags.Instance);
+        var tag = target(DocumentationTags.Instance);
 
         if (DocumentationFile?.OptionallyResolveTag(tag) is not string { Length: > 0 } tagContent)
         {

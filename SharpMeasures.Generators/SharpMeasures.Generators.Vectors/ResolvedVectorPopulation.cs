@@ -15,7 +15,7 @@ internal sealed record class ResolvedVectorPopulation : IResolvedVectorPopulatio
         get
         {
             Dictionary<NamedType, IResolvedQuantityType> quantities = new(Groups.Count + Vectors.Count);
-        
+
             foreach (var group in Groups)
             {
                 quantities.Add(group.Key, group.Value);

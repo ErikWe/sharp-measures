@@ -35,40 +35,28 @@ public static partial class RoslynUtilityExtensions
     {
         return provider.Select(flatten);
 
-        static (T1, T2, T3) flatten(((T1, T2), T3) tupleHierarchy, CancellationToken _)
-        {
-            return (tupleHierarchy.Item1.Item1, tupleHierarchy.Item1.Item2, tupleHierarchy.Item2);
-        }
+        static (T1, T2, T3) flatten(((T1, T2), T3) tupleHierarchy, CancellationToken _) => (tupleHierarchy.Item1.Item1, tupleHierarchy.Item1.Item2, tupleHierarchy.Item2);
     }
 
     public static IncrementalValuesProvider<(T1, T2, T3, T4)> Flatten<T1, T2, T3, T4>(this IncrementalValuesProvider<(((T1, T2), T3), T4)> provider)
     {
         return provider.Select(flatten);
 
-        static (T1, T2, T3, T4) flatten((((T1, T2), T3), T4) tupleHierarchy, CancellationToken _)
-        {
-            return (tupleHierarchy.Item1.Item1.Item1, tupleHierarchy.Item1.Item1.Item2, tupleHierarchy.Item1.Item2, tupleHierarchy.Item2);
-        }
+        static (T1, T2, T3, T4) flatten((((T1, T2), T3), T4) tupleHierarchy, CancellationToken _) => (tupleHierarchy.Item1.Item1.Item1, tupleHierarchy.Item1.Item1.Item2, tupleHierarchy.Item1.Item2, tupleHierarchy.Item2);
     }
 
     public static IncrementalValuesProvider<(T1, T2, T3, T4, T5)> Flatten<T1, T2, T3, T4, T5>(this IncrementalValuesProvider<((((T1, T2), T3), T4), T5)> provider)
     {
         return provider.Select(flatten);
 
-        static (T1, T2, T3, T4, T5) flatten(((((T1, T2), T3), T4), T5) tupleHierarchy, CancellationToken _)
-        {
-            return (tupleHierarchy.Item1.Item1.Item1.Item1, tupleHierarchy.Item1.Item1.Item1.Item2, tupleHierarchy.Item1.Item1.Item2, tupleHierarchy.Item1.Item2, tupleHierarchy.Item2);
-        }
+        static (T1, T2, T3, T4, T5) flatten(((((T1, T2), T3), T4), T5) tupleHierarchy, CancellationToken _) => (tupleHierarchy.Item1.Item1.Item1.Item1, tupleHierarchy.Item1.Item1.Item1.Item2, tupleHierarchy.Item1.Item1.Item2, tupleHierarchy.Item1.Item2, tupleHierarchy.Item2);
     }
 
     public static IncrementalValuesProvider<(T1, T2, T3, T4, T5, T6)> Flatten<T1, T2, T3, T4, T5, T6>(this IncrementalValuesProvider<(((((T1, T2), T3), T4), T5), T6)> provider)
     {
         return provider.Select(flatten);
 
-        static (T1, T2, T3, T4, T5, T6) flatten((((((T1, T2), T3), T4), T5), T6) tupleHierarchy, CancellationToken _)
-        {
-            return (tupleHierarchy.Item1.Item1.Item1.Item1.Item1, tupleHierarchy.Item1.Item1.Item1.Item1.Item2, tupleHierarchy.Item1.Item1.Item1.Item2, tupleHierarchy.Item1.Item1.Item2, tupleHierarchy.Item1.Item2, tupleHierarchy.Item2);
-        }
+        static (T1, T2, T3, T4, T5, T6) flatten((((((T1, T2), T3), T4), T5), T6) tupleHierarchy, CancellationToken _) => (tupleHierarchy.Item1.Item1.Item1.Item1.Item1, tupleHierarchy.Item1.Item1.Item1.Item1.Item2, tupleHierarchy.Item1.Item1.Item1.Item2, tupleHierarchy.Item1.Item1.Item2, tupleHierarchy.Item1.Item2, tupleHierarchy.Item2);
     }
 
     public static IncrementalValuesProvider<Optional<T>> FilterAndReport<T>(this IncrementalValuesProvider<T> provider, IncrementalGeneratorInitializationContext context, Func<T, CancellationToken, IValidityWithDiagnostics> validityDelegate)

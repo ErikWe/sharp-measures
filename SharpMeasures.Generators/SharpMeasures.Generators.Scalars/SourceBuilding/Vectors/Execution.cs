@@ -16,7 +16,7 @@ internal static class Execution
             return;
         }
 
-        string source = Composer.Compose(data.Value);
+        var source = Composer.Compose(data.Value);
 
         context.AddSource($"{data.Value.Scalar.QualifiedName}.Vectors.g.cs", SourceText.From(source, Encoding.UTF8));
     }
@@ -81,7 +81,7 @@ internal static class Execution
             NamedType vectorType = new($"Vector{dimension}", "SharpMeasures", "SharpMeasures.Base", true);
 
             var methodNameAndModifiers = $"public static {vector.FullyQualifiedName} operator *";
-            
+
             var lhsExpression = "new(a.Magnitude.Value * b)";
             var rhsExpression = "new(a * b.Magnitude.Value)";
 

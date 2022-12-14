@@ -43,10 +43,9 @@ internal sealed class DerivedUnitInstanceProcesser : AUnitInstanceProcesser<IUni
 
     private IOptionalWithDiagnostics<IReadOnlyList<string>> ProcessUnits(IUnitInstanceProcessingContext context, RawDerivedUnitInstanceDefinition definition)
     {
-        var units = ValidateUnitListNotEmpty(context, definition)
-            .Transform(() => new string[definition.Units.Count]);
+        var units = ValidateUnitListNotEmpty(context, definition).Transform(() => new string[definition.Units.Count]);
 
-        for (int i = 0; i < definition.Units.Count; i++)
+        for (var i = 0; i < definition.Units.Count; i++)
         {
             units = units.Merge((unitList) => ProcessElement(context, definition, i, unitList));
         }

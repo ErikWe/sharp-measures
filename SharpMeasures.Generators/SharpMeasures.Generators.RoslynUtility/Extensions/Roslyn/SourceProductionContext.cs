@@ -10,19 +10,18 @@ public static partial class RoslynUtilityExtensions
 {
     public static void ReportDiagnostics(this SourceProductionContext context, IEnumerable<Diagnostic> diagnostics)
     {
-        foreach (Diagnostic diagnostic in diagnostics)
+        foreach (var diagnostic in diagnostics)
         {
             context.ReportDiagnostic(diagnostic);
         }
     }
-    
+
     public static void ReportDiagnostics(this SourceProductionContext context, params Diagnostic[] diagnostics)
     {
         context.ReportDiagnostics(diagnostics as IEnumerable<Diagnostic>);
     }
 
-    public static void ReportDiagnostics<T>(this SourceProductionContext context, T diagnostics)
-        where T : IEnumerable<Diagnostic>
+    public static void ReportDiagnostics<T>(this SourceProductionContext context, T diagnostics) where T : IEnumerable<Diagnostic>
     {
         context.ReportDiagnostics(diagnostics as IEnumerable<Diagnostic>);
     }

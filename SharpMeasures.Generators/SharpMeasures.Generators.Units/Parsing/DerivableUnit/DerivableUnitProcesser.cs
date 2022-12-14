@@ -47,7 +47,7 @@ internal sealed class DerivableUnitProcesser : AActionableProcesser<IDerivableUn
         Diagnostics = diagnostics;
     }
 
-    public override void OnSuccessfulProcess(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition,DerivableUnitDefinition  product)
+    public override void OnSuccessfulProcess(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition, DerivableUnitDefinition product)
     {
         if (product.DerivationID is not null)
         {
@@ -124,9 +124,9 @@ internal sealed class DerivableUnitProcesser : AActionableProcesser<IDerivableUn
     {
         var quantityMatches = ExpressionQuantityPattern.Matches(definition.Expression);
 
-        HashSet<int> unincludedUnitIndices = new HashSet<int>();
+        var unincludedUnitIndices = new HashSet<int>();
 
-        for (int i = 0; i < definition.Signature!.Count; i++)
+        for (var i = 0; i < definition.Signature!.Count; i++)
         {
             unincludedUnitIndices.Add(i);
         }
@@ -146,7 +146,7 @@ internal sealed class DerivableUnitProcesser : AActionableProcesser<IDerivableUn
         if (unincludedUnitIndices.Count > 0)
         {
             List<Diagnostic> allDiagnostics = new(unincludedUnitIndices.Count);
-            
+
             foreach (var unincludedUnitIndex in unincludedUnitIndices)
             {
                 if (Diagnostics.ExpressionDoesNotIncludeUnit(context, definition, unincludedUnitIndex) is Diagnostic diagnostics)
@@ -183,9 +183,9 @@ internal sealed class DerivableUnitProcesser : AActionableProcesser<IDerivableUn
 
     private IOptionalWithDiagnostics<IReadOnlyList<NamedType>> ProcessSignature(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition)
     {
-        IOptionalWithDiagnostics<NamedType[]> signature = OptionalWithDiagnostics.Result(new NamedType[definition.Signature!.Count]);
+        var signature = OptionalWithDiagnostics.Result(new NamedType[definition.Signature!.Count]);
 
-        for (int i = 0; i < definition.Signature.Count; i++)
+        for (var i = 0; i < definition.Signature.Count; i++)
         {
             signature = signature.Merge((signature) => ProcessSignatureElement(context, definition, i, signature));
         }

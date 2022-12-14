@@ -30,7 +30,7 @@ public class VectorConstantInvalidDimension
     [Theory]
     [MemberData(nameof(InvalidConstantValues))]
     public void VectorGroupMember(TextConfig config) => AssertVectorGroupMember(config);
-        
+
     public static IEnumerable<object[]> InvalidConstantValues => new object[][]
     {
         new object[] { NullValue },

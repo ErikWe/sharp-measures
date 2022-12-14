@@ -25,13 +25,13 @@ internal readonly record struct GeneratorVerifierSettings(bool AssertNoDiagnosti
 }
 
 [UsesVerify]
-internal class GeneratorVerifier
+internal sealed class GeneratorVerifier
 {
     public static GeneratorVerifier Construct<TGenerator>(string source) where TGenerator : IIncrementalGenerator, new() => Construct<TGenerator>(source, DriverConstructionConfiguration.Empty);
     public static GeneratorVerifier Construct<TGenerator>(string source, DriverConstructionConfiguration configuration) where TGenerator : IIncrementalGenerator, new() => Construct(source, new TGenerator(), configuration);
     public static GeneratorVerifier Construct<TGenerator>(string source, GeneratorVerifierSettings settings) where TGenerator : IIncrementalGenerator, new() => Construct<TGenerator>(source, settings, DriverConstructionConfiguration.Empty);
     public static GeneratorVerifier Construct<TGenerator>(string source, GeneratorVerifierSettings settings, DriverConstructionConfiguration configuration) where TGenerator : IIncrementalGenerator, new() => Construct(source, new TGenerator(), settings, configuration);
-    
+
     public static GeneratorVerifier Construct(string source, IIncrementalGenerator generator) => Construct(source, generator, DriverConstructionConfiguration.Empty);
     public static GeneratorVerifier Construct(string source, IIncrementalGenerator generator, DriverConstructionConfiguration configuration) => Construct(source, generator, GeneratorVerifierSettings.AllAssertions, configuration);
     public static GeneratorVerifier Construct(string source, IIncrementalGenerator generator, GeneratorVerifierSettings settings) => Construct(source, generator, settings, DriverConstructionConfiguration.Empty);
@@ -79,20 +79,9 @@ internal class GeneratorVerifier
         }
     }
 
-    private void AssertNoGeneratorExceptions()
-    {
-        Assert.Empty(RunResult.Results.Select(static (result) => result.Exception).Where(static (exception) => exception is not null));
-    }
-
-    private void AssertNoDiagnosticsFromGeneratedCode()
-    {
-        Assert.Empty(Compilation.GetDiagnostics().Where(static (diagnostics) => diagnostics.Location.SourceTree?.FilePath.Length > 0));
-    }
-
-    private void AssertNoErrorsOrWarningsFromTestCode()
-    {
-        Assert.Empty(Compilation.GetDiagnostics().Where(static (diagnostics) => diagnostics.Severity is DiagnosticSeverity.Error or DiagnosticSeverity.Warning && string.IsNullOrEmpty(diagnostics.Location.SourceTree?.FilePath)));
-    }
+    private void AssertNoGeneratorExceptions() => Assert.Empty(RunResult.Results.Select(static (result) => result.Exception).Where(static (exception) => exception is not null));
+    private void AssertNoDiagnosticsFromGeneratedCode() => Assert.Empty(Compilation.GetDiagnostics().Where(static (diagnostics) => diagnostics.Location.SourceTree?.FilePath.Length > 0));
+    private void AssertNoErrorsOrWarningsFromTestCode() => Assert.Empty(Compilation.GetDiagnostics().Where(static (diagnostics) => diagnostics.Severity is DiagnosticSeverity.Error or DiagnosticSeverity.Warning && string.IsNullOrEmpty(diagnostics.Location.SourceTree?.FilePath)));
 
     public GeneratorVerifier AssertNoSourceGenerated()
     {
@@ -147,7 +136,7 @@ internal class GeneratorVerifier
 
     public GeneratorVerifier AssertAllListedSourceNamesGenerated(IEnumerable<string> expectedSourceNames)
     {
-        foreach (string file in expectedSourceNames)
+        foreach (var file in expectedSourceNames)
         {
             Assert.Contains(file, Output.Select(static (result) => result.HintName));
         }
@@ -155,14 +144,11 @@ internal class GeneratorVerifier
         return this;
     }
 
-    public GeneratorVerifier AssertAllListedSourceNamesGenerated(params string[] expectedSourceNames)
-    {
-        return AssertAllListedSourceNamesGenerated(expectedSourceNames as IEnumerable<string>);
-    }
+    public GeneratorVerifier AssertAllListedSourceNamesGenerated(params string[] expectedSourceNames) => AssertAllListedSourceNamesGenerated(expectedSourceNames as IEnumerable<string>);
 
     public GeneratorVerifier AssertAllListedDiagnosticsIDsReported(IEnumerable<string> expectedDiagnosticIDs)
     {
-        foreach (string diagnosticID in expectedDiagnosticIDs)
+        foreach (var diagnosticID in expectedDiagnosticIDs)
         {
             Assert.Contains(diagnosticID, Diagnostics.Select(static (diagnostic) => diagnostic.Id));
         }
@@ -170,14 +156,11 @@ internal class GeneratorVerifier
         return this;
     }
 
-    public GeneratorVerifier AssertAllListedDiagnosticsIDsReported(params string[] expectedDiagnosticIDs)
-    {
-        return AssertAllListedDiagnosticsIDsReported(expectedDiagnosticIDs as IEnumerable<string>);
-    }
+    public GeneratorVerifier AssertAllListedDiagnosticsIDsReported(params string[] expectedDiagnosticIDs) => AssertAllListedDiagnosticsIDsReported(expectedDiagnosticIDs as IEnumerable<string>);
 
     public GeneratorVerifier AssertNoListedSourceNameGenerated(IEnumerable<string> forbiddenSourceNames)
     {
-        foreach (string file in forbiddenSourceNames)
+        foreach (var file in forbiddenSourceNames)
         {
             Assert.DoesNotContain(file, Output.Select(static (result) => result.HintName));
         }
@@ -185,15 +168,8 @@ internal class GeneratorVerifier
         return this;
     }
 
-    public GeneratorVerifier AssertNoListedSourceNameGenerated(params string[] forbiddenSourceNames)
-    {
-        return AssertNoListedSourceNameGenerated(forbiddenSourceNames as IEnumerable<string>);
-    }
-
-    public GeneratorVerifier AssertNoMatchingSourceNameGenerated(string forbiddenSourceNameRegexPattern)
-    {
-        return AssertNoMatchingSourceNameGenerated(new Regex(forbiddenSourceNameRegexPattern));
-    }
+    public GeneratorVerifier AssertNoListedSourceNameGenerated(params string[] forbiddenSourceNames) => AssertNoListedSourceNameGenerated(forbiddenSourceNames as IEnumerable<string>);
+    public GeneratorVerifier AssertNoMatchingSourceNameGenerated(string forbiddenSourceNameRegexPattern) => AssertNoMatchingSourceNameGenerated(new Regex(forbiddenSourceNameRegexPattern));
 
     public GeneratorVerifier AssertNoMatchingSourceNameGenerated(Regex forbiddenSourceNamePattern)
     {
@@ -204,7 +180,7 @@ internal class GeneratorVerifier
 
     public GeneratorVerifier AssertNoListedDiagnosticIDsReported(IEnumerable<string> forbiddenDiagnosticIDs)
     {
-        foreach (string diagnosticID in forbiddenDiagnosticIDs)
+        foreach (var diagnosticID in forbiddenDiagnosticIDs)
         {
             Assert.DoesNotContain(diagnosticID, Diagnostics.Select(static (diagnostic) => diagnostic.Id));
         }
@@ -261,7 +237,8 @@ internal class GeneratorVerifier
 
     public GeneratorVerifier AssertDiagnosticsLocation(IEnumerable<TextSpan> expectedLocations)
     {
-        int index = 0;
+        var index = 0;
+
         foreach (var expectedLocation in expectedLocations)
         {
             var expectedText = Source[expectedLocation.Start..expectedLocation.End];
@@ -276,28 +253,25 @@ internal class GeneratorVerifier
         return this;
     }
 
-    public GeneratorVerifier AssertDiagnosticsLocation(params TextSpan[] expectedLocations)
-    {
-        return AssertDiagnosticsLocation(expectedLocations as IEnumerable<TextSpan>);
-    }
+    public GeneratorVerifier AssertDiagnosticsLocation(params TextSpan[] expectedLocations) => AssertDiagnosticsLocation(expectedLocations as IEnumerable<TextSpan>);
 
     public GeneratorVerifier AssertIdenticalSpecifiedSources(GeneratorVerifier expectedSources, Regex sourceNamePattern)
     {
         HashSet<(string, string, string)> unmatchedOutput = new();
 
-        foreach (GeneratorRunResult result in RunResult.Results)
+        foreach (var result in RunResult.Results)
         {
-            foreach (GeneratedSourceResult output in result.GeneratedSources.Where((source) => sourceNamePattern.IsMatch(Source)))
+            foreach (var output in result.GeneratedSources.Where((source) => sourceNamePattern.IsMatch(Source)))
             {
                 unmatchedOutput.Add(createIdentifier(result, output));
             }
         }
 
-        foreach (GeneratorRunResult result in expectedSources.RunResult.Results)
+        foreach (var result in expectedSources.RunResult.Results)
         {
-            foreach (GeneratedSourceResult output in result.GeneratedSources.Where((source) => sourceNamePattern.IsMatch(Source)))
+            foreach (var output in result.GeneratedSources.Where((source) => sourceNamePattern.IsMatch(Source)))
             {
-                (string, string, string) identifier = createIdentifier(result, output);
+                var identifier = createIdentifier(result, output);
 
                 Assert.Contains(identifier, unmatchedOutput);
 
@@ -325,19 +299,19 @@ internal class GeneratorVerifier
 
         HashSet<(string, string, string)> unmatchedOutput = new();
 
-        foreach (GeneratorRunResult result in RunResult.Results)
+        foreach (var result in RunResult.Results)
         {
-            foreach (GeneratedSourceResult output in result.GeneratedSources.Where((source) => sourceNames.Contains(source.HintName)))
+            foreach (var output in result.GeneratedSources.Where((source) => sourceNames.Contains(source.HintName)))
             {
                 unmatchedOutput.Add(createIdentifier(result, output));
             }
         }
 
-        foreach (GeneratorRunResult result in expectedSources.RunResult.Results)
+        foreach (var result in expectedSources.RunResult.Results)
         {
-            foreach (GeneratedSourceResult output in result.GeneratedSources.Where((source) => sourceNames.Contains(source.HintName)))
+            foreach (var output in result.GeneratedSources.Where((source) => sourceNames.Contains(source.HintName)))
             {
-                (string, string, string) identifier = createIdentifier(result, output);
+                var identifier = createIdentifier(result, output);
 
                 Assert.Contains(identifier, unmatchedOutput);
 
@@ -365,19 +339,19 @@ internal class GeneratorVerifier
     {
         HashSet<(string, Diagnostic)> unmatchedDiagnostic = new();
 
-        foreach (GeneratorRunResult result in RunResult.Results)
+        foreach (var result in RunResult.Results)
         {
-            foreach (Diagnostic diagnostic in result.Diagnostics)
+            foreach (var diagnostic in result.Diagnostics)
             {
                 unmatchedDiagnostic.Add(createDiagnosticIdentifier(result, diagnostic));
             }
         }
 
-        foreach (GeneratorRunResult result in expectedDiagnostics.RunResult.Results)
+        foreach (var result in expectedDiagnostics.RunResult.Results)
         {
-            foreach (Diagnostic diagnostic in result.Diagnostics)
+            foreach (var diagnostic in result.Diagnostics)
             {
-                (string, Diagnostic) identifier = createDiagnosticIdentifier(result, diagnostic);
+                var identifier = createDiagnosticIdentifier(result, diagnostic);
 
                 Assert.Contains(identifier, unmatchedDiagnostic);
 
@@ -423,7 +397,7 @@ internal class GeneratorVerifier
 
         HashSet<int> unmatchedNamesIndices = new(sourceNamesList.Count);
 
-        for (int i = 0; i < sourceNamesList.Count; i++)
+        for (var i = 0; i < sourceNamesList.Count; i++)
         {
             unmatchedNamesIndices.Add(i);
         }
@@ -439,7 +413,7 @@ internal class GeneratorVerifier
 
         bool matches(string sourceName)
         {
-            for (int i = 0; i < sourceNamesList.Count; i++)
+            for (var i = 0; i < sourceNamesList.Count; i++)
             {
                 if (sourceNamesList[i] == sourceName)
                 {
@@ -464,7 +438,7 @@ internal class GeneratorVerifier
 
         HashSet<int> unmatchedPatternIndices = new(patternsList.Count);
 
-        for (int i = 0; i < patternsList.Count; i++)
+        for (var i = 0; i < patternsList.Count; i++)
         {
             unmatchedPatternIndices.Add(i);
         }
@@ -480,7 +454,7 @@ internal class GeneratorVerifier
 
         bool matches(string sourceName)
         {
-            for (int i = 0; i < patternsList.Count; i++)
+            for (var i = 0; i < patternsList.Count; i++)
             {
                 if (patternsList[i].IsMatch(sourceName))
                 {
@@ -494,48 +468,31 @@ internal class GeneratorVerifier
         }
     }
 
-    public async Task VerifyMatchingSourceNames(params Regex[] patterns)
-    {
-        await VerifyMatchingSourceNames(patterns as IEnumerable<Regex>).ConfigureAwait(false);
-    }
+    public async Task VerifyMatchingSourceNames(params Regex[] patterns) => await VerifyMatchingSourceNames(patterns as IEnumerable<Regex>).ConfigureAwait(false);
 
     public async Task VerifyMatchingSourceNames(Regex pattern)
     {
-        IEnumerable<string> matchingSourceNames = Output.Select(static (result) => result.HintName).Where((sourceName) => pattern.IsMatch(sourceName));
+        var matchingSourceNames = Output.Select(static (result) => result.HintName).Where((sourceName) => pattern.IsMatch(sourceName));
 
         Assert.NotEmpty(matchingSourceNames);
 
         await VerifyListedSourceNames(matchingSourceNames).ConfigureAwait(false);
     }
 
-    public async Task VerifyDiagnostics()
-    {
-        await Verifier.Verify(Diagnostics);
-    }
-
-    public async Task VerifyDiagnostics(object parameter)
-    {
-        await VerifyDiagnostics(new[] { parameter }).ConfigureAwait(false);
-    }
-
-    public async Task VerifyDiagnostics(object?[] parameter)
-    {
-        await Verifier.Verify(Diagnostics).UseParameters(parameter);
-    }
+    public async Task VerifyDiagnostics() => await Verifier.Verify(Diagnostics);
+    public async Task VerifyDiagnostics(object parameter) => await VerifyDiagnostics(new[] { parameter }).ConfigureAwait(false);
+    public async Task VerifyDiagnostics(object?[] parameter) => await Verifier.Verify(Diagnostics).UseParameters(parameter);
 
     public async Task VerifyListedDiagnostics(IEnumerable<string> diagnosticIDs)
     {
         HashSet<string> includedIDs = new(diagnosticIDs);
 
-        IEnumerable<Diagnostic> filteredDiagnostics = Diagnostics.Where((diagnostics) => includedIDs.Contains(diagnostics.Id));
+        var filteredDiagnostics = Diagnostics.Where((diagnostics) => includedIDs.Contains(diagnostics.Id));
 
         await Verifier.Verify(filteredDiagnostics);
     }
 
-    public async Task VerifyListedDiagnostics(params string[] diagnosticIDs)
-    {
-        await VerifyListedDiagnostics(diagnosticIDs as IEnumerable<string>).ConfigureAwait(false);
-    }
+    public async Task VerifyListedDiagnostics(params string[] diagnosticIDs) => await VerifyListedDiagnostics(diagnosticIDs as IEnumerable<string>).ConfigureAwait(false);
 
     private static Regex StampRegex { get; } = new(@"(?<header>This file was generated by SharpMeasures\.Generators(?:(\.[a-zA-Z]*)?) ).+", RegexOptions.ExplicitCapture);
     private static string StampReplacement { get; } = "${header}<stamp>";

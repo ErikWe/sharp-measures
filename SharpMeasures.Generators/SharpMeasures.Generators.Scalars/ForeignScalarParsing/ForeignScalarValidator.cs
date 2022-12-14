@@ -34,7 +34,7 @@ public sealed class ForeignScalarValidator
     {
         foreach (var processedScalarBase in processingResult.ScalarBases)
         {
-            var scalarBase = ScalarBaseValidator.Validate(processedScalarBase, ScalarProcessingData.Empty,  unitPopulation, scalarPopulation, vectorPopulation);
+            var scalarBase = ScalarBaseValidator.Validate(processedScalarBase, ScalarProcessingData.Empty, unitPopulation, scalarPopulation, vectorPopulation);
 
             if (scalarBase.HasResult)
             {

@@ -87,7 +87,7 @@ internal sealed class DefaultDocumentation : IDocumentationStrategy, IEquatable<
         /// <param name="{QuantityParameterName}">The {QuantityReference} described by the constructed {UnitReference}.</param>
         /// <param name="bias">The <see cref="global::SharpMeasures.Scalar"/> bias associated with the constructed {UnitReference}.</param>
         """;
-    
+
     private string UnbiasedConstructor() => $"""
         /// <summary>Constructs a new {UnitReference}, describing <paremref name="{QuantityParameterName}"/>.</summary>
         /// <param name="{QuantityParameterName}">The {QuantityReference} described by the constructed {UnitReference}.</param>
@@ -123,7 +123,7 @@ internal sealed class DefaultDocumentation : IDocumentationStrategy, IEquatable<
         true => BiasedWithPrefix(),
         false => UnbiasedWithPrefix()
     };
-    
+
     private string BiasedWithPrefix() => $$"""
         /// <summary>Prefixes the {{QuantityReference}} described by <see langword="this"/> with <paramref name="prefix"/> to derive a new {{UnitReference}}.</summary>
         /// <param name="prefix">The described {{QuantityReference}} is prefixed by this <see cref="global::SharpMeasures.IPrefix"/>.</param>
@@ -157,7 +157,7 @@ internal sealed class DefaultDocumentation : IDocumentationStrategy, IEquatable<
 
     public string EqualitySameTypeOperator()
     {
-        string text = $"""/// <summary>Indicates whether <paramref name="lhs"/> and <paramref name="rhs"/> represent equivalent {QuantityReference}""";
+        var text = $"""/// <summary>Indicates whether <paramref name="lhs"/> and <paramref name="rhs"/> represent equivalent {QuantityReference}""";
 
         if (BiasTerm)
         {
@@ -173,7 +173,7 @@ internal sealed class DefaultDocumentation : IDocumentationStrategy, IEquatable<
 
     public string InequalitySameTypeOperator()
     {
-        string text = $"""/// <summary>Indicates whether <paramref name="lhs"/> and <paramref name="rhs"/> represent inequivalent {QuantityReference}""";
+        var text = $"""/// <summary>Indicates whether <paramref name="lhs"/> and <paramref name="rhs"/> represent inequivalent {QuantityReference}""";
 
         if (BiasTerm)
         {

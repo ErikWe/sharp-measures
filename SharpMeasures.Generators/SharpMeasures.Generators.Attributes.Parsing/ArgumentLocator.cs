@@ -111,9 +111,9 @@ internal static class ArgumentLocator
 
     private static (MinimalLocation Collection, IReadOnlyList<MinimalLocation> Elements) FromArray(InitializerExpressionSyntax initializerExpression)
     {
-        MinimalLocation[] elements = new MinimalLocation[initializerExpression.Expressions.Count];
+        var elements = new MinimalLocation[initializerExpression.Expressions.Count];
 
-        for (int i = 0; i < elements.Length; i++)
+        for (var i = 0; i < elements.Length; i++)
         {
             elements[i] = SimpleArgument(initializerExpression.Expressions, i);
         }
@@ -123,17 +123,17 @@ internal static class ArgumentLocator
 
     private static (MinimalLocation Collection, IReadOnlyList<MinimalLocation> Elements) FromParamsList(AttributeArgumentListSyntax argumentList, int startIndex)
     {
-        MinimalLocation[] elements = new MinimalLocation[argumentList.Arguments.Count - startIndex];
+        var elements = new MinimalLocation[argumentList.Arguments.Count - startIndex];
 
-        for (int i = 0; i < elements.Length; i++)
+        for (var i = 0; i < elements.Length; i++)
         {
             elements[i] = SimpleArgument(argumentList, startIndex + i);
         }
 
-        Location firstLocation = argumentList.Arguments[startIndex].GetLocation();
-        Location lastLocation = argumentList.Arguments[argumentList.Arguments.Count - 1].GetLocation();
+        var firstLocation = argumentList.Arguments[startIndex].GetLocation();
+        var lastLocation = argumentList.Arguments[argumentList.Arguments.Count - 1].GetLocation();
 
-        MinimalLocation signatureLocation = firstLocation.ExtendToInclude(lastLocation).Minimize();
+        var signatureLocation = firstLocation.ExtendToInclude(lastLocation).Minimize();
 
         return (signatureLocation, elements);
     }

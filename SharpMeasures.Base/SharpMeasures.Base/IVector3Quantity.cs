@@ -1,6 +1,5 @@
 ﻿namespace SharpMeasures;
 
-using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
 
 /// <summary>Describes a three-dimensional vector quantity, consisting of X, Y, and Z components.</summary>
@@ -31,12 +30,10 @@ public interface IVector3Quantity<TSelf> : IVector3Quantity where TSelf : IVecto
     /// <param name="x">The magnitude of the X-component of the constructed <typeparamref name="TSelf"/>.</param>
     /// <param name="y">The magnitude of the Y-component of the constructed <typeparamref name="TSelf"/>.</param>
     /// <param name="z">The magnitude of the Z-component of the constructed <typeparamref name="TSelf"/>.</param>
-    [SuppressMessage("Design", "CA1000", Justification = "Implementing type is not necessarily generic")]
     public static abstract TSelf WithComponents(Scalar x, Scalar y, Scalar z);
 
     /// <summary>Constructs a new <typeparamref name="TSelf"/> representing { <paramref name="components"/> }.</summary>
     /// <param name="components">The magnitudes of components X, Y, and Z of the constructed <typeparamref name="TSelf"/>.</param>
-    [SuppressMessage("Design", "CA1000", Justification = "Implementing type is not necessarily generic")]
     public static abstract TSelf WithComponents(Vector3 components);
 
     /// <summary>Computes the normalized <see langword="this"/>.</summary>

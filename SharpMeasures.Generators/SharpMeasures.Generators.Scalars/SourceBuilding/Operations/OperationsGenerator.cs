@@ -18,7 +18,7 @@ internal static class OperationsGenerator
 
     private static Optional<DataModel> Reduce(Optional<Scalars.DataModel> model, CancellationToken _)
     {
-        if (model.HasValue is false || model.Value.Scalar.Operations.Count is 0 && model.Value.Scalar.InheritedOperations.Count is 0)
+        if (model.HasValue is false || (model.Value.Scalar.Operations.Count is 0 && model.Value.Scalar.InheritedOperations.Count is 0))
         {
             return new Optional<DataModel>();
         }

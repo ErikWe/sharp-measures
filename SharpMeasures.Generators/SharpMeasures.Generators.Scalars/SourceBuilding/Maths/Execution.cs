@@ -16,7 +16,7 @@ internal static class Execution
             return;
         }
 
-        string source = Composer.Compose(data.Value);
+        var source = Composer.Compose(data.Value);
 
         context.AddSource($"{data.Value.Scalar.QualifiedName}.Maths.g.cs", SourceText.From(source, Encoding.UTF8));
     }
@@ -152,7 +152,7 @@ internal static class Execution
         private void AppendDifferenceMethods(Indentation indentation)
         {
             AppendSubtractSameTypeMetod(indentation);
-            
+
             if (Data.Difference != Data.Scalar.AsNamedType())
             {
                 AppendAddDifferenceMethod(indentation);
@@ -434,7 +434,7 @@ internal static class Execution
 
             AppendDocumentation(indentation, Data.SourceBuildingContext.Documentation.MultiplyScalarOperatorRHS());
             StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, multiplyMethodNameAndModifiers, multiplyRHSExpression, rhsParameters);
-            
+
             if (Data.Scalar.IsReferenceType)
             {
                 SeparationHandler.Add();

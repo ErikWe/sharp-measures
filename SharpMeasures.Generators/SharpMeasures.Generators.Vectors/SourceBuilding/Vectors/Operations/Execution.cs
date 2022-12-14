@@ -19,7 +19,7 @@ internal static class Execution
             return;
         }
 
-        string source = Composer.Compose(data.Value);
+        var source = Composer.Compose(data.Value);
 
         if (source.Length is 0)
         {
@@ -128,7 +128,7 @@ internal static class Execution
                 StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers, fullExpression(), new[] { (other, parameterName) });
             }
 
-            if ((operation.MirrorMethod && operation.OperatorType is OperatorType.Subtraction or OperatorType.Division) && ImplementedMethods.Add((operation.MirroredMethodName, other)))
+            if (operation.MirrorMethod && operation.OperatorType is OperatorType.Subtraction or OperatorType.Division && ImplementedMethods.Add((operation.MirroredMethodName, other)))
             {
                 SeparationHandler.AddIfNecessary();
 
@@ -198,7 +198,7 @@ internal static class Execution
                 StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers, fullExpression(), new[] { (other, parameterName) });
             }
 
-            if ((operation.Mirror && operation.OperatorType is VectorOperatorType.Cross) && ImplementedMethods.Add((operation.MirroredName, other)))
+            if (operation.Mirror && operation.OperatorType is VectorOperatorType.Cross && ImplementedMethods.Add((operation.MirroredName, other)))
             {
                 SeparationHandler.AddIfNecessary();
 
@@ -329,7 +329,7 @@ internal static class Execution
             OperatorType.Subtraction => "-",
             OperatorType.Multiplication => "*",
             OperatorType.Division => "/",
-            _ => throw new NotSupportedException($"Invalid {typeof(OperatorType).Name}: {operatorType}")
+            _ => throw new NotSupportedException($"Invalid {nameof(OperatorType)}: {operatorType}")
         };
 
         private (NamedType Result, NamedType Other)? GetQuantityCombination(NamedType result, NamedType other)

@@ -8,7 +8,7 @@ using System;
 internal sealed class EmptyDocumentation : IGroupDocumentationStrategy, IVectorDocumentationStrategy, IEquatable<EmptyDocumentation>
 {
     public static EmptyDocumentation Instance { get; } = new();
-    
+
     private EmptyDocumentation() { }
 
     string IVectorDocumentationStrategy.Header() => string.Empty;

@@ -79,9 +79,14 @@ internal sealed class SharpMeasuresVectorProcesser : AProcesser<IProcessingConte
 
     private IOptionalWithDiagnostics<int> ProcessDimension(IProcessingContext context, RawSharpMeasuresVectorDefinition definition)
     {
-        int? dimension = DimensionParsingUtility.InterpretDimensionFromName(context.Type.Name) ?? definition.Dimension;
+        var dimension = DimensionParsingUtility.InterpretDimensionFromName(context.Type.Name) ?? definition.Dimension;
 
-        return OptionalWithDiagnostics.Conditional(dimension is not null, () => dimension!.Value, () => Diagnostics.MissingDimension(context, definition));
+        if (dimension is not null)
+        {
+            return OptionalWithDiagnostics.Result(dimension.Value);
+        }
+
+        return OptionalWithDiagnostics.Empty<int>(Diagnostics.MissingDimension(context, definition));
     }
 
     private IValidityWithDiagnostics ValidateInterpretedDimensionNotInvalid(IProcessingContext context, RawSharpMeasuresVectorDefinition definition, int dimension)

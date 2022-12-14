@@ -41,7 +41,7 @@ public static class MarkedTypeDeclarationProvider
 
         TOut targetedOutputTransform(TypeDeclarationSyntax declaration, AttributeSyntax attributeSyntax, string targetAttribute) => outputTransform(declaration, attributeSyntax);
     }
-        
+
     public static IMarkedTypeDeclarationProvider<TypeDeclarationSyntax> Construct()
     {
         return Construct(extractDeclaration);
@@ -80,7 +80,7 @@ public static class MarkedTypeDeclarationProvider
 
         public IncrementalValuesProvider<Optional<TOut>> AttachAnyOf<TAttribute1, TAttribute2>(SyntaxValueProvider syntaxProvider) => AttachAnyOf(syntaxProvider, typeof(TAttribute1), typeof(TAttribute2));
         public IncrementalValuesProvider<Optional<TOut>> AttachAnyOf<TAttribute1, TAttribute2, TAttribute3>(SyntaxValueProvider syntaxProvider) => AttachAnyOf(syntaxProvider, typeof(TAttribute1), typeof(TAttribute2), typeof(TAttribute3));
-        
+
         public IncrementalValuesProvider<Optional<TOut>> AttachAnyOf(SyntaxValueProvider syntaxProvider, params Type[] candidateTypes) => AttachAnyOf(syntaxProvider, candidateTypes as IEnumerable<Type>);
         public IncrementalValuesProvider<Optional<TOut>> AttachAnyOf(SyntaxValueProvider syntaxProvider, IEnumerable<Type> candidateTypes)
         {
@@ -88,7 +88,7 @@ public static class MarkedTypeDeclarationProvider
 
             IEnumerable<string> candidateNames()
             {
-                foreach (Type candidateType in candidateTypes)
+                foreach (var candidateType in candidateTypes)
                 {
                     yield return candidateType.FullName;
                 }

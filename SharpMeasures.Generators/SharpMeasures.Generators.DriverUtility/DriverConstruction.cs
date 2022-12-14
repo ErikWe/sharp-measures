@@ -38,9 +38,9 @@ public static class DriverConstruction
 
     public static Compilation CreateCompilation(string source)
     {
-        SyntaxTree syntaxTree = CSharpSyntaxTree.ParseText(source, ParseOptions);
+        var syntaxTree = CSharpSyntaxTree.ParseText(source, ParseOptions);
 
-        IEnumerable<MetadataReference> references = AssemblyLoader.ReferencedAssemblies
+        var references = AssemblyLoader.ReferencedAssemblies
             .Where(static (assembly) => assembly.IsDynamic is false)
             .Select(static (assembly) => MetadataReference.CreateFromFile(assembly.Location))
             .Cast<MetadataReference>();
@@ -53,7 +53,7 @@ public static class DriverConstruction
 
     private static ImmutableArray<AdditionalText> GetAdditionalFiles(IReadOnlyDictionary<string, string> documentationFiles)
     {
-        ImmutableArray<AdditionalText>.Builder builder = ImmutableArray.CreateBuilder<AdditionalText>(documentationFiles.Count);
+        var builder = ImmutableArray.CreateBuilder<AdditionalText>(documentationFiles.Count);
 
         foreach (var documentationFile in documentationFiles)
         {

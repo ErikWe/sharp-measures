@@ -53,7 +53,7 @@ internal abstract class AVectorParser<TDefinition, TProduct>
         var includeUnitInstances = CommonParsing.ParseIncludeUnitInstances(attributes);
         var excludeUnitInstances = CommonParsing.ParseExcludeUnitInstances(attributes);
 
-        TProduct product = ProduceResult(typeSymbol.AsDefinedType(), vector.Value, operations, vectorOperations, processes, constants, conversions, includeUnitInstances, excludeUnitInstances);
+        var product = ProduceResult(typeSymbol.AsDefinedType(), vector.Value, operations, vectorOperations, processes, constants, conversions, includeUnitInstances, excludeUnitInstances);
         var foreignSymbols = vectorForeignSymbols.Concat(operationForeignSymbols).Concat(vectorOperationForeignSymbols).Concat(conversionForeignSymbols);
 
         return (attributes, product, foreignSymbols);

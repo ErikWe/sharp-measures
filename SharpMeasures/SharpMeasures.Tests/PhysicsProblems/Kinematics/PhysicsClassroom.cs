@@ -54,10 +54,10 @@ public class PhysicsClassroom
         var deltaSpeed = finalSpeed - initialSpeed;
 
         var acceleration = deltaSpeed / duration;
-        var distance = initialSpeed * duration + deltaSpeed * duration / 2;
+        var distance = (initialSpeed * duration) + (deltaSpeed * duration / 2);
 
         Assert.Equal((46.1 - 18.5) / 2.47, acceleration.MetresPerSecondSquared, 10);
-        Assert.Equal(18.5 * 2.47 + (46.1 - 18.5) * 2.47 / 2, distance.Metres, 10);
+        Assert.Equal((18.5 * 2.47) + ((46.1 - 18.5) * 2.47 / 2), distance.Metres, 10);
     }
 
     [Fact]
@@ -163,7 +163,7 @@ public class PhysicsClassroom
 
         var distance = finalSpeed.Square() / acceleration / 2;
 
-        Assert.Equal((9.80665 * 6.25 / 2) * (9.80665 * 6.25 / 2) / 9.80665 / 2, distance.Metres, 10);
+        Assert.Equal(9.80665 * 6.25 / 2 * (9.80665 * 6.25 / 2) / 9.80665 / 2, distance.Metres, 10);
     }
 
     [Fact]

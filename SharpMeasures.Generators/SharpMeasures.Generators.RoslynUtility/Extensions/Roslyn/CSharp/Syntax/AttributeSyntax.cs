@@ -10,7 +10,7 @@ public static partial class Extensions
 {
     public static bool RepresentsAttributeOfType<TAttribute>(this AttributeSyntax attributeSyntax, SemanticModel semanticModel) => attributeSyntax.RepresentsAttributeOfType<TAttribute>(semanticModel, checkForAlias: true);
     public static bool RepresentsAttributeOfType<TAttribute>(this AttributeSyntax attributeSyntax, SemanticModel semanticModel, bool checkForAlias) => attributeSyntax.RepresentsAttributeOfType(semanticModel, typeof(TAttribute), checkForAlias);
-    
+
     public static bool RepresentsAttributeOfType(this AttributeSyntax attributeSyntax, SemanticModel semanticModel, Type attributeType) => attributeSyntax.RepresentsAttributeOfType(semanticModel, attributeType, checkForAlias: true);
     public static bool RepresentsAttributeOfType(this AttributeSyntax attributeSyntax, SemanticModel semanticModel, Type attributeType, bool checkForAlias) => attributeSyntax.RepresentsAttributeWithName(semanticModel, attributeType.FullName, checkForAlias);
 
@@ -57,12 +57,12 @@ public static partial class Extensions
 
     public static Type? RepresentsAttributeOfAnyType<TAttribute1, TAttribute2>(this AttributeSyntax attributeSyntax, SemanticModel semanticModel) => attributeSyntax.RepresentsAttributeOfAnyType<TAttribute1, TAttribute2>(semanticModel, checkForAlias: true);
     public static Type? RepresentsAttributeOfAnyType<TAttribute1, TAttribute2>(this AttributeSyntax attributeSyntax, SemanticModel semanticModel, bool checkForAlias) => attributeSyntax.RepresentsAttributeOfAnyType(semanticModel, checkForAlias, typeof(TAttribute1), typeof(TAttribute2));
-    
+
     public static Type? RepresentsAttributeOfAnyType<TAttribute1, TAttribute2, TAttribute3>(this AttributeSyntax attributeSyntax, SemanticModel semanticModel) => attributeSyntax.RepresentsAttributeOfAnyType<TAttribute1, TAttribute2, TAttribute3>(semanticModel, checkForAlias: true);
     public static Type? RepresentsAttributeOfAnyType<TAttribute1, TAttribute2, TAttribute3>(this AttributeSyntax attributeSyntax, SemanticModel semanticModel, bool checkForAlias) => attributeSyntax.RepresentsAttributeOfAnyType(semanticModel, checkForAlias, typeof(TAttribute1), typeof(TAttribute2), typeof(TAttribute3));
 
     public static Type? RepresentsAttributeOfAnyType(this AttributeSyntax attributeSyntax, SemanticModel semanticModel, params Type[] candidateTypes) => attributeSyntax.RepresentsAttributeOfAnyType(semanticModel, checkForAlias: true, candidateTypes);
-    public static Type? RepresentsAttributeOfAnyType(this AttributeSyntax attributeSyntax, SemanticModel semanticModel, bool checkForAlias, params Type[] candidateTypes) => attributeSyntax.RepresentsAttributeOfAnyType(semanticModel, candidateTypes as IEnumerable<Type>, checkForAlias);
+    public static Type? RepresentsAttributeOfAnyType(this AttributeSyntax attributeSyntax, SemanticModel semanticModel, bool checkForAlias, params Type[] candidateTypes) => attributeSyntax.RepresentsAttributeOfAnyType(semanticModel, candidateTypes, checkForAlias);
 
     public static Type? RepresentsAttributeOfAnyType(this AttributeSyntax attributeSyntax, SemanticModel semanticModel, IEnumerable<Type> candidateTypes) => attributeSyntax.RepresentsAttributeOfAnyType(semanticModel, candidateTypes, checkForAlias: true);
     public static Type? RepresentsAttributeOfAnyType(this AttributeSyntax attributeSyntax, SemanticModel semanticModel, IEnumerable<Type> candidateTypes, bool checkForAlias)
@@ -84,7 +84,7 @@ public static partial class Extensions
     }
 
     public static string? RepresentsAttributeWithAnyName(this AttributeSyntax attributeSyntax, SemanticModel semanticModel, params string[] candidateNames) => attributeSyntax.RepresentsAttributeWithAnyName(semanticModel, checkForAlias: true, candidateNames);
-    public static string? RepresentsAttributeWithAnyName(this AttributeSyntax attributeSyntax, SemanticModel semanticModel, bool checkForAlias, params string[] candidateNames) => attributeSyntax.RepresentsAttributeWithAnyName(semanticModel, candidateNames as IEnumerable<string>, checkForAlias);
+    public static string? RepresentsAttributeWithAnyName(this AttributeSyntax attributeSyntax, SemanticModel semanticModel, bool checkForAlias, params string[] candidateNames) => attributeSyntax.RepresentsAttributeWithAnyName(semanticModel, candidateNames, checkForAlias);
 
     public static string? RepresentsAttributeWithAnyName(this AttributeSyntax attributeSyntax, SemanticModel semanticModel, IEnumerable<string> candidateNames) => attributeSyntax.RepresentsAttributeWithAnyName(semanticModel, candidateNames, checkForAlias: true);
     public static string? RepresentsAttributeWithAnyName(this AttributeSyntax attributeSyntax, SemanticModel semanticModel, IEnumerable<string> candidateNames, bool checkForAlias)
@@ -114,11 +114,11 @@ public static partial class Extensions
 
     public static Type? RepresentsAliasedAttributeOfAnyType<TAttribute1, TAttribute2>(this AttributeSyntax attributeSyntax, SemanticModel semanticModel) => attributeSyntax.RepresentsAliasedAttributeOfAnyType(semanticModel, typeof(TAttribute1), typeof(TAttribute2));
     public static Type? RepresentsAliasedAttributeOfAnyType<TAttribute1, TAttribute2, TAttribute3>(this AttributeSyntax attributeSyntax, SemanticModel semanticModel) => attributeSyntax.RepresentsAliasedAttributeOfAnyType(semanticModel, typeof(TAttribute1), typeof(TAttribute2), typeof(TAttribute3));
-    
+
     public static Type? RepresentsAliasedAttributeOfAnyType(this AttributeSyntax attributeSyntax, SemanticModel semanticModel, params Type[] candidateTypes) => attributeSyntax.RepresentsAliasedAttributeOfAnyType(semanticModel, candidateTypes as IEnumerable<Type>);
     public static Type? RepresentsAliasedAttributeOfAnyType(this AttributeSyntax attributeSyntax, SemanticModel semanticModel, IEnumerable<Type> candidateTypes)
     {
-        if (semanticModel.GetAliasInfo(attributeSyntax.Name) is not IAliasSymbol {  Target: INamedTypeSymbol aliasSymbol })
+        if (semanticModel.GetAliasInfo(attributeSyntax.Name) is not IAliasSymbol { Target: INamedTypeSymbol aliasSymbol })
         {
             return null;
         }

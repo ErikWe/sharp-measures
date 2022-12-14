@@ -15,7 +15,7 @@ internal static class VectorConversionsGenerator
 
     private static Optional<DataModel> Reduce(Optional<VectorDataModel> model, CancellationToken _)
     {
-        if (model.HasValue is false || model.Value.Vector.Conversions.Count is 0 && model.Value.Vector.Group is null && model.Value.Vector.OriginalQuantity is null)
+        if (model.HasValue is false || (model.Value.Vector.Conversions.Count is 0 && model.Value.Vector.Group is null && model.Value.Vector.OriginalQuantity is null))
         {
             return new Optional<DataModel>();
         }

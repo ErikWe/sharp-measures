@@ -6,8 +6,7 @@ using System;
 
 public static partial class RoslynUtilityExtensions
 {
-    public static INamedTypeSymbol? GetTypeByMetadataName<T>(this Compilation compilation)
-        => compilation.GetTypeByMetadataName(typeof(T));
+    public static INamedTypeSymbol? GetTypeByMetadataName<T>(this Compilation compilation) => compilation.GetTypeByMetadataName(typeof(T));
 
     public static INamedTypeSymbol? GetTypeByMetadataName(this Compilation compilation, Type type)
     {
@@ -15,17 +14,10 @@ public static partial class RoslynUtilityExtensions
         {
             return compilation.GetTypeByMetadataName(type, type.GenericTypeArguments.Length);
         }
-        else
-        {
-            return compilation.GetTypeByMetadataName($"{type.Namespace}.{type.Name}");
-        }
+
+        return compilation.GetTypeByMetadataName($"{type.Namespace}.{type.Name}");
     }
 
-    public static INamedTypeSymbol? GetTypeByMetadataName<T>(this Compilation compilation, int arity)
-        => compilation.GetTypeByMetadataName(typeof(T), arity);
-
-    public static INamedTypeSymbol? GetTypeByMetadataName(this Compilation compilation, Type type, int arity)
-    {
-        return compilation.GetTypeByMetadataName($"{type.Namespace}.{type.Name}`{arity}");
-    }
+    public static INamedTypeSymbol? GetTypeByMetadataName<T>(this Compilation compilation, int arity) => compilation.GetTypeByMetadataName(typeof(T), arity);
+    public static INamedTypeSymbol? GetTypeByMetadataName(this Compilation compilation, Type type, int arity) => compilation.GetTypeByMetadataName($"{type.Namespace}.{type.Name}`{arity}");
 }

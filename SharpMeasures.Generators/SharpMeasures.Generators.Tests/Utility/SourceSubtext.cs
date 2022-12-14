@@ -1,6 +1,6 @@
 ﻿namespace SharpMeasures.Generators.Tests.Utility;
 
-public record struct SourceSubtext
+public readonly record struct SourceSubtext
 {
     internal static SourceSubtext Covered(string text, string prefix = "", string postfix = "") => new($"{prefix}{text}{postfix}", new(text, prefix, postfix));
     internal static SourceSubtext AsTypeof(string text, string prefix = "", string postfix = "") => new($"{prefix}typeof({text}){postfix}", new(text, $"{prefix}typeof(", $"){postfix}"));

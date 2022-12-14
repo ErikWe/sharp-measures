@@ -118,9 +118,9 @@ internal sealed record class ScalarPopulation : IScalarPopulation
 
         void iterativelySetBaseScalarForSpecializations()
         {
-            int startLength = unassignedSpecializations.Count;
+            var startLength = unassignedSpecializations.Count;
 
-            for (int i = 0; i < unassignedSpecializations.Count; i++)
+            for (var i = 0; i < unassignedSpecializations.Count; i++)
             {
                 if (scalarBasePopulation.TryGetValue(unassignedSpecializations[i].Definition.OriginalQuantity, out var scalarBase))
                 {

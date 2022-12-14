@@ -85,7 +85,7 @@ internal abstract class AScalarValidator<TScalar, TDefinition>
         var constants = ValidateConstants(scalarType, unit, allUnitBaseInstances, allUnitInstances, scalarPopulation);
         var conversions = ValidateConversions(scalarType, scalarPopulation);
 
-        TScalar product = ProduceResult(scalarType.Type, scalar.Result, operations.Result, scalarType.Processes, constants.Result, conversions.Result, unitBaseInstanceInclusions.Result, unitBaseInstanceExclusions.Result, unitInstanceInclusions.Result, unitInstanceExclusions.Result);
+        var product = ProduceResult(scalarType.Type, scalar.Result, operations.Result, scalarType.Processes, constants.Result, conversions.Result, unitBaseInstanceInclusions.Result, unitBaseInstanceExclusions.Result, unitInstanceInclusions.Result, unitInstanceExclusions.Result);
         var allDiagnostics = scalar.Concat(operations).Concat(constants).Concat(conversions).Concat(unitBaseInstanceInclusions).Concat(unitBaseInstanceExclusions).Concat(unitInstanceInclusions).Concat(unitInstanceExclusions);
 
         return OptionalWithDiagnostics.Result(product, allDiagnostics);

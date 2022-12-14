@@ -11,21 +11,21 @@ public static partial class RoslynUtilityExtensions
 
     public static Location ExtendToInclude(this Location originalLocation, Location otherLocation)
     {
-        FileLinePositionSpan originalLineSpan = originalLocation.GetLineSpan();
-        FileLinePositionSpan otherLineSpan = otherLocation.GetLineSpan();
+        var originalLineSpan = originalLocation.GetLineSpan();
+        var otherLineSpan = otherLocation.GetLineSpan();
 
         if (originalLineSpan.Path != otherLineSpan.Path)
         {
             throw new NotSupportedException("Cannot combine locations from different sources.");
         }
 
-        bool originalLocationIsFirst = isOriginalLocationFirst();
+        var originalLocationIsFirst = isOriginalLocationFirst();
 
         FileLinePositionSpan combinedLineSpan = originalLocationIsFirst
             ? new(originalLineSpan.Path, originalLineSpan.StartLinePosition, otherLineSpan.EndLinePosition)
             : new(originalLineSpan.Path, otherLineSpan.StartLinePosition, originalLineSpan.EndLinePosition);
 
-        TextSpan combinedTextSpan = originalLocationIsFirst
+        var combinedTextSpan = originalLocationIsFirst
             ? TextSpan.FromBounds(originalLocation.SourceSpan.Start, otherLocation.SourceSpan.End)
             : TextSpan.FromBounds(otherLocation.SourceSpan.Start, originalLocation.SourceSpan.End);
 

@@ -8,7 +8,7 @@ using System.Collections.Generic;
 internal sealed record class VectorOperationValidationContext : IVectorOperationValidationContext
 {
     public DefinedType Type { get; }
-    
+
     public IReadOnlyList<int> Dimensions { get; }
 
     public IScalarPopulation ScalarPopulation { get; }

@@ -18,7 +18,7 @@ public sealed class CustomAdditionalText : AdditionalText
 
     public override SourceText GetText(CancellationToken cancellationToken = new CancellationToken()) => SourceText.From(Source);
 
-    public bool Equals(CustomAdditionalText? other) => other is not null && other.Path == Path && other.Source == Source; 
+    public bool Equals(CustomAdditionalText? other) => other is not null && other.Path == Path && other.Source == Source;
     public override bool Equals(object? obj) => obj is CustomAdditionalText other && Equals(other);
 
     public static bool operator ==(CustomAdditionalText? lhs, CustomAdditionalText? rhs) => lhs?.Equals(rhs) ?? rhs is null;

@@ -80,7 +80,7 @@ public static class ConstantVectorTexts
 
                 string addAddendVector(int componentIndex, int dimension)
                 {
-                    string componentName = GetComponentName(componentIndex, dimension);
+                    var componentName = GetComponentName(componentIndex, dimension);
 
                     return $"{componentName}{(lhsComponent ? ".Magnitude" : string.Empty)} + addend.{componentName}{(rhsComponent ? ".Magnitude" : string.Empty)}";
                 }
@@ -92,7 +92,7 @@ public static class ConstantVectorTexts
 
                 string subtractSubtrahendVector(int componentIndex, int dimension)
                 {
-                    string componentName = GetComponentName(componentIndex, dimension);
+                    var componentName = GetComponentName(componentIndex, dimension);
 
                     return $"{componentName}{(lhsComponent ? ".Magnitude" : string.Empty)} - subtrahend.{componentName}{(rhsComponent ? ".Magnitude" : string.Empty)}";
                 }
@@ -104,7 +104,7 @@ public static class ConstantVectorTexts
 
                 string subtractFromMinuendVector(int componentIndex, int dimension)
                 {
-                    string componentName = GetComponentName(componentIndex, dimension);
+                    var componentName = GetComponentName(componentIndex, dimension);
 
                     return $"minuend.{componentName}{(lhsComponent ? ".Magnitude" : string.Empty)} - {componentName}{(rhsComponent ? ".Magnitude" : string.Empty)}";
                 }
@@ -121,7 +121,7 @@ public static class ConstantVectorTexts
 
                 string addBVector(int componentIndex, int dimension)
                 {
-                    string componentName = GetComponentName(componentIndex, dimension);
+                    var componentName = GetComponentName(componentIndex, dimension);
 
                     return $"a.{componentName}{(lhsComponent ? ".Magnitude" : string.Empty)} + b.{componentName}{(rhsComponent ? ".Magnitude" : string.Empty)}";
                 }
@@ -133,7 +133,7 @@ public static class ConstantVectorTexts
 
                 string subtractBVectorDelegate(int componentIndex, int dimension)
                 {
-                    string componentName = GetComponentName(componentIndex, dimension);
+                    var componentName = GetComponentName(componentIndex, dimension);
 
                     return $"a.{componentName}{(lhsComponent ? ".Magnitude" : string.Empty)} - b.{componentName}{(rhsComponent ? ".Magnitude" : string.Empty)}";
                 }

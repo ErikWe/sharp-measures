@@ -28,7 +28,7 @@ public interface IQuantityProcessLocations : IAttributeLocations
 
     public abstract MinimalLocation? ParameterTypesCollection { get; }
     public abstract IReadOnlyList<MinimalLocation> ParameterTypeElements { get; }
-    
+
     public abstract MinimalLocation? ParameterNamesCollection { get; }
     public abstract IReadOnlyList<MinimalLocation> ParameterNameElements { get; }
 

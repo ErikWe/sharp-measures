@@ -39,7 +39,7 @@ internal static class VectorValidationDiagnosticsStrategies
     public static IVectorValidationDiagnosticsStrategy Default { get; } = new DefaultValidationDiagnosticsStrategy();
     public static IVectorValidationDiagnosticsStrategy EmptyDiagnostics { get; } = new EmptyValidationDiagnosticsStrategy();
 
-    private class DefaultValidationDiagnosticsStrategy : IVectorValidationDiagnosticsStrategy
+    private sealed class DefaultValidationDiagnosticsStrategy : IVectorValidationDiagnosticsStrategy
     {
         public ISharpMeasuresVectorGroupValidationDiagnostics SharpMeasuresVectorGroupDiagnostics => SharpMeasuresVectorGroupValidationDiagnostics.Instance;
         public ISpecializedSharpMeasuresVectorGroupValidationDiagnostics SpecializedSharpMeasuresVectorGroupDiagnostics => SpecializedSharpMeasuresVectorGroupValidationDiagnostics.Instance;
@@ -57,7 +57,7 @@ internal static class VectorValidationDiagnosticsStrategies
         public IExcludeUnitsFilteringDiagnostics ExcludeUnitsDiagnostics => ExcludeUnitsFilteringDiagnostics.Instance;
     }
 
-    private class EmptyValidationDiagnosticsStrategy : IVectorValidationDiagnosticsStrategy
+    private sealed class EmptyValidationDiagnosticsStrategy : IVectorValidationDiagnosticsStrategy
     {
         public ISharpMeasuresVectorGroupValidationDiagnostics SharpMeasuresVectorGroupDiagnostics => EmptySharpMeasuresVectorGroupValidationDiagnostics.Instance;
         public ISpecializedSharpMeasuresVectorGroupValidationDiagnostics SpecializedSharpMeasuresVectorGroupDiagnostics => EmptySpecializedSharpMeasuresVectorGroupValidationDiagnostics.Instance;

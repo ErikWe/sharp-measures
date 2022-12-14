@@ -42,7 +42,7 @@ internal sealed class ScalarConstantProcesser : AQuantityConstantProcesser<IQuan
     }
 
     private static ScalarConstantDefinition ProduceResult(RawScalarConstantDefinition definition, bool generateMultiples, string? multiplesName) => new(definition.Name!, definition.UnitInstanceName!, definition.Value, definition.Expression, generateMultiples, multiplesName, definition.Locations);
-    
+
     protected override IValidityWithDiagnostics Validate(IQuantityConstantProcessingContext context, RawScalarConstantDefinition definition)
     {
         return base.Validate(context, definition)

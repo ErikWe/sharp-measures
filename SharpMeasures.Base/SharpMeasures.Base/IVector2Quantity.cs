@@ -1,7 +1,5 @@
 ﻿namespace SharpMeasures;
 
-using System.Diagnostics.CodeAnalysis;
-
 /// <summary>Describes a two-dimensional vector quantity, consisting of X and Y components.</summary>
 public interface IVector2Quantity
 {
@@ -27,12 +25,10 @@ public interface IVector2Quantity<TSelf> : IVector2Quantity where TSelf : IVecto
     /// <summary>Constructs a new <typeparamref name="TSelf"/> representing { <paramref name="x"/>, <paramref name="y"/> }.</summary>
     /// <param name="x">The magnitude of the X-component of the constructed <typeparamref name="TSelf"/>.</param>
     /// <param name="y">The magnitude of the Y-component of the constructed <typeparamref name="TSelf"/>.</param>
-    [SuppressMessage("Design", "CA1000", Justification = "Implementing type is not necessarily generic")]
     public static abstract TSelf WithComponents(Scalar x, Scalar y);
 
     /// <summary>Constructs a new <typeparamref name="TSelf"/> representing { <paramref name="components"/> }.</summary>
     /// <param name="components">The magnitudes of components X and Y of the constructed <typeparamref name="TSelf"/>.</param>
-    [SuppressMessage("Design", "CA1000", Justification = "Implementing type is not necessarily generic")]
     public static abstract TSelf WithComponents(Vector2 components);
 
     /// <summary>Computes the normalized <see langword="this"/>.</summary>

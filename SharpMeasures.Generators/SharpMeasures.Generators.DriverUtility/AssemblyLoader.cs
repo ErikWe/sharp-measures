@@ -29,9 +29,9 @@ internal static class AssemblyLoader
 
         while (unresolvedAssemblies.Any())
         {
-            Assembly targetAssembly = unresolvedAssemblies.Dequeue();
+            var targetAssembly = unresolvedAssemblies.Dequeue();
 
-            foreach (AssemblyName assemblyName in targetAssembly.GetReferencedAssemblies())
+            foreach (var assemblyName in targetAssembly.GetReferencedAssemblies())
             {
                 if (resolvedAssemblyNames.Contains(assemblyName.FullName) is false)
                 {
@@ -39,7 +39,7 @@ internal static class AssemblyLoader
 
                     try
                     {
-                        Assembly assembly = Assembly.Load(assemblyName);
+                        var assembly = Assembly.Load(assemblyName);
 
                         unresolvedAssemblies.Enqueue(assembly);
                         collectedAssemblies.Add(assembly);
@@ -49,12 +49,12 @@ internal static class AssemblyLoader
                 }
             }
         }
-        
-        foreach (Assembly domainAssembly in AppDomain.CurrentDomain.GetAssemblies())
+
+        foreach (var domainAssembly in AppDomain.CurrentDomain.GetAssemblies())
         {
             collectedAssemblies.Add(domainAssembly);
         }
-        
+
         return collectedAssemblies.AsReadOnly();
     }
 }

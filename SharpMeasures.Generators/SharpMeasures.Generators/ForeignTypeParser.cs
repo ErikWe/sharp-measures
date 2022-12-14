@@ -49,7 +49,7 @@ internal sealed class ForeignTypeParser
 
     private void IterativelyParse()
     {
-        for (int i = 0; i < ForeignSymbols.Count; i++)
+        for (var i = 0; i < ForeignSymbols.Count; i++)
         {
             var foreignSymbol = ForeignSymbols[i];
 

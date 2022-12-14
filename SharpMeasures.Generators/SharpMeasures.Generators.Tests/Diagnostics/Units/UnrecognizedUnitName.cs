@@ -177,7 +177,7 @@ public class UnrecognizedUnitName
         [Unit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
-    
+
     private static GeneratorVerifier AssertUnitAlias(SourceSubtext aliasOf)
     {
         var source = UnitAliasText(aliasOf);

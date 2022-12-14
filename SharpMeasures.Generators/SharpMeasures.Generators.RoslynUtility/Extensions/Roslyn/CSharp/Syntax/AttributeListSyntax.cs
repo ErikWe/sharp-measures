@@ -40,7 +40,7 @@ public static partial class Extensions
     public static (AttributeSyntax Syntax, Type Target)? GetAttributeOfAnyType<TAttribute1, TAttribute2, TAttribute3>(this AttributeListSyntax attributeList, SemanticModel semanticModel, bool checkForAlias) => attributeList.GetAttributeOfAnyType(semanticModel, checkForAlias, typeof(TAttribute1), typeof(TAttribute2), typeof(TAttribute3));
 
     public static (AttributeSyntax Syntax, Type Target)? GetAttributeOfAnyType(this AttributeListSyntax attributeList, SemanticModel semanticModel, params Type[] candidateTypes) => attributeList.GetAttributeOfAnyType(semanticModel, checkForAlias: true, candidateTypes);
-    public static (AttributeSyntax Syntax, Type Target)? GetAttributeOfAnyType(this AttributeListSyntax attributeList, SemanticModel semanticModel, bool checkForAlias, params Type[] candidateTypes) => attributeList.GetAttributeOfAnyType(semanticModel, candidateTypes as IEnumerable<Type>, checkForAlias);
+    public static (AttributeSyntax Syntax, Type Target)? GetAttributeOfAnyType(this AttributeListSyntax attributeList, SemanticModel semanticModel, bool checkForAlias, params Type[] candidateTypes) => attributeList.GetAttributeOfAnyType(semanticModel, candidateTypes, checkForAlias);
 
     public static (AttributeSyntax Syntax, Type Target)? GetAttributeOfAnyType(this AttributeListSyntax attributeList, SemanticModel semanticModel, IEnumerable<Type> candidateTypes) => attributeList.GetAttributeOfAnyType(semanticModel, candidateTypes, checkForAlias: true);
     public static (AttributeSyntax Syntax, Type Target)? GetAttributeOfAnyType(this AttributeListSyntax attributeList, SemanticModel semanticModel, IEnumerable<Type> candidateTypes, bool checkForAlias)
@@ -55,14 +55,14 @@ public static partial class Extensions
 
         if (checkForAlias)
         {
-            attributeList.GetAliasedAttributeOfAnyType(semanticModel, candidateTypes);
+            return attributeList.GetAliasedAttributeOfAnyType(semanticModel, candidateTypes);
         }
 
         return null;
     }
 
     public static (AttributeSyntax Syntax, string Target)? GetAttributeWithAnyName(this AttributeListSyntax attributeList, SemanticModel semanticModel, params string[] candidateNames) => attributeList.GetAttributeWithAnyName(semanticModel, checkForAlias: true, candidateNames);
-    public static (AttributeSyntax Syntax, string Target)? GetAttributeWithAnyName(this AttributeListSyntax attributeList, SemanticModel semanticModel, bool checkForAlias, params string[] candidateNames) => attributeList.GetAttributeWithAnyName(semanticModel, candidateNames as IEnumerable<string>, checkForAlias);
+    public static (AttributeSyntax Syntax, string Target)? GetAttributeWithAnyName(this AttributeListSyntax attributeList, SemanticModel semanticModel, bool checkForAlias, params string[] candidateNames) => attributeList.GetAttributeWithAnyName(semanticModel, candidateNames, checkForAlias);
 
     public static (AttributeSyntax Syntax, string Target)? GetAttributeWithAnyName(this AttributeListSyntax attributeList, SemanticModel semanticModel, IEnumerable<string> candidateNames) => attributeList.GetAttributeWithAnyName(semanticModel, candidateNames, checkForAlias: true);
     public static (AttributeSyntax Syntax, string Target)? GetAttributeWithAnyName(this AttributeListSyntax attributeList, SemanticModel semanticModel, IEnumerable<string> candidateNames, bool checkForAlias)

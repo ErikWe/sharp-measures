@@ -9,15 +9,15 @@ public static partial class UtilityExtensions
     {
         unchecked
         {
-            int hashCode = (int)2166136261;
+            var hashCode = (int)2166136261;
 
-            foreach (object? item in enumerable)
+            foreach (var item in enumerable)
             {
-                int itemHashCode = item?.GetHashCode() ?? 0;
+                var itemHashCode = item?.GetHashCode() ?? 0;
 
-                for (int i = 0; i < 4; i++)
+                for (var i = 0; i < 4; i++)
                 {
-                    hashCode = (hashCode * 16777619) ^ (itemHashCode >> 8 * i);
+                    hashCode = (hashCode * 16777619) ^ (itemHashCode >> (8 * i));
                 }
             }
 

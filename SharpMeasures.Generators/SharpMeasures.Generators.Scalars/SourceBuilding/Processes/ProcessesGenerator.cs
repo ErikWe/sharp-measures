@@ -19,7 +19,7 @@ internal static class ProcessesGenerator
 
     private static Optional<DataModel> Reduce(Optional<Scalars.DataModel> model, CancellationToken _)
     {
-        if (model.HasValue is false || model.Value.Scalar.Processes.Count is 0 && model.Value.Scalar.InheritedProcesses.Count is 0)
+        if (model.HasValue is false || (model.Value.Scalar.Processes.Count is 0 && model.Value.Scalar.InheritedProcesses.Count is 0))
         {
             return new Optional<DataModel>();
         }

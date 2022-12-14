@@ -49,7 +49,7 @@ internal abstract class AGroupParser<TDefinition, TProduct>
         var includeUnitInstances = CommonParsing.ParseIncludeUnitInstances(attributes);
         var excludeUnitInstances = CommonParsing.ParseExcludeUnitInstances(attributes);
 
-        TProduct product = ProduceResult(typeSymbol.AsDefinedType(), group.Value, operations, vectorOperations, conversions, includeUnitInstances, excludeUnitInstances);
+        var product = ProduceResult(typeSymbol.AsDefinedType(), group.Value, operations, vectorOperations, conversions, includeUnitInstances, excludeUnitInstances);
         var foreignSymbols = groupForeignSymbols.Concat(operationForeignSymbols).Concat(vectorOperationForeignSymbols).Concat(conversionForeignSymbols);
 
         return (attributes, product, foreignSymbols);

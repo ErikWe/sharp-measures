@@ -9,7 +9,7 @@ internal static class ExpectedDiagnosticsLocation
 {
     public static TextSpan TextSpan(string source, SourceLocationContext context)
     {
-        int contextualStartIndex = source.IndexOf(context.ToString(), StringComparison.InvariantCulture);
+        var contextualStartIndex = source.IndexOf(context.ToString(), StringComparison.InvariantCulture);
 
         if (contextualStartIndex < 0)
         {
@@ -44,8 +44,5 @@ internal static class ExpectedDiagnosticsLocation
         return TextSpan(source, target, prefix, postfix);
     }
 
-    public static TextSpan AsTypeofArgumentTextSpan(string source, string target, string prefix = "", string postfix = "")
-    {
-        return TextSpan(source, SourceLocationContext.AsTypeof(target, prefix, postfix));
-    }
+    public static TextSpan AsTypeofArgumentTextSpan(string source, string target, string prefix = "", string postfix = "") => TextSpan(source, SourceLocationContext.AsTypeof(target, prefix, postfix));
 }

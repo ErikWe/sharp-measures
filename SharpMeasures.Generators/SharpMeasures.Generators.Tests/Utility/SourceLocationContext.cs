@@ -1,6 +1,6 @@
 ﻿namespace SharpMeasures.Generators.Tests.Utility;
 
-internal record struct SourceLocationContext
+internal readonly record struct SourceLocationContext
 {
     public static SourceLocationContext Empty { get; } = new(string.Empty);
 
@@ -19,7 +19,7 @@ internal record struct SourceLocationContext
         Postfix = postfix;
     }
 
-    public SourceLocationContext With(string outerPrefix = "", string innerPrefix = "", string innerPostfix = "", string outerPostfix = "") => this with { Prefix = $"{outerPrefix}{Prefix}{innerPrefix}", Postfix = $"{innerPostfix}{Postfix}{outerPostfix}"};
+    public SourceLocationContext With(string outerPrefix = "", string innerPrefix = "", string innerPostfix = "", string outerPostfix = "") => this with { Prefix = $"{outerPrefix}{Prefix}{innerPrefix}", Postfix = $"{innerPostfix}{Postfix}{outerPostfix}" };
 
     public override string ToString() => $"{Prefix}{Target}{Postfix}";
 }

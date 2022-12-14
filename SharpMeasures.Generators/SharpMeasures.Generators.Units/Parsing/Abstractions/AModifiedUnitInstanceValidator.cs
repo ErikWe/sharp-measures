@@ -17,7 +17,7 @@ internal interface IModifiedUnitInstanceValidationContext : IValidationContext
 {
     public abstract IReadOnlyDictionary<string, IUnitInstance> UnitInstancesByName { get; }
 
-    public abstract HashSet<IModifiedUnitInstance> CyclicallyModifiedUnits { get; } 
+    public abstract HashSet<IModifiedUnitInstance> CyclicallyModifiedUnits { get; }
 }
 
 internal abstract class AModifiedUnitInstanceValidator<TContext, TDefinition> : AActionableValidator<TContext, TDefinition>

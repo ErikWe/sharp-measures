@@ -19,7 +19,7 @@ internal static class Execution
             return;
         }
 
-        string source = Composer.Compose(data.Value);
+        var source = Composer.Compose(data.Value);
 
         context.AddSource($"{data.Value.Scalar.QualifiedName}.Conversions.g.cs", SourceText.From(source, Encoding.UTF8));
     }

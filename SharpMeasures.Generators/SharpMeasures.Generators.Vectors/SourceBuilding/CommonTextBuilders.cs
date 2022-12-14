@@ -8,10 +8,7 @@ internal static class CommonTextBuilders
     {
         return new VectorTextBuilder(deconstructComponentsComponent, ", ");
 
-        string deconstructComponentsComponent(int componentIndex, int dimension)
-        {
-            return $"out {componentName} {VectorTextBuilder.GetLowerCasedComponentName(componentIndex, dimension)}";
-        }
+        string deconstructComponentsComponent(int componentIndex, int dimension) => $"out {componentName} {VectorTextBuilder.GetLowerCasedComponentName(componentIndex, dimension)}";
     }
 
     public static class Upper
@@ -20,10 +17,7 @@ internal static class CommonTextBuilders
         {
             return new VectorTextBuilder(component, ", ");
 
-            string component(int componentIndex, int dimension)
-            {
-                return $"{componentType} {GetComponentName(componentIndex, dimension)}";
-            }
+            string component(int componentIndex, int dimension) => $"{componentType} {GetComponentName(componentIndex, dimension)}";
         }
 
         private static string GetComponentName(int componentIndex, int dimension) => VectorTextBuilder.GetUpperCasedComponentName(componentIndex, dimension);
@@ -35,30 +29,21 @@ internal static class CommonTextBuilders
         {
             return new VectorTextBuilder(component, ", ");
 
-            string component(int componentIndex, int dimension)
-            {
-                return $"{componentType} {GetComponentName(componentIndex, dimension)}";
-            }
+            string component(int componentIndex, int dimension) => $"{componentType} {GetComponentName(componentIndex, dimension)}";
         }
 
         public static VectorTextBuilder NewComponent(string componentType)
         {
             return new VectorTextBuilder(newComponent, ", ");
 
-            string newComponent(int componentIndex, int dimension)
-            {
-                return $"new {componentType}({GetComponentName(componentIndex, dimension)})";
-            }
+            string newComponent(int componentIndex, int dimension) => $"new {componentType}({GetComponentName(componentIndex, dimension)})";
         }
 
         public static VectorTextBuilder ScalarMultiplyUnit(string unitParameterName, string unitQuantityName)
         {
             return new VectorTextBuilder(scalarMultiplyUnit, ", ");
 
-            string scalarMultiplyUnit(int componentIndex, int dimension)
-            {
-                return $"{GetComponentName(componentIndex, dimension)} * {unitParameterName}.{unitQuantityName}.Magnitude";
-            }
+            string scalarMultiplyUnit(int componentIndex, int dimension) => $"{GetComponentName(componentIndex, dimension)} * {unitParameterName}.{unitQuantityName}.Magnitude";
         }
 
         private static string GetComponentName(int componentIndex, int dimension) => VectorTextBuilder.GetLowerCasedComponentName(componentIndex, dimension);

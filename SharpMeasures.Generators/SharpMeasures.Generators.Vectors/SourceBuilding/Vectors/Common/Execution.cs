@@ -17,7 +17,7 @@ internal static class Execution
             return;
         }
 
-        string source = Composer.Compose(data.Value);
+        var source = Composer.Compose(data.Value);
 
         context.AddSource($"{data.Value.Vector.QualifiedName}.Common.g.cs", SourceText.From(source, Encoding.UTF8));
     }
@@ -129,18 +129,18 @@ internal static class Execution
             if (Data.Scalar is null)
             {
                 AppendComponentsAsScalars(indentation);
+
+                return;
             }
-            else
-            {
-                AppendComponentsAsTypes(indentation, Data.Scalar.Value);
-            }
+
+            AppendComponentsAsTypes(indentation, Data.Scalar.Value);
         }
 
         private void AppendComponentsAsScalars(Indentation indentation)
         {
             SeparationHandler.AddIfNecessary();
 
-            for (int i = 0; i < Data.Dimension; i++)
+            for (var i = 0; i < Data.Dimension; i++)
             {
                 AppendDocumentation(indentation, Data.SourceBuildingContext.Documentation.ComponentMagnitude(i));
                 Builder.AppendLine($"{indentation}public global::SharpMeasures.Scalar {Texts.Upper.ComponentName(i)} {{ get; }}");
@@ -156,7 +156,7 @@ internal static class Execution
         {
             SeparationHandler.AddIfNecessary();
 
-            for (int i = 0; i < Data.Dimension; i++)
+            for (var i = 0; i < Data.Dimension; i++)
             {
                 AppendDocumentation(indentation, Data.SourceBuildingContext.Documentation.Component(i));
                 Builder.AppendLine($"{indentation}public {scalar.FullyQualifiedName} {Texts.Upper.ComponentName(i)} {{ get; }}");
@@ -164,7 +164,7 @@ internal static class Execution
 
             SeparationHandler.Add();
 
-            for (int i = 0; i < Data.Dimension; i++)
+            for (var i = 0; i < Data.Dimension; i++)
             {
                 AppendDocumentation(indentation, Data.SourceBuildingContext.Documentation.ComponentMagnitude(i));
                 Builder.AppendLine($"{indentation}global::SharpMeasures.Scalar global::SharpMeasures.IVector{Data.Dimension}Quantity.{Texts.Upper.ComponentName(i)} => {Texts.Upper.ComponentName(i)}.Magnitude;");
@@ -214,7 +214,7 @@ internal static class Execution
                     {{indentation}}{
                     """);
 
-                for (int i = 0; i < Data.Dimension; i++)
+                for (var i = 0; i < Data.Dimension; i++)
                 {
                     Builder.AppendLine($"{indentation.Increased}{StaticBuilding.NullArgumentGuard(Texts.Lower.ComponentName(i))}");
                 }
@@ -239,7 +239,7 @@ internal static class Execution
 
         private void AppendConstructorBlock(Indentation indentation)
         {
-            for (int i = 0; i < Data.Dimension; i++)
+            for (var i = 0; i < Data.Dimension; i++)
             {
                 Builder.AppendLine($"{indentation}{Texts.Upper.ComponentName(i)} = {Texts.Lower.ComponentName(i)};");
             }
@@ -326,7 +326,7 @@ internal static class Execution
 
             IEnumerable<string> scalarComponent()
             {
-                for (int i = 0; i < Data.Dimension; i++)
+                for (var i = 0; i < Data.Dimension; i++)
                 {
                     yield return $"{VectorTextBuilder.GetUpperCasedComponentName(i, Data.Dimension)}.Value / {Data.UnitParameterName}.{Data.UnitQuantity.Name}.Magnitude.Value";
                 }
@@ -334,7 +334,7 @@ internal static class Execution
 
             IEnumerable<string> typeComponent()
             {
-                for (int i = 0; i < Data.Dimension; i++)
+                for (var i = 0; i < Data.Dimension; i++)
                 {
                     yield return $"{VectorTextBuilder.GetUpperCasedComponentName(i, Data.Dimension)}.Magnitude.Value / {Data.UnitParameterName}.{Data.UnitQuantity.Name}.Magnitude.Value";
                 }
@@ -406,7 +406,7 @@ internal static class Execution
 
             void composeBlock(Indentation indentation)
             {
-                for (int i = 0; i < Data.Dimension; i++)
+                for (var i = 0; i < Data.Dimension; i++)
                 {
                     Builder.AppendLine($"{indentation}{Texts.Lower.ComponentName(i)} = {Texts.Upper.ComponentName(i)};");
                 }
@@ -418,18 +418,18 @@ internal static class Execution
             if (Data.Vector.IsReferenceType)
             {
                 AppendReferenceTypeEquality(indentation);
+
+                return;
             }
-            else
-            {
-                AppendValueTypeEquality(indentation);
-            }
+
+            AppendValueTypeEquality(indentation);
         }
 
         private void AppendReferenceTypeEquality(Indentation indentation)
         {
             SeparationHandler.AddIfNecessary();
 
-            string virtualText = Data.Vector.IsSealed ? " virtual" : string.Empty;
+            var virtualText = Data.Vector.IsSealed ? " virtual" : string.Empty;
 
             AppendDocumentation(indentation, Data.SourceBuildingContext.Documentation.EqualsSameTypeMethod());
             Builder.AppendLine($"""
@@ -487,17 +487,17 @@ internal static class Execution
             {
                 if (Data.Scalar is null)
                 {
-                    for (int i = 0; i < Data.Dimension; i++)
+                    for (var i = 0; i < Data.Dimension; i++)
                     {
                         yield return $"{Texts.Upper.ComponentName(i)}.Value == other.{Texts.Upper.ComponentName(i)}.Value";
                     }
+
+                    yield break;
                 }
-                else
+
+                for (var i = 0; i < Data.Dimension; i++)
                 {
-                    for (int i = 0; i < Data.Dimension; i++)
-                    {
-                        yield return $"{Texts.Upper.ComponentName(i)}.Magnitude.Value == other.{Texts.Upper.ComponentName(i)}.Magnitude.Value";
-                    }
+                    yield return $"{Texts.Upper.ComponentName(i)}.Magnitude.Value == other.{Texts.Upper.ComponentName(i)}.Magnitude.Value";
                 }
             }
         }
@@ -532,7 +532,7 @@ internal static class Execution
 
                 Builder.AppendLine($$"""{{indentation}}{""");
 
-                for (int i = 0; i < Data.Dimension; i++)
+                for (var i = 0; i < Data.Dimension; i++)
                 {
                     Builder.AppendLine($"{indentation.Increased}{StaticBuilding.NullArgumentGuard($"components.{Texts.Upper.ComponentName(i)}")}");
                 }
@@ -541,11 +541,11 @@ internal static class Execution
 
                 Builder.AppendLine($"{indentation.Increased}return new({ConstantVectorTexts.Upper.ComponentsAccess(Data.Dimension)});");
                 Builder.AppendLine($$"""{{indentation}}}""");
+
+                return;
             }
-            else
-            {
-                Builder.AppendLine($" => new({ConstantVectorTexts.Upper.ComponentsAccess(Data.Dimension)});");
-            }
+
+            Builder.AppendLine($" => new({ConstantVectorTexts.Upper.ComponentsAccess(Data.Dimension)});");
         }
 
         private void AppendWithComponentsMethods(Indentation indentation)
@@ -569,7 +569,7 @@ internal static class Execution
                 {{indentation}}/// <summary>Computes the magnitudes of the represented components based on magnitudes expressed in a certain <paramref name="{{Data.UnitParameterName}}"/>.</summary>
                 """);
 
-            for (int i = 0; i < Data.Dimension; i++)
+            for (var i = 0; i < Data.Dimension; i++)
             {
                 Builder.AppendLine($"""{indentation}/// <param name="{Texts.Lower.ComponentName(i)}">The magnitude of the {Texts.Upper.ComponentName(i)}-component, expressed in a certain unit <paramref name="{Data.UnitParameterName}"/>.</param>""");
             }
@@ -584,7 +584,7 @@ internal static class Execution
 
             NamedType scalarType = new("Scalar", "SharpMeasures", "SharpMeasures.Base", true);
 
-            for (int i = 0; i < Data.Dimension; i++)
+            for (var i = 0; i < Data.Dimension; i++)
             {
                 parameters.Add((scalarType, VectorTextBuilder.GetLowerCasedComponentName(i, Data.Dimension)));
             }

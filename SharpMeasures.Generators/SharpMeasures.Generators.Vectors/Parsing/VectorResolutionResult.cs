@@ -7,7 +7,7 @@ public sealed record class VectorResolutionResult
     internal IncrementalValuesProvider<Optional<ResolvedGroupType>> GroupBaseProvider { get; }
     internal IncrementalValuesProvider<Optional<ResolvedGroupType>> GroupSpecializationProvider { get; }
     internal IncrementalValuesProvider<Optional<ResolvedVectorType>> GroupMemberProvider { get; }
- 
+
     internal IncrementalValuesProvider<Optional<ResolvedVectorType>> VectorBaseProvider { get; }
     internal IncrementalValuesProvider<Optional<ResolvedVectorType>> VectorSpecializationProvider { get; }
 

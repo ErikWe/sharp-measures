@@ -18,7 +18,7 @@ internal static class VectorProcessesGenerator
 
     private static Optional<DataModel> Reduce(Optional<VectorDataModel> model, CancellationToken _)
     {
-        if (model.HasValue is false || model.Value.Vector.Processes.Count is 0 && model.Value.Vector.InheritedProcesses.Count is 0)
+        if (model.HasValue is false || (model.Value.Vector.Processes.Count is 0 && model.Value.Vector.InheritedProcesses.Count is 0))
         {
             return new Optional<DataModel>();
         }

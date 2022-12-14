@@ -43,7 +43,7 @@ public static class ValidityFilter
             List<TDefinition> validDefinitions = new();
             IEnumerable<Diagnostic> diagnostics = Array.Empty<Diagnostic>();
 
-            foreach (TDefinition definition in definitions)
+            foreach (var definition in definitions)
             {
                 var validity = Validate(context, definition);
 
@@ -93,7 +93,7 @@ public static class ValidityFilter
         public override IValidityWithDiagnostics Validate(TContext context, TDefinition definition)
         {
             Validator.OnStartValidation(context, definition);
-            
+
             var validity = base.Validate(context, definition);
 
             InvokeResultingCall(context, definition, validity);

@@ -30,7 +30,7 @@ public sealed class IncrementalDriver
 
         var documentID = DocumentId.CreateNewId(projectInfo.Id);
 
-        Solution solution = workspace.AddSolution(solutionInfo);
+        var solution = workspace.AddSolution(solutionInfo);
         solution = solution.AddProject(projectInfo);
         solution = solution.AddDocument(documentID, "File.cs", SourceText.From(initialText));
 

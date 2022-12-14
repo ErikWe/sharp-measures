@@ -9,8 +9,8 @@ public abstract record class AItemListLocations<TLocations> : AAttributeLocation
     protected MinimalLocation? ItemsCollection { get; private init; }
     protected IReadOnlyList<MinimalLocation> ItemsElements
     {
-        get => itemsElements;
-        private init => itemsElements = value.AsReadOnlyEquatable();
+        get => itemsElementsField;
+        private init => itemsElementsField = value.AsReadOnlyEquatable();
     }
 
     protected bool ExplicitlySetItems => ItemsCollection is not null;
@@ -19,7 +19,7 @@ public abstract record class AItemListLocations<TLocations> : AAttributeLocation
     IReadOnlyList<MinimalLocation> IItemListLocations.ItemsElements => ItemsElements;
     bool IItemListLocations.ExplicitlySetItems => ExplicitlySetItems;
 
-    private IReadOnlyList<MinimalLocation> itemsElements { get; init; } = ReadOnlyEquatableList<MinimalLocation>.Empty;
+    private readonly IReadOnlyList<MinimalLocation> itemsElementsField = ReadOnlyEquatableList<MinimalLocation>.Empty;
 
     protected TLocations WithItems(MinimalLocation collection, IReadOnlyList<MinimalLocation> elements) => Locations with
     {

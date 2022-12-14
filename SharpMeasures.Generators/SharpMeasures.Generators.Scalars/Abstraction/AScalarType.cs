@@ -39,7 +39,7 @@ internal record class AScalarType<TDefinition> : IScalarType where TDefinition :
 
     IReadOnlyList<IQuantityOperation> IQuantityType.Operations => Operations;
     IReadOnlyList<IQuantityProcess> IScalarType.Processes => Processes;
-    IReadOnlyList<IScalarConstant> IScalarType.Constants => Constants; 
+    IReadOnlyList<IScalarConstant> IScalarType.Constants => Constants;
     IReadOnlyList<IConvertibleQuantity> IQuantityType.Conversions => Conversions;
 
     IReadOnlyList<IUnitInstanceInclusionList> IScalarType.UnitBaseInstanceInclusions => UnitBaseInstanceInclusions;

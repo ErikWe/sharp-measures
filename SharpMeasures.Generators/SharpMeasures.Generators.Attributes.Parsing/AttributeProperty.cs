@@ -57,10 +57,7 @@ public record class AttributeProperty<TDefinition> : IAttributeProperty<TDefinit
     {
         return wrapper;
 
-        TDefinition wrapper(TDefinition definition, AttributeArgumentListSyntax argumentList, int index, bool _)
-        {
-            return locator(definition, ArgumentLocator.SimpleArgument(argumentList, index));
-        }
+        TDefinition wrapper(TDefinition definition, AttributeArgumentListSyntax argumentList, int index, bool _) => locator(definition, ArgumentLocator.SimpleArgument(argumentList, index));
     }
 
     private static IAttributeProperty<TDefinition>.DLocator WrapLocator(DMultiLocator locator)
@@ -115,9 +112,9 @@ public record class AttributeProperty<TDefinition, TPropertyType> : AttributePro
         {
             if (typeof(TPropertyType) is Type { IsArray: true } propertyType)
             {
-                Array values = Array.CreateInstance(propertyType.GetElementType(), objArray.Length);
+                var values = Array.CreateInstance(propertyType.GetElementType(), objArray.Length);
 
-                for (int i = 0; i < objArray.Length; i++)
+                for (var i = 0; i < objArray.Length; i++)
                 {
                     if (objArray[i] is null)
                     {

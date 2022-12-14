@@ -65,7 +65,7 @@ public abstract class AConvertibleQuantityProcesser<TContext, TProduct> : AActio
 
         List<Diagnostic> allDiagnostics = new();
 
-        for (int i = 0; i < definition.Quantities.Count; i++)
+        for (var i = 0; i < definition.Quantities.Count; i++)
         {
             var quantityValidity = ValidateQuantity(context, definition, i);
 
@@ -176,7 +176,7 @@ public abstract class AConvertibleQuantityProcesser<TContext, TProduct> : AActio
 
         bool conversionSpecifiedDuringSpecialization()
         {
-            if (context.OriginalQuantity != definition.Quantities[index]!.Value || context.ConversionToOriginalQuantitySpecified is false && context.ConversionFromOriginalQuantitySpecified is false)
+            if (context.OriginalQuantity != definition.Quantities[index]!.Value || (context.ConversionToOriginalQuantitySpecified is false && context.ConversionFromOriginalQuantitySpecified is false))
             {
                 return false;
             }

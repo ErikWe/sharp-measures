@@ -16,7 +16,7 @@ internal static class Execution
             return;
         }
 
-        string source = Composer.Compose(data.Value);
+        var source = Composer.Compose(data.Value);
 
         context.AddSource($"{data.Value.Vector.QualifiedName}.Maths.g.cs", SourceText.From(source, Encoding.UTF8));
     }
@@ -63,7 +63,7 @@ internal static class Execution
             SeparationHandler.MarkUnncecessary();
 
             AppendUnaryMethods(indentation);
-            
+
             if (Data.ImplementSum)
             {
                 AppendSumMethod(indentation);
@@ -124,7 +124,7 @@ internal static class Execution
         private void AppendDifferenceMethod(Indentation indentation)
         {
             AppendSubtractSameTypeMethod(indentation);
-            
+
             if (Data.Difference != Data.Vector.AsNamedType())
             {
                 AppendAddDifferenceMethod(indentation);
@@ -284,7 +284,7 @@ internal static class Execution
         private void AppendDifferenceOperator(Indentation indentation)
         {
             AppendSubtractSameTypeOperator(indentation);
-            
+
             if (Data.Difference != Data.Vector.AsNamedType())
             {
                 AppendAddDifferenceOperators(indentation);
@@ -317,8 +317,8 @@ internal static class Execution
 
             AppendDocumentation(indentation, Data.SourceBuildingContext.Documentation.AddDifferenceOperatorLHS());
             StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers, lhsExpression, lhsParameters);
-            
-            if (Data.Vector.IsReferenceType || (Data.Difference!.Value.IsReferenceType))
+
+            if (Data.Vector.IsReferenceType || Data.Difference!.Value.IsReferenceType)
             {
                 SeparationHandler.Add();
             }

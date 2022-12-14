@@ -27,14 +27,14 @@ internal static class Initializer
 
     private static void ScrubTimestamp(StringBuilder source)
     {
-        MatchCollection matches = TimestampRegex.Matches(source.ToString());
+        var matches = TimestampRegex.Matches(source.ToString());
 
         if (matches.Count == 0)
         {
             return;
         }
 
-        Match match = matches[0];
+        var match = matches[0];
         source.Remove(match.Index, match.Length);
         source.Insert(match.Index, match.Result("${header}<stamp>"));
     }
@@ -61,7 +61,7 @@ internal static class Initializer
 
     private static PathInfo DerivePathInfo(string _, string projectDirectory, Type type, MethodInfo method)
     {
-        string[] path = new string[]
+        var path = new string[]
         {
             projectDirectory,
             "Verify/Snapshots"

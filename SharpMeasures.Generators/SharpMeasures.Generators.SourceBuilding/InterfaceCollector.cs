@@ -35,7 +35,7 @@ public sealed class InterfaceCollector
     public void AddInterfaces(params string[] names) => AddInterfaces(names as IEnumerable<string>);
     public void AddInterfaces(IEnumerable<string> names)
     {
-        foreach (string name in names)
+        foreach (var name in names)
         {
             AddInterface(name);
         }

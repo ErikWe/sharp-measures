@@ -47,7 +47,7 @@ internal static class VectorProcessingDiagnosticsStrategies
     public static IVectorProcessingDiagnosticsStrategy Default { get; } = new DefaultProcessingDiagnosticsStrategy();
     public static IVectorProcessingDiagnosticsStrategy EmptyDiagnostics { get; } = new EmptyProcessingDiagnosticsStrategy();
 
-    private class DefaultProcessingDiagnosticsStrategy : IVectorProcessingDiagnosticsStrategy
+    private sealed class DefaultProcessingDiagnosticsStrategy : IVectorProcessingDiagnosticsStrategy
     {
         public IGroupTypeProcessingDiagnostics GroupTypeDiagnostics => GroupTypeProcessingDiagnostics.Instance;
         public IGroupMemberTypeProcessingDiagnostics GroupMemberTypeDiagnostics => GroupMemberTypeProcessingDiagnostics.Instance;
@@ -71,7 +71,7 @@ internal static class VectorProcessingDiagnosticsStrategies
         public IExcludeUnitsProcessingDiagnostics ExcludeUnitsDiagnostics => ExcludeUnitsProcessingDiagnostics.Instance;
     }
 
-    private class EmptyProcessingDiagnosticsStrategy : IVectorProcessingDiagnosticsStrategy
+    private sealed class EmptyProcessingDiagnosticsStrategy : IVectorProcessingDiagnosticsStrategy
     {
         public IGroupTypeProcessingDiagnostics GroupTypeDiagnostics => EmptyGroupTypeProcessingDiagnostics.Instance;
         public IGroupMemberTypeProcessingDiagnostics GroupMemberTypeDiagnostics => EmptyGroupMemberTypeProcessingDiagnostics.Instance;

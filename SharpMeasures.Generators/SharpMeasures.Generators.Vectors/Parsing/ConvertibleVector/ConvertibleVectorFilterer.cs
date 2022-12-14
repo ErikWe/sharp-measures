@@ -45,7 +45,7 @@ internal sealed class ConvertibleVectorFilterer : AActionableProcesser<IConverti
 
         List<Diagnostic> allDiagnostics = new();
 
-        for (int i = 0; i < definition.Quantities.Count; i++)
+        for (var i = 0; i < definition.Quantities.Count; i++)
         {
             var validity = ValidateVector(context, definition, i);
 
@@ -110,7 +110,7 @@ internal sealed class ConvertibleVectorFilterer : AActionableProcesser<IConverti
     private IValidityWithDiagnostics ValidateVectorIsOfExpectedVectorType(IConvertibleVectorFilteringContext context, ConvertibleVectorDefinition definition, int index)
     {
         var vectorIsGroup = context.VectorPopulation.Groups.ContainsKey(definition.Quantities[index]);
-        
+
         if (context.VectorType is VectorType.Group)
         {
             return ValidityWithDiagnostics.Conditional(vectorIsGroup, () => Diagnostics.TypeNotVectorGroup(context, definition, index));

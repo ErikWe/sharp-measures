@@ -10,7 +10,7 @@ public sealed record class QuantityOperationLocations : AAttributeLocations<Quan
     public MinimalLocation? Other { get; init; }
 
     public MinimalLocation? OperatorType { get; init; }
-    public MinimalLocation? Position { get; init; } 
+    public MinimalLocation? Position { get; init; }
 
     public MinimalLocation? Mirror { get; init; }
 

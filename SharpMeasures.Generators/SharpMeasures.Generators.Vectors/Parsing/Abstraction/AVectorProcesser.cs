@@ -76,7 +76,7 @@ internal abstract class AVectorProcesser<TRawType, TRawDefinition, TProductType,
             excludeUnitInstances = ResultWithDiagnostics.Construct(Array.Empty<ExcludeUnitsDefinition>() as IReadOnlyList<ExcludeUnitsDefinition>);
         }
 
-        TProductType product = ProduceResult(rawVector.Type, vector.Result, operations.Result, vectorOperations.Result, processes.Result, constants.Result, conversions.Result, includeUnitInstances.Result, excludeUnitInstances.Result);
+        var product = ProduceResult(rawVector.Type, vector.Result, operations.Result, vectorOperations.Result, processes.Result, constants.Result, conversions.Result, includeUnitInstances.Result, excludeUnitInstances.Result);
 
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }

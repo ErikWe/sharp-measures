@@ -18,18 +18,18 @@ public sealed record class RawQuantityProcessDefinition : ARawAttributeDefinitio
 
     public IReadOnlyList<NamedType?> ParameterTypes
     {
-        get => parameterTypes;
-        init => parameterTypes = value.AsReadOnlyEquatable();
+        get => parameterTypesField;
+        init => parameterTypesField = value.AsReadOnlyEquatable();
     }
 
     public IReadOnlyList<string?> ParameterNames
     {
-        get => parameterNames;
-        init => parameterNames = value.AsReadOnlyEquatable();
+        get => parameterNamesField;
+        init => parameterNamesField = value.AsReadOnlyEquatable();
     }
 
-    private IReadOnlyList<NamedType?> parameterTypes { get; init; } = ReadOnlyEquatableList<NamedType?>.Empty;
-    private IReadOnlyList<string?> parameterNames { get; init; } = ReadOnlyEquatableList<string?>.Empty;
+    private readonly IReadOnlyList<NamedType?> parameterTypesField = ReadOnlyEquatableList<NamedType?>.Empty;
+    private readonly IReadOnlyList<string?> parameterNamesField = ReadOnlyEquatableList<string?>.Empty;
 
     protected override RawQuantityProcessDefinition Definition => this;
 

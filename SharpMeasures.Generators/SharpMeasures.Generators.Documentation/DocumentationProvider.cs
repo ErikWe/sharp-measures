@@ -51,27 +51,21 @@ public static class DocumentationProvider
         {
             return inputProvider.Combine(documentationDictionaryProvider).Select(extractCorrectFile).ExtractResults();
 
-            IResultWithDiagnostics<TOut> extractCorrectFile((TIn Input, DocumentationDictionary Dictionary) data, CancellationToken _)
-            {
-                return ExtractFile(data.Input, data.Dictionary, new EmptyDiagnosticsStrategy<TIdentifier>());
-            }
+            IResultWithDiagnostics<TOut> extractCorrectFile((TIn Input, DocumentationDictionary Dictionary) data, CancellationToken _) => ExtractFile(data.Input, data.Dictionary, new EmptyDiagnosticsStrategy<TIdentifier>());
         }
 
         public IncrementalValuesProvider<TOut> AttachAndReport(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<TIn> inputProvider, IncrementalValueProvider<DocumentationDictionary> documentationDictionaryProvider, IDiagnosticsStrategy<TIdentifier> diagnosticsStrategy)
         {
             return inputProvider.Combine(documentationDictionaryProvider).Select(extractCorrectFile).ReportDiagnostics(context);
 
-            IResultWithDiagnostics<TOut> extractCorrectFile((TIn Input, DocumentationDictionary Dictionary) data, CancellationToken _)
-            {
-                return ExtractFile(data.Input, data.Dictionary, diagnosticsStrategy);
-            }
+            IResultWithDiagnostics<TOut> extractCorrectFile((TIn Input, DocumentationDictionary Dictionary) data, CancellationToken _) => ExtractFile(data.Input, data.Dictionary, diagnosticsStrategy);
         }
 
         private IResultWithDiagnostics<TOut> ExtractFile(TIn input, DocumentationDictionary dictionary, IDiagnosticsStrategy<TIdentifier> diagnosticsStrategy)
         {
-            ProviderData<TIdentifier> inputData = InputTransform(input);
+            var inputData = InputTransform(input);
 
-            if (dictionary.TryGetValue(IdentifierNameDelegate(inputData.Identifier), out DocumentationFile documentationFile))
+            if (dictionary.TryGetValue(IdentifierNameDelegate(inputData.Identifier), out var documentationFile))
             {
                 return ResultWithDiagnostics.Construct(OutputTransform(input, documentationFile));
             }

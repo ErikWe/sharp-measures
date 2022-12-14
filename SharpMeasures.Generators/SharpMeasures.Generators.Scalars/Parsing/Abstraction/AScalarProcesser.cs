@@ -27,9 +27,7 @@ internal interface IScalarTypeProcessingDiagnostics
     public abstract Diagnostic? ContradictoryUnitBaseInstanceInclusionAndExclusion(IScalar scalar);
 }
 
-internal abstract class AScalarProcesser<TRawType, TRawDefinition, TProductType, TProductDefinition>
-    where TRawType : ARawScalarType<TRawDefinition>
-    where TProductDefinition : IScalar
+internal abstract class AScalarProcesser<TRawType, TRawDefinition, TProductType, TProductDefinition> where TRawType : ARawScalarType<TRawDefinition> where TProductDefinition : IScalar
 {
     protected IScalarProcessingDiagnosticsStrategy DiagnosticsStrategy { get; }
 
@@ -92,7 +90,7 @@ internal abstract class AScalarProcesser<TRawType, TRawDefinition, TProductType,
             excludeUnitInstances = ResultWithDiagnostics.Construct(Array.Empty<ExcludeUnitsDefinition>() as IReadOnlyList<ExcludeUnitsDefinition>);
         }
 
-        TProductType product = ProduceResult(rawScalar.Type, scalar.Result, operations.Result, processes.Result, constants.Result, conversions.Result, includeUnitInstanceBases.Result, excludeUnitInstanceBases.Result, includeUnitInstances.Result, excludeUnitInstances.Result);
+        var product = ProduceResult(rawScalar.Type, scalar.Result, operations.Result, processes.Result, constants.Result, conversions.Result, includeUnitInstanceBases.Result, excludeUnitInstanceBases.Result, includeUnitInstances.Result, excludeUnitInstances.Result);
 
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }

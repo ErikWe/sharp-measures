@@ -22,7 +22,7 @@ internal static class DocumentationParsing
 
     public static IReadOnlyCollection<string> GetDependencies(string text)
     {
-        MatchCollection matches = MatchDependencies(text);
+        var matches = MatchDependencies(text);
         List<string> dependencies = new();
 
         foreach (Match match in matches)
@@ -38,7 +38,7 @@ internal static class DocumentationParsing
     public static IResultWithDiagnostics<Dictionary<string, string>> GetParsedTagDefinitions(string text) => GetParsedTagDefinitions(text, (_) => null);
     public static IResultWithDiagnostics<Dictionary<string, string>> GetParsedTagDefinitions(string text, Func<string, Diagnostic?> diagnosticsDelegate)
     {
-        MatchCollection matches = MatchTagDefinitions(text);
+        var matches = MatchTagDefinitions(text);
 
         Dictionary<string, string> content = new(matches.Count);
         List<Diagnostic> allDiagnostics = new();
@@ -77,15 +77,13 @@ internal static class DocumentationParsing
 
     public static bool ReadUtilityState(string text)
     {
-        Match match = UtilityStateRegex.Match(text);
+        var match = UtilityStateRegex.Match(text);
 
         if (match.Success)
         {
             return match.Groups["state"].Value.ToUpperInvariant() is "TRUE";
         }
-        else
-        {
-            return false;
-        }
+
+        return false;
     }
 }

@@ -122,7 +122,7 @@ internal sealed class VectorOperationProcesser : AActionableProcesser<IVectorOpe
             return ValidityWithDiagnostics.Valid;
         }
 
-        if (definition.Locations.ExplicitlySetMirror && definition.Mirror is true || definition.Locations.ExplicitlySetMirroredName)
+        if ((definition.Locations.ExplicitlySetMirror && definition.Mirror is true) || definition.Locations.ExplicitlySetMirroredName)
         {
             return ValidityWithDiagnostics.ValidWithDiagnostics(Diagnostics.MirrorNotSupported(context, definition));
         }
@@ -140,7 +140,7 @@ internal sealed class VectorOperationProcesser : AActionableProcesser<IVectorOpe
     private IValidityWithDiagnostics ValidateMethodNameNotEmpty(IVectorOperationProcessingContext context, RawVectorOperationDefinition definition)
     {
         var methodNameSpecifiedAndEmpty = definition.Locations.ExplicitlySetName && definition.Name!.Length is 0;
-        
+
         return ValidityWithDiagnostics.Conditional(methodNameSpecifiedAndEmpty is false, () => Diagnostics.EmptyName(context, definition));
     }
 

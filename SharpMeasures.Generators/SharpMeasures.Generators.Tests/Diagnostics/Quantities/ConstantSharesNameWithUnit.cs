@@ -115,7 +115,7 @@ public class ConstantSharesNameWithUnit
         DiagnosticsTarget.Singular => ExpectedDiagnosticsLocation.TextSpan(source, target: $"\"{config.ConstantSingular}\"", prefix: $"{attribute}("),
         DiagnosticsTarget.Multiples => ExpectedDiagnosticsLocation.TextSpan(source, target: $"\"{config.ConstantMultiples}\"", prefix: "Multiples = "),
         DiagnosticsTarget.Attribute => ExpectedDiagnosticsLocation.TextSpan(source, target: attribute),
-        _ => throw new ArgumentException($"{config.Target} is not a valid {typeof(DiagnosticsTarget).Name}")
+        _ => throw new ArgumentException($"{config.Target} is not a valid {nameof(DiagnosticsTarget)}")
     };
 
     private static string ScalarText(TextConfig config) => $$"""
@@ -241,7 +241,7 @@ public class ConstantSharesNameWithUnit
     private static string VectorText(TextConfig config) => $$"""
         using SharpMeasures.Generators;
 
-        [VectorConstant("{{config.ConstantSingular}}", "Metre", 1, 1, 1{{(config.ConstantMultiples.Length > 0 ?  $", Multiples = \"{config.ConstantMultiples}\"" : string.Empty)}})]
+        [VectorConstant("{{config.ConstantSingular}}", "Metre", 1, 1, 1{{(config.ConstantMultiples.Length > 0 ? $", Multiples = \"{config.ConstantMultiples}\"" : string.Empty)}})]
         [VectorQuantity(typeof(UnitOfLength))]
         public partial class Position3 { }
 
@@ -597,7 +597,7 @@ public class ConstantSharesNameWithUnit
                 [IncludeUnits("Metre", "Kilometre")]
                 [IncludeUnitBases("Metre", "Kilometre")]
                 """);
-        }    
+        }
 
         source.AppendLine(CultureInfo.InvariantCulture, $$"""
             [ScalarQuantity(typeof(UnitOfLength))]

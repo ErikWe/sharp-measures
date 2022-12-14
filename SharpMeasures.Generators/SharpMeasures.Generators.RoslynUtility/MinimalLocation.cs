@@ -15,7 +15,7 @@ public readonly record struct MinimalLocation(string Path, TextSpan TextSpan, Li
         }
 
         var fileSpan = location.GetLineSpan();
-        string path = fileSpan.Path;
+        var path = fileSpan.Path;
         var textSpan = location.SourceSpan;
 
         return new(path, textSpan, fileSpan.Span);

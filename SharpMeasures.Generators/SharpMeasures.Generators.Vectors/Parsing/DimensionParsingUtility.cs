@@ -11,7 +11,7 @@ internal static class DimensionParsingUtility
     {
         var trailingNumber = Regex.Match(name, @"\d+$", RegexOptions.RightToLeft);
 
-        if (trailingNumber.Success && int.TryParse(trailingNumber.Value, NumberStyles.None, CultureInfo.InvariantCulture, out int result))
+        if (trailingNumber.Success && int.TryParse(trailingNumber.Value, NumberStyles.None, CultureInfo.InvariantCulture, out var result))
         {
             return result;
         }

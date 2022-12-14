@@ -30,7 +30,7 @@ internal sealed class DerivableUnitValidator : AValidator<IDerivableUnitValidati
     {
         var validity = ValidityWithDiagnostics.Valid;
 
-        for (int i = 0; i < definition.Signature.Count; i++)
+        for (var i = 0; i < definition.Signature.Count; i++)
         {
             validity = validity.Validate(() => ValidateSignatureElementIsUnit(context, definition, i));
         }

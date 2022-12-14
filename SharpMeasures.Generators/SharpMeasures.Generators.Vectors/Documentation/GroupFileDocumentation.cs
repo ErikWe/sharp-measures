@@ -26,7 +26,7 @@ internal sealed class GroupFileDocumentation : IGroupDocumentationStrategy, IEqu
 
     private string FromFileOrDefault(Func<IGroupDocumentationStrategy, string> target)
     {
-        string tag = target(GroupDocumentationTags.Instance);
+        var tag = target(GroupDocumentationTags.Instance);
 
         if (DocumentationFile?.OptionallyResolveTag(tag) is not string { Length: > 0 } tagContent)
         {

@@ -56,7 +56,7 @@ internal abstract class AScalarParser<TDefinition, TProduct>
         var includeUnitInstances = ParseIncludeUnits(attributes);
         var excludeUnitInstances = ParseExcludeUnits(attributes);
 
-        TProduct product = ProduceResult(typeSymbol.AsDefinedType(), scalar.Value, operations, processes, constants, conversions, includeUnitInstanceBases, excludeUnitInstanceBases, includeUnitInstances, excludeUnitInstances);
+        var product = ProduceResult(typeSymbol.AsDefinedType(), scalar.Value, operations, processes, constants, conversions, includeUnitInstanceBases, excludeUnitInstanceBases, includeUnitInstances, excludeUnitInstances);
         var foreignSymbols = scalarForeignSymbols.Concat(operationForeignSymbols).Concat(conversionsForeignSymbols);
 
         return (attributes, product, foreignSymbols);

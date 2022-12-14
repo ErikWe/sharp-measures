@@ -98,7 +98,7 @@ public static class StaticBuilding
     public static void AppendNullArgumentGuardForReferenceTypeParameters(StringBuilder source, Indentation indentation, bool finalNewLine = true, params (NamedType Type, string Name)[] parameters) => AppendNullArgumentGuardForReferenceTypeParameters(source, indentation, parameters, finalNewLine);
     public static void AppendNullArgumentGuardForReferenceTypeParameters(StringBuilder source, Indentation indentation, IEnumerable<(NamedType Type, string Name)> parameters, bool finalNewLine = true)
     {
-        bool anyReferenceType = false;
+        var anyReferenceType = false;
 
         foreach ((var parameterType, var parameterName) in parameters)
         {
@@ -124,7 +124,7 @@ public static class StaticBuilding
         List<NamedType> types = new();
         List<string> signatureComponents = new();
 
-        bool anyReferenceTypes = false;
+        var anyReferenceTypes = false;
 
         foreach (var parameter in parameters)
         {

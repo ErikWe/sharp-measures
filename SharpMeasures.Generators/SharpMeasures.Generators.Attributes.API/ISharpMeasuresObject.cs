@@ -2,7 +2,7 @@
 
 public interface ISharpMeasuresObject : IAttributeDefinition
 {
-    new public ISharpMeasuresObjectLocations Locations { get; }
+    new public abstract ISharpMeasuresObjectLocations Locations { get; }
 }
 
 public interface ISharpMeasuresObjectLocations : IAttributeLocations { }

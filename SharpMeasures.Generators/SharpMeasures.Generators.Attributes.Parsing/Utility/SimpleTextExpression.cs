@@ -11,7 +11,7 @@ public static class SimpleTextExpression
             return null;
         }
 
-        string[] splitByOpenBracket = expression.Split('[');
+        var splitByOpenBracket = expression.Split('[');
 
         if (splitByOpenBracket.Length is 1)
         {
@@ -23,25 +23,25 @@ public static class SimpleTextExpression
             return null;
         }
 
-        string[] splitByCloseBracket = splitByOpenBracket[1].Split(']');
+        var splitByCloseBracket = splitByOpenBracket[1].Split(']');
 
         if (splitByCloseBracket.Length is not 2)
         {
             return null;
         }
 
-        string targetText = splitByCloseBracket[0];
+        var targetText = splitByCloseBracket[0];
 
         if (targetText is "*")
         {
             targetText = original;
-        }    
+        }
         else if (original.Contains(targetText) is false)
         {
             return null;
         }
 
-        string newText = splitByOpenBracket[0] + targetText + splitByCloseBracket[1];
+        var newText = splitByOpenBracket[0] + targetText + splitByCloseBracket[1];
 
         return original.Replace(targetText, newText);
     }

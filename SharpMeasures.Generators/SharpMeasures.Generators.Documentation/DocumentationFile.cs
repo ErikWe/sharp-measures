@@ -45,7 +45,7 @@ public sealed class DocumentationFile : IEquatable<DocumentationFile>
             return null;
         }
 
-        Content.TryGetValue(tag, out string? tagText);
+        Content.TryGetValue(tag, out var tagText);
         return tagText;
     }
 
@@ -66,7 +66,7 @@ public sealed class DocumentationFile : IEquatable<DocumentationFile>
 
     public string ResolveTagAndReportDiagnostics(SourceProductionContext context, string tag)
     {
-        IResultWithDiagnostics<string> resultAndDiagnostics = ResolveTag(tag);
+        var resultAndDiagnostics = ResolveTag(tag);
 
         context.ReportDiagnostics(resultAndDiagnostics);
 
@@ -75,7 +75,7 @@ public sealed class DocumentationFile : IEquatable<DocumentationFile>
 
     private Diagnostic? CreateMissingTagDiagnostics(string tag)
     {
-        if (DiagnosticsStrategy.GenerateDiagnostics is false || Configuration.LimitOneErrorPerDocumentationFile && HasReportedOneMissingTag)
+        if (DiagnosticsStrategy.GenerateDiagnostics is false || (Configuration.LimitOneErrorPerDocumentationFile && HasReportedOneMissingTag))
         {
             return null;
         }

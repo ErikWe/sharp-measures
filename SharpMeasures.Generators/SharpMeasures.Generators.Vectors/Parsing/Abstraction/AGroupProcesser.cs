@@ -70,7 +70,7 @@ internal abstract class AGroupProcesser<TRawType, TRawDefinition, TProductType, 
             excludeUnitInstances = ResultWithDiagnostics.Construct(Array.Empty<ExcludeUnitsDefinition>() as IReadOnlyList<ExcludeUnitsDefinition>);
         }
 
-        TProductType product = ProduceResult(rawGroup.Type, group.Result, operations.Result, vectorOperations.Result, conversions.Result, includeUnitInstances.Result, excludeUnitInstances.Result);
+        var product = ProduceResult(rawGroup.Type, group.Result, operations.Result, vectorOperations.Result, conversions.Result, includeUnitInstances.Result, excludeUnitInstances.Result);
 
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }

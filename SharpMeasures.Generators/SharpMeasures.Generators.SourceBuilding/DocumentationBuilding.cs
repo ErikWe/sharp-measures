@@ -20,7 +20,7 @@ public static class DocumentationBuilding
             return;
         }
 
-        string indentedTagContent = NewLineRegex.Replace(text, $"$0{indentation}");
+        var indentedTagContent = NewLineRegex.Replace(text, $"$0{indentation}");
 
         source.AppendLine(indentedTagContent);
     }

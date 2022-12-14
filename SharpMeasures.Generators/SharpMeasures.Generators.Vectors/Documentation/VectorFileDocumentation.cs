@@ -138,7 +138,7 @@ internal sealed class VectorFileDocumentation : IVectorDocumentationStrategy, IE
 
     private string FromFileOrDefault(Func<IVectorDocumentationStrategy, string> target)
     {
-        string tag = target(DocumentationTags);
+        var tag = target(DocumentationTags);
 
         if (DocumentationFile?.OptionallyResolveTag(tag) is not string { Length: > 0 } tagContent)
         {

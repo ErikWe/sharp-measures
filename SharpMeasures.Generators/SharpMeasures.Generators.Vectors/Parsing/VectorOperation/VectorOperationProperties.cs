@@ -1,7 +1,7 @@
 ﻿namespace SharpMeasures.Generators.Vectors.Parsing.VectorOperation;
 
 using Microsoft.CodeAnalysis;
-using SharpMeasures.Generators;
+
 using SharpMeasures.Generators.Attributes.Parsing;
 
 using System.Collections.Generic;

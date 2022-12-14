@@ -124,8 +124,8 @@ internal sealed class SpecializedSharpMeasuresVectorValidator : IProcesser<ISpec
 
     private IValidityWithDiagnostics ValidateNameAndDimensionNotConflicts(ISpecializedSharpMeasuresVectorValidationContext context, SpecializedSharpMeasuresVectorDefinition definition)
     {
-        int? interpretedDimension = DimensionParsingUtility.InterpretDimensionFromName(context.Type.Name);
-        int actualDimension = context.VectorPopulation.VectorBases[context.Type.AsNamedType()].Definition.Dimension;
+        var interpretedDimension = DimensionParsingUtility.InterpretDimensionFromName(context.Type.Name);
+        var actualDimension = context.VectorPopulation.VectorBases[context.Type.AsNamedType()].Definition.Dimension;
 
         return ValidityWithDiagnostics.Conditional(actualDimension == interpretedDimension, () => Diagnostics.VectorNameAndDimensionConflict(context, definition, interpretedDimension!.Value, actualDimension));
     }
@@ -156,7 +156,7 @@ internal sealed class SpecializedSharpMeasuresVectorValidator : IProcesser<ISpec
             return OptionalWithDiagnostics.Empty<NamedType>();
         }
 
-        int dimension = context.VectorPopulation.VectorBases[context.Type.AsNamedType()].Definition.Dimension;
+        var dimension = context.VectorPopulation.VectorBases[context.Type.AsNamedType()].Definition.Dimension;
 
         if (context.VectorPopulation.VectorBases.TryGetValue(definition.Difference.Value, out var vector))
         {
@@ -167,7 +167,12 @@ internal sealed class SpecializedSharpMeasuresVectorValidator : IProcesser<ISpec
         {
             var groupHasMemberOfMatchingDimension = context.VectorPopulation.GroupMembersByGroup[definition.Difference.Value].GroupMembersByDimension.TryGetValue(dimension, out var correspondingMember);
 
-            return OptionalWithDiagnostics.Conditional(groupHasMemberOfMatchingDimension, () => correspondingMember.Type.AsNamedType(), () => Diagnostics.DifferenceVectorGroupLacksMatchingDimension(context, definition, dimension));
+            if (groupHasMemberOfMatchingDimension)
+            {
+                return OptionalWithDiagnostics.Result(correspondingMember.Type.AsNamedType());
+            }
+
+            return OptionalWithDiagnostics.Empty<NamedType>(Diagnostics.DifferenceVectorGroupLacksMatchingDimension(context, definition, dimension));
         }
 
         if (context.VectorPopulation.GroupMembers.TryGetValue(definition.Difference.Value, out var groupMember))

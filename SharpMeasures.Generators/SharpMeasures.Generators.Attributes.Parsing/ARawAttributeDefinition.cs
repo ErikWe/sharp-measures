@@ -1,8 +1,6 @@
 ﻿namespace SharpMeasures.Generators.Attributes.Parsing;
 
-public abstract record class ARawAttributeDefinition<TDefinition, TLocations> : IOpenAttributeDefinition<TDefinition, TLocations>
-    where TDefinition : ARawAttributeDefinition<TDefinition, TLocations>
-    where TLocations : IAttributeLocations
+public abstract record class ARawAttributeDefinition<TDefinition, TLocations> : IOpenAttributeDefinition<TDefinition, TLocations> where TDefinition : ARawAttributeDefinition<TDefinition, TLocations> where TLocations : IAttributeLocations
 {
     protected abstract TDefinition Definition { get; }
 

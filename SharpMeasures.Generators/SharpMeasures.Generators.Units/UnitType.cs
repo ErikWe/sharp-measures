@@ -102,7 +102,7 @@ internal sealed class UnitType : IUnitType
     private IReadOnlyDictionary<string, IUnitInstance> ConstructUnitInstancesByNameDictionary()
     {
         Dictionary<string, IUnitInstance> unitInstancesByName = new(UnitInstanceCount());
-    
+
         foreach (var unit in AllUnitInstances())
         {
             unitInstancesByName.TryAdd(unit.Name, unit);

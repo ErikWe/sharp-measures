@@ -76,7 +76,7 @@ internal sealed class DefaultDocumentation : IDocumentationStrategy, IEquatable<
             {
                 return constant.Value!.Value switch
                 {
-                    > 10000 or < 0.0001 and > -0.0001 or < -10000 => constant.Value.Value.ToString("0.000E0", CultureInfo.InvariantCulture),
+                    > 10000 or (< 0.0001 and > -0.0001) or < -10000 => constant.Value.Value.ToString("0.000E0", CultureInfo.InvariantCulture),
                     _ => constant.Value.Value.ToString("0.####", CultureInfo.InvariantCulture)
                 };
             }
@@ -188,7 +188,7 @@ internal sealed class DefaultDocumentation : IDocumentationStrategy, IEquatable<
 
         if (operation.OperatorType is OperatorType.Subtraction)
         {
-            if (operation.Position is OperatorPosition.Left && mirrored is false || operation.Position is OperatorPosition.Right && mirrored)
+            if ((operation.Position is OperatorPosition.Left && mirrored is false) || (operation.Position is OperatorPosition.Right && mirrored))
             {
                 return $$"""
                     /// <summary>Computes { <see langword="this"/> - <paramref name="{{parameterName}}"/> }.</summary>
@@ -202,7 +202,7 @@ internal sealed class DefaultDocumentation : IDocumentationStrategy, IEquatable<
                 """;
         }
 
-        if (operation.Position is OperatorPosition.Left && mirrored is false || operation.Position is OperatorPosition.Right && mirrored)
+        if ((operation.Position is OperatorPosition.Left && mirrored is false) || (operation.Position is OperatorPosition.Right && mirrored))
         {
             return $$"""
                 /// <summary>Computes { <see langword="this"/> / <paramref name="{{parameterName}}"/> }.</summary>
@@ -454,7 +454,7 @@ internal sealed class DefaultDocumentation : IDocumentationStrategy, IEquatable<
 
     public string CompareToSameType() => """/// <inheritdoc cref="global::SharpMeasures.Scalar.CompareTo(global::SharpMeasures.Scalar)"/>""";
 
-    public string LessThanSameType()=> $$"""/// <inheritdoc cref="global::SharpMeasures.Scalar.operator &lt;(global::SharpMeasures.Scalar, global::SharpMeasures.Scalar)"/>""";
+    public string LessThanSameType() => $$"""/// <inheritdoc cref="global::SharpMeasures.Scalar.operator &lt;(global::SharpMeasures.Scalar, global::SharpMeasures.Scalar)"/>""";
     public string GreaterThanSameType() => $$"""/// <inheritdoc cref="global::SharpMeasures.Scalar.operator &gt;(global::SharpMeasures.Scalar, global::SharpMeasures.Scalar)"/>""";
     public string LessThanOrEqualSameType() => $$"""/// <inheritdoc cref="global::SharpMeasures.Scalar.operator &lt;=(global::SharpMeasures.Scalar, global::SharpMeasures.Scalar)"/>""";
     public string GreaterThanOrEqualSameType() => $$"""/// <inheritdoc cref="global::SharpMeasures.Scalar.operator &gt;=(global::SharpMeasures.Scalar, global::SharpMeasures.Scalar)"/>""";

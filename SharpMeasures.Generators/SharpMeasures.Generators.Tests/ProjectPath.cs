@@ -9,7 +9,8 @@ internal static class ProjectPath
 
     private static string CalculatePath()
     {
-        string pathName = GetSourceFilePathName();
+        var pathName = GetSourceFilePathName();
+
         return pathName[..pathName.LastIndexOf('\\')];
     }
 

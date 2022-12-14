@@ -9,7 +9,7 @@ public sealed class ForeignUnitProcesser
 {
     public static (ForeignUnitProcessingResult ProcessingResult, IUnitPopulation Population) ProcessAndExtend(ForeignUnitParsingResult parsingResult, IUnitPopulation unextendedUnitPopulation, CancellationToken token)
     {
-        ForeignUnitProcesser processer = new ForeignUnitProcesser();
+        var processer = new ForeignUnitProcesser();
 
         if (token.IsCancellationRequested is false)
         {

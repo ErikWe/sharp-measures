@@ -18,7 +18,7 @@ internal static class VectorOperationsGenerator
 
     private static Optional<DataModel> Reduce(Optional<VectorDataModel> model, CancellationToken _)
     {
-        if (model.HasValue is false || model.Value.Vector.Operations.Count is 0 && model.Value.Vector.InheritedOperations.Count is 0 && model.Value.Vector.VectorOperations.Count is 0 && model.Value.Vector.InheritedVectorOperations.Count is 0)
+        if (model.HasValue is false || (model.Value.Vector.Operations.Count is 0 && model.Value.Vector.InheritedOperations.Count is 0 && model.Value.Vector.VectorOperations.Count is 0 && model.Value.Vector.InheritedVectorOperations.Count is 0))
         {
             return new Optional<DataModel>();
         }

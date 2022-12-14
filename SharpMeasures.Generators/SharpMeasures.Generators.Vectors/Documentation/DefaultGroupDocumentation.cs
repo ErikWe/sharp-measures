@@ -116,8 +116,8 @@ internal sealed class DefaultGroupDocumentation : IGroupDocumentationStrategy, I
 
             string scalarsAndUnitConstructorComponent(int componentIndex, int dimension)
             {
-                string componentLowerCase = VectorTextBuilder.GetLowerCasedComponentName(componentIndex, dimension);
-                string componentUpperCase = VectorTextBuilder.GetUpperCasedComponentName(componentIndex, dimension);
+                var componentLowerCase = VectorTextBuilder.GetLowerCasedComponentName(componentIndex, dimension);
+                var componentUpperCase = VectorTextBuilder.GetUpperCasedComponentName(componentIndex, dimension);
 
                 return $"""/// <param name="{componentLowerCase}">The magnitude of the {componentUpperCase}-component of the constructed {memberReference}, expressed in <paramref name="{unitParameterName}"/>.</param>""";
             }
@@ -129,8 +129,8 @@ internal sealed class DefaultGroupDocumentation : IGroupDocumentationStrategy, I
 
             string componentsConstructorComponent(int componentIndex, int dimension)
             {
-                string componentLowerCase = VectorTextBuilder.GetLowerCasedComponentName(componentIndex, dimension);
-                string componentUpperCase = VectorTextBuilder.GetUpperCasedComponentName(componentIndex, dimension);
+                var componentLowerCase = VectorTextBuilder.GetLowerCasedComponentName(componentIndex, dimension);
+                var componentUpperCase = VectorTextBuilder.GetUpperCasedComponentName(componentIndex, dimension);
 
                 return $"""/// <param name="{componentLowerCase}">The {componentUpperCase}-component of the constructed {memberReference}.</param>""";
             }
@@ -142,7 +142,7 @@ internal sealed class DefaultGroupDocumentation : IGroupDocumentationStrategy, I
 
             static string parameterTupleComponent(int componentIndex, int dimension)
             {
-                string componentName = VectorTextBuilder.GetLowerCasedComponentName(componentIndex, dimension);
+                var componentName = VectorTextBuilder.GetLowerCasedComponentName(componentIndex, dimension);
 
                 return $"""<paramref name="{componentName}"/>""";
             }
@@ -151,7 +151,7 @@ internal sealed class DefaultGroupDocumentation : IGroupDocumentationStrategy, I
 
     public bool Equals(DefaultGroupDocumentation? other) => other is not null && other.Type == Type && other.Unit == Unit && other.Scalar == Scalar && other.MembersByDimension == MembersByDimension;
     public override bool Equals(object? obj) => obj is DefaultGroupDocumentation other && Equals(other);
-    
+
     public static bool operator ==(DefaultGroupDocumentation? lhs, DefaultGroupDocumentation? rhs) => lhs?.Equals(rhs) ?? rhs is null;
     public static bool operator !=(DefaultGroupDocumentation? lhs, DefaultGroupDocumentation? rhs) => (lhs == rhs) is false;
 

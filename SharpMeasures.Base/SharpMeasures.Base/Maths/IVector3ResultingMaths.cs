@@ -11,9 +11,7 @@ public interface IVector3ResultingMaths<TResult> where TResult : IVector3Quantit
     /// <typeparam name="TFactor2">The three-dimensional vector quantity that represents the second factor of { <paramref name="a"/> ⨯ <paramref name="b"/> }.</typeparam>
     /// <param name="a">The first factor of { <paramref name="a"/> ⨯ <paramref name="b"/> }.</param>
     /// <param name="b">The second factor of { <paramref name="a"/> ⨯ <paramref name="b"/> }.</param>
-    public abstract TResult Cross<TFactor1, TFactor2>(TFactor1 a, TFactor2 b)
-        where TFactor1 : IVector3Quantity
-        where TFactor2 : IVector3Quantity;
+    public abstract TResult Cross<TFactor1, TFactor2>(TFactor1 a, TFactor2 b) where TFactor1 : IVector3Quantity where TFactor2 : IVector3Quantity;
 
     /// <summary>Computes the normalized <paramref name="vector"/>.</summary>
     /// <param name="vector">This three-dimensional vector quantity is normalized.</param>

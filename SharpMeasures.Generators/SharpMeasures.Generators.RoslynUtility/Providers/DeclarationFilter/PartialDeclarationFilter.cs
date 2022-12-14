@@ -8,7 +8,7 @@ using SharpMeasures.Generators;
 
 using System;
 
-public record struct PartialDeclarationFilter : IDeclarationFilter
+public readonly record struct PartialDeclarationFilter : IDeclarationFilter
 {
     private Func<BaseTypeDeclarationSyntax, Diagnostic?> DiagnosticsDelegate { get; }
 

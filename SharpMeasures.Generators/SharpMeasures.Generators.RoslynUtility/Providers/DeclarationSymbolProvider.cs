@@ -72,7 +72,7 @@ public static class DeclarationSymbolProvider
                 return new Optional<TOut>();
             }
 
-            DeclarationSymbolProviderData data = InputTransform(input.Value);
+            var data = InputTransform(input.Value);
 
             SemanticModel semanticModel;
 

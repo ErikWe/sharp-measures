@@ -43,7 +43,7 @@ public abstract class AItemListProcesser<TDefinitionItem, TProductItem, TContext
     {
         return ValidateListNotUnexpectedlyEmpty(context, definition)
             .Merge(() => ProcessItems(context, definition))
-            .Validate((product) => ValidateProductListNotUnexpectedlyEmpty(product));
+            .Validate(ValidateProductListNotUnexpectedlyEmpty);
     }
 
     private IValidityWithDiagnostics ValidateListNotUnexpectedlyEmpty(TContext context, TDefinition definition)
@@ -73,7 +73,7 @@ public abstract class AItemListProcesser<TDefinitionItem, TProductItem, TContext
 
         List<Diagnostic> allDiagnostics = new();
 
-        for (int i = 0; i < definition.Items.Count; i++)
+        for (var i = 0; i < definition.Items.Count; i++)
         {
             var processedItem = ValidateItemNotUnexpectedlyNull(context, definition, i)
                 .Merge(() => ProcessItem(context, definition, i));
@@ -87,7 +87,7 @@ public abstract class AItemListProcesser<TDefinitionItem, TProductItem, TContext
             }
         }
 
-        TProduct product = ProduceResult(listedItems, definition, locationMap);
+        var product = ProduceResult(listedItems, definition, locationMap);
         return ResultWithDiagnostics.Construct(product, allDiagnostics);
     }
 

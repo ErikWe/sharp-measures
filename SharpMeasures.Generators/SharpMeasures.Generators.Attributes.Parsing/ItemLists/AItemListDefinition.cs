@@ -25,7 +25,7 @@ public abstract record class AItemListDefinition<TItem, TLocations> : AAttribute
 
         var locationMap = new int[items.Count];
 
-        for (int i = 0; i < locationMap.Length; i++)
+        for (var i = 0; i < locationMap.Length; i++)
         {
             locationMap[i] = i;
         }

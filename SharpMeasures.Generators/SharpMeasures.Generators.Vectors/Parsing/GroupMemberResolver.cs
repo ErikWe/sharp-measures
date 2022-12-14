@@ -132,8 +132,8 @@ internal static class GroupMemberResolver
                     return;
                 }
 
-                bool shouldInheritFromMember = inheritedFromMember && (originalCorrespondingMember is null || shouldMemberInheritFromMembers(originalCorrespondingMember));
-                bool shouldInheritFromGroup = originalCorrespondingMember is not null && shouldMemberInheritFromGroup(originalCorrespondingMember) || shouldGroupInherit(vectorGroupSpecialization);
+                var shouldInheritFromMember = inheritedFromMember && (originalCorrespondingMember is null || shouldMemberInheritFromMembers(originalCorrespondingMember));
+                var shouldInheritFromGroup = (originalCorrespondingMember is not null && shouldMemberInheritFromGroup(originalCorrespondingMember)) || shouldGroupInherit(vectorGroupSpecialization);
 
                 recursivelyAddItems(originalVectorGroup, originalCorrespondingMember, shouldInheritFromMember, shouldInheritFromGroup, onlyInherited: false);
             }
@@ -199,8 +199,8 @@ internal static class GroupMemberResolver
                     return;
                 }
 
-                bool shouldInheritFromMember = inheritedFromMember && (originalCorrespondingMember is null || originalCorrespondingMember.Definition.InheritUnitsFromMembers);
-                bool shouldInheritFromGroup = originalCorrespondingMember is not null && originalCorrespondingMember.Definition.InheritUnits || vectorGroupSpecialization.Definition.InheritUnits;
+                var shouldInheritFromMember = inheritedFromMember && (originalCorrespondingMember is null || originalCorrespondingMember.Definition.InheritUnitsFromMembers);
+                var shouldInheritFromGroup = (originalCorrespondingMember is not null && originalCorrespondingMember.Definition.InheritUnits) || vectorGroupSpecialization.Definition.InheritUnits;
 
                 recursivelyModify(originalVectorGroup, originalCorrespondingMember, shouldInheritFromMember, shouldInheritFromGroup);
             }

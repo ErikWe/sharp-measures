@@ -16,7 +16,7 @@ internal static class Execution
             return;
         }
 
-        string source = Composer.Compose(data.Value);
+        var source = Composer.Compose(data.Value);
 
         context.AddSource($"{data.Value.Unit.QualifiedName}.Common.g.cs", SourceText.From(source, Encoding.UTF8));
     }
@@ -151,7 +151,7 @@ internal static class Execution
         {
             SeparationHandler.AddIfNecessary();
 
-            string expression = Data.BiasTerm ? $"{Data.Quantity.Name} * scale, Bias / scale" : $"{Data.Quantity.Name} * scale";
+            var expression = Data.BiasTerm ? $"{Data.Quantity.Name} * scale, Bias / scale" : $"{Data.Quantity.Name} * scale";
 
             AppendDocumentation(indentation, Data.SourceBuildingContext.Documentation.ScaledBy());
             Builder.AppendLine($"{indentation}public {Data.Unit.FullyQualifiedName} ScaledBy(global::SharpMeasures.Scalar scale) => new({expression});");
@@ -161,7 +161,7 @@ internal static class Execution
         {
             SeparationHandler.AddIfNecessary();
 
-            string expression = Data.BiasTerm ? $"{Data.Quantity.Name} * prefix.Factor, Bias / prefix.Factor" : $"{Data.Quantity.Name} * prefix.Factor";
+            var expression = Data.BiasTerm ? $"{Data.Quantity.Name} * prefix.Factor, Bias / prefix.Factor" : $"{Data.Quantity.Name} * prefix.Factor";
 
             AppendDocumentation(indentation, Data.SourceBuildingContext.Documentation.WithPrefix());
             DocumentationBuilding.AppendArgumentNullExceptionTag(Builder, indentation);
@@ -193,7 +193,7 @@ internal static class Execution
         {
             SeparationHandler.AddIfNecessary();
 
-            string expression = Data.BiasTerm ? $"\"{{{Data.Quantity.Name}}} + {{Bias}}\"" : $"{Data.Quantity.Name}.ToString()";
+            var expression = Data.BiasTerm ? $"\"{{{Data.Quantity.Name}}} + {{Bias}}\"" : $"{Data.Quantity.Name}.ToString()";
 
             AppendDocumentation(indentation, Data.SourceBuildingContext.Documentation.ToStringDocumentation());
             Builder.AppendLine($"{indentation}public override string ToString() => {expression};");
@@ -204,19 +204,19 @@ internal static class Execution
             if (Data.Unit.IsReferenceType)
             {
                 AppendReferenceTypeEquality(indentation);
+
+                return;
             }
-            else
-            {
-                AppendValueTypeEquality(indentation);
-            }
+
+            AppendValueTypeEquality(indentation);
         }
 
         private void AppendReferenceTypeEquality(Indentation indentation)
         {
             SeparationHandler.AddIfNecessary();
 
-            string virtualText = Data.Unit.IsSealed ? string.Empty : " virtual";
-            string biasEqualityText = Data.BiasTerm ? " && Bias == other.Bias" : string.Empty;
+            var virtualText = Data.Unit.IsSealed ? string.Empty : " virtual";
+            var biasEqualityText = Data.BiasTerm ? " && Bias == other.Bias" : string.Empty;
 
             AppendDocumentation(indentation, Data.SourceBuildingContext.Documentation.EqualsSameTypeMethod());
             Builder.AppendLine($"{indentation}public{virtualText} bool Equals({Data.Unit.FullyQualifiedName}? other) => other is not null && {Data.Quantity.Name} == other.{Data.Quantity.Name}{biasEqualityText};");
@@ -241,7 +241,7 @@ internal static class Execution
         {
             SeparationHandler.AddIfNecessary();
 
-            string biasEqualityText = Data.BiasTerm ? " && Bias == other.Bias" : string.Empty;
+            var biasEqualityText = Data.BiasTerm ? " && Bias == other.Bias" : string.Empty;
 
             AppendDocumentation(indentation, Data.SourceBuildingContext.Documentation.EqualsSameTypeMethod());
             Builder.AppendLine($$"""
@@ -275,11 +275,11 @@ internal static class Execution
             if (Data.BiasTerm)
             {
                 Builder.AppendLine($"({Data.Quantity.Name}, Bias).GetHashCode();");
+
+                return;
             }
-            else
-            {
-                Builder.AppendLine($"{Data.Quantity.Name}.GetHashCode();");
-            }
+
+            Builder.AppendLine($"{Data.Quantity.Name}.GetHashCode();");
         }
 
         private void AppendComparisons(Indentation indentation)
@@ -287,11 +287,11 @@ internal static class Execution
             if (Data.Unit.IsReferenceType)
             {
                 AppendReferenceTypeComparisons(indentation);
+
+                return;
             }
-            else
-            {
-                AppendValueTypeComparisons(indentation);
-            }
+
+            AppendValueTypeComparisons(indentation);
         }
 
         private void AppendReferenceTypeComparisons(Indentation indentation)

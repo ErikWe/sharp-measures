@@ -30,9 +30,9 @@ public static class CommonProperties
 
         IReadOnlyList<TItem> executeTransform(TRawItem[] items)
         {
-            TItem[] transformedItems = new TItem[items.Length];
+            var transformedItems = new TItem[items.Length];
 
-            for (int i = 0; i < items.Length; i++)
+            for (var i = 0; i < items.Length; i++)
             {
                 transformedItems[i] = transform(items[i]);
             }

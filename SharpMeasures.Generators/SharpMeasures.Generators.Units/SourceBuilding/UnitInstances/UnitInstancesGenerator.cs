@@ -15,7 +15,7 @@ internal static class UnitInstancesGenerator
 
     private static Optional<DataModel> ReduceToDataModel(Optional<Units.DataModel> model, CancellationToken _)
     {
-        if (model.HasValue is false || model.Value.Unit.FixedUnitInstance is null && model.Value.Unit.UnitInstanceAliases.Count is 0 && model.Value.Unit.DerivedUnitInstances.Count is 0 && model.Value.Unit.BiasedUnitInstances.Count is 0 && model.Value.Unit.PrefixedUnitInstances.Count is 0 && model.Value.Unit.ScaledUnitInstances.Count is 0)
+        if (model.HasValue is false || (model.Value.Unit.FixedUnitInstance is null && model.Value.Unit.UnitInstanceAliases.Count is 0 && model.Value.Unit.DerivedUnitInstances.Count is 0 && model.Value.Unit.BiasedUnitInstances.Count is 0 && model.Value.Unit.PrefixedUnitInstances.Count is 0 && model.Value.Unit.ScaledUnitInstances.Count is 0))
         {
             return new Optional<DataModel>();
         }

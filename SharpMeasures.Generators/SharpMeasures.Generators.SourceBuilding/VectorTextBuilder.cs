@@ -10,12 +10,14 @@ public sealed class VectorTextBuilder
     public static string Compose(Func<int, int, string> elementDelegate, string separator, int dimension)
     {
         StringBuilder source = new();
+
         IterativeBuilding.AppendEnumerable(source, components(), separator);
+
         return source.ToString();
 
         IEnumerable<string> components()
         {
-            for (int i = 0; i < dimension; i++)
+            for (var i = 0; i < dimension; i++)
             {
                 yield return elementDelegate(i, dimension);
             }
@@ -38,7 +40,7 @@ public sealed class VectorTextBuilder
     }
 
     public static string GetUpperCasedComponentName(int componentIndex, int dimension) => GetLowerCasedComponentName(componentIndex, dimension).ToUpperInvariant();
-    
+
     private ConcurrentDictionary<int, string> CachedTexts { get; } = new();
 
     private Func<int, int, string> ElementDelegate { get; }
@@ -54,19 +56,20 @@ public sealed class VectorTextBuilder
 
     public string GetText(int dimension)
     {
-        if (CachedTexts.TryGetValue(dimension, out string text))
+        if (CachedTexts.TryGetValue(dimension, out var text))
         {
             return text;
         }
 
-        text = ComposeAndCache(dimension);
-        return text;
+        return ComposeAndCache(dimension);
     }
 
     private string ComposeAndCache(int dimension)
     {
-        string text = Compose(ElementDelegate, Separator, dimension);
+        var text = Compose(ElementDelegate, Separator, dimension);
+
         CachedTexts.TryAdd(dimension, text);
+
         return text;
     }
 

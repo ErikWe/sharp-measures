@@ -91,7 +91,7 @@ public class InclusionOrExclusionHadNoEffect
     [Theory]
     [MemberData(nameof(VectorAttributes))]
     public void VectorGroupMember_MultipleAttributes(string attribute) => AssertVectorGroupMember_MultipleAttributes(attribute);
-    
+
     [Theory]
     [MemberData(nameof(VectorAttributes))]
     public void VectorGroupMember_InheritedFromGroup(string attribute) => AssertVectorGroupMember_InheritedFromGroup(attribute);

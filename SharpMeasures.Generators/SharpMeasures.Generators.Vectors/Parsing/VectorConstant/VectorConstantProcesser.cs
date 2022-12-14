@@ -58,7 +58,7 @@ internal sealed class VectorConstantProcesser : AQuantityConstantProcesser<IQuan
 
         var validity = ValidityWithDiagnostics.Valid;
 
-        for (int i = 0; i < definition.Expressions.Count; i++)
+        for (var i = 0; i < definition.Expressions.Count; i++)
         {
             validity = validity.Validate(ValidateExpressionsElement(context, definition, i));
 

@@ -80,7 +80,7 @@ internal abstract class AGroupValidator<TGroup, TDefinition>
         var vectorOperations = CommonValidation.ValidateVectorOperations(groupType.Type, dimensions, groupType.VectorOperations, scalarPopulation, vectorPopulation, DiagnosticsStrategy);
         var conversions = CommonValidation.ValidateConversions(groupType.Type, groupType.Conversions, vectorPopulation, DiagnosticsStrategy);
 
-        TGroup product = ProduceResult(groupType.Type, group.Result, operations.Result, vectorOperations.Result, conversions.Result, unitInstanceInclusions.Result, unitInstanceExclusions.Result);
+        var product = ProduceResult(groupType.Type, group.Result, operations.Result, vectorOperations.Result, conversions.Result, unitInstanceInclusions.Result, unitInstanceExclusions.Result);
 
         var allDiagnostics = group.Concat(operations).Concat(vectorOperations).Concat(conversions).Concat(unitInstanceInclusions).Concat(unitInstanceExclusions);
 

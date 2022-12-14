@@ -93,10 +93,7 @@ public static class AnalyzerConfigKeyValueProvider
         {
             return optionsProvider.Select(extractData);
 
-            TOut extractData(AnalyzerConfigOptionsProvider options, CancellationToken _)
-            {
-                return OutputTransform(optionsStrategy.ExtractOptions(options));
-            }
+            TOut extractData(AnalyzerConfigOptionsProvider options, CancellationToken _) => OutputTransform(optionsStrategy.ExtractOptions(options));
         }
 
         protected static IncrementalValueProvider<TOut> Attach(IOptionsProviderStrategy optionsProviderStrategy, IncrementalValueProvider<AnalyzerConfigOptionsProvider> optionsProvider)
@@ -159,7 +156,7 @@ public static class AnalyzerConfigKeyValueProvider
 
             TOut outputTransform(AnalyzerConfigOptions options)
             {
-                options.TryGetValue(key, out string? value);
+                var value = options.GetValue(key);
 
                 return singleTransform(value);
             }
@@ -173,9 +170,9 @@ public static class AnalyzerConfigKeyValueProvider
             {
                 Dictionary<string, string?> keyValuePairs = new();
 
-                foreach (string key in keys)
+                foreach (var key in keys)
                 {
-                    options.TryGetValue(key, out string? value);
+                    var value = options.GetValue(key);
 
                     keyValuePairs.Add(key, value);
                 }

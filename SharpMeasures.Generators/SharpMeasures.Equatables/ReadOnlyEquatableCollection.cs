@@ -28,12 +28,12 @@ public class ReadOnlyEquatableCollection<T> : EquatableEnumerable<T>, IReadOnlyC
             return true;
         }
 
-        IEnumerator<T> thisEnumerator = GetEnumerator();
-        IEnumerator<T> otherEnumerator = other.GetEnumerator();
+        var thisEnumerator = GetEnumerator();
+        var otherEnumerator = other.GetEnumerator();
 
         while (thisEnumerator.MoveNext() && otherEnumerator.MoveNext())
         {
-            if (thisEnumerator.Current is null && otherEnumerator.Current is not null || thisEnumerator.Current is not null && otherEnumerator.Current is null)
+            if ((thisEnumerator.Current is null && otherEnumerator.Current is not null) || (thisEnumerator.Current is not null && otherEnumerator.Current is null))
             {
                 return false;
             }

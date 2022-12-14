@@ -15,7 +15,7 @@ internal static class ConversionsGenerator
 
     private static Optional<DataModel> Reduce(Optional<Scalars.DataModel> model, CancellationToken _)
     {
-        if (model.HasValue is false || model.Value.Scalar.Conversions.Count is 0 && model.Value.Scalar.OriginalQuantity is null)
+        if (model.HasValue is false || (model.Value.Scalar.Conversions.Count is 0 && model.Value.Scalar.OriginalQuantity is null))
         {
             return new Optional<DataModel>();
         }

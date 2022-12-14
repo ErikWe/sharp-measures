@@ -1,8 +1,12 @@
 ﻿namespace SharpMeasures.Generators.SourceBuilding;
 
+using System.Text;
+
 public readonly record struct Indentation(int Level, string Text)
 {
     public static Indentation Zero { get; } = new(0);
+
+    private static string IndentationString { get; } = "    ";
 
     public Indentation(int level) : this(level, GetIndentationString(level)) { }
 
@@ -13,12 +17,13 @@ public readonly record struct Indentation(int Level, string Text)
 
     private static string GetIndentationString(int level)
     {
-        string text = "";
-        for (int i = 0; i < level; i++)
+        StringBuilder builder = new();
+
+        for (var i = 0; i < level; i++)
         {
-            text += "    ";
+            builder.Append(IndentationString);
         }
 
-        return text;
+        return builder.ToString();
     }
 }

@@ -22,7 +22,7 @@ using System.Threading;
 public sealed class SharpMeasuresGenerator : IIncrementalGenerator
 {
     private static IEnumerable<Type> TargetAttributes { get; } = Units.TargetAttributes.Attributes.Concat(Scalars.TargetAttributes.Attributes).Concat(Vectors.TargetAttributes.Attributes);
-    
+
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
         var globalAnalyzerConfig = GlobalAnalyzerConfigProvider.Attach(context.AnalyzerConfigOptionsProvider);

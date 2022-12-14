@@ -20,7 +20,7 @@ internal static class Execution
             return;
         }
 
-        string source = Composer.ComposeAndReportDiagnostics(data.Value);
+        var source = Composer.ComposeAndReportDiagnostics(data.Value);
 
         if (source.Length is 0)
         {
@@ -81,7 +81,7 @@ internal static class Execution
         {
             SeparationHandler.MarkUnncecessary();
 
-            foreach (DerivableUnitDefinition definition in Data.Derivations)
+            foreach (var definition in Data.Derivations)
             {
                 AppendDefinition(definition, indentation);
             }
@@ -131,15 +131,15 @@ internal static class Execution
                 return new[] { (new DerivableUnitSignature(definition.Signature), parameterNames) };
             }
 
-            NamedType[] signatureArray = new NamedType[definition.Signature.Count];
-            string[] parameterNamesArray = new string[parameterNames.Count];
+            var signatureArray = new NamedType[definition.Signature.Count];
+            var parameterNamesArray = new string[parameterNames.Count];
 
-            for (int i = 0; i < signatureArray.Length; i++)
+            for (var i = 0; i < signatureArray.Length; i++)
             {
                 signatureArray[i] = definition.Signature[i];
             }
 
-            for (int i = 0; i < parameterNamesArray.Length; i++)
+            for (var i = 0; i < parameterNamesArray.Length; i++)
             {
                 parameterNamesArray[i] = parameterNames[i];
             }
@@ -155,7 +155,7 @@ internal static class Execution
                     yield break;
                 }
 
-                for (int i = fromIndex; i < signatureElements.Length; i++)
+                for (var i = fromIndex; i < signatureElements.Length; i++)
                 {
                     (signatureElements[fromIndex], signatureElements[i]) = (signatureElements[i], signatureElements[fromIndex]);
                     (parameterNames[fromIndex], parameterNames[i]) = (parameterNames[i], parameterNames[fromIndex]);
@@ -189,7 +189,8 @@ internal static class Execution
             var parameterNameEnumerator = parameterNames.GetEnumerator();
             var quantityEnumerator = GetQuantitiesOfSignatureUnits(definition.Signature, unitPopulation).GetEnumerator();
 
-            int index = 0;
+            var index = 0;
+
             while (parameterNameEnumerator.MoveNext() && quantityEnumerator.MoveNext())
             {
                 if (quantityEnumerator.Current is null)
@@ -223,7 +224,8 @@ internal static class Execution
 
             var parameterNames = new string[signature.Count];
 
-            int index = 0;
+            var index = 0;
+
             foreach (var signatureComponent in signature)
             {
                 var name = SourceBuildingUtility.ToParameterName(signatureComponent.Name);
@@ -237,14 +239,14 @@ internal static class Execution
 
             void countParameter(NamedType signatureComponent)
             {
-                if (counts.TryGetValue(signatureComponent.Name, out int count))
+                if (counts.TryGetValue(signatureComponent.Name, out var count))
                 {
                     counts[signatureComponent.Name] = count - 1;
+
+                    return;
                 }
-                else
-                {
-                    counts[signatureComponent.Name] = -1;
-                }
+
+                counts[signatureComponent.Name] = -1;
             }
 
             string appendParameterNumber(string text, NamedType signatureComponent)
@@ -255,16 +257,15 @@ internal static class Execution
                 {
                     return text;
                 }
-                else if (count < 0)
+
+                if (count < 0)
                 {
                     counts[signatureComponent.Name] = 1;
                     return $"{text}1";
                 }
-                else
-                {
-                    counts[signatureComponent.Name] += 1;
-                    return $"{text}{counts[signatureComponent.Name]}";
-                }
+
+                counts[signatureComponent.Name] += 1;
+                return $"{text}{counts[signatureComponent.Name]}";
             }
         }
 

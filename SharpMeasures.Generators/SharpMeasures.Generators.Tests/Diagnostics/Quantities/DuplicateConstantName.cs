@@ -99,7 +99,7 @@ public class DuplicateConstantName
         DiagnosticsTarget.Singular => ExpectedDiagnosticsLocation.TextSpan(source, target: $"\"{config.SecondSingular}\"", postfix: ", \"Meter\""),
         DiagnosticsTarget.Multiples => ExpectedDiagnosticsLocation.TextSpan(source, target: $"\"{config.SecondMultiples}\"", prefix: $"\"Meter\", {(attribute is "ScalarConstant" ? "1001" : "2, 2, 2")}, Multiples = "),
         DiagnosticsTarget.Attribute => ExpectedDiagnosticsLocation.TextSpan(source, target: attribute, postfix: $"(\"{config.SecondSingular}\", \"Meter\""),
-        _ => throw new ArgumentException($"{config.Target} is not a valid {typeof(DiagnosticsTarget).Name}")
+        _ => throw new ArgumentException($"{config.Target} is not a valid {nameof(DiagnosticsTarget)}")
     };
 
     private static string ScalarText(TextConfig config) => $$"""
@@ -335,12 +335,12 @@ public class DuplicateConstantName
 
             [ScalarConstant("{{config.FirstSingular}}", "Metre", 1000{{(config.FirstMultiples.Length > 0 ? $", Multiples = \"{config.FirstMultiples}\"" : string.Empty)}})]
             """);
-        
+
         if (config.Target is not DiagnosticsTarget.Singular)
         {
             source.AppendLine(CultureInfo.InvariantCulture, $$"""[ScalarConstant("{{config.SecondSingular}}", "Meter", 1001, GenerateMultiplesProperty = false)]""");
         }
-        
+
         source.AppendLine("""
             [ScalarQuantity(typeof(UnitOfLength))]
             public partial class Length { }

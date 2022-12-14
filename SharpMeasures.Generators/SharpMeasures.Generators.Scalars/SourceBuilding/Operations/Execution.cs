@@ -19,7 +19,7 @@ internal static class Execution
             return;
         }
 
-        string source = Composer.Compose(data.Value);
+        var source = Composer.Compose(data.Value);
 
         if (source.Length is 0)
         {
@@ -119,7 +119,7 @@ internal static class Execution
             if (ImplementedMethods.Add((operation.MethodName, other)))
             {
                 SeparationHandler.AddIfNecessary();
-                
+
                 var methodNameAndModifiers = $"public {result.FullyQualifiedName} {operation.MethodName}";
 
                 AppendDocumentation(indentation, Data.SourceBuildingContext.Documentation.OperationMethod(operation, other));
@@ -250,7 +250,7 @@ internal static class Execution
             OperatorType.Subtraction => "-",
             OperatorType.Multiplication => "*",
             OperatorType.Division => "/",
-            _ => throw new NotSupportedException($"Invalid {typeof(OperatorType).Name}: {operatorType}")
+            _ => throw new NotSupportedException($"Invalid {nameof(OperatorType)}: {operatorType}")
         };
 
         private IEnumerable<(NamedType Result, NamedType Other)> GetQuantityCombinations(IQuantityOperation operation)

@@ -49,6 +49,7 @@ public static class ScalarGenerator
         }
 
         SourceBuildingContext sourceBuildingContext = new(input.Config.GeneratedFileHeaderContent, GetDocumentationStrategy(input.Scalar.Value, input.UnitPopulation, input.DocumentationDictionary, input.Config));
+
         return new DataModel(input.Scalar.Value, input.UnitPopulation, input.ScalarPopulation, input.VectorPopulation, sourceBuildingContext);
     }
 
@@ -61,7 +62,7 @@ public static class ScalarGenerator
 
         DefaultDocumentation defaultDocumentation = new(scalar, unitPopulation);
 
-        documentationDictionary.TryGetValue(scalar.Type.QualifiedName, out DocumentationFile documentationFile);
+        documentationDictionary.TryGetValue(scalar.Type.QualifiedName, out var documentationFile);
 
         return new FileDocumentation(config.PrintDocumentationTags, documentationFile, defaultDocumentation);
     }

@@ -54,7 +54,7 @@ internal sealed class PrefixedUnitInstanceProcesser : AModifiedUnitInstanceProce
         {
             return ValidateMetricPrefix(context, definition);
         }
-        
+
         if (definition.Locations.ExplicitlySetBinaryPrefix)
         {
             return ValidateBinaryPrefix(context, definition);

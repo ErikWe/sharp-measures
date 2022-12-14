@@ -10,12 +10,12 @@ public abstract record class ARawItemListDefinition<TItem, TDefinition, TLocatio
 {
     protected IReadOnlyList<TItem> Items
     {
-        get => items;
-        private init => items = value.AsReadOnlyEquatable();
+        get => itemsField;
+        private init => itemsField = value.AsReadOnlyEquatable();
     }
 
     IReadOnlyList<TItem> IItemListDefinition<TItem, TLocations>.Items => Items;
-    private IReadOnlyList<TItem> items { get; init; } = ReadOnlyEquatableList<TItem>.Empty;
+    private readonly IReadOnlyList<TItem> itemsField = ReadOnlyEquatableList<TItem>.Empty;
 
     protected ARawItemListDefinition(TLocations locations) : base(locations) { }
 

@@ -52,7 +52,7 @@ internal sealed class DerivedUnitInstanceValidator : AValidator<IDerivedUnitInst
 
     private IValidityWithDiagnostics ValidateNotAmbiguousDerivation(IDerivedUnitInstanceValidationContext context, DerivedUnitInstanceDefinition definition)
     {
-        var ambiguousDerivation = (definition.DerivationID is null || definition.DerivationID.Length is 0) && (context.DerivationsByID.Count is not 1 && context.UnnamedDerivation is null);
+        var ambiguousDerivation = (definition.DerivationID is null || definition.DerivationID.Length is 0) && context.DerivationsByID.Count is not 1 && context.UnnamedDerivation is null;
 
         return ValidityWithDiagnostics.Conditional(ambiguousDerivation is false, () => Diagnostics.AmbiguousSignatureNotSpecified(context, definition));
     }
@@ -83,7 +83,7 @@ internal sealed class DerivedUnitInstanceValidator : AValidator<IDerivedUnitInst
     {
         var validity = ValidityWithDiagnostics.Valid;
 
-        for (int i = 0; i < definition.Units.Count; i++)
+        for (var i = 0; i < definition.Units.Count; i++)
         {
             validity = validity.Validate(() => ValidateUnitInstanceIsDefined(context, definition, derivation, i));
         }

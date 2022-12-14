@@ -1,7 +1,5 @@
 ﻿namespace SharpMeasures;
 
-using System.Diagnostics.CodeAnalysis;
-
 /// <summary>Describes a scalar quantity, having only magnitude.</summary>
 public interface IScalarQuantity
 {
@@ -15,7 +13,6 @@ public interface IScalarQuantity<TSelf> : IScalarQuantity where TSelf : IScalarQ
 {
     /// <summary>Constructs a new <typeparamref name="TSelf"/> representing { <paramref name="magnitude"/> }.</summary>
     /// <param name="magnitude">The magnitude of the constructed <typeparamref name="TSelf"/>.</param>
-    [SuppressMessage("Design", "CA1000", Justification = "Implementing type is not necessarily generic")]
     public static abstract TSelf WithMagnitude(Scalar magnitude);
 
     /// <summary>Computes { +<see langword="this"/> }.</summary>

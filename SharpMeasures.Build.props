@@ -7,14 +7,14 @@
     <PropertyGroup>
         <Nullable>enable</Nullable>
         <WarningsAsErrors>nullable</WarningsAsErrors>
-        <AnalysisMode>all</AnalysisMode>
+        <AnalysisLevel>latest-all</AnalysisLevel>
         <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     </PropertyGroup>
 
     <PropertyGroup>
         <Owners>ErikWe</Owners>
         <Authors>ErikWe</Authors>
-        <Version>0.3.68</Version>
+        <Version>0.3.69</Version>
         <PackageProjectUrl>https://github.com/ErikWe/sharp-measures</PackageProjectUrl>
         <RepositoryUrl>https://github.com/ErikWe/sharp-measures</RepositoryUrl>
     </PropertyGroup>

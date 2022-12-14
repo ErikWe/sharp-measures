@@ -172,7 +172,7 @@ public sealed class QuantityOperationProcesser : AActionableProcesser<IQuantityO
     private IValidityWithDiagnostics ValidateMethodNameNotEmpty(IQuantityOperationProcessingContext context, RawQuantityOperationDefinition definition)
     {
         var methodNameSpecifiedAndEmpty = definition.Locations.ExplicitlySetMethodName && definition.MethodName!.Length is 0;
-        
+
         return ValidityWithDiagnostics.Conditional(methodNameSpecifiedAndEmpty is false, () => Diagnostics.EmptyMethodName(context, definition));
     }
 

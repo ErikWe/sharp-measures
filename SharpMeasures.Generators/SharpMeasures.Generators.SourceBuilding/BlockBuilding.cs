@@ -34,7 +34,7 @@ public static class BlockBuilding
         AppendOpeningBracket(source, originalIndentation, initialNewLine, finalNewLine: true);
         blockContentAppender(source, originalIndentation.Increased);
 
-        bool newLineAfterContent = source.ToString().EndsWith(Environment.NewLine, StringComparison.Ordinal) is false;
+        var newLineAfterContent = source.ToString().EndsWith(Environment.NewLine, StringComparison.Ordinal) is false;
         AppendClosingBracket(source, originalIndentation, newLineAfterContent, finalNewLine);
     }
 

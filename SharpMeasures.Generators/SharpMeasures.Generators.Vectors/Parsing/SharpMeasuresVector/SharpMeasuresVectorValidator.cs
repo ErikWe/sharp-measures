@@ -128,7 +128,12 @@ internal sealed class SharpMeasuresVectorValidator : IProcesser<ISharpMeasuresVe
         {
             var groupHasMemberOfMatchingDimension = context.VectorPopulation.GroupMembersByGroup[definition.Difference.Value].GroupMembersByDimension.TryGetValue(definition.Dimension, out var correspondingMember);
 
-            return OptionalWithDiagnostics.Conditional(groupHasMemberOfMatchingDimension, () => correspondingMember.Type.AsNamedType(), () => Diagnostics.DifferenceVectorGroupLacksMatchingDimension(context, definition));
+            if (groupHasMemberOfMatchingDimension)
+            {
+                return OptionalWithDiagnostics.Result(correspondingMember.Type.AsNamedType());
+            }
+
+            return OptionalWithDiagnostics.Empty<NamedType>(Diagnostics.DifferenceVectorGroupLacksMatchingDimension(context, definition));
         }
 
         if (context.VectorPopulation.GroupMembers.TryGetValue(definition.Difference.Value, out var groupMember))

@@ -66,25 +66,19 @@ public interface IScalarResultingMaths<TResult> where TResult : IScalarQuantity<
     /// <typeparam name="TFactor2">The two-dimensional vector quantity that represents the second factor of { <paramref name="a"/> ∙ <paramref name="b"/> }..</typeparam>
     /// <param name="a">The first factor of { <paramref name="a"/> ∙ <paramref name="b"/> }.</param>
     /// <param name="b">The second factor of { <paramref name="a"/> ∙ <paramref name="b"/> }.</param>
-    public abstract TResult Dot2<TFactor1, TFactor2>(TFactor1 a, TFactor2 b)
-        where TFactor1 : IVector2Quantity
-        where TFactor2 : IVector2Quantity;
+    public abstract TResult Dot2<TFactor1, TFactor2>(TFactor1 a, TFactor2 b) where TFactor1 : IVector2Quantity where TFactor2 : IVector2Quantity;
 
     /// <summary>Computes { <paramref name="a"/> ∙ <paramref name="b"/> }.</summary>
     /// <typeparam name="TFactor1">The three-dimensional vector quantity that represents the first factor of { <paramref name="a"/> ∙ <paramref name="b"/> }.</typeparam>
     /// <typeparam name="TFactor2">The three-dimensional vector quantity that represents the second factor of { <paramref name="a"/> ∙ <paramref name="b"/> }..</typeparam>
     /// <param name="a">The first factor of { <paramref name="a"/> ∙ <paramref name="b"/> }.</param>
     /// <param name="b">The second factor of { <paramref name="a"/> ∙ <paramref name="b"/> }.</param>
-    public abstract TResult Dot3<TFactor1, TFactor2>(TFactor1 a, TFactor2 b)
-        where TFactor1 : IVector3Quantity
-        where TFactor2 : IVector3Quantity;
+    public abstract TResult Dot3<TFactor1, TFactor2>(TFactor1 a, TFactor2 b) where TFactor1 : IVector3Quantity where TFactor2 : IVector3Quantity;
 
     /// <summary>Computes { <paramref name="a"/> ∙ <paramref name="b"/> }.</summary>
     /// <typeparam name="TFactor1">The four-dimensional vector quantity that represents the first factor of { <paramref name="a"/> ∙ <paramref name="b"/> }.</typeparam>
     /// <typeparam name="TFactor2">The four-dimensional vector quantity that represents the second factor of { <paramref name="a"/> ∙ <paramref name="b"/> }..</typeparam>
     /// <param name="a">The first factor of { <paramref name="a"/> ∙ <paramref name="b"/> }.</param>
     /// <param name="b">The second factor of { <paramref name="a"/> ∙ <paramref name="b"/> }.</param>
-    public abstract TResult Dot4<TFactor1, TFactor2>(TFactor1 a, TFactor2 b)
-        where TFactor1 : IVector4Quantity
-        where TFactor2 : IVector4Quantity;
+    public abstract TResult Dot4<TFactor1, TFactor2>(TFactor1 a, TFactor2 b) where TFactor1 : IVector4Quantity where TFactor2 : IVector4Quantity;
 }

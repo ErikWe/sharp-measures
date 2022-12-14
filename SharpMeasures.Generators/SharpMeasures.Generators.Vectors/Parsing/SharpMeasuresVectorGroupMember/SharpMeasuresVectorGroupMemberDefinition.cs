@@ -33,7 +33,7 @@ internal sealed record class SharpMeasuresVectorGroupMemberDefinition : AAttribu
 
     public SharpMeasuresVectorGroupMemberDefinition(NamedType vectorGroup, bool inheritOperations, bool inheritConversions, bool inheritUnits, bool inheritOperationsFromMembers, bool inheritProcessesFromMembers, bool inheritConstantsFromMembers,
         bool inheritConversionsFromMembers, bool inheritUnitsFromMembers, int dimension, SharpMeasuresVectorGroupMemberLocations locations) : base(locations)
- {
+    {
         VectorGroup = vectorGroup;
 
         InheritOperations = inheritOperations;

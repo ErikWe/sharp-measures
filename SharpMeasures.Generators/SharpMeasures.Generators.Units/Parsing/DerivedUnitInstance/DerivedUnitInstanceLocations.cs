@@ -10,12 +10,12 @@ internal sealed record class DerivedUnitInstanceLocations : AUnitInstanceLocatio
     public static DerivedUnitInstanceLocations Empty { get; } = new();
 
     public MinimalLocation? DerivationID { get; init; }
-    
+
     public MinimalLocation? UnitsCollection { get; init; }
     public IReadOnlyList<MinimalLocation> UnitsElements
     {
-        get => unitsElements;
-        init => unitsElements = value.AsReadOnlyEquatable();
+        get => unitsElementsField;
+        init => unitsElementsField = value.AsReadOnlyEquatable();
     }
 
     public bool ExplicitlySetDerivationID => DerivationID is not null;
@@ -23,7 +23,7 @@ internal sealed record class DerivedUnitInstanceLocations : AUnitInstanceLocatio
 
     protected override DerivedUnitInstanceLocations Locations => this;
 
-    private IReadOnlyList<MinimalLocation> unitsElements { get; init; } = ReadOnlyEquatableList<MinimalLocation>.Empty;
+    private readonly IReadOnlyList<MinimalLocation> unitsElementsField = ReadOnlyEquatableList<MinimalLocation>.Empty;
 
     private DerivedUnitInstanceLocations() { }
 }

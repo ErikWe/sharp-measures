@@ -14,7 +14,7 @@ public static class InterfaceBuilding
 
         IEnumerable<string> withIndentation()
         {
-            foreach (string interfaceName in interfaceNames)
+            foreach (var interfaceName in interfaceNames)
             {
                 yield return $"{indentation}{interfaceName}";
             }

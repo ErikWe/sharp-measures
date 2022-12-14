@@ -36,7 +36,7 @@ internal sealed class ConvertibleScalarFilterer : IProcesser<IConvertibleScalarF
 
         List<Diagnostic> allDiagnostics = new();
 
-        for (int i = 0; i < definition.Quantities.Count; i++)
+        for (var i = 0; i < definition.Quantities.Count; i++)
         {
             var validity = ValidateScalar(context, definition, i);
 

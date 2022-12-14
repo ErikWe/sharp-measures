@@ -87,11 +87,11 @@ internal static class Execution
             if (Data.BiasTerm)
             {
                 Builder.AppendLine($" = new(new {Data.Quantity.FullyQualifiedName}(1), new global::SharpMeasures.Scalar(0));");
+
+                return;
             }
-            else
-            {
-                Builder.AppendLine($" = new(new {Data.Quantity.FullyQualifiedName}(1));");
-            }
+
+            Builder.AppendLine($" = new(new {Data.Quantity.FullyQualifiedName}(1));");
         }
 
         private void AppendDerivedUnitInstances(Indentation indentation)
@@ -136,7 +136,7 @@ internal static class Execution
         {
             var initialLength = dependantUnits.Count;
 
-            for (int i = 0; i < dependantUnits.Count; i++)
+            for (var i = 0; i < dependantUnits.Count; i++)
             {
                 if (ImplementedDefinitions.Contains(dependantUnits[i].OriginalUnitInstance))
                 {
@@ -181,7 +181,7 @@ internal static class Execution
             {
                 return;
             }
-            
+
             if (dependantUnits.Count < initialLength)
             {
                 AppendDependantUnits(indentation, dependantUnits);

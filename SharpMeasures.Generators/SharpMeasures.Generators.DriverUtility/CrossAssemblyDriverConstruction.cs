@@ -28,7 +28,7 @@ public static class CrossAssemblyDriverConstruction
         return DriverConstruction.Construct(generator, configuration).WithUpdatedParseOptions(ParseOptions);
     }
 
-    public async static Task<Compilation?> CreateCompilation(string localSource, string foreignSource)
+    public static async Task<Compilation?> CreateCompilation(string localSource, string foreignSource)
     {
         using AdhocWorkspace workspace = new();
 
@@ -56,7 +56,7 @@ public static class CrossAssemblyDriverConstruction
 
         var foreignDocumentID = DocumentId.CreateNewId(foreignProjectInfo.Id);
 
-        Solution solution = workspace.AddSolution(solutionInfo);
+        var solution = workspace.AddSolution(solutionInfo);
         solution = solution.AddProject(localProjectInfo);
         solution = solution.AddProject(foreignProjectInfo);
         solution = solution.AddProjectReference(localProjectInfo.Id, new ProjectReference(foreignProjectInfo.Id));
@@ -66,7 +66,7 @@ public static class CrossAssemblyDriverConstruction
         return await solution.GetProject(localProjectInfo.Id)!.GetCompilationAsync().ConfigureAwait(false);
     }
 
-    public async static Task<GeneratorDriver?> Run(string localSource, string foreignSource, GeneratorDriver driver)
+    public static async Task<GeneratorDriver?> Run(string localSource, string foreignSource, GeneratorDriver driver)
     {
         if (await CreateCompilation(localSource, foreignSource).ConfigureAwait(false) is not Compilation compilation)
         {
@@ -76,7 +76,7 @@ public static class CrossAssemblyDriverConstruction
         return driver.RunGenerators(compilation);
     }
 
-    public async static Task<(GeneratorDriver Driver, Compilation Compilation)?> RunAndUpdateCompilation(string localSource, string foreignSource, GeneratorDriver driver)
+    public static async Task<(GeneratorDriver Driver, Compilation Compilation)?> RunAndUpdateCompilation(string localSource, string foreignSource, GeneratorDriver driver)
     {
         if (await CreateCompilation(localSource, foreignSource).ConfigureAwait(false) is not Compilation compilation)
         {
