@@ -1,5 +1,5 @@
 ﻿# UnitInstance_PerSquareMetre
-<summary>The SI unit, representing { 1 / <see cref="UnitOfArea.SquareMetre"/>² }.</summary>
+<summary>The SI unit of <see cref="SharpMeasures.ArealFrequency"/>, representing { 1 / <see cref="UnitOfArea.SquareMetre"/>² }.</summary>
 /#
 
 # UnitInstance_PerSquareDecimetre

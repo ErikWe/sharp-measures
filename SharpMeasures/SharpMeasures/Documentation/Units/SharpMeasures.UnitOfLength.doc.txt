@@ -1,5 +1,5 @@
 ﻿# UnitInstance_Metre
-<summary>The SI unit.</summary>
+<summary>The SI unit of <see cref="SharpMeasures.Distance"/>.</summary>
 /#
 
 # UnitInstance_Femtometre

@@ -12,7 +12,7 @@
 /#
 
 # UnitInstance_Hertz
-<summary>The SI unit, representing { 1 / <see cref="UnitOfTime.Second"/> }.</summary>
+<summary>The SI unit of <see cref="SharpMeasures.Frequency"/>, representing { 1 / <see cref="UnitOfTime.Second"/> }.</summary>
 <remarks>This is equivalent to <see cref="PerSecond"/>.</remarks>
 /#
 

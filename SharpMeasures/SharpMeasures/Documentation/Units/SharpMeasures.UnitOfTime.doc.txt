@@ -1,5 +1,5 @@
 ﻿# UnitInstance_Second
-<summary>The SI unit.</summary>
+<summary>The SI unit of <see cref="SharpMeasures.Time"/>.</summary>
 /#
 
 # UnitInstance_Minute

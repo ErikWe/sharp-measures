@@ -1,3 +1,3 @@
 ﻿# UnitInstance_SquareMetrePerSecond
-<summary>The SI unit, representing { <see cref="UnitOfAngularMomentum.KilogramSquareMetrePerSecond"/> / <see cref="UnitOfMass.Kilogram"/> }.</summary>
+<summary>The SI unit of <see cref="SharpMeasures.SpecificAngularMomentum"/>, representing { <see cref="UnitOfAngularMomentum.KilogramSquareMetrePerSecond"/> / <see cref="UnitOfMass.Kilogram"/> }.</summary>
 /#

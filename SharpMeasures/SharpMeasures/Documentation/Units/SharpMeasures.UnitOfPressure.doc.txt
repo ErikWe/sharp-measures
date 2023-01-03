@@ -1,5 +1,5 @@
 ﻿# UnitInstance_Pascal
-<summary>The SI unit, representing { <see cref="UnitOfForce.Newton"/> / <see cref="UnitOfArea.SquareMetre"/> }.</summary>
+<summary>The SI unit of <see cref="SharpMeasures.Pressure"/>, representing { <see cref="UnitOfForce.Newton"/> / <see cref="UnitOfArea.SquareMetre"/> }.</summary>
 /#
 
 # UnitInstance_Kilopascal

@@ -1,5 +1,5 @@
 ﻿# UnitInstance_Joule
-<summary>The SI unit, representing { <see cref="UnitOfForce.Newton"/> ∙ <see cref="UnitOfLength.Metre"/> } and { <see cref="UnitOfPower.Watt"/> ∙ <see cref="UnitOfTime.Second"/> }.</summary>
+<summary>The SI unit of <see cref="SharpMeasures.Energy"/>, representing { <see cref="UnitOfForce.Newton"/> ∙ <see cref="UnitOfLength.Metre"/> } or { <see cref="UnitOfPower.Watt"/> ∙ <see cref="UnitOfTime.Second"/> }.</summary>
 /#
 
 # UnitInstance_Kilojoule

@@ -1,5 +1,5 @@
 ﻿# UnitInstance_RadianPerSecondSquared
-<summary>The SI unit, representing { <see cref="UnitOfAngularSpeed.RadianPerSecond"/> / <see cref="UnitOfTime.Second"/> }.</summary>
+<summary>The SI unit of <see cref="SharpMeasures.AngularAcceleration"/>, representing { <see cref="UnitOfAngularSpeed.RadianPerSecond"/> / <see cref="UnitOfTime.Second"/> }.</summary>
 /#
 
 # UnitInstance_DegreePerSecondSquared

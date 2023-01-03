@@ -1,5 +1,5 @@
 ﻿# UnitInstance_KelvinPerMetre
-<summary>The SI unit, representing { <see cref="UnitOfTemperature.Kelvin"/> / <see cref="UnitOfLength.Metre"/> }.</summary>
+<summary>The SI unit of <see cref="SharpMeasures.TemperatureGradient"/>, representing { <see cref="UnitOfTemperature.Kelvin"/> / <see cref="UnitOfLength.Metre"/> }.</summary>
 <remarks>This is equivalent to <see cref="CelsiusPerMetre"/>.</remarks>
 /#
 

@@ -1,5 +1,5 @@
 ﻿# UnitInstance_HertzPerSecond
-<summary>The SI unit, representing { <see cref="UnitOfFrequency.Hertz"/> / <see cref="UnitOfTime.Second"/> }.</summary>
+<summary>The SI unit of <see cref="SharpMeasures.FrequencyDrift"/>, representing { <see cref="UnitOfFrequency.Hertz"/> / <see cref="UnitOfTime.Second"/> }.</summary>
 /#
 
 # UnitInstance_PerSecondSquared

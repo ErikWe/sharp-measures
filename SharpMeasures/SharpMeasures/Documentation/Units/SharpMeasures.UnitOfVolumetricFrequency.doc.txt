@@ -1,5 +1,5 @@
 ﻿# UnitInstance_PerCubicMetre
-<summary>The SI unit, representing { 1 / <see cref="UnitOfVolume.CubicMetre"/> }</summary>
+<summary>The SI unit of <see cref="SharpMeasures.VolumetricFrequency"/>, representing { 1 / <see cref="UnitOfVolume.CubicMetre"/> }</summary>
 /#
 
 # UnitInstance_PerCubicDecimetre

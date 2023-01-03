@@ -1,5 +1,5 @@
 ﻿# UnitInstance_KilogramMetrePerSecond
-<summary>The SI unit, representing { <see cref="UnitOfMass.Kilogram"/> ∙ <see cref="UnitOfSpeed.MetrePerSecond"/> }.</summary>
+<summary>The SI unit of <see cref="SharpMeasures.Momentum"/>, representing { <see cref="UnitOfMass.Kilogram"/> ∙ <see cref="UnitOfSpeed.MetrePerSecond"/> }.</summary>
 <remarks>This is equivalent to <see cref="NewtonSecond"/>.</remarks>
 /#
 

@@ -1,3 +1,3 @@
 ﻿# UnitInstance_KilogramPerCubicMetre
-<summary>The SI unit, representing { <see cref="UnitOfMass.Kilogram"/> / <see cref="UnitOfVolume.CubicMetre"/> }.</summary>
+<summary>The SI unit of <see cref="SharpMeasures.Density"/>, representing { <see cref="UnitOfMass.Kilogram"/> / <see cref="UnitOfVolume.CubicMetre"/> }.</summary>
 /#

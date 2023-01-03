@@ -1,5 +1,5 @@
 ﻿# UnitInstance_MetrePerSecond
-<summary>The SI unit, representing { <see cref="UnitOfLength.Metre"/> / <see cref="UnitOfTime.Second"/> }.</summary>
+<summary>The SI unit of <see cref="SharpMeasures.Speed"/>, representing { <see cref="UnitOfLength.Metre"/> / <see cref="UnitOfTime.Second"/> }.</summary>
 /#
 
 # UnitInstance_KilometrePerSecond

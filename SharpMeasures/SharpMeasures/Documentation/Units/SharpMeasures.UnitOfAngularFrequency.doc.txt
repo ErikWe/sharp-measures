@@ -1,5 +1,5 @@
 ﻿# UnitInstance_PerRadian
-<summary>The SI unit, representing { 1 / <see cref="UnitOfAngle.Radian"/> }.</summary>
+<summary>The SI unit of <see cref="SharpMeasures.AngularFrequency"/>, representing { 1 / <see cref="UnitOfAngle.Radian"/> }.</summary>
 /#
 
 # UnitInstance_PerDegree

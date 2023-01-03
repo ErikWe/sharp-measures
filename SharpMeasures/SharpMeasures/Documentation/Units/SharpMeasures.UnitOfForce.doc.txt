@@ -1,5 +1,5 @@
 ﻿# UnitInstance_Newton
-<summary>The SI unit, representing { <see cref="UnitOfMass.Kilogram"/> ∙ <see cref="UnitOfAcceleration.MetrePerSecondSquared"/> }.</summary>
+<summary>The SI unit of <see cref="SharpMeasures.Force"/>, representing { <see cref="UnitOfMass.Kilogram"/> ∙ <see cref="UnitOfAcceleration.MetrePerSecondSquared"/> }.</summary>
 /#
 
 # UnitInstance_PoundForce

@@ -1,5 +1,5 @@
 ﻿# UnitInstance_Radian
-<summary>The SI unit, representing { 1 / 2π } <see cref="Revolution"/>.</summary>
+<summary>The SI unit of <see cref="SharpMeasures.Angle"/>, representing { 1 / 2π } <see cref="Revolution"/>.</summary>
 /#
 
 # UnitInstance_Milliradian

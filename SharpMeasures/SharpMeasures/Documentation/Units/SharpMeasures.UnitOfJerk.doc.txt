@@ -1,5 +1,5 @@
 ﻿# UnitInstance_MetrePerSecondCubed
-<summary>The SI unit, representing { <see cref="UnitOfAcceleration.MetrePerSecondSquared"/> / <see cref="UnitOfTime.Second"/> }.</summary>
+<summary>The SI unit of <see cref="SharpMeasures.Jerk"/>, representing { <see cref="UnitOfAcceleration.MetrePerSecondSquared"/> / <see cref="UnitOfTime.Second"/> }.</summary>
 /#
 
 # UnitInstance_FootPerSecondCubed

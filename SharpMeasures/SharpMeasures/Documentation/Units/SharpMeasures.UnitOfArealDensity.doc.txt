@@ -1,3 +1,3 @@
 ﻿# UnitInstance_KilogramPerSquareMetre
-<summary>The SI unit, representing { <see cref="UnitOfMass.Kilogram"/> / <see cref="UnitOfArea.SquareMetre"/> }.</summary>
+<summary>The SI unit of <see cref="SharpMeasures.ArealDensity"/>, representing { <see cref="UnitOfMass.Kilogram"/> / <see cref="UnitOfArea.SquareMetre"/> }.</summary>
 /#

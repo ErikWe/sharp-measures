@@ -1,5 +1,5 @@
 ﻿# UnitInstance_CubicMetrePerSecond
-<summary>The SI unit, representing { <see cref="UnitOfVolume.CubicMetre"/> / <see cref="UnitOfTime.Second"/> }</summary>
+<summary>The SI unit of <see cref="SharpMeasures.VolumetricFlowRate"/>, representing { <see cref="UnitOfVolume.CubicMetre"/> / <see cref="UnitOfTime.Second"/> }</summary>
 /#
 
 # UnitInstance_LitrePerSecond

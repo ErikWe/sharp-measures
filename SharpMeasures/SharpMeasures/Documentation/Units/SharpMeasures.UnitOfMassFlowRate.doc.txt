@@ -1,5 +1,5 @@
 ﻿# UnitInstance_KilogramPerSecond
-<summary>The SI unit, representing { <see cref="UnitOfMass.Kilogram"/> / <see cref="UnitOfTime.Second"/> }.</summary>
+<summary>The SI unit of <see cref="SharpMeasures.MassFlowRate"/>, representing { <see cref="UnitOfMass.Kilogram"/> / <see cref="UnitOfTime.Second"/> }.</summary>
 /#
 
 # UnitInstance_PoundPerSecond

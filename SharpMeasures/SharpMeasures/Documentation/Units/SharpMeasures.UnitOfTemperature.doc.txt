@@ -3,17 +3,21 @@
 /#
 
 # UnitInstance_Kelvin
-<summary>The SI unit, with { 0 } representing absolute zero.</summary>
+<summary>The SI unit of <see cref="SharpMeasures.Temperature"/> and <see cref="SharpMeasures.TemperatureDifference"/>. When expressing <see cref="SharpMeasures.Temperature"/>, { 0 } represents absolute zero.</summary>
+<remarks>When expressing <see cref="SharpMeasures.TemperatureDifference"/>, this is equivalent to <see cref="Celsius"/>.</remarks>
 /#
 
 # UnitInstance_Celsius
 <summary>Represents <see cref="Kelvin"/> with an offset of { 273.15 }.</summary>
+<remarks>When expressing <see cref="SharpMeasures.TemperatureDifference"/>, this is equivalent to <see cref="Kelvin"/>.</remarks>
 /#
 
 # UnitInstance_Rankine
 <summary>Represents { 5 / 9 } <see cref="Kelvin"/>.</summary>
+<remarks>When expressing <see cref="SharpMeasures.TemperatureDifference"/>, this is equivalent to <see cref="Fahrenheit"/>.</remarks>
 /#
 
 # UnitInstance_Fahrenheit
 <summary>Represents <see cref="Rankine"/> with an offset of { 459.67 }.</summary>
+<remarks>When expressing <see cref="SharpMeasures.TemperatureDifference"/>, this is equivalent to <see cref="Rankine"/>.</remarks>
 /#

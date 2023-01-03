@@ -1,5 +1,5 @@
 ﻿# UnitInstance_SquareMetre
-<summary>The SI unit, representing { <see cref="UnitOfLength.Metre"/>² }.</summary>
+<summary>The SI unit of <see cref="SharpMeasures.Area"/>, representing { <see cref="UnitOfLength.Metre"/>² }.</summary>
 /#
 
 # UnitInstance_SquareDecimetre

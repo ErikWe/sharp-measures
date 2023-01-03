@@ -1,5 +1,5 @@
 ﻿# UnitInstance_Kilogram
-<summary>The SI unit, representing { 1 000 } <see cref="Gram"/>.</summary>
+<summary>The SI unit of <see cref="SharpMeasures.Mass"/>, representing { 1 000 } <see cref="Gram"/>.</summary>
 /#
 
 # UnitInstance_Gram

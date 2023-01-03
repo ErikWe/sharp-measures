@@ -1,5 +1,5 @@
 ﻿# UnitInstance_CubicMetre
-<summary>The SI unit, representing { <see cref="UnitOfLength.Metre"/>³ }</summary>
+<summary>The SI unit of <see cref="SharpMeasures.Volume"/>, representing { <see cref="UnitOfLength.Metre"/>³ }</summary>
 /#
 
 # UnitInstance_CubicDecimetre

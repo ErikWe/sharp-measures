@@ -1,5 +1,5 @@
 ﻿# UnitInstance_Watt
-<summary>The SI unit, representing { <see cref="UnitOfEnergy.Joule"/> / <see cref="UnitOfTime.Second"/> }.</summary>
+<summary>The SI unit of <see cref="SharpMeasures.Power"/>, representing { <see cref="UnitOfEnergy.Joule"/> / <see cref="UnitOfTime.Second"/> }.</summary>
 /#
 
 # UnitInstance_Kilowatt

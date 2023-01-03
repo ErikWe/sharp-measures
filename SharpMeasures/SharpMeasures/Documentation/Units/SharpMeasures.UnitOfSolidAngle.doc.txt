@@ -4,7 +4,7 @@
 /#
 
 # UnitInstance_Steradian
-<summary>The SI unit, representing { <see cref="UnitOfAngle.Radian"/>² }.</summary>
+<summary>The SI unit of <see cref="SharpMeasures.SolidAngle"/>, representing { <see cref="UnitOfAngle.Radian"/>² }.</summary>
 <remarks>This is equivalent to <see cref="SquareRadian"/>.</remarks>
 /#
 
