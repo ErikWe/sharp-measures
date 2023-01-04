@@ -180,11 +180,11 @@ public partial class Position3 :
     }
 
     /// <summary>Describes mathematical operations that result in a pure <see cref="global::SharpMeasures.Scalar"/>.</summary>
-    public static global::SharpMeasures.Maths.IScalarResultingMaths<global::SharpMeasures.Scalar> PureScalarMaths { get; } = global::SharpMeasures.Maths.MathFactory.ScalarResult();
+    private static global::SharpMeasures.Maths.IScalarResultingMaths<global::SharpMeasures.Scalar> PureScalarMaths { get; } = global::SharpMeasures.Maths.MathFactory.ScalarResult();
 
     /// <summary>Describes mathematical operations that result in <see cref="global::Length"/>.</summary>
-    public static global::SharpMeasures.Maths.IScalarResultingMaths<global::Length> ScalarMaths { get; } = global::SharpMeasures.Maths.MathFactory.ScalarResult<global::Length>();
+    private static global::SharpMeasures.Maths.IScalarResultingMaths<global::Length> ScalarMaths { get; } = global::SharpMeasures.Maths.MathFactory.ScalarResult<global::Length>();
 
     /// <summary>Describes mathematical operations that result in <see cref="global::Position3"/>.</summary>
-    public static global::SharpMeasures.Maths.IVector3ResultingMaths<global::Position3> VectorMaths { get; } = global::SharpMeasures.Maths.MathFactory.Vector3Result<global::Position3>();
+    private static global::SharpMeasures.Maths.IVector3ResultingMaths<global::Position3> VectorMaths { get; } = global::SharpMeasures.Maths.MathFactory.Vector3Result<global::Position3>();
 }
