@@ -1,9 +1,9 @@
 ﻿<Project>
     
     <ItemGroup>
-        <PackageReference Update="SharpMeasures" Version="0.3.69" />
+        <PackageReference Update="SharpMeasures" Version="0.3.70" />
         <PackageReference Update="SharpMeasures.Base" Version="0.3.69" />
-        <PackageReference Update="SharpMeasures.Generators" Version="0.3.69" />
+        <PackageReference Update="SharpMeasures.Generators" Version="0.3.70" />
     </ItemGroup>
 
 </Project>
