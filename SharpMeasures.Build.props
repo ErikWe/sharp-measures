@@ -15,7 +15,7 @@
     <PropertyGroup>
         <Owners>ErikWe</Owners>
         <Authors>ErikWe</Authors>
-        <Version>0.3.70</Version>
+        <Version>0.3.71</Version>
         <PackageProjectUrl>https://github.com/ErikWe/sharp-measures</PackageProjectUrl>
         <RepositoryUrl>https://github.com/ErikWe/sharp-measures</RepositoryUrl>
     </PropertyGroup>
@@ -27,8 +27,8 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <IsPackable>false</IsPackable>
-        <IsPublishable>false</IsPublishable>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <IsPackable>true</IsPackable>
     </PropertyGroup>
 
     <ItemGroup>
