@@ -13,6 +13,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		..\SharpMeasures.Build.props = ..\SharpMeasures.Build.props
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpMeasures.Base.Tests", "SharpMeasures.Base.Tests\SharpMeasures.Base.Tests.csproj", "{E0F49C7A-1F71-4147-811C-B75C7730DDFD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,6 +25,10 @@ Global
 		{B26E24DD-3906-443D-A234-E16FF8F18E6F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B26E24DD-3906-443D-A234-E16FF8F18E6F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B26E24DD-3906-443D-A234-E16FF8F18E6F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E0F49C7A-1F71-4147-811C-B75C7730DDFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E0F49C7A-1F71-4147-811C-B75C7730DDFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E0F49C7A-1F71-4147-811C-B75C7730DDFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E0F49C7A-1F71-4147-811C-B75C7730DDFD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
