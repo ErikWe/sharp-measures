@@ -12,12 +12,6 @@
         </Description>
         <PackageReadmeFile>README.nupkg.md</PackageReadmeFile>
     </PropertyGroup>
-    
-    <PropertyGroup>
-        <GenerateDocumentationFile>true</GenerateDocumentationFile>
-        <IsPackable>true</IsPackable>
-        <IsPublishable>true</IsPublishable>
-    </PropertyGroup>
 
     <ItemGroup>
         <None Include="..\README.nupkg.md" Pack="true" PackagePath="\" />

@@ -1,32 +1,26 @@
 ﻿namespace SharpMeasures;
 
-using SharpMeasures.Maths;
-
 using System;
 using System.Globalization;
 
-/// <summary>A pure two-dimensional vector, representing { X, Y }.</summary>
+/// <summary>A two-dimensional vector, representing the <see cref="Scalar"/> components { X, Y }.</summary>
 public readonly record struct Vector2 : IVector2Quantity<Vector2>, IFormattable
 {
     /// <summary>The <see cref="Vector2"/> representing { 0, 0 }.</summary>
     public static Vector2 Zero { get; } = (0, 0);
+
     /// <summary>The <see cref="Vector2"/> representing { 1, 1 }.</summary>
     public static Vector2 Ones { get; } = (1, 1);
 
-    /// <inheritdoc/>
-    static Vector2 IVector2Quantity<Vector2>.WithComponents(Vector2 components) => components;
-    /// <inheritdoc/>
-    static Vector2 IVector2Quantity<Vector2>.WithComponents(Scalar x, Scalar y) => (x, y);
-
-    /// <summary>The X-component of <see langword="this"/>.</summary>
+    /// <summary>The X-component of the <see cref="Vector2"/>.</summary>
     public Scalar X { get; }
-    /// <summary>The Y-component of <see langword="this"/>.</summary>
+
+    /// <summary>The Y-component of the <see cref="Vector2"/>.</summary>
     public Scalar Y { get; }
 
-    /// <inheritdoc/>
     Vector2 IVector2Quantity.Components => this;
 
-    /// <summary>Constructs a new <see cref="Vector2"/> representing { <paramref name="x"/>, <paramref name="y"/> }.</summary>
+    /// <summary>Instantiates a <see cref="Vector2"/>, representing the <see cref="Scalar"/> components { X, Y }.</summary>
     /// <param name="x">The X-component of the constructed <see cref="Vector2"/>.</param>
     /// <param name="y">The Y-component of the constructed <see cref="Vector2"/>.</param>
     public Vector2(Scalar x, Scalar y)
@@ -35,39 +29,85 @@ public readonly record struct Vector2 : IVector2Quantity<Vector2>, IFormattable
         Y = y;
     }
 
-    /// <summary>Indicates whether either of the X and Y components represented by <see langword="this"/> represents { <see cref="double.NaN"/> }.</summary>
+    static Vector2 IVector2Quantity<Vector2>.WithComponents(Vector2 components) => components;
+    static Vector2 IVector2Quantity<Vector2>.WithComponents(Scalar x, Scalar y) => (x, y);
+
+    /// <summary>Indicates whether either of the X and Y components of the <see cref="Vector2"/> represent { <see cref="Scalar.NaN"/> }.</summary>
     public bool IsNaN => X.IsNaN || Y.IsNaN;
-    /// <summary>Indicates whether <see langword="this"/> represents { 0, 0 }.</summary>
+
+    /// <summary>Indicates whether the <see cref="Vector2"/> represents { 0, 0 }.</summary>
     public bool IsZero => (X.Value, Y.Value) is (0, 0);
-    /// <summary>Indicates whether the X and Y components represented by <see langword="this"/> represent finite values.</summary>
+
+    /// <summary>Indicates whether both the X and Y components of the <see cref="Vector2"/> represent finite values.</summary>
     public bool IsFinite => X.IsFinite && Y.IsFinite;
-    /// <summary>Indicates whether either of the X and Y components represented by <see langword="this"/> represents an infinite value.</summary>
+
+    /// <summary>Indicates whether either of the X and Y components of the <see cref="Vector2"/> represent an infinite value.</summary>
     public bool IsInfinite => X.IsInfinite || Y.IsInfinite;
 
     /// <inheritdoc/>
-    public Scalar Magnitude() => ScalarMaths.Magnitude2(this);
-    /// <inheritdoc/>
-    public Scalar SquaredMagnitude() => ScalarMaths.SquaredMagnitude2(this);
+    public Scalar Magnitude() => SquaredMagnitude().SquareRoot();
 
     /// <inheritdoc/>
-    public Vector2 Normalize() => VectorMaths.Normalize(this);
+    public Scalar SquaredMagnitude() => Dot(this);
 
-    /// <summary>Formats the represented (<see cref="X"/>, <see cref="Y"/>) using the current culture.</summary>
+    /// <inheritdoc/>
+    public Vector2 Normalize() => this / Magnitude();
+
+    /// <summary>Determines whether the <see cref="Vector2"/> is equivalent to another, provided, <see cref="Vector2"/>.</summary>
+    /// <param name="other">The <see cref="Vector2"/> to which the original <see cref="Vector2"/> is compared.</param>
+    /// <returns>A <see cref="bool"/> indicating whether the two <see cref="Vector2"/> are equivalent.</returns>
+    public bool Equals(Vector2 other) => X.Equals(other.X) && Y.Equals(other.Y);
+
+    /// <summary>Determines whether the provided <see cref="Vector2"/> are equivalent.</summary>
+    /// <param name="lhs">The first of the two <see cref="Vector2"/> that are compared.</param>
+    /// <param name="rhs">The second of the two <see cref="Vector2"/> that are compared.</param>
+    /// <returns>A <see cref="bool"/> indicating whether the provided <see cref="Vector2"/> are equivalent.</returns>
+    public static bool Equals(Vector2 lhs, Vector2 rhs) => lhs.Equals(rhs);
+
+    /// <summary>Computes the <see cref="int"/> hash code describing the <see cref="Vector2"/>.</summary>
+    /// <returns>The <see cref="int"/> hash code describing the <see cref="Vector2"/>.</returns>
+    public override int GetHashCode() => (X, Y).GetHashCode();
+
+    /// <summary>Produces a <see cref="string"/>-representation of the <see cref="Vector2"/>, formatted according to the <see cref="CultureInfo.CurrentCulture"/>.</summary>
+    /// <returns>A <see cref="string"/>-representation of the <see cref="Vector2"/>.</returns>
     public override string ToString() => ToString(CultureInfo.CurrentCulture);
-    /// <summary>Formats the represented (<see cref="X"/>, <see cref="Y"/>) according to <paramref name="format"/>, using the current culture.</summary>
-    /// <param name="format">The format of the components <see cref="X"/> and <see cref="Y"/>.</param>
-    public string ToString(string? format) => ToString(format, CultureInfo.CurrentCulture);
-    /// <summary>Formats the represented (<see cref="X"/>, <see cref="Y"/>) using culture-specific formatting information provided by <paramref name="formatProvider"/>.</summary>
-    /// <param name="formatProvider">Provides culture-specific formatting information.</param>
-    public string ToString(IFormatProvider? formatProvider) => ToString("G", formatProvider);
-    /// <summary>Formats the represented (<see cref="X"/>, <see cref="Y"/>) according to <paramref name="format"/>, using culture-specific formatting information provided by <paramref name="formatProvider"/>.</summary>
-    /// <param name="format">The format of the components <see cref="X"/> and <see cref="Y"/>.</param>
-    /// <param name="formatProvider">Provides culture-specific formatting information.</param>
-    public string ToString(string? format, IFormatProvider? formatProvider) => $"({X.ToString(format, formatProvider)}, {Y.ToString(format, formatProvider)})";
 
-    /// <summary>Deconstructs <see langword="this"/> into the components (<see cref="X"/>, <see cref="Y"/>).</summary>
-    /// <param name="x">The X-component of <see langword="this"/>.</param>
-    /// <param name="y">The Y-component of <see langword="this"/>.</param>
+    /// <summary>Produces a <see cref="string"/>-representation of the <see cref="Vector2"/>, formatted according to the provided <see cref="IFormatProvider"/>.</summary>
+    /// <param name="formatProvider">The <see cref="IFormatProvider"/>, providing culture-specific formatting information.</param>
+    /// <returns>A <see cref="string"/>-representation of the <see cref="Vector2"/>.</returns>
+    public string ToString(IFormatProvider? formatProvider) => ToString("G", formatProvider);
+
+    /// <summary>Produces a <see cref="string"/>-representation of the <see cref="Vector2"/>, formatted according to the provided <see cref="string"/> and the <see cref="CultureInfo.CurrentCulture"/>.</summary>
+    /// <param name="format">The <see cref="string"/>, providing formatting information.</param>
+    /// <returns>A <see cref="string"/>-representation of the <see cref="Vector2"/>.</returns>
+    public string ToString(string? format) => ToString(format, CultureInfo.CurrentCulture);
+
+    /// <summary>Produces a <see cref="string"/>-representation of the <see cref="Vector2"/>, formatted according to the provided <see cref="string"/> and <see cref="IFormatProvider"/>.</summary>
+    /// <param name="formatProvider">The <see cref="IFormatProvider"/>, providing culture-specific formatting information.</param>
+    /// <param name="format">The <see cref="string"/>, providing formatting information.</param>
+    /// <returns>A <see cref="string"/>-representation of the <see cref="Vector2"/>.</returns>
+    public string ToString(string? format, IFormatProvider? formatProvider)
+    {
+        if (format is "G" or "g" or null)
+        {
+            format = "({0}, {1})";
+        }
+
+        return string.Format(formatProvider, format, X, Y);
+    }
+
+    /// <summary>Produces a <see cref="string"/>-representation of the <see cref="Vector2"/>, formatted according to the <see cref="CultureInfo.InvariantCulture"/>.</summary>
+    /// <returns>A <see cref="string"/>-representation of the <see cref="Vector2"/>.</returns>
+    public string ToStringInvariant() => ToString(CultureInfo.InvariantCulture);
+
+    /// <summary>Produces a <see cref="string"/>-representation of the <see cref="Vector2"/>, formatted according to the provided <see cref="string"/> and the <see cref="CultureInfo.InvariantCulture"/>.</summary>
+    /// <param name="format">The <see cref="string"/>, providing formatting information.</param>
+    /// <returns>A <see cref="string"/>-representation of the <see cref="Vector2"/>.</returns>
+    public string ToStringInvariant(string? format) => ToString(format, CultureInfo.InvariantCulture);
+
+    /// <summary>Deconstructs the <see cref="Vector2"/> into the X and Y components.</summary>
+    /// <param name="x">Assigned the X-component of the <see cref="Vector2"/>.</param>
+    /// <param name="y">Assigned the Y-component of the <see cref="Vector2"/>.</param>
     public void Deconstruct(out Scalar x, out Scalar y)
     {
         x = X;
@@ -76,57 +116,89 @@ public readonly record struct Vector2 : IVector2Quantity<Vector2>, IFormattable
 
     /// <inheritdoc/>
     public Vector2 Plus() => this;
-    /// <inheritdoc/>
-    public Vector2 Negate() => -this;
-
-    /// <summary>Computes { <see langword="this"/> + <paramref name="addend"/> }.</summary>
-    /// <param name="addend">The second term of { <see langword="this"/> + <paramref name="addend"/> }.</param>
-    public Vector2 Add(Vector2 addend) => this + addend;
-    /// <summary>Computes { <see langword="this"/> - <paramref name="subtrahend"/> }.</summary>
-    /// <param name="subtrahend">The second term of { <see langword="this"/> - <paramref name="subtrahend"/> }.</param>
-    public Vector2 Subtract(Vector2 subtrahend) => this - subtrahend;
-    /// <inheritdoc/>
-    public Vector2 Multiply(Scalar factor) => this * factor;
-    /// <inheritdoc/>
-    public Vector2 Divide(Scalar divisor) => this / divisor;
-    /// <inheritdoc cref="Scalar.Remainder(Scalar)"/>
-    public Vector2 Remainder(Scalar divisor) => this % divisor;
-    /// <summary>Computes { <see langword="this"/> ∙ <paramref name="factor"/> }.</summary>
-    /// <param name="factor">The second factor of { <see langword="this"/> ∙ <paramref name="factor"/> }.</param>
-    public Scalar Dot(Vector2 factor) => ScalarMaths.Dot2(this, factor);
 
     /// <inheritdoc/>
-    public static Vector2 operator +(Vector2 a) => a;
-    /// <inheritdoc/>
-    public static Vector2 operator -(Vector2 a) => (-a.X, -a.Y);
-    /// <summary>Computes { <paramref name="a"/> + <paramref name="b"/> }.</summary>
-    /// <param name="a">The first term of { <paramref name="a"/> + <paramref name="b"/> }.</param>
-    /// <param name="b">The second term of { <paramref name="a"/> + <paramref name="b"/> }.</param>
-    public static Vector2 operator +(Vector2 a, Vector2 b) => (a.X + b.X, a.Y + b.Y);
-    /// <summary>Computes { <paramref name="a"/> - <paramref name="b"/> }.</summary>
-    /// <param name="a">The first term of { <paramref name="a"/> - <paramref name="b"/> }.</param>
-    /// <param name="b">The second term of { <paramref name="a"/> - <paramref name="b"/> }.</param>
-    public static Vector2 operator -(Vector2 a, Vector2 b) => (a.X - b.X, a.Y - b.Y);
+    public Vector2 Negate() => (-X, -Y);
+
+    /// <summary>Computes the sum of the <see cref="Vector2"/> and another, provided, <see cref="Vector2"/>.</summary>
+    /// <param name="addend">The <see cref="Vector2"/> that is added to the original <see cref="Vector2"/>.</param>
+    /// <returns>The sum of the <see cref="Vector2"/>, { <see langword="this"/> + <paramref name="addend"/> }.</returns>
+    public Vector2 Add(Vector2 addend) => (X + addend.X, Y + addend.Y);
+
+    /// <summary>Computes the difference between the <see cref="Vector2"/> and another, provided, <see cref="Vector2"/>.</summary>
+    /// <param name="subtrahend">The <see cref="Vector2"/> that is subtracted from the original <see cref="Vector2"/>.</param>
+    /// <returns>The difference between the two <see cref="Vector2"/>, { <see langword="this"/> - <paramref name="subtrahend"/> }.</returns>
+    public Vector2 Subtract(Vector2 subtrahend) => (X - subtrahend.X, Y - subtrahend.Y);
+
+    /// <summary>Computes the element-wise remainder from division of the <see cref="Vector2"/> by the provided <see cref="Scalar"/>.</summary>
+    /// <param name="divisor">The <see cref="Scalar"/> by which the <see cref="Vector2"/> is divided.</param>
+    /// <returns>The element-wise remainder from division of the <see cref="Vector2"/> by the <see cref="Scalar"/>, { <see langword="this"/> % <paramref name="divisor"/> }.</returns>
+    public Vector2 Remainder(Scalar divisor) => (X % divisor, Y % divisor);
+
+    /// <summary>Scales the <see cref="Vector2"/> by the provided <see cref="Scalar"/>.</summary>
+    /// <param name="factor">The <see cref="Scalar"/> by which the <see cref="Vector2"/> is scaled.</param>
+    /// <returns>The scaled <see cref="Vector2"/>, { <see langword="this"/> ∙ <paramref name="factor"/> }.</returns>
+    public Vector2 Multiply(Scalar factor) => (X * factor, Y * factor);
+
+    /// <summary>Scales the <see cref="Vector2"/> through division by the provided <see cref="Scalar"/>.</summary>
+    /// <param name="divisor">The <see cref="Scalar"/>, scaling the <see cref="Vector2"/> through division.</param>
+    /// <returns>The scaled <see cref="Vector2"/>, { <see langword="this"/> / <paramref name="divisor"/> }.</returns>
+    public Vector2 Divide(Scalar divisor) => (X / divisor, Y / divisor);
+
+    /// <summary>Computes the dot product of the <see cref="Vector2"/> and another, provided, <see cref="Vector2"/>.</summary>
+    /// <param name="factor">The <see cref="Vector2"/> by which the original <see cref="Vector2"/> is dot multiplied.</param>
+    /// <returns>The dot product of the <see cref="Vector2"/>, { <see langword="this"/> ∙ <paramref name="factor"/> }.</returns>
+    public Scalar Dot(Vector2 factor) => (X * factor.X) + (Y * factor.Y);
 
     /// <inheritdoc/>
-    public static Vector2 operator *(Vector2 a, Scalar b) => (a.X * b, a.Y * b);
+    public static Vector2 operator +(Vector2 a) => a.Plus();
+
     /// <inheritdoc/>
-    public static Vector2 operator *(Scalar a, Vector2 b) => (a * b.X, a * b.Y);
+    public static Vector2 operator -(Vector2 a) => a.Negate();
+
+    /// <summary>Computes the sum of the provided <see cref="Vector2"/>.</summary>
+    /// <param name="a">The first <see cref="Vector2"/>, added to the second <see cref="Vector2"/>.</param>
+    /// <param name="b">The second <see cref="Vector2"/>, added to the first <see cref="Vector2"/>.</param>
+    /// <returns>The sum of the <see cref="Vector2"/>, { <paramref name="a"/> + <paramref name="b"/> }.</returns>
+    public static Vector2 operator +(Vector2 a, Vector2 b) => a.Add(b);
+
+    /// <summary>Computes the difference between the provided <see cref="Vector2"/>.</summary>
+    /// <param name="a">The first <see cref="Vector2"/>, from which the second <see cref="Vector2"/> is subtracted.</param>
+    /// <param name="b">The second <see cref="Vector2"/>, which is subtracted from the first <see cref="Vector2"/>.</param>
+    /// <returns>The difference between the two <see cref="Vector2"/>, { <paramref name="a"/> - <paramref name="b"/> }.</returns>
+    public static Vector2 operator -(Vector2 a, Vector2 b) => a.Subtract(b);
+
+    /// <summary>Computes the element-wise remainder from division of the provided <see cref="Vector2"/> by the provided <see cref="Scalar"/>.</summary>
+    /// <param name="a">The <see cref="Vector2"/>, which is divided by the <see cref="Scalar"/>.</param>
+    /// <param name="b">The <see cref="Scalar"/>, by which the <see cref="Vector2"/> is divided.</param>
+    /// <returns>The element-wise remainder from division of the <see cref="Vector2"/> by the <see cref="Scalar"/>, { <paramref name="a"/> % <paramref name="b"/> }.</returns>
+    public static Vector2 operator %(Vector2 a, Scalar b) => a.Remainder(b);
+
     /// <inheritdoc/>
-    public static Vector2 operator /(Vector2 a, Scalar b) => (a.X / b, a.Y / b);
-    /// <summary>Computes { <paramref name="a"/> % <paramref name="b"/> }.</summary>
-    /// <param name="a">The dividend of { <paramref name="a"/> % <paramref name="b"/> }.</param>
-    /// <param name="b">The divisor of { <paramref name="a"/> % <paramref name="b"/> }.</param>
-    public static Vector2 operator %(Vector2 a, Scalar b) => (a.X % b, a.Y % b);
+    public static Vector2 operator *(Vector2 a, Scalar b) => a.Multiply(b);
 
-    /// <summary>Constructs the <see cref="Vector2"/> with the elements of <paramref name="components"/> as components.</summary>
-    public static implicit operator Vector2((Scalar X, Scalar Y) components) => new(components.X, components.Y);
+    /// <inheritdoc/>
+    public static Vector2 operator *(Scalar a, Vector2 b) => b.Multiply(a);
 
-    /// <summary>Constructs the tuple (<see cref="Scalar"/>, <see cref="Scalar"/>) with the elements of <paramref name="vector"/>.</summary>
-    public static implicit operator (Scalar X, Scalar Y)(Vector2 vector) => new(vector.X, vector.Y);
+    /// <inheritdoc/>
+    public static Vector2 operator /(Vector2 a, Scalar b) => a.Divide(b);
 
-    /// <summary>Describes mathematical operations that result in a pure <see cref="Scalar"/>.</summary>
-    private static IScalarResultingMaths<Scalar> ScalarMaths { get; } = MathFactory.ScalarResult();
-    /// <summary>Describes mathematical operations that result in a pure <see cref="Vector2"/>.</summary>
-    private static IVector2ResultingMaths<Vector2> VectorMaths { get; } = MathFactory.Vector2Result();
+    /// <summary>Constructs a <see cref="Vector2"/>, representing the components of the provided <see cref="Scalar"/>-tuple.</summary>
+    /// <param name="components">The <see cref="Scalar"/>-tuple describing the components of the constructed <see cref="Vector2"/>.</param>
+    /// <returns>The constructed <see cref="Vector2"/>, representing the components of the <see cref="Scalar"/>-tuple.</returns>
+    public static Vector2 FromValueTuple((Scalar X, Scalar Y) components) => new(components.X, components.Y);
+
+    /// <summary>Retrieves the <see cref="Scalar"/>-tuple representing the components of the <see cref="Vector2"/>.</summary>
+    /// <returns>The <see cref="Scalar"/>-tuple representing the components of the <see cref="Vector2"/>.</returns>
+    public (Scalar X, Scalar Y) ToValueTuple() => (X, Y);
+
+    /// <summary>Constructs a <see cref="Vector2"/>, representing the components of the provided <see cref="Scalar"/>-tuple.</summary>
+    /// <param name="components">The <see cref="Scalar"/>-tuple describing the components of the constructed <see cref="Vector2"/>.</param>
+    /// <returns>The constructed <see cref="Vector2"/>, representing the components of the <see cref="Scalar"/>-tuple.</returns>
+    public static implicit operator Vector2((Scalar X, Scalar Y) components) => FromValueTuple(components);
+
+    /// <summary>Retrieves the <see cref="Scalar"/>-tuple representing the components of the provided <see cref="Vector2"/>.</summary>
+    /// <param name="vector">The <see cref="Vector2"/>, from which the <see cref="Scalar"/>-tuple is retrieved.</param>
+    /// <returns>The <see cref="Scalar"/>-tuple representing the components of the <see cref="Vector2"/>.</returns>
+    public static implicit operator (Scalar X, Scalar Y)(Vector2 vector) => vector.ToValueTuple();
 }

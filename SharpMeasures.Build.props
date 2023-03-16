@@ -14,7 +14,7 @@
     <PropertyGroup>
         <Owners>ErikWe</Owners>
         <Authors>ErikWe</Authors>
-        <Version>0.3.69</Version>
+        <Version>0.3.70</Version>
         <PackageProjectUrl>https://github.com/ErikWe/sharp-measures</PackageProjectUrl>
         <RepositoryUrl>https://github.com/ErikWe/sharp-measures</RepositoryUrl>
     </PropertyGroup>
@@ -29,6 +29,12 @@
         <IsPackable>false</IsPackable>
         <IsPublishable>false</IsPublishable>
     </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="SonarAnalyzer.CSharp" PrivateAssets="all">
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
 
     <ItemGroup>
         <AssemblyAttribute Include="System.CLSCompliantAttribute">
