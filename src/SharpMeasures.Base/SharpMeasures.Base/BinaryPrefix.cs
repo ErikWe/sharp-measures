@@ -38,38 +38,46 @@ public sealed record class BinaryPrefix : IPrefix, IComparable<BinaryPrefix>, IF
     public static BinaryPrefix Zero { get; } = new(0);
 
     /// <summary>Constructs a <see cref="BinaryPrefix"/>, representing a scale-factor of { 2 } raised to the provided power.</summary>
-    /// <param name="exponent">The <see cref="Scalar"/> power, used as the exponent when computing the scale-factor.</param>
+    /// <param name="exponent">The <see cref="int"/> power, used as the exponent when computing the scale-factor.</param>
     /// <returns>The constructed <see cref="BinaryPrefix"/>, representing the scale-factor { 2 ^ <paramref name="exponent"/> }.</returns>
     /// <exception cref="ArgumentException"/>
     /// <exception cref="ArgumentOutOfRangeException"/>
-    public static BinaryPrefix TwoToThePower(Scalar exponent) => new(Math.Pow(2, exponent));
+    public static BinaryPrefix TwoToThePower(int exponent)
+    {
+        var factor = Math.Pow(2, exponent);
+
+        if (double.IsPositiveInfinity(factor))
+        {
+            throw new ArgumentOutOfRangeException(nameof(exponent), factor, $"The scale-factor of a {nameof(BinaryPrefix)} must be finite.");
+        }
+
+        return new(factor);
+    }
 
     /// <summary>Constructs a <see cref="BinaryPrefix"/>, representing a scale-factor of { 1 024 } raised to the provided power.</summary>
-    /// <param name="exponent">The <see cref="Scalar"/> power, used as the exponent when computing the scale-factor.</param>
+    /// <param name="exponent">The <see cref="int"/> power, used as the exponent when computing the scale-factor.</param>
     /// <returns>The constructed <see cref="BinaryPrefix"/>, representing the scale-factor { 1 024 ^ <paramref name="exponent"/> }.</returns>
     /// <exception cref="ArgumentException"/>
     /// <exception cref="ArgumentOutOfRangeException"/>
-    public static BinaryPrefix ThousandTwentyFourToThePower(Scalar exponent) => new(Math.Pow(1024, exponent));
+    public static BinaryPrefix ThousandTwentyFourToThePower(int exponent)
+    {
+        var factor = Math.Pow(1024, exponent);
+
+        if (double.IsPositiveInfinity(factor))
+        {
+            throw new ArgumentOutOfRangeException(nameof(exponent), factor, $"The scale-factor of a {nameof(BinaryPrefix)} must be finite.");
+        }
+
+        return new(factor);
+    }
 
     /// <summary>The scale-factor of the <see cref="BinaryPrefix"/>.</summary>
     public Scalar Factor { get; }
 
     /// <summary>Instantiates a <see cref="BinaryPrefix"/>, representing a <see cref="Scalar"/> factor.</summary>
     /// <param name="factor">The <see cref="Scalar"/> factor of the constructed <see cref="BinaryPrefix"/>.</param>
-    /// <exception cref="ArgumentException"/>
-    /// <exception cref="ArgumentOutOfRangeException"/>
-    public BinaryPrefix(Scalar factor)
+    private BinaryPrefix(Scalar factor)
     {
-        if (factor.IsNaN)
-        {
-            throw new ArgumentException($"The scale-factor of a {nameof(BinaryPrefix)} must be defined.", nameof(factor));
-        }
-
-        if (factor.IsInfinite)
-        {
-            throw new ArgumentOutOfRangeException(nameof(factor), factor, $"The scale-factor of a {nameof(BinaryPrefix)} must be finite.");
-        }
-
         Factor = factor;
     }
 
@@ -166,23 +174,9 @@ public sealed record class BinaryPrefix : IPrefix, IComparable<BinaryPrefix>, IF
     /// <remarks>A <see cref="bool"/> representing the truthfulness of { <paramref name="lhs"/> ≥ <paramref name="rhs"/> }.</remarks>
     public static bool operator >=(BinaryPrefix? lhs, BinaryPrefix? rhs) => lhs?.Factor >= rhs?.Factor;
 
-    /// <summary>Constructs a <see cref="BinaryPrefix"/>, representing a <see cref="Scalar"/> factor.</summary>
-    /// <param name="factor">The scale-factor represented by the constructed <see cref="BinaryPrefix"/>.</param>
-    /// <returns>The constructed <see cref="BinaryPrefix"/>, representing the provided <see cref="Scalar"/> factor.</returns>
-    /// <exception cref="ArgumentException"/>
-    /// <exception cref="ArgumentOutOfRangeException"/>
-    public static BinaryPrefix FromScalar(Scalar factor) => new(factor);
-
     /// <summary>Retrieves the <see cref="Scalar"/> factor of the <see cref="BinaryPrefix"/>.</summary>
     /// <returns>The <see cref="Scalar"/> factor of the <see cref="BinaryPrefix"/>.</returns>
     public Scalar ToScalar() => Factor;
-
-    /// <summary>Constructs a <see cref="BinaryPrefix"/>, representing a <see cref="Scalar"/> factor.</summary>
-    /// <param name="factor">The scale-factor represented by the constructed <see cref="BinaryPrefix"/>.</param>
-    /// <returns>The constructed <see cref="BinaryPrefix"/>, representing the provided <see cref="Scalar"/> factor.</returns>
-    /// <exception cref="ArgumentException"/>
-    /// <exception cref="ArgumentOutOfRangeException"/>
-    public static explicit operator BinaryPrefix(Scalar factor) => FromScalar(factor);
 
     /// <summary>Retrieves the <see cref="Scalar"/> factor of the provided <see cref="BinaryPrefix"/>.</summary>
     /// <param name="metricPrefix">The <see cref="BinaryPrefix"/>, from which the <see cref="Scalar"/> factor is retrieved.</param>

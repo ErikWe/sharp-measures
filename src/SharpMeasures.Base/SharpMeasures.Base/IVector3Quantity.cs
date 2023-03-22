@@ -1,7 +1,6 @@
 ﻿namespace SharpMeasures;
 
 using System.Diagnostics.CodeAnalysis;
-using System.Numerics;
 
 /// <summary>Describes a three-dimensional vector quantity, consisting of X, Y, and Z components.</summary>
 public interface IVector3Quantity : IVectorQuantity
@@ -38,59 +37,4 @@ public interface IVector3Quantity<TSelf> : IVector3Quantity where TSelf : IVecto
     /// <returns>The constructed <typeparamref name="TSelf"/>, representing the provided <see cref="Vector2"/> components.</returns>
     [SuppressMessage("Design", "CA1000: Do not declare static members on generic types", Justification = "Member is not accessed a generic fashion.")]
     public static abstract TSelf WithComponents(Vector3 components);
-
-    /// <summary>Computes the normalized <typeparamref name="TSelf"/> - the <typeparamref name="TSelf"/> with the same direction, but magnitude { 1 }.</summary>
-    /// <returns>The normalized <typeparamref name="TSelf"/>.</returns>
-    public abstract TSelf Normalize();
-
-    /// <summary>Transforms the <typeparamref name="TSelf"/> by the provided <see cref="Matrix4x4"/>.</summary>
-    /// <param name="transform">The <see cref="Matrix4x4"/> representing the transformation.</param>
-    /// <returns>The transformed <typeparamref name="TSelf"/>.</returns>
-    public abstract TSelf Transform(Matrix4x4 transform);
-
-    /// <summary>Applies the unary plus, resulting in the same <typeparamref name="TSelf"/>.</summary>
-    /// <returns>The same <typeparamref name="TSelf"/>, { <see langword="this"/> }.</returns>
-    public abstract TSelf Plus();
-
-    /// <summary>Negates the <typeparamref name="TSelf"/>.</summary>
-    /// <returns>The negated <typeparamref name="TSelf"/>, { -<see langword="this"/> }.</returns>
-    public abstract TSelf Negate();
-
-    /// <summary>Scales the <typeparamref name="TSelf"/> by the provided <see cref="Scalar"/> factor.</summary>
-    /// <param name="factor">The <see cref="Scalar"/> factor, by which the <typeparamref name="TSelf"/> is scaled.</param>
-    /// <returns>The scalad <typeparamref name="TSelf"/>, { <paramref name="factor"/> ∙ <see langword="this"/> }.</returns>
-    public abstract TSelf Multiply(Scalar factor);
-
-    /// <summary>Scales the <typeparamref name="TSelf"/> through division by the provided <see cref="Scalar"/> value.</summary>
-    /// <param name="divisor">The <see cref="Scalar"/> value, scaling the <typeparamref name="TSelf"/> through division.</param>
-    /// <returns>The scaled <typeparamref name="TSelf"/>, { <see langword="this"/> / <paramref name="divisor"/> }.</returns>
-    public abstract TSelf Divide(Scalar divisor);
-
-    /// <summary>Applies the unary plus to the provided <typeparamref name="TSelf"/>, resulting in the same <typeparamref name="TSelf"/>.</summary>
-    /// <param name="a">The <typeparamref name="TSelf"/>, to which the unary plus is applied.</param>
-    /// <returns>The same <typeparamref name="TSelf"/>, { <paramref name="a"/> }.</returns>
-    public static abstract TSelf operator +(TSelf a);
-
-    /// <summary>Negates the provided <typeparamref name="TSelf"/>.</summary>
-    /// <param name="a">The <typeparamref name="TSelf"/> that is negated.</param>
-    /// <returns>The negated <typeparamref name="TSelf"/>, { -<paramref name="a"/> }.</returns>
-    public static abstract TSelf operator -(TSelf a);
-
-    /// <summary>Scales the provided <typeparamref name="TSelf"/> by the provided <see cref="Scalar"/> factor.</summary>
-    /// <param name="a">The <typeparamref name="TSelf"/> that is scaled.</param>
-    /// <param name="b">The <see cref="Scalar"/> factor, by which the <typeparamref name="TSelf"/> is scaled.</param>
-    /// <returns>The scaled <typeparamref name="TSelf"/>, { <paramref name="a"/> ∙ <paramref name="b"/> }.</returns>
-    public static abstract TSelf operator *(TSelf a, Scalar b);
-
-    /// <summary>Scales the provided <typeparamref name="TSelf"/> by the provided <see cref="Scalar"/> factor.</summary>
-    /// <param name="a">The <see cref="Scalar"/> factor, by which the <typeparamref name="TSelf"/> is scaled.</param>
-    /// <param name="b">The <typeparamref name="TSelf"/> that is scaled.</param>
-    /// <returns>The scaled <typeparamref name="TSelf"/>, { <paramref name="a"/> ∙ <paramref name="b"/> }.</returns>
-    public static abstract TSelf operator *(Scalar a, TSelf b);
-
-    /// <summary>Scales the provided <typeparamref name="TSelf"/> through division by the provided <see cref="Scalar"/> value.</summary>
-    /// <param name="a">The <typeparamref name="TSelf"/> that is scaled.</param>
-    /// <param name="b">The <see cref="Scalar"/> value, scaling the <typeparamref name="TSelf"/> through division.</param>
-    /// <returns>The scaled <typeparamref name="TSelf"/>, { <paramref name="a"/> / <paramref name="b"/> }.</returns>
-    public static abstract TSelf operator /(TSelf a, Scalar b);
 }

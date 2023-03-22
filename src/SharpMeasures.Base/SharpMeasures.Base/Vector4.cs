@@ -46,7 +46,7 @@ public readonly record struct Vector4 : IVector4Quantity<Vector4>, IFormattable
     public bool IsNaN => X.IsNaN || Y.IsNaN || Z.IsNaN || W.IsNaN;
 
     /// <summary>Indicates whether the <see cref="Vector4"/> represents { 0, 0, 0 }.</summary>
-    public bool IsZero => (X.Value, Y.Value, Z.Value, W.Value) is (0, 0, 0, 0);
+    public bool IsZero => X.IsZero && Y.IsZero && Z.IsZero && W.IsZero;
 
     /// <summary>Indicates whether the X, Y, Z, and W components of the <see cref="Vector4"/> all represent finite values.</summary>
     public bool IsFinite => X.IsFinite && Y.IsFinite && Z.IsFinite && W.IsFinite;
@@ -128,10 +128,12 @@ public readonly record struct Vector4 : IVector4Quantity<Vector4>, IFormattable
         w = W;
     }
 
-    /// <inheritdoc/>
+    /// <summary>Applies the unary plus to the <see cref="Vector4"/>.</summary>
+    /// <returns>The same <see cref="Vector4"/>, { <see langword="this"/> }.</returns>
     public Vector4 Plus() => this;
 
-    /// <inheritdoc/>
+    /// <summary>Negates the <see cref="Vector4"/>.</summary>
+    /// <returns>The negated <see cref="Vector4"/>, { -<see langword="this"/> }.</returns>
     public Vector4 Negate() => (-X, -Y, -Z, -W);
 
     /// <summary>Computes the sum of the <see cref="Vector4"/> and another, provided, <see cref="Vector4"/>.</summary>
@@ -141,7 +143,7 @@ public readonly record struct Vector4 : IVector4Quantity<Vector4>, IFormattable
 
     /// <summary>Computes the difference between the <see cref="Vector4"/> and another, provided, <see cref="Vector4"/>.</summary>
     /// <param name="subtrahend">The <see cref="Vector4"/> that is subtracted from the original <see cref="Vector4"/>.</param>
-    /// <returns>The difference between the two <see cref="Vector4"/>, { <see langword="this"/> - <paramref name="subtrahend"/> }.</returns>
+    /// <returns>The difference between the <see cref="Vector4"/>, { <see langword="this"/> - <paramref name="subtrahend"/> }.</returns>
     public Vector4 Subtract(Vector4 subtrahend) => (X - subtrahend.X, Y - subtrahend.Y, Z - subtrahend.Z, W - subtrahend.W);
 
     /// <summary>Computes the element-wise remainder from division of the <see cref="Vector4"/> by the provided <see cref="Scalar"/>.</summary>
@@ -152,50 +154,137 @@ public readonly record struct Vector4 : IVector4Quantity<Vector4>, IFormattable
     /// <summary>Scales the <see cref="Vector4"/> by the provided <see cref="Scalar"/>.</summary>
     /// <param name="factor">The <see cref="Scalar"/> by which the <see cref="Vector4"/> is scaled.</param>
     /// <returns>The scaled <see cref="Vector4"/>, { <see langword="this"/> ∙ <paramref name="factor"/> }.</returns>
-    public Vector4 Multiply(Scalar factor) => this * factor;
+    public Vector4 Multiply(Scalar factor) => (X * factor, Y * factor, Z * factor, W * factor);
 
-    /// <summary>Scales the <see cref="Vector4"/> through division by the provided <see cref="Scalar"/>.</summary>
-    /// <param name="divisor">The <see cref="Scalar"/>, scaling the <see cref="Vector4"/> through division.</param>
+    /// <summary>Scales the provided <see cref="Unhandled"/> by the <see cref="Vector4"/>.</summary>
+    /// <param name="factor">The <see cref="Unhandled"/> that is scaled by the <see cref="Vector4"/> is scaled.</param>
+    /// <returns>The scaled <see cref="Unhandled4"/>, { <see langword="this"/> ∙ <paramref name="factor"/> }.</returns>
+    public Unhandled4 Multiply(Unhandled factor) => (X * factor, Y * factor, Z * factor, W * factor);
+
+    /// <summary>Scales the provided <typeparamref name="TScalar"/> by the <see cref="Vector4"/>.</summary>
+    /// <typeparam name="TScalar">The type of the scalar quantity that is scaled by the <see cref="Vector4"/>.</typeparam>
+    /// <param name="factor">The <typeparamref name="TScalar"/> that is scaled by the <see cref="Vector4"/>.</param>
+    /// <returns>The scaled <typeparamref name="TScalar"/>-tuple, { <see langword="this"/> ∙ <paramref name="factor"/> }.</returns>
+    /// <exception cref="ArgumentNullException"/>
+    public (TScalar, TScalar, TScalar, TScalar) Multiply<TScalar>(TScalar factor) where TScalar : IScalarQuantity<TScalar>
+    {
+        ArgumentNullException.ThrowIfNull(factor);
+
+        return (X.Multiply(factor), Y.Multiply(factor), Z.Multiply(factor), W.Multiply(factor));
+    }
+
+    /// <summary>Scales the <see cref="Vector4"/> by the reciprocal of the provided <see cref="Scalar"/>.</summary>
+    /// <param name="divisor">The <see cref="Scalar"/>, the reciprocal of which scales the <see cref="Vector4"/></param>
     /// <returns>The scaled <see cref="Vector4"/>, { <see langword="this"/> / <paramref name="divisor"/> }.</returns>
-    public Vector4 Divide(Scalar divisor) => this / divisor;
+    public Vector4 DivideBy(Scalar divisor) => (X / divisor, Y / divisor, Z / divisor, W / divisor);
+
+    /// <summary>Scales the reciprocal of the provided <see cref="Unhandled"/> by the <see cref="Vector4"/>.</summary>
+    /// <param name="divisor">The <see cref="Unhandled"/>, the reciprocal of which is scaled by the <see cref="Vector4"/></param>
+    /// <returns>The scaled <see cref="Unhandled2"/>, { <see langword="this"/> / <paramref name="divisor"/> }.</returns>
+    public Unhandled4 DivideBy(Unhandled divisor) => new(X / divisor.Magnitude, Y / divisor.Magnitude, Z / divisor.Magnitude, W / divisor.Magnitude);
 
     /// <summary>Computes the dot product of the <see cref="Vector4"/> and another, provided, <see cref="Vector4"/>.</summary>
     /// <param name="factor">The <see cref="Vector4"/> by which the original <see cref="Vector4"/> is dot multiplied.</param>
     /// <returns>The dot product of the <see cref="Vector4"/>, { <see langword="this"/> ∙ <paramref name="factor"/> }.</returns>
     public Scalar Dot(Vector4 factor) => (X * factor.X) + (Y * factor.Y) + (Z * factor.Z) + (W * factor.W);
 
-    /// <inheritdoc/>
-    public static Vector4 operator +(Vector4 a) => a.Plus();
-
-    /// <inheritdoc/>
-    public static Vector4 operator -(Vector4 a) => a.Negate();
-
     /// <summary>Computes the sum of the provided <see cref="Vector4"/>.</summary>
-    /// <param name="a">The first <see cref="Vector4"/>, added to the second <see cref="Vector4"/>.</param>
-    /// <param name="b">The second <see cref="Vector4"/>, added to the first <see cref="Vector4"/>.</param>
+    /// <param name="a">The first <see cref="Vector4"/>, which is added to the second <see cref="Vector4"/>.</param>
+    /// <param name="b">The second <see cref="Vector4"/>, which is added to the first <see cref="Vector4"/>.</param>
     /// <returns>The sum of the <see cref="Vector4"/>, { <paramref name="a"/> + <paramref name="b"/> }.</returns>
-    public static Vector4 operator +(Vector4 a, Vector4 b) => a.Add(b);
+    public static Vector4 Add(Vector4 a, Vector4 b) => a.Add(b);
 
     /// <summary>Computes the difference between the provided <see cref="Vector4"/>.</summary>
     /// <param name="a">The first <see cref="Vector4"/>, from which the second <see cref="Vector4"/> is subtracted.</param>
     /// <param name="b">The second <see cref="Vector4"/>, which is subtracted from the first <see cref="Vector4"/>.</param>
-    /// <returns>The difference between the two <see cref="Vector4"/>, { <paramref name="a"/> - <paramref name="b"/> }.</returns>
-    public static Vector4 operator -(Vector4 a, Vector4 b) => a.Subtract(b);
+    /// <returns>The difference between the <see cref="Scalar"/>, { <paramref name="a"/> - <paramref name="b"/> }.</returns>
+    public static Vector4 Subtract(Vector4 a, Vector4 b) => a.Subtract(b);
 
     /// <summary>Computes the element-wise remainder from division of the provided <see cref="Vector4"/> by the provided <see cref="Scalar"/>.</summary>
-    /// <param name="a">The <see cref="Vector4"/>, which is divided by the <see cref="Scalar"/>.</param>
-    /// <param name="b">The <see cref="Scalar"/>, by which the <see cref="Vector4"/> is divided.</param>
+    /// <param name="a">The <see cref="Vector4"/> that is divided by the <see cref="Scalar"/>.</param>
+    /// <param name="b">The <see cref="Scalar"/> by which the <see cref="Vector4"/> is divided.</param>
     /// <returns>The element-wise remainder from division of the <see cref="Vector4"/> by the <see cref="Scalar"/>, { <paramref name="a"/> % <paramref name="b"/> }.</returns>
+    public static Vector4 Remainder(Vector4 a, Scalar b) => a.Remainder(b);
+
+    /// <summary>Scales the provided <see cref="Vector4"/> by the provided <see cref="Scalar"/>.</summary>
+    /// <param name="a">The <see cref="Vector4"/> that is scaled by the <see cref="Scalar"/>.</param>
+    /// <param name="b">The <see cref="Scalar"/> by which the <see cref="Vector4"/> is scaled.</param>
+    /// <returns>The scaled <see cref="Vector4"/>, { <paramref name="a"/> ∙ <paramref name="b"/> }.</returns>
+    public static Vector4 Multiply(Vector4 a, Scalar b) => a.Multiply(b);
+
+    /// <summary>Scales the provided <see cref="Unhandled"/> by the provided <see cref="Vector4"/>.</summary>
+    /// <param name="a">The <see cref="Vector4"/> by which the <see cref="Unhandled"/> is scaled.</param>
+    /// <param name="b">The <see cref="Unhandled"/> that is scaled by the <see cref="Vector4"/>.</param>
+    /// <returns>The scaled <see cref="Unhandled4"/>, { <paramref name="a"/> ∙ <paramref name="b"/> }.</returns>
+    public static Unhandled4 Multiply(Vector4 a, Unhandled b) => a.Multiply(b);
+
+    /// <summary>Scales the provided <typeparamref name="TScalar"/> by the provided <see cref="Vector4"/>.</summary>
+    /// <typeparam name="TScalar">The type of the scalar quantity that is scaled by the <see cref="Vector4"/>.</typeparam>
+    /// <param name="a">The <see cref="Vector4"/> by which the <typeparamref name="TScalar"/> is scaled.</param>
+    /// <param name="b">The <typeparamref name="TScalar"/> that is scaled by the <see cref="Vector4"/>.</param>
+    /// <returns>The scaled <typeparamref name="TScalar"/>-tuple, { <paramref name="a"/> ∙ <paramref name="b"/> }.</returns>
+    /// <exception cref="ArgumentNullException"/>
+    public static (TScalar, TScalar, TScalar, TScalar) Multiply<TScalar>(Vector4 a, TScalar b) where TScalar : IScalarQuantity<TScalar>
+    {
+        ArgumentNullException.ThrowIfNull(b);
+
+        return a.Multiply(b);
+    }
+
+    /// <summary>Scales the provided <see cref="Vector4"/> by the reciprocal of the provided <see cref="Scalar"/>.</summary>
+    /// <param name="a">The <see cref="Vector4"/> that is scaled by the reciprocal of the <see cref="Scalar"/>.</param>
+    /// <param name="b">The <see cref="Scalar"/>, the reciprocal of which scales the <see cref="Vector4"/>.</param>
+    /// <returns>The quotient of the <see cref="Vector4"/> and <see cref="Scalar"/>, { <paramref name="a"/> / <paramref name="b"/> }.</returns>
+    public static Vector4 Divide(Vector4 a, Scalar b) => a.DivideBy(b);
+
+    /// <summary>Scales the reciprocal of the provided <see cref="Unhandled"/> by the provided <see cref="Vector4"/>.</summary>
+    /// <param name="a">The <see cref="Vector4"/> by which the reciprocal of the <see cref="Unhandled"/> is scaled.</param>
+    /// <param name="b">The <see cref="Unhandled"/>, the reciprocal of which is scaled by the <see cref="Vector4"/></param>
+    /// <returns>The scaled <see cref="Unhandled4"/>, { <paramref name="a"/> / <paramref name="b"/> }.</returns>
+    public static Unhandled4 Divide(Vector4 a, Unhandled b) => a.DivideBy(b);
+
+    /// <summary>Computes the dot-product of the provided <see cref="Vector4"/>.</summary>
+    /// <param name="a">The first <see cref="Vector4"/>, by which the second <see cref="Vector4"/> is dot-multiplied.</param>
+    /// <param name="b">The second <see cref="Vector4"/>, by which the first <see cref="Vector4"/> is dot-multiplied.</param>
+    /// <returns>The dot-product of the <see cref="Vector4"/>, { <paramref name="a"/> ∙ <paramref name="b"/> }.</returns>
+    public static Scalar Dot(Vector4 a, Vector4 b) => a.Dot(b);
+
+    /// <summary>Applies the unary plus to the provided <see cref="Vector4"/>.</summary>
+    /// <param name="a">The <see cref="Vector4"/> to which the unary plus is applied.</param>
+    /// <returns>The same <see cref="Vector4"/>, { <paramref name="a"/> }.</returns>
+    public static Vector4 operator +(Vector4 a) => a.Plus();
+
+    /// <summary>Negates the provided <see cref="Vector4"/>.</summary>
+    /// <param name="a">The <see cref="Vector4"/> that is negated.</param>
+    /// <returns>The negated <see cref="Vector4"/>, { -<paramref name="a"/> }.</returns>
+    public static Vector4 operator -(Vector4 a) => a.Negate();
+
+    /// <inheritdoc cref="Add(Vector4, Vector4)"/>
+    public static Vector4 operator +(Vector4 a, Vector4 b) => a.Add(b);
+
+    /// <inheritdoc cref="Subtract(Vector4, Vector4)"/>
+    public static Vector4 operator -(Vector4 a, Vector4 b) => a.Subtract(b);
+
+    /// <inheritdoc cref="Remainder(Vector4, Scalar)"/>
     public static Vector4 operator %(Vector4 a, Scalar b) => a.Remainder(b);
 
-    /// <inheritdoc/>
+    /// <inheritdoc cref="Multiply(Vector4, Scalar)"/>
     public static Vector4 operator *(Vector4 a, Scalar b) => a.Multiply(b);
 
-    /// <inheritdoc/>
+    /// <summary>Scales the provided <see cref="Vector4"/> by the provided <see cref="Scalar"/>.</summary>
+    /// <param name="a">The <see cref="Scalar"/> by which the <see cref="Vector4"/> is scaled.</param>
+    /// <param name="b">The <see cref="Vector4"/> that is scaled by the <see cref="Scalar"/>.</param>
+    /// <returns>The scaled <see cref="Vector4"/>, { <paramref name="a"/> ∙ <paramref name="b"/> }.</returns>
     public static Vector4 operator *(Scalar a, Vector4 b) => b.Multiply(a);
 
-    /// <inheritdoc/>
-    public static Vector4 operator /(Vector4 a, Scalar b) => a.Divide(b);
+    /// <inheritdoc cref="Divide(Vector4, Scalar)"/>
+    public static Vector4 operator /(Vector4 a, Scalar b) => a.DivideBy(b);
+
+    /// <inheritdoc cref="Multiply(Vector4, Unhandled)"/>
+    public static Unhandled4 operator *(Vector4 a, Unhandled b) => Multiply(a, b);
+
+    /// <inheritdoc cref="Divide(Vector4, Unhandled)"/>
+    public static Unhandled4 operator /(Vector4 a, Unhandled b) => Divide(a, b);
 
     /// <summary>Constructs a <see cref="Vector4"/>, representing the components of the provided <see cref="Scalar"/>-tuple.</summary>
     /// <param name="components">The <see cref="Scalar"/>-tuple describing the components of the constructed <see cref="Vector4"/>.</param>

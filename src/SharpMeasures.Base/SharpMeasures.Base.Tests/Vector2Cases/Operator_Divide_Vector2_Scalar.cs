@@ -1,0 +1,19 @@
+﻿namespace SharpMeasures.Tests.Vector2Cases;
+
+using Xunit;
+
+public class Operator_Divide_Vector2_Scalar
+{
+    private static Vector2 Target(Vector2 a, Scalar b) => a / b;
+
+    [Theory]
+    [ClassData(typeof(Datasets.ValidVector2_ValidScalar))]
+    public void MatchInstanceMethod(Vector2 a, Scalar b)
+    {
+        var expected = Vector2.Divide(a, b);
+
+        var actual = Target(a, b);
+
+        Assert.Equal(expected, actual);
+    }
+}
