@@ -1,6 +1,7 @@
 ﻿namespace SharpMeasures;
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 
 /// <summary>A measure of some scalar quantity not covered by a designated type.</summary>
@@ -8,9 +9,6 @@ public readonly record struct Unhandled : IScalarQuantity<Unhandled>, IComparabl
 {
     /// <summary>The <see cref="Unhandled"/> representing { 0 }.</summary>
     public static Unhandled Zero { get; } = new(Scalar.Zero);
-
-    /// <summary>The <see cref="Unhandled"/> representing { 1 }.</summary>
-    public static Unhandled One { get; } = new(Scalar.One);
 
     /// <summary>The <see cref="Unhandled"/> representing { <see cref="double.NaN"/> }.</summary>
     public static Unhandled NaN { get; } = new(Scalar.NaN);
@@ -81,6 +79,10 @@ public readonly record struct Unhandled : IScalarQuantity<Unhandled>, IComparabl
     /// <param name="exponent">The <see cref="Scalar"/> representing the exponent.</param>
     /// <returns>The <see cref="Unhandled"/> raised to the provided power, { <see langword="this"/> ^ <paramref name="exponent"/> }.</returns>
     public Unhandled Power(Scalar exponent) => new(Magnitude.Power(exponent));
+
+    /// <summary>Computes the reciprocal, or multiplicative inverse, of the <see cref="Unhandled"/>.</summary>
+    /// <returns>The reciprocal of the <see cref="Unhandled"/>, { 1 / <see langword="this"/> }.</returns>
+    public Unhandled Reciprocal() => new(Magnitude.Reciprocal());
 
     /// <summary>Computes the square of the <see cref="Unhandled"/>.</summary>
     /// <returns>The square of the <see cref="Unhandled"/>, { <see langword="this"/> ² }.</returns>
@@ -161,10 +163,12 @@ public readonly record struct Unhandled : IScalarQuantity<Unhandled>, IComparabl
     /// <returns>A <see cref="string"/>-representation of the <see cref="Unhandled"/>.</returns>
     public string ToStringInvariant(string? format) => ToString(format, CultureInfo.InvariantCulture);
 
-    /// <inheritdoc/>
+    /// <summary>Applies the unary plus to the <see cref="Unhandled"/>.</summary>
+    /// <returns>The same <see cref="Unhandled"/>, { <see langword="this"/> }.</returns>
     public Unhandled Plus() => this;
 
-    /// <inheritdoc/>
+    /// <summary>Negates the <see cref="Unhandled"/>.</summary>
+    /// <returns>The negated <see cref="Unhandled"/>, { -<see langword="this"/> }.</returns>
     public Unhandled Negate() => new(-Magnitude);
 
     /// <summary>Computes the sum of the <see cref="Unhandled"/> and the provided <typeparamref name="TScalar"/>.</summary>
@@ -182,13 +186,13 @@ public readonly record struct Unhandled : IScalarQuantity<Unhandled>, IComparabl
     /// <summary>Computes the difference between the <see cref="Unhandled"/> and the provided <typeparamref name="TScalar"/>.</summary>
     /// <typeparam name="TScalar">The type of the scalar quantity for which the difference to the <see cref="Unhandled"/> is computed.</typeparam>
     /// <param name="other">The <typeparamref name="TScalar"/>, for which the difference to the <see cref="Unhandled"/> is computed.</param>
-    /// <returns>The difference between the <see cref="Unhandled"/> and the <typeparamref name="TScalar"/>, the absolute value of { <see langword="this"/> - <paramref name="other"/> }.</returns>
+    /// <returns>The difference between the <see cref="Unhandled"/> and the <typeparamref name="TScalar"/>, { |<see langword="this"/> - <paramref name="other"/>| }.</returns>
     /// <exception cref="ArgumentNullException"/>
     public Unhandled Difference<TScalar>(TScalar other) where TScalar : IScalarQuantity
     {
         ArgumentNullException.ThrowIfNull(other);
 
-        return new(Math.Abs(Magnitude.Value - other.Magnitude.Value));
+        return new(Math.Abs(Magnitude - other.Magnitude));
     }
 
     /// <summary>Computes the signed difference between the <see cref="Unhandled"/> and the provided <typeparamref name="TScalar"/>.</summary>
@@ -204,20 +208,40 @@ public readonly record struct Unhandled : IScalarQuantity<Unhandled>, IComparabl
         return new(Magnitude - subtrahend.Magnitude);
     }
 
-    /// <summary>Computes the signed difference between the provided <typeparamref name="TScalar"/> and the <see cref="Unhandled"/>.</summary>
-    /// <typeparam name="TScalar">The type of the scalar quantity from which the <see cref="Unhandled"/> is subtracted.</typeparam>
-    /// <param name="minuend">The <typeparamref name="TScalar"/> that the <see cref="Unhandled"/> is subtracted from.</param>
-    /// <returns>The signed difference between the <typeparamref name="TScalar"/> and the <see cref="Unhandled"/>, { <paramref name="minuend"/> - <see langword="this"/> }.</returns>
-    /// <exception cref="ArgumentNullException"/>
-    public Unhandled SubtractFrom<TScalar>(TScalar minuend) where TScalar : IScalarQuantity
-    {
-        ArgumentNullException.ThrowIfNull(minuend);
-
-        return new(minuend.Magnitude - Magnitude);
-    }
-
-    /// <inheritdoc/>
+    /// <summary>Scales the <see cref="Unhandled"/> by the provided <see cref="Scalar"/>.</summary>
+    /// <param name="factor">The <see cref="Scalar"/> by which the <see cref="Unhandled"/> is scaled.</param>
+    /// <returns>The scaled <see cref="Unhandled"/>, { <see langword="this"/> ∙ <paramref name="factor"/> }.</returns>
     public Unhandled Multiply(Scalar factor) => Multiply<Scalar>(factor);
+
+    /// <summary>Scales the <see cref="Unhandled"/> by the provided <see cref="Vector2"/>.</summary>
+    /// <param name="factor">The <see cref="Vector2"/> by which the <see cref="Unhandled"/> is scaled.</param>
+    /// <returns>The scaled <see cref="Unhandled"/>, { <see langword="this"/> ∙ <paramref name="factor"/> }.</returns>
+    public Unhandled2 Multiply(Vector2 factor) => Multiply2(factor);
+
+    /// <summary>Scales the <see cref="Unhandled"/> by the provided <see cref="Vector3"/>.</summary>
+    /// <param name="factor">The <see cref="Vector3"/> by which the <see cref="Unhandled"/> is scaled.</param>
+    /// <returns>The scaled <see cref="Unhandled"/>, { <see langword="this"/> ∙ <paramref name="factor"/> }.</returns>
+    public Unhandled3 Multiply(Vector3 factor) => Multiply3(factor);
+
+    /// <summary>Scales the <see cref="Unhandled"/> by the provided <see cref="Vector4"/>.</summary>
+    /// <param name="factor">The <see cref="Vector4"/> by which the <see cref="Unhandled"/> is scaled.</param>
+    /// <returns>The scaled <see cref="Unhandled"/>, { <see langword="this"/> ∙ <paramref name="factor"/> }.</returns>
+    public Unhandled4 Multiply(Vector4 factor) => Multiply4(factor);
+
+    /// <summary>Computes the product of the <see cref="Unhandled"/> and the provided <see cref="Unhandled2"/>.</summary>
+    /// <param name="factor">The <see cref="Unhandled2"/> by which the <see cref="Unhandled"/> is multiplied.</param>
+    /// <returns>The product of the <see cref="Unhandled2"/> and <see cref="Unhandled"/>, { <see langword="this"/> ∙ <paramref name="factor"/> }.</returns>
+    public Unhandled2 Multiply(Unhandled2 factor) => Multiply2(factor);
+
+    /// <summary>Computes the product of the <see cref="Unhandled"/> and the provided <see cref="Unhandled3"/>.</summary>
+    /// <param name="factor">The <see cref="Unhandled3"/> by which the <see cref="Unhandled"/> is multiplied.</param>
+    /// <returns>The product of the <see cref="Unhandled3"/> and <see cref="Unhandled"/>, { <see langword="this"/> ∙ <paramref name="factor"/> }.</returns>
+    public Unhandled3 Multiply(Unhandled3 factor) => Multiply3(factor);
+
+    /// <summary>Computes the product of the <see cref="Unhandled"/> and the provided <see cref="Unhandled4"/>.</summary>
+    /// <param name="factor">The <see cref="Unhandled4"/> by which the <see cref="Unhandled"/> is multiplied.</param>
+    /// <returns>The product of the <see cref="Unhandled4"/> and <see cref="Unhandled"/>, { <see langword="this"/> ∙ <paramref name="factor"/> }.</returns>
+    public Unhandled4 Multiply(Unhandled4 factor) => Multiply4(factor);
 
     /// <summary>Computes the product of the <see cref="Unhandled"/> and the provided <typeparamref name="TScalar"/>.</summary>
     /// <typeparam name="TScalar">The type of the scalar quantity by which the <see cref="Unhandled"/> is multiplied.</typeparam>
@@ -232,7 +256,46 @@ public readonly record struct Unhandled : IScalarQuantity<Unhandled>, IComparabl
     }
 
     /// <summary>Computes the product of the <see cref="Unhandled"/> and the provided <typeparamref name="TVector"/>.</summary>
-    /// <typeparam name="TVector">The type of the two-dimensional quantity by which the <see cref="Unhandled"/> is multiplied.</typeparam>
+    /// <typeparam name="TVector">The type of the vector quantity by which the <see cref="Unhandled"/> is multiplied.</typeparam>
+    /// <param name="factor">The <typeparamref name="TVector"/> by which the <see cref="Unhandled"/> is multiplied.</param>
+    /// <remarks>For improved performance, prefer <see cref="Multiply2{TVector}(TVector)"/> when the vector quantity is a <see langword="struct"/> (avoiding boxing).</remarks>
+    /// <returns>The product of the <see cref="Unhandled"/> and <typeparamref name="TVector"/>, { <see langword="this"/> ∙ <paramref name="factor"/> }.</returns>
+    /// <exception cref="ArgumentNullException"/>
+    public Unhandled2 Multiply<TVector>(IVector2Quantity<TVector> factor) where TVector : IVector2Quantity<TVector>
+    {
+        ArgumentNullException.ThrowIfNull(factor);
+
+        return new(Magnitude * factor.X, Magnitude * factor.Y);
+    }
+
+    /// <summary>Computes the product of the <see cref="Unhandled"/> and the provided <typeparamref name="TVector"/>.</summary>
+    /// <typeparam name="TVector">The type of the vector quantity by which the <see cref="Unhandled"/> is multiplied.</typeparam>
+    /// <param name="factor">The <typeparamref name="TVector"/> by which the <see cref="Unhandled"/> is multiplied.</param>
+    /// <remarks>For improved performance, prefer <see cref="Multiply3{TVector}(TVector)"/> when the vector quantity is a <see langword="struct"/> (avoiding boxing).</remarks>
+    /// <returns>The product of the <see cref="Unhandled"/> and <typeparamref name="TVector"/>, { <see langword="this"/> ∙ <paramref name="factor"/> }.</returns>
+    /// <exception cref="ArgumentNullException"/>
+    public Unhandled3 Multiply<TVector>(IVector3Quantity<TVector> factor) where TVector : IVector3Quantity<TVector>
+    {
+        ArgumentNullException.ThrowIfNull(factor);
+
+        return new(Magnitude * factor.X, Magnitude * factor.Y, Magnitude * factor.Z);
+    }
+
+    /// <summary>Computes the product of the <see cref="Unhandled"/> and the provided <typeparamref name="TVector"/>.</summary>
+    /// <typeparam name="TVector">The type of the vector quantity by which the <see cref="Unhandled"/> is multiplied.</typeparam>
+    /// <param name="factor">The <typeparamref name="TVector"/> by which the <see cref="Unhandled"/> is multiplied.</param>
+    /// <remarks>For improved performance, prefer <see cref="Multiply4{TVector}(TVector)"/> when the vector quantity is a <see langword="struct"/> (avoiding boxing).</remarks>
+    /// <returns>The product of the <see cref="Unhandled"/> and <typeparamref name="TVector"/>, { <see langword="this"/> ∙ <paramref name="factor"/> }.</returns>
+    /// <exception cref="ArgumentNullException"/>
+    public Unhandled4 Multiply<TVector>(IVector4Quantity<TVector> factor) where TVector : IVector4Quantity<TVector>
+    {
+        ArgumentNullException.ThrowIfNull(factor);
+
+        return new(Magnitude * factor.X, Magnitude * factor.Y, Magnitude * factor.Z, Magnitude * factor.W);
+    }
+
+    /// <summary>Computes the product of the <see cref="Unhandled"/> and the provided <typeparamref name="TVector"/>.</summary>
+    /// <typeparam name="TVector">The type of the vector quantity by which the <see cref="Unhandled"/> is multiplied.</typeparam>
     /// <param name="factor">The <typeparamref name="TVector"/> by which the <see cref="Unhandled"/> is multiplied.</param>
     /// <returns>The product of the <see cref="Unhandled"/> and <typeparamref name="TVector"/>, { <see langword="this"/> ∙ <paramref name="factor"/> }.</returns>
     /// <exception cref="ArgumentNullException"/>
@@ -244,7 +307,7 @@ public readonly record struct Unhandled : IScalarQuantity<Unhandled>, IComparabl
     }
 
     /// <summary>Computes the product of the <see cref="Unhandled"/> and the provided <typeparamref name="TVector"/>.</summary>
-    /// <typeparam name="TVector">The type of the three-dimensional quantity by which the <see cref="Unhandled"/> is multiplied.</typeparam>
+    /// <typeparam name="TVector">The type of the vector quantity by which the <see cref="Unhandled"/> is multiplied.</typeparam>
     /// <param name="factor">The <typeparamref name="TVector"/> by which the <see cref="Unhandled"/> is multiplied.</param>
     /// <returns>The product of the <see cref="Unhandled"/> and <typeparamref name="TVector"/>, { <see langword="this"/> ∙ <paramref name="factor"/> }.</returns>
     /// <exception cref="ArgumentNullException"/>
@@ -256,7 +319,7 @@ public readonly record struct Unhandled : IScalarQuantity<Unhandled>, IComparabl
     }
 
     /// <summary>Computes the product of the <see cref="Unhandled"/> and the provided <typeparamref name="TVector"/>.</summary>
-    /// <typeparam name="TVector">The type of the four-dimensional quantity by which the <see cref="Unhandled"/> is multiplied.</typeparam>
+    /// <typeparam name="TVector">The type of the vector quantity by which the <see cref="Unhandled"/> is multiplied.</typeparam>
     /// <param name="factor">The <typeparamref name="TVector"/> by which the <see cref="Unhandled"/> is multiplied.</param>
     /// <returns>The product of the <see cref="Unhandled"/> and <typeparamref name="TVector"/>, { <see langword="this"/> ∙ <paramref name="factor"/> }.</returns>
     /// <exception cref="ArgumentNullException"/>
@@ -267,414 +330,532 @@ public readonly record struct Unhandled : IScalarQuantity<Unhandled>, IComparabl
         return new(Magnitude * factor.X, Magnitude * factor.Y, Magnitude * factor.Z, Magnitude * factor.W);
     }
 
-    /// <inheritdoc/>
-    public Unhandled Divide(Scalar divisor) => Divide<Scalar>(divisor);
+    /// <summary>Scales the <see cref="Unhandled"/> by the reciprocal of the provided <see cref="Scalar"/>.</summary>
+    /// <param name="divisor">The <see cref="Scalar"/>, the reciprocal of which scales the <see cref="Unhandled"/></param>
+    /// <returns>The scaled <see cref="Unhandled"/>, { <see langword="this"/> / <paramref name="divisor"/> }.</returns>
+    public Unhandled DivideBy(Scalar divisor) => DivideBy<Scalar>(divisor);
 
     /// <summary>Computes the quotient of the <see cref="Unhandled"/> and the provided <typeparamref name="TScalar"/>.</summary>
     /// <typeparam name="TScalar">The type of the scalar quantity by which the <see cref="Unhandled"/> is divided.</typeparam>
     /// <param name="divisor">The <typeparamref name="TScalar"/> by which the <see cref="Unhandled"/> is divided.</param>
     /// <returns>The quotient of the <see cref="Unhandled"/> and the <typeparamref name="TScalar"/>, { <see langword="this"/> / <paramref name="divisor"/> }.</returns>
     /// <exception cref="ArgumentNullException"/>
-    public Unhandled Divide<TScalar>(TScalar divisor) where TScalar : IScalarQuantity
+    public Unhandled DivideBy<TScalar>(TScalar divisor) where TScalar : IScalarQuantity
     {
         ArgumentNullException.ThrowIfNull(divisor);
 
         return new(Magnitude / divisor.Magnitude);
     }
 
-    /// <summary>Computes the quotient of the provided <typeparamref name="TScalar"/> and the <see cref="Unhandled"/>.</summary>
-    /// <typeparam name="TScalar">The type of the scalar quantity which is divided by the <see cref="Unhandled"/>.</typeparam>
-    /// <param name="dividend">The <typeparamref name="TScalar"/> that is divided by the <see cref="Unhandled"/>.</param>
-    /// <returns>The quotient of the <typeparamref name="TScalar"/> and the <see cref="Unhandled"/>, { <paramref name="dividend"/> / <see langword="this"/> }.</returns>
+    /// <summary>Computes the sum of the provided <see cref="Unhandled"/> and <typeparamref name="TScalar"/>.</summary>
+    /// <typeparam name="TScalar">The type of the scalar quantity that is added to the <see cref="Unhandled"/>.</typeparam>
+    /// <param name="x">The <see cref="Unhandled"/> to which the <typeparamref name="TScalar"/> is added.</param>
+    /// <param name="y">The <typeparamref name="TScalar"/> that is added to the <see cref="Unhandled"/>.</param>
+    /// <returns>The sum of the <see cref="Unhandled"/> and <typeparamref name="TScalar"/>, { <paramref name="x"/> + <paramref name="y"/> }.</returns>
     /// <exception cref="ArgumentNullException"/>
-    public Unhandled DivideInto<TScalar>(TScalar dividend) where TScalar : IScalarQuantity
-    {
-        ArgumentNullException.ThrowIfNull(dividend);
-
-        return new(dividend.Magnitude / Magnitude);
-    }
-
-    /// <summary>Computes the quotient of the provided <typeparamref name="TVector"/> and the <see cref="Unhandled"/>.</summary>
-    /// <typeparam name="TVector">The type of the two-dimensional vector quantity which is divided by the <see cref="Unhandled"/>.</typeparam>
-    /// <param name="dividend">The <typeparamref name="TVector"/> that is divided by the <see cref="Unhandled"/>.</param>
-    /// <returns>The quotient of the <typeparamref name="TVector"/> and the <see cref="Unhandled"/>, { <paramref name="dividend"/> / <see langword="this"/> }.</returns>
-    /// <exception cref="ArgumentNullException"/>
-    public Unhandled2 DivideInto2<TVector>(TVector dividend) where TVector : IVector2Quantity
-    {
-        ArgumentNullException.ThrowIfNull(dividend);
-
-        return new(dividend.X / Magnitude, dividend.Y / Magnitude);
-    }
-
-    /// <summary>Computes the quotient of the provided <typeparamref name="TVector"/> and the <see cref="Unhandled"/>.</summary>
-    /// <typeparam name="TVector">The type of the three-dimensional vector quantity which is divided by the <see cref="Unhandled"/>.</typeparam>
-    /// <param name="dividend">The <typeparamref name="TVector"/> that is divided by the <see cref="Unhandled"/>.</param>
-    /// <returns>The quotient of the <typeparamref name="TVector"/> and the <see cref="Unhandled"/>, { <paramref name="dividend"/> / <see langword="this"/> }.</returns>
-    /// <exception cref="ArgumentNullException"/>
-    public Unhandled3 DivideInto3<TVector>(TVector dividend) where TVector : IVector3Quantity
-    {
-        ArgumentNullException.ThrowIfNull(dividend);
-
-        return new(dividend.X / Magnitude, dividend.Y / Magnitude, dividend.Z / Magnitude);
-    }
-
-    /// <summary>Computes the quotient of the provided <typeparamref name="TVector"/> and the <see cref="Unhandled"/>.</summary>
-    /// <typeparam name="TVector">The type of the four-dimensional vector quantity which is divided by the <see cref="Unhandled"/>.</typeparam>
-    /// <param name="dividend">The <typeparamref name="TVector"/> that is divided by the <see cref="Unhandled"/>.</param>
-    /// <returns>The quotient of the <typeparamref name="TVector"/> and the <see cref="Unhandled"/>, { <paramref name="dividend"/> / <see langword="this"/> }.</returns>
-    /// <exception cref="ArgumentNullException"/>
-    public Unhandled4 DivideInto4<TVector>(TVector dividend) where TVector : IVector4Quantity
-    {
-        ArgumentNullException.ThrowIfNull(dividend);
-
-        return new(dividend.X / Magnitude, dividend.Y / Magnitude, dividend.Z / Magnitude, dividend.W / Magnitude);
-    }
-
-    /// <summary>Determines whether an <see cref="Unhandled"/>, <paramref name="x"/>, represents a smaller magnitude than another <see cref="Unhandled"/>, <paramref name="y"/>.</summary>
-    /// <param name="x">The first <see cref="Unhandled"/>, assumed to represent a smaller magnitude than the other <see cref="Unhandled"/>.</param>
-    /// <param name="y">The second <see cref="Unhandled"/>, assumed to represent a greater magntiude than the other <see cref="Unhandled"/>.</param>
-    /// <remarks>A <see cref="bool"/> representing the truthfulness of { <paramref name="x"/> &lt; <paramref name="y"/> }.</remarks>
-    public static bool operator <(Unhandled x, Unhandled y) => x.Magnitude < y.Magnitude;
-
-    /// <summary>Determines whether an <see cref="Unhandled"/>, <paramref name="x"/>, represents a greater magnitude than another <see cref="Unhandled"/>, <paramref name="y"/>.</summary>
-    /// <param name="x">The first <see cref="Unhandled"/>, assumed to represent a greater magnitude than the other <see cref="Unhandled"/>.</param>
-    /// <param name="y">The second <see cref="Unhandled"/>, assumed to represent a smaller magntiude than the other <see cref="Unhandled"/>.</param>
-    /// <remarks>A <see cref="bool"/> representing the truthfulness of { <paramref name="x"/> &gt; <paramref name="y"/> }.</remarks>
-    public static bool operator >(Unhandled x, Unhandled y) => x.Magnitude > y.Magnitude;
-
-    /// <summary>Determines whether an <see cref="Unhandled"/>, <paramref name="x"/>, represents a smaller or equivalent magnitude compared to another <see cref="Unhandled"/>, <paramref name="y"/>.</summary>
-    /// <param name="x">The first <see cref="Unhandled"/>, assumed to represent a smaller or equivalent magnitude compared to the other <see cref="Unhandled"/>.</param>
-    /// <param name="y">The second <see cref="Unhandled"/>, assumed to represent a greater or equivalent magnitude compared to the other <see cref="Unhandled"/>.</param>
-    /// <remarks>A <see cref="bool"/> representing the truthfulness of { <paramref name="x"/> ≤ <paramref name="y"/> }.</remarks>
-    public static bool operator <=(Unhandled x, Unhandled y) => x.Magnitude <= y.Magnitude;
-
-    /// <summary>Determines whether an <see cref="Unhandled"/>, <paramref name="x"/>, represents a greater or equivalent magnitude compared to another <see cref="Unhandled"/>, <paramref name="y"/>.</summary>
-    /// <param name="x">The first <see cref="Unhandled"/>, assumed to represent a greater or equivalent magnitude compared to the other <see cref="Unhandled"/>.</param>
-    /// <param name="y">The second <see cref="Unhandled"/>, assumed to represent a smaller or equivalent magnitude compared to the other <see cref="Unhandled"/>.</param>
-    /// <remarks>A <see cref="bool"/> representing the truthfulness of { <paramref name="x"/> ≥ <paramref name="y"/> }.</remarks>
-    public static bool operator >=(Unhandled x, Unhandled y) => x.Magnitude >= y.Magnitude;
-
-    /// <inheritdoc/>
-    public static Unhandled operator +(Unhandled x) => x.Plus();
-
-    /// <inheritdoc/>
-    public static Unhandled operator -(Unhandled x) => x.Negate();
-
-    /// <summary>Computes the sum of the provided <see cref="Unhandled"/>.</summary>
-    /// <param name="x">The first <see cref="Unhandled"/>, added to the second <see cref="Unhandled"/>.</param>
-    /// <param name="y">The second <see cref="Unhandled"/>, added to the first <see cref="Unhandled"/>.</param>
-    /// <returns>The sum of the <see cref="Unhandled"/>, { <paramref name="x"/> + <paramref name="y"/> }.</returns>
-    public static Unhandled operator +(Unhandled x, Unhandled y) => x.Add(y);
-
-    /// <summary>Computes the signed difference between the provided <see cref="Unhandled"/>.</summary>
-    /// <param name="x">The first <see cref="Unhandled"/>, from which the second <see cref="Unhandled"/> is subtracted.</param>
-    /// <param name="y">The second <see cref="Unhandled"/>, which is subtracted from the first <see cref="Unhandled"/>.</param>
-    /// <remarks>The resulting <see cref="Unhandled"/> may be negative. If this is not desired, use <see cref="Difference{TScalar}(TScalar)"/>.</remarks>
-    /// <returns>The signed difference between the two <see cref="Unhandled"/>, { <paramref name="x"/> - <paramref name="y"/> }.</returns>
-    public static Unhandled operator -(Unhandled x, Unhandled y) => x.Subtract(y);
-
-    /// <summary>Computes the product of the provided <see cref="Unhandled"/>.</summary>
-    /// <param name="x">The first <see cref="Unhandled"/>, by which the second <see cref="Unhandled"/> is multiplied.</param>
-    /// <param name="y">The second <see cref="Unhandled"/>, by which the first <see cref="Unhandled"/> is multiplied.</param>
-    /// <returns>The product of the <see cref="Unhandled"/>, { <paramref name="x"/> ∙ <paramref name="y"/> }.</returns>
-    public static Unhandled operator *(Unhandled x, Unhandled y) => x.Multiply(y);
-
-    /// <summary>Computes the quotient of the provided <see cref="Unhandled"/>.</summary>
-    /// <param name="x">The first <see cref="Unhandled"/>, which is divided by the second <see cref="Unhandled"/>.</param>
-    /// <param name="y">The second <see cref="Unhandled"/>, by which the first <see cref="Unhandled"/> is divided.</param>
-    /// <returns>The quotient of the <see cref="Unhandled"/>, { <paramref name="x"/> / <paramref name="y"/> }.</returns>
-    public static Unhandled operator /(Unhandled x, Unhandled y) => x.Divide(y);
-
-    /// <inheritdoc/>
-    public static Unhandled operator *(Unhandled x, Scalar y) => x.Multiply(y);
-
-    /// <inheritdoc/>
-    public static Unhandled operator *(Scalar x, Unhandled y) => x.Multiply(y);
-
-    /// <inheritdoc/>
-    public static Unhandled operator /(Unhandled x, Scalar y) => x.Divide(y);
-
-    /// <summary>Scales the reciprocal of the provided <see cref="Unhandled"/> by the provided <see cref="Scalar"/>.</summary>
-    /// <param name="x">The <see cref="Scalar"/> by which the reciprocal of the <see cref="Unhandled"/> is scaled.</param>
-    /// <param name="y">The <see cref="Unhandled"/>, the reciprocal of which is scaled by the <see cref="Scalar"/>.</param>
-    /// <returns>The scaled reciprocal of the <see cref="Unhandled"/>, { <paramref name="x"/> / <paramref name="y"/> }.</returns>
-    public static Unhandled operator /(Scalar x, Unhandled y) => y.DivideInto(x);
-
-    /// <summary>Computes the product of the provided <see cref="Unhandled"/> and <see cref="Vector2"/>.</summary>
-    /// <param name="a">The <see cref="Unhandled"/> by which the <see cref="Vector2"/> is multiplied.</param>
-    /// <param name="b">The <see cref="Vector2"/> by which the <see cref="Unhandled"/> is multiplied.</param>
-    /// <returns>The product of the <see cref="Unhandled"/> and <see cref="Vector2"/>, { <paramref name="a"/> ∙ <paramref name="b"/> }.</returns>
-    public static Unhandled2 operator *(Unhandled a, Vector2 b) => a.Multiply2(b);
-
-    /// <summary>Computes the product of the provided <see cref="Unhandled"/> and <see cref="Vector2"/>.</summary>
-    /// <param name="a">The <see cref="Vector2"/> by which the <see cref="Unhandled"/> is multiplied.</param>
-    /// <param name="b">The <see cref="Unhandled"/> by which the <see cref="Vector2"/> is multiplied.</param>
-    /// <returns>The product of the <see cref="Unhandled"/> and <see cref="Vector2"/>, { <paramref name="a"/> ∙ <paramref name="b"/> }.</returns>
-    public static Unhandled2 operator *(Vector2 a, Unhandled b) => b.Multiply2(a);
-
-    /// <summary>Computes the element-wise quotient of the provided <see cref="Vector2"/> by the provided <see cref="Unhandled"/>.</summary>
-    /// <param name="a">The <see cref="Vector2"/> that is divided by the <see cref="Unhandled"/>.</param>
-    /// <param name="b">The <see cref="Unhandled"/> by which the <see cref="Vector2"/> is divided.</param>
-    /// <returns>The element-wise quotient of the <see cref="Vector2"/> by the <see cref="Unhandled"/>, { <paramref name="a"/> / <paramref name="b"/> }.</returns>
-    public static Unhandled2 operator /(Vector2 a, Unhandled b) => b.DivideInto2(a);
-
-    /// <summary>Computes the product of the provided <see cref="Unhandled"/> and <see cref="Vector3"/>.</summary>
-    /// <param name="a">The <see cref="Unhandled"/> by which the <see cref="Vector3"/> is multiplied.</param>
-    /// <param name="b">The <see cref="Vector3"/> by which the <see cref="Unhandled"/> is multiplied.</param>
-    /// <returns>The product of the <see cref="Unhandled"/> and <see cref="Vector3"/>, { <paramref name="a"/> ∙ <paramref name="b"/> }.</returns>
-    public static Unhandled3 operator *(Unhandled a, Vector3 b) => a.Multiply3(b);
-
-    /// <summary>Computes the product of the provided <see cref="Unhandled"/> and <see cref="Vector3"/>.</summary>
-    /// <param name="a">The <see cref="Vector3"/> by which the <see cref="Unhandled"/> is multiplied.</param>
-    /// <param name="b">The <see cref="Unhandled"/> by which the <see cref="Vector3"/> is multiplied.</param>
-    /// <returns>The product of the <see cref="Unhandled"/> and <see cref="Vector3"/>, { <paramref name="a"/> ∙ <paramref name="b"/> }.</returns>
-    public static Unhandled3 operator *(Vector3 a, Unhandled b) => b.Multiply3(a);
-
-    /// <summary>Computes the element-wise quotient of the provided <see cref="Vector3"/> by the provided <see cref="Unhandled"/>.</summary>
-    /// <param name="a">The <see cref="Vector3"/> that is divided by the <see cref="Unhandled"/>.</param>
-    /// <param name="b">The <see cref="Unhandled"/> by which the <see cref="Vector3"/> is divided.</param>
-    /// <returns>The element-wise quotient of the <see cref="Vector3"/> by the <see cref="Unhandled"/>, { <paramref name="a"/> / <paramref name="b"/> }.</returns>
-    public static Unhandled3 operator /(Vector3 a, Unhandled b) => b.DivideInto3(a);
-
-    /// <summary>Computes the product of the provided <see cref="Unhandled"/> and <see cref="Vector4"/>.</summary>
-    /// <param name="a">The <see cref="Unhandled"/> by which the <see cref="Vector4"/> is multiplied.</param>
-    /// <param name="b">The <see cref="Vector4"/> by which the <see cref="Unhandled"/> is multiplied.</param>
-    /// <returns>The product of the <see cref="Unhandled"/> and <see cref="Vector4"/>, { <paramref name="a"/> ∙ <paramref name="b"/> }.</returns>
-    public static Unhandled4 operator *(Unhandled a, Vector4 b) => a.Multiply4(b);
-
-    /// <summary>Computes the product of the provided <see cref="Unhandled"/> and <see cref="Vector4"/>.</summary>
-    /// <param name="a">The <see cref="Vector4"/> by which the <see cref="Unhandled"/> is multiplied.</param>
-    /// <param name="b">The <see cref="Unhandled"/> by which the <see cref="Vector4"/> is multiplied.</param>
-    /// <returns>The product of the <see cref="Unhandled"/> and <see cref="Vector4"/>, { <paramref name="a"/> ∙ <paramref name="b"/> }.</returns>
-    public static Unhandled4 operator *(Vector4 a, Unhandled b) => b.Multiply4(a);
-
-    /// <summary>Computes the element-wise quotient of the provided <see cref="Vector4"/> by the provided <see cref="Unhandled"/>.</summary>
-    /// <param name="a">The <see cref="Vector4"/> that is divided by the <see cref="Unhandled"/>.</param>
-    /// <param name="b">The <see cref="Unhandled"/> by which the <see cref="Vector4"/> is divided.</param>
-    /// <returns>The element-wise quotient of the <see cref="Vector4"/> by the <see cref="Unhandled"/>, { <paramref name="a"/> / <paramref name="b"/> }.</returns>
-    public static Unhandled4 operator /(Vector4 a, Unhandled b) => b.DivideInto4(a);
-
-    /// <summary>Computes the sum of the provided <see cref="Unhandled"/> and <see cref="IScalarQuantity"/>.</summary>
-    /// <param name="x">The <see cref="Unhandled"/> that is added to the <see cref="IScalarQuantity"/>.</param>
-    /// <param name="y">The <see cref="IScalarQuantity"/> that is added to the <see cref="Unhandled"/>.</param>
-    /// <remarks>For improved performance, prefer <see cref="Add{TScalar}(TScalar)"/> when the scalar quantity is a <see langword="struct"/>.</remarks>
-    /// <returns>The sum of the <see cref="Unhandled"/> and <see cref="IScalarQuantity"/>, { <paramref name="x"/> + <paramref name="y"/> }.</returns>
-    /// <exception cref="ArgumentNullException"/>
-    public static Unhandled operator +(Unhandled x, IScalarQuantity y)
+    public static Unhandled Add<TScalar>(Unhandled x, TScalar y) where TScalar : IScalarQuantity
     {
         ArgumentNullException.ThrowIfNull(y);
 
         return x.Add(y);
     }
 
-    /// <summary>Computes the sum of the provided <see cref="Unhandled"/> and <see cref="IScalarQuantity"/>.</summary>
-    /// <param name="x">The <see cref="IScalarQuantity"/> that is added to the <see cref="Unhandled"/>.</param>
-    /// <param name="y">The <see cref="Unhandled"/> that is added to the <see cref="IScalarQuantity"/>.</param>
-    /// <remarks>For improved performance, prefer <see cref="Add{TScalar}(TScalar)"/> when the scalar quantity is a <see langword="struct"/>.</remarks>
-    /// <returns>The sum of the <see cref="Unhandled"/> and <see cref="IScalarQuantity"/>, { <paramref name="x"/> + <paramref name="y"/> }.</returns>
+    /// <summary>Computes the difference between the provided <see cref="Unhandled"/> and <typeparamref name="TScalar"/>.</summary>
+    /// <typeparam name="TScalar">The type of the scalar quantity for which the difference to the <see cref="Unhandled"/> is computed.</typeparam>
+    /// <param name="x">The <see cref="Unhandled"/>, for which the difference to the <typeparamref name="TScalar"/> is computed.</param>
+    /// <param name="y">The <typeparamref name="TScalar"/>, for which the difference to the <see cref="Unhandled"/> is computed.</param>
+    /// <returns>The difference between the <see cref="Unhandled"/> and the <typeparamref name="TScalar"/>, { |<paramref name="x"/> - <paramref name="y"/>| }.</returns>
     /// <exception cref="ArgumentNullException"/>
-    public static Unhandled operator +(IScalarQuantity x, Unhandled y)
+    public static Unhandled Difference<TScalar>(Unhandled x, TScalar y) where TScalar : IScalarQuantity
     {
-        ArgumentNullException.ThrowIfNull(x);
+        ArgumentNullException.ThrowIfNull(y);
 
-        return y.Add(x);
+        return x.Difference(y);
     }
 
-    /// <summary>Computes the signed difference between the provided <see cref="Unhandled"/> and <see cref="IScalarQuantity"/>.</summary>
-    /// <param name="x">The <see cref="Unhandled"/> from which the <see cref="IScalarQuantity"/> is subtracted.</param>
-    /// <param name="y">The <see cref="IScalarQuantity"/> that is subtracted from the <see cref="Unhandled"/>.</param>
-    /// <remarks>The resulting <see cref="Unhandled"/> may be negative. If this is not desired, use <see cref="Difference{TScalar}(TScalar)"/>.
-    /// <para>For improved performance, prefer <see cref="Subtract{TScalar}(TScalar)"/> when the scalar quantity is a <see langword="struct"/>.</para></remarks>
-    /// <returns>The signed difference between the <see cref="Unhandled"/> and <see cref="IScalarQuantity"/>, { <paramref name="x"/> - <paramref name="y"/> }.</returns>
+    /// <summary>Computes the signed difference between the provided <see cref="Unhandled"/> and <typeparamref name="TScalar"/>.</summary>
+    /// <typeparam name="TScalar">The type of the scalar quantity for which the difference to the <see cref="Unhandled"/> is computed.</typeparam>
+    /// <param name="x">The <see cref="Unhandled"/>, for which the difference to the <typeparamref name="TScalar"/> is computed.</param>
+    /// <param name="y">The <typeparamref name="TScalar"/>, for which the difference to the <see cref="Unhandled"/> is computed.</param>
+    /// <remarks>The resulting <see cref="Unhandled"/> may be negative. If this is not desired, use <see cref="Difference{TScalar}(Unhandled, TScalar)"/>.</remarks>
+    /// <returns>The signed difference between the <see cref="Unhandled"/> and the <typeparamref name="TScalar"/>, { |<paramref name="x"/> - <paramref name="y"/>| }.</returns>
     /// <exception cref="ArgumentNullException"/>
-    public static Unhandled operator -(Unhandled x, IScalarQuantity y)
+    public static Unhandled Subtract<TScalar>(Unhandled x, TScalar y) where TScalar : IScalarQuantity
     {
         ArgumentNullException.ThrowIfNull(y);
 
         return x.Subtract(y);
     }
 
-    /// <summary>Computes the signed difference between the provided <see cref="IScalarQuantity"/> and <see cref="Unhandled"/>.</summary>
-    /// <param name="x">The <see cref="IScalarQuantity"/> from which the <see cref="Unhandled"/> is subtracted.</param>
-    /// <param name="y">The <see cref="Unhandled"/> that is subtracted from the <see cref="IScalarQuantity"/>.</param>
-    /// <remarks>The resulting <see cref="Unhandled"/> may be negative. If this is not desired, use <see cref="Difference{TScalar}(TScalar)"/>.
-    /// <para>For improved performance, prefer <see cref="SubtractFrom{TScalar}(TScalar)"/> when the scalar quantity is a <see langword="struct"/>.</para></remarks>
-    /// <returns>The signed difference between the <see cref="IScalarQuantity"/> and <see cref="Unhandled"/>, { <paramref name="x"/> - <paramref name="y"/> }.</returns>
-    /// <exception cref="ArgumentNullException"/>
-    public static Unhandled operator -(IScalarQuantity x, Unhandled y)
-    {
-        ArgumentNullException.ThrowIfNull(x);
+    /// <summary>Scales the provided <see cref="Unhandled"/> by the provided <see cref="Scalar"/>.</summary>
+    /// <param name="x">The <see cref="Unhandled"/> that is scaled by the <see cref="Scalar"/>.</param>
+    /// <param name="y">The <see cref="Scalar"/> by which the <see cref="Unhandled"/> is scaled.</param>
+    /// <returns>The scaled <see cref="Unhandled"/>, { <paramref name="x"/> ∙ <paramref name="y"/> }.</returns>
+    public static Unhandled Multiply(Unhandled x, Scalar y) => x.Multiply(y);
 
-        return y.SubtractFrom(x);
-    }
+    /// <summary>Scales the provided <see cref="Unhandled"/> by the provided <see cref="Vector2"/>.</summary>
+    /// <param name="a">The <see cref="Unhandled"/> that is scaled by the <see cref="Vector2"/>.</param>
+    /// <param name="b">The <see cref="Vector2"/> by which the <see cref="Unhandled"/> is scaled.</param>
+    /// <returns>The scaled <see cref="Unhandled2"/>, { <paramref name="a"/> ∙ <paramref name="b"/> }.</returns>
+    public static Unhandled2 Multiply(Unhandled a, Vector2 b) => a.Multiply(b);
 
-    /// <summary>Computes the product of the provided <see cref="Unhandled"/> and <see cref="IScalarQuantity"/>.</summary>
-    /// <param name="x">The <see cref="Unhandled"/> by which the <see cref="IScalarQuantity"/> is multiplied.</param>
-    /// <param name="y">The <see cref="IScalarQuantity"/> by which the <see cref="Unhandled"/> is multiplied.</param>
-    /// <remarks>For improved performance, prefer <see cref="Multiply{TScalar}(TScalar)"/> when the scalar quantity is a <see langword="struct"/>.</remarks>
-    /// <returns>The product of the <see cref="Unhandled"/> and <see cref="IScalarQuantity"/>, { <paramref name="x"/> ∙ <paramref name="y"/> }.</returns>
+    /// <summary>Scales the provided <see cref="Unhandled"/> by the provided <see cref="Vector3"/>.</summary>
+    /// <param name="a">The <see cref="Unhandled"/> that is scaled by the <see cref="Vector3"/>.</param>
+    /// <param name="b">The <see cref="Vector3"/> by which the <see cref="Unhandled"/> is scaled.</param>
+    /// <returns>The scaled <see cref="Unhandled3"/>, { <paramref name="a"/> ∙ <paramref name="b"/> }.</returns>
+    public static Unhandled3 Multiply(Unhandled a, Vector3 b) => a.Multiply(b);
+
+    /// <summary>Scales the provided <see cref="Unhandled"/> by the provided <see cref="Vector4"/>.</summary>
+    /// <param name="a">The <see cref="Unhandled"/> that is scaled by the <see cref="Vector4"/>.</param>
+    /// <param name="b">The <see cref="Vector4"/> by which the <see cref="Unhandled"/> is scaled.</param>
+    /// <returns>The scaled <see cref="Unhandled3"/>, { <paramref name="a"/> ∙ <paramref name="b"/> }.</returns>
+    public static Unhandled4 Multiply(Unhandled a, Vector4 b) => a.Multiply(b);
+
+    /// <summary>Computes the product of the provided <see cref="Unhandled"/> and <see cref="Unhandled2"/>.</summary>
+    /// <param name="a">The <see cref="Unhandled"/> by which the <see cref="Unhandled2"/> is multiplied.</param>
+    /// <param name="b">The <see cref="Unhandled2"/> by which the <see cref="Unhandled"/> is multiplied.</param>
+    /// <returns>The product of the <see cref="Unhandled"/> and <see cref="Unhandled2"/>, { <paramref name="a"/> ∙ <paramref name="b"/> }.</returns>
+    public static Unhandled2 Multiply(Unhandled a, Unhandled2 b) => a.Multiply(b);
+
+    /// <summary>Computes the product of the provided <see cref="Unhandled"/> and <see cref="Unhandled3"/>.</summary>
+    /// <param name="a">The <see cref="Unhandled"/> by which the <see cref="Unhandled3"/> is multiplied.</param>
+    /// <param name="b">The <see cref="Unhandled3"/> by which the <see cref="Unhandled"/> is multiplied.</param>
+    /// <returns>The product of the <see cref="Unhandled"/> and <see cref="Unhandled3"/>, { <paramref name="a"/> ∙ <paramref name="b"/> }.</returns>
+    public static Unhandled3 Multiply(Unhandled a, Unhandled3 b) => a.Multiply(b);
+
+    /// <summary>Computes the product of the provided <see cref="Unhandled"/> and <see cref="Unhandled4"/>.</summary>
+    /// <param name="a">The <see cref="Unhandled"/> by which the <see cref="Unhandled4"/> is multiplied.</param>
+    /// <param name="b">The <see cref="Unhandled4"/> by which the <see cref="Unhandled"/> is multiplied.</param>
+    /// <returns>The product of the <see cref="Unhandled"/> and <see cref="Unhandled4"/>, { <paramref name="a"/> ∙ <paramref name="b"/> }.</returns>
+    public static Unhandled4 Multiply(Unhandled a, Unhandled4 b) => a.Multiply(b);
+
+    /// <summary>Computes the product of the provided <see cref="Unhandled"/> and <typeparamref name="TScalar"/>.</summary>
+    /// <typeparam name="TScalar">The type of the scalar quantity by which the <see cref="Unhandled"/> is multiplied.</typeparam>
+    /// <param name="x">The <see cref="Unhandled"/> by which the <typeparamref name="TScalar"/> is multiplied.</param>
+    /// <param name="y">The <typeparamref name="TScalar"/> by which the <see cref="Unhandled"/> is multiplied.</param>
+    /// <returns>The product of the <see cref="Unhandled"/> and <typeparamref name="TScalar"/>, { <paramref name="x"/> ∙ <paramref name="y"/> }.</returns>
     /// <exception cref="ArgumentNullException"/>
-    public static Unhandled operator *(Unhandled x, IScalarQuantity y)
+    public static Unhandled Multiply<TScalar>(Unhandled x, TScalar y) where TScalar : IScalarQuantity
     {
         ArgumentNullException.ThrowIfNull(y);
 
         return x.Multiply(y);
     }
 
-    /// <summary>Computes the product of the provided <see cref="IScalarQuantity"/> and <see cref="Unhandled"/>.</summary>
-    /// <param name="x">The <see cref="IScalarQuantity"/> by which the <see cref="Unhandled"/> is multiplied.</param>
-    /// <param name="y">The <see cref="Unhandled"/> by which the <see cref="IScalarQuantity"/> is multiplied.</param>
-    /// <remarks>For improved performance, prefer <see cref="Multiply{TScalar}(TScalar)"/> when the scalar quantity is a <see langword="struct"/>.</remarks>
-    /// <returns>The product of the <see cref="IScalarQuantity"/> and <see cref="Unhandled"/>, { <paramref name="x"/> ∙ <paramref name="y"/> }.</returns>
+    /// <summary>Computes the product of the provided <see cref="Unhandled"/> and <typeparamref name="TVector"/>.</summary>
+    /// <typeparam name="TVector">The type of the vector quantity by which the <see cref="Unhandled"/> is multiplied.</typeparam>
+    /// <param name="a">The <see cref="Unhandled"/> by which the <typeparamref name="TVector"/> is multiplied.</param>
+    /// <param name="b">The <typeparamref name="TVector"/> by which the <see cref="Unhandled"/> is multiplied.</param>
+    /// <remarks>For improved performance, prefer <see cref="Multiply2{TVector}(Unhandled, TVector)"/> when the vector quantity is a <see langword="struct"/> (avoiding boxing).</remarks>
+    /// <returns>The product of the <see cref="Unhandled"/> and <typeparamref name="TVector"/>, { <paramref name="a"/> ∙ <paramref name="b"/> }.</returns>
     /// <exception cref="ArgumentNullException"/>
-    public static Unhandled operator *(IScalarQuantity x, Unhandled y)
+    public static Unhandled2 Multiply<TVector>(Unhandled a, IVector2Quantity<TVector> b) where TVector : IVector2Quantity<TVector>
     {
-        ArgumentNullException.ThrowIfNull(x);
+        ArgumentNullException.ThrowIfNull(b);
 
-        return y.Multiply(x);
+        return a.Multiply(b);
     }
 
-    /// <summary>Computes the quotient of the provided <see cref="Unhandled"/> and <see cref="IScalarQuantity"/>.</summary>
-    /// <param name="x">The <see cref="Unhandled"/> that is divided by the <see cref="IScalarQuantity"/>.</param>
-    /// <param name="y">The <see cref="IScalarQuantity"/> by which the <see cref="Unhandled"/> is divided.</param>
-    /// <remarks>For improved performance, prefer <see cref="Divide{TScalar}(TScalar)"/> when the scalar quantity is a <see langword="struct"/>.</remarks>
-    /// <returns>The quotient of the <see cref="Unhandled"/> and <see cref="IScalarQuantity"/>, { <paramref name="x"/> / <paramref name="y"/> }.</returns>
+    /// <summary>Computes the product of the provided <see cref="Unhandled"/> and <typeparamref name="TVector"/>.</summary>
+    /// <typeparam name="TVector">The type of the vector quantity by which the <see cref="Unhandled"/> is multiplied.</typeparam>
+    /// <param name="a">The <see cref="Unhandled"/> by which the <typeparamref name="TVector"/> is multiplied.</param>
+    /// <param name="b">The <typeparamref name="TVector"/> by which the <see cref="Unhandled"/> is multiplied.</param>
+    /// <remarks>For improved performance, prefer <see cref="Multiply3{TVector}(Unhandled, TVector)"/> when the vector quantity is a <see langword="struct"/> (avoiding boxing).</remarks>
+    /// <returns>The product of the <see cref="Unhandled"/> and <typeparamref name="TVector"/>, { <paramref name="a"/> ∙ <paramref name="b"/> }.</returns>
     /// <exception cref="ArgumentNullException"/>
-    public static Unhandled operator /(Unhandled x, IScalarQuantity y)
+    public static Unhandled3 Multiply<TVector>(Unhandled a, IVector3Quantity<TVector> b) where TVector : IVector3Quantity<TVector>
     {
-        ArgumentNullException.ThrowIfNull(y);
+        ArgumentNullException.ThrowIfNull(b);
 
-        return x.Divide(y);
+        return a.Multiply(b);
     }
 
-    /// <summary>Computes the quotient of the provided <see cref="IScalarQuantity"/> and <see cref="Unhandled"/>.</summary>
-    /// <param name="x">The <see cref="IScalarQuantity"/>that is divided by the <see cref="Unhandled"/>.</param>
-    /// <param name="y">The <see cref="Unhandled"/> by which the <see cref="IScalarQuantity"/> is divided.</param>
-    /// <remarks>For improved performance, prefer <see cref="DivideInto{TScalar}(TScalar)"/> when the scalar quantity is a <see langword="struct"/>.</remarks>
-    /// <returns>The quotient of the <see cref="IScalarQuantity"/> and <see cref="Unhandled"/>, { <paramref name="x"/> / <paramref name="y"/> }.</returns>
+    /// <summary>Computes the product of the provided <see cref="Unhandled"/> and <typeparamref name="TVector"/>.</summary>
+    /// <typeparam name="TVector">The type of the vector quantity by which the <see cref="Unhandled"/> is multiplied.</typeparam>
+    /// <param name="a">The <see cref="Unhandled"/> by which the <typeparamref name="TVector"/> is multiplied.</param>
+    /// <param name="b">The <typeparamref name="TVector"/> by which the <see cref="Unhandled"/> is multiplied.</param>
+    /// <remarks>For improved performance, prefer <see cref="Multiply4{TVector}(Unhandled, TVector)"/> when the vector quantity is a <see langword="struct"/> (avoiding boxing).</remarks>
+    /// <returns>The product of the <see cref="Unhandled"/> and <typeparamref name="TVector"/>, { <paramref name="a"/> ∙ <paramref name="b"/> }.</returns>
     /// <exception cref="ArgumentNullException"/>
-    public static Unhandled operator /(IScalarQuantity x, Unhandled y)
+    public static Unhandled4 Multiply<TVector>(Unhandled a, IVector4Quantity<TVector> b) where TVector : IVector4Quantity<TVector>
     {
-        ArgumentNullException.ThrowIfNull(x);
+        ArgumentNullException.ThrowIfNull(b);
 
-        return y.DivideInto(x);
+        return a.Multiply(b);
     }
 
-    /// <summary>Computes the product of the provided <see cref="Unhandled"/> and <see cref="IVector2Quantity"/>.</summary>
-    /// <param name="a">The <see cref="Unhandled"/> by which the <see cref="IVector2Quantity"/> is multiplied.</param>
-    /// <param name="b">The <see cref="IVector2Quantity"/> by which the <see cref="Unhandled"/> is multiplied.</param>
-    /// <remarks>For improved performance, prefer <see cref="Multiply2{TVector}(TVector)"/> when the vector quantity is a <see langword="struct"/>.</remarks>
-    /// <returns>The product of the <see cref="Unhandled"/> and <see cref="IVector2Quantity"/>, { <paramref name="a"/> ∙ <paramref name="b"/> }.</returns>
+    /// <summary>Computes the product of the provided <see cref="Unhandled"/> and <typeparamref name="TVector"/>.</summary>
+    /// <typeparam name="TVector">The type of the vector quantity by which the <see cref="Unhandled"/> is multiplied.</typeparam>
+    /// <param name="a">The <see cref="Unhandled"/> by which the <typeparamref name="TVector"/> is multiplied.</param>
+    /// <param name="b">The <typeparamref name="TVector"/> by which the <see cref="Unhandled"/> is multiplied.</param>
+    /// <returns>The product of the <see cref="Unhandled"/> and <typeparamref name="TVector"/>, { <paramref name="a"/> ∙ <paramref name="b"/> }.</returns>
     /// <exception cref="ArgumentNullException"/>
-    public static Unhandled2 operator *(Unhandled a, IVector2Quantity b)
+    public static Unhandled2 Multiply2<TVector>(Unhandled a, TVector b) where TVector : IVector2Quantity
     {
         ArgumentNullException.ThrowIfNull(b);
 
         return a.Multiply2(b);
     }
 
-    /// <summary>Computes the product of the provided <see cref="IVector2Quantity"/> and <see cref="Unhandled"/>.</summary>
-    /// <param name="a">The <see cref="IVector2Quantity"/> by which the <see cref="Unhandled"/> is multiplied.</param>
-    /// <param name="b">The <see cref="Unhandled"/> by which the <see cref="IVector2Quantity"/> is multiplied.</param>
-    /// <remarks>For improved performance, prefer <see cref="Multiply2{TVector}(TVector)"/> when the vector quantity is a <see langword="struct"/>.</remarks>
-    /// <returns>The product of the <see cref="IVector2Quantity"/> and <see cref="Unhandled"/>, { <paramref name="a"/> ∙ <paramref name="b"/> }.</returns>
+    /// <summary>Computes the product of the provided <see cref="Unhandled"/> and <typeparamref name="TVector"/>.</summary>
+    /// <typeparam name="TVector">The type of the vector quantity by which the <see cref="Unhandled"/> is multiplied.</typeparam>
+    /// <param name="a">The <see cref="Unhandled"/> by which the <typeparamref name="TVector"/> is multiplied.</param>
+    /// <param name="b">The <typeparamref name="TVector"/> by which the <see cref="Unhandled"/> is multiplied.</param>
+    /// <returns>The product of the <see cref="Unhandled"/> and <typeparamref name="TVector"/>, { <paramref name="a"/> ∙ <paramref name="b"/> }.</returns>
     /// <exception cref="ArgumentNullException"/>
-    public static Unhandled2 operator *(IVector2Quantity a, Unhandled b)
-    {
-        ArgumentNullException.ThrowIfNull(a);
-
-        return b.Multiply2(a);
-    }
-
-    /// <summary>Computes the quotient of the provided <see cref="IVector2Quantity"/> and <see cref="Unhandled"/>.</summary>
-    /// <param name="a">The <see cref="IVector2Quantity"/>that is divided by the <see cref="Unhandled"/>.</param>
-    /// <param name="b">The <see cref="Unhandled"/> by which the <see cref="IVector2Quantity"/> is divided.</param>
-    /// <remarks>For improved performance, prefer <see cref="DivideInto2{TVector}(TVector)"/> when the vector quantity is a <see langword="struct"/>.</remarks>
-    /// <returns>The quotient of the <see cref="IVector2Quantity"/> and <see cref="Unhandled"/>, { <paramref name="a"/> / <paramref name="b"/> }.</returns>
-    /// <exception cref="ArgumentNullException"/>
-    public static Unhandled2 operator /(IVector2Quantity a, Unhandled b)
-    {
-        ArgumentNullException.ThrowIfNull(a);
-
-        return b.DivideInto2(a);
-    }
-
-    /// <summary>Computes the product of the provided <see cref="Unhandled"/> and <see cref="IVector3Quantity"/>.</summary>
-    /// <param name="a">The <see cref="Unhandled"/> by which the <see cref="IVector3Quantity"/> is multiplied.</param>
-    /// <param name="b">The <see cref="IVector3Quantity"/> by which the <see cref="Unhandled"/> is multiplied.</param>
-    /// <remarks>For improved performance, prefer <see cref="Multiply3{TVector}(TVector)"/> when the vector quantity is a <see langword="struct"/>.</remarks>
-    /// <returns>The product of the <see cref="Unhandled"/> and <see cref="IVector3Quantity"/>, { <paramref name="a"/> ∙ <paramref name="b"/> }.</returns>
-    /// <exception cref="ArgumentNullException"/>
-    public static Unhandled3 operator *(Unhandled a, IVector3Quantity b)
+    public static Unhandled3 Multiply3<TVector>(Unhandled a, TVector b) where TVector : IVector3Quantity
     {
         ArgumentNullException.ThrowIfNull(b);
 
         return a.Multiply3(b);
     }
 
-    /// <summary>Computes the product of the provided <see cref="IVector3Quantity"/> and <see cref="Unhandled"/>.</summary>
-    /// <param name="a">The <see cref="IVector3Quantity"/> by which the <see cref="Unhandled"/> is multiplied.</param>
-    /// <param name="b">The <see cref="Unhandled"/> by which the <see cref="IVector3Quantity"/> is multiplied.</param>
-    /// <remarks>For improved performance, prefer <see cref="Multiply3{TVector}(TVector)"/> when the vector quantity is a <see langword="struct"/>.</remarks>
-    /// <returns>The product of the <see cref="IVector3Quantity"/> and <see cref="Unhandled"/>, { <paramref name="a"/> ∙ <paramref name="b"/> }.</returns>
+    /// <summary>Computes the product of the provided <see cref="Unhandled"/> and <typeparamref name="TVector"/>.</summary>
+    /// <typeparam name="TVector">The type of the vector quantity by which the <see cref="Unhandled"/> is multiplied.</typeparam>
+    /// <param name="a">The <see cref="Unhandled"/> by which the <typeparamref name="TVector"/> is multiplied.</param>
+    /// <param name="b">The <typeparamref name="TVector"/> by which the <see cref="Unhandled"/> is multiplied.</param>
+    /// <returns>The product of the <see cref="Unhandled"/> and <typeparamref name="TVector"/>, { <paramref name="a"/> ∙ <paramref name="b"/> }.</returns>
     /// <exception cref="ArgumentNullException"/>
-    public static Unhandled3 operator *(IVector3Quantity a, Unhandled b)
-    {
-        ArgumentNullException.ThrowIfNull(a);
-
-        return b.Multiply3(a);
-    }
-
-    /// <summary>Computes the quotient of the provided <see cref="IVector3Quantity"/> and <see cref="Unhandled"/>.</summary>
-    /// <param name="a">The <see cref="IVector3Quantity"/>that is divided by the <see cref="Unhandled"/>.</param>
-    /// <param name="b">The <see cref="Unhandled"/> by which the <see cref="IVector3Quantity"/> is divided.</param>
-    /// <remarks>For improved performance, prefer <see cref="DivideInto3{TVector}(TVector)"/> when the vector quantity is a <see langword="struct"/>.</remarks>
-    /// <returns>The quotient of the <see cref="IVector3Quantity"/> and <see cref="Unhandled"/>, { <paramref name="a"/> / <paramref name="b"/> }.</returns>
-    /// <exception cref="ArgumentNullException"/>
-    public static Unhandled3 operator /(IVector3Quantity a, Unhandled b)
-    {
-        ArgumentNullException.ThrowIfNull(a);
-
-        return b.DivideInto3(a);
-    }
-
-    /// <summary>Computes the product of the provided <see cref="Unhandled"/> and <see cref="IVector4Quantity"/>.</summary>
-    /// <param name="a">The <see cref="Unhandled"/> by which the <see cref="IVector4Quantity"/> is multiplied.</param>
-    /// <param name="b">The <see cref="IVector4Quantity"/> by which the <see cref="Unhandled"/> is multiplied.</param>
-    /// <remarks>For improved performance, prefer <see cref="Multiply4{TVector}(TVector)"/> when the vector quantity is a <see langword="struct"/>.</remarks>
-    /// <returns>The product of the <see cref="Unhandled"/> and <see cref="IVector4Quantity"/>, { <paramref name="a"/> ∙ <paramref name="b"/> }.</returns>
-    /// <exception cref="ArgumentNullException"/>
-    public static Unhandled4 operator *(Unhandled a, IVector4Quantity b)
+    public static Unhandled4 Multiply4<TVector>(Unhandled a, TVector b) where TVector : IVector4Quantity
     {
         ArgumentNullException.ThrowIfNull(b);
 
         return a.Multiply4(b);
     }
 
+    /// <summary>Scales the provided <see cref="Unhandled"/> by the reciprocal of the provided <see cref="Scalar"/>.</summary>
+    /// <param name="x">The <see cref="Unhandled"/> that is scaled by the reciprocal of the <see cref="Scalar"/>.</param>
+    /// <param name="y">The <see cref="Scalar"/>, the reciprocal of which scales the <see cref="Unhandled"/></param>
+    /// <returns>The scaled <see cref="Unhandled"/>, { <paramref name="x"/> / <paramref name="y"/> }.</returns>
+    public static Unhandled Divide(Unhandled x, Scalar y) => x.DivideBy(y);
+
+    /// <summary>Computes the quotient of the provided <see cref="Unhandled"/> and <typeparamref name="TScalar"/>.</summary>
+    /// <typeparam name="TScalar">The type of the scalar quantity by which the <see cref="Unhandled"/> is divided.</typeparam>
+    /// <param name="x">The <see cref="Unhandled"/> that is divided by <typeparamref name="TScalar"/>.</param>
+    /// <param name="y">The <typeparamref name="TScalar"/> by which the <see cref="Unhandled"/> is divided.</param>
+    /// <returns>The quotient of the <see cref="Unhandled"/> and the <typeparamref name="TScalar"/>, { <paramref name="x"/> / <paramref name="y"/> }.</returns>
+    /// <exception cref="ArgumentNullException"/>
+    public static Unhandled Divide<TScalar>(Unhandled x, TScalar y) where TScalar : IScalarQuantity
+    {
+        ArgumentNullException.ThrowIfNull(y);
+
+        return x.DivideBy(y);
+    }
+
+    /// <summary>Determines whether an <see cref="Unhandled"/>, <paramref name="lhs"/>, represents a smaller magnitude than another <see cref="Unhandled"/>, <paramref name="rhs"/>.</summary>
+    /// <param name="lhs">The first <see cref="Unhandled"/>, assumed to represent a smaller magnitude than the other <see cref="Unhandled"/>.</param>
+    /// <param name="rhs">The second <see cref="Unhandled"/>, assumed to represent a greater magntiude than the other <see cref="Unhandled"/>.</param>
+    /// <remarks>The behaviour is consistent with <see cref="double.operator &lt;(double, double)"/>.</remarks>
+    /// <returns>A <see cref="bool"/> representing the truthfulness of { <paramref name="lhs"/> &lt; <paramref name="rhs"/> }.</returns>
+    public static bool operator <(Unhandled lhs, Unhandled rhs) => lhs.Magnitude < rhs.Magnitude;
+
+    /// <summary>Determines whether an <see cref="Unhandled"/>, <paramref name="lhs"/>, represents a greater magnitude than another <see cref="Unhandled"/>, <paramref name="rhs"/>.</summary>
+    /// <param name="lhs">The first <see cref="Unhandled"/>, assumed to represent a greater magnitude than the other <see cref="Unhandled"/>.</param>
+    /// <param name="rhs">The second <see cref="Unhandled"/>, assumed to represent a smaller magntiude than the other <see cref="Unhandled"/>.</param>
+    /// <remarks>The behaviour is consistent with <see cref="double.operator &gt;(double, double)"/>.</remarks>
+    /// <returns>A <see cref="bool"/> representing the truthfulness of { <paramref name="lhs"/> &gt; <paramref name="rhs"/> }.</returns>
+    public static bool operator >(Unhandled lhs, Unhandled rhs) => lhs.Magnitude > rhs.Magnitude;
+
+    /// <summary>Determines whether an <see cref="Unhandled"/>, <paramref name="lhs"/>, represents a smaller or equivalent magnitude compared to another <see cref="Unhandled"/>, <paramref name="rhs"/>.</summary>
+    /// <param name="lhs">The first <see cref="Unhandled"/>, assumed to represent a smaller or equivalent magnitude compared to the other <see cref="Unhandled"/>.</param>
+    /// <param name="rhs">The second <see cref="Unhandled"/>, assumed to represent a greater or equivalent magnitude compared to the other <see cref="Unhandled"/>.</param>
+    /// <remarks>The behaviour is consistent with <see cref="double.operator &lt;=(double, double)"/>.</remarks>
+    /// <returns>A <see cref="bool"/> representing the truthfulness of { <paramref name="lhs"/> ≤ <paramref name="rhs"/> }.</returns>
+    public static bool operator <=(Unhandled lhs, Unhandled rhs) => lhs.Magnitude <= rhs.Magnitude;
+
+    /// <summary>Determines whether an <see cref="Unhandled"/>, <paramref name="lhs"/>, represents a greater or equivalent magnitude compared to another <see cref="Unhandled"/>, <paramref name="rhs"/>.</summary>
+    /// <param name="lhs">The first <see cref="Unhandled"/>, assumed to represent a greater or equivalent magnitude compared to the other <see cref="Unhandled"/>.</param>
+    /// <param name="rhs">The second <see cref="Unhandled"/>, assumed to represent a smaller or equivalent magnitude compared to the other <see cref="Unhandled"/>.</param>
+    /// <remarks>The behaviour is consistent with <see cref="double.operator &gt;=(double, double)"/>.</remarks>
+    /// <returns>A <see cref="bool"/> representing the truthfulness of { <paramref name="lhs"/> ≥ <paramref name="rhs"/> }.</returns>
+    public static bool operator >=(Unhandled lhs, Unhandled rhs) => lhs.Magnitude >= rhs.Magnitude;
+
+    /// <summary>Applies the unary plus to the provided <see cref="Unhandled"/>.</summary>
+    /// <param name="x">The <see cref="Unhandled"/> to which the unary plus is applied.</param>
+    /// <returns>The same <see cref="Unhandled"/>, { <paramref name="x"/> }.</returns>
+    public static Unhandled operator +(Unhandled x) => x.Plus();
+
+    /// <summary>Negates the provided <see cref="Unhandled"/>.</summary>
+    /// <param name="x">The <see cref="Unhandled"/> that is negated.</param>
+    /// <returns>The negated <see cref="Unhandled"/>, { -<paramref name="x"/> }.</returns>
+    public static Unhandled operator -(Unhandled x) => x.Negate();
+
+    /// <summary>Computes the sum of the provided <see cref="Unhandled"/>.</summary>
+    /// <param name="x">The first <see cref="Unhandled"/>, which is added to the second <see cref="Unhandled"/>.</param>
+    /// <param name="y">The second <see cref="Unhandled"/>, which is added to the first <see cref="Unhandled"/>.</param>
+    /// <returns>The sum of the <see cref="Unhandled"/>, { <paramref name="x"/> + <paramref name="y"/> }.</returns>
+    public static Unhandled operator +(Unhandled x, Unhandled y) => Add(x, y);
+
+    /// <summary>Computes the signed difference between the provided <see cref="Unhandled"/>.</summary>
+    /// <param name="x">The first <see cref="Unhandled"/>, for which the difference to the second <see cref="Unhandled"/> is computed.</param>
+    /// <param name="y">The second <see cref="Unhandled"/>, for which the difference to the first <see cref="Unhandled"/> is computed.</param>
+    /// <remarks>The resulting <see cref="Unhandled"/> may be negative. If this is not desired, use <see cref="Difference{TScalar}(Unhandled, TScalar)"/>.</remarks>
+    /// <returns>The signed difference between the <see cref="Unhandled"/>, { |<paramref name="x"/> - <paramref name="y"/>| }.</returns>
+    public static Unhandled operator -(Unhandled x, Unhandled y) => Subtract(x, y);
+
+    /// <summary>Computes the product of the provided <see cref="Unhandled"/>.</summary>
+    /// <param name="x">The first <see cref="Unhandled"/>, by which the second <see cref="Unhandled"/> is multiplied.</param>
+    /// <param name="y">The second <see cref="Unhandled"/>, by which the first <see cref="Unhandled"/> is multiplied.</param>
+    /// <returns>The product of the <see cref="Unhandled"/>, { <paramref name="x"/> ∙ <paramref name="y"/> }.</returns>
+    public static Unhandled operator *(Unhandled x, Unhandled y) => Multiply(x, y);
+
+    /// <summary>Computes the quotient of the provided <see cref="Unhandled"/>.</summary>
+    /// <param name="x">The first <see cref="Unhandled"/>, which is divided by the second <see cref="Unhandled"/>.</param>
+    /// <param name="y">The second <see cref="Unhandled"/>, by which the first <see cref="Unhandled"/> is divided.</param>
+    /// <returns>The quotient of the <see cref="Unhandled"/>, { <paramref name="x"/> / <paramref name="y"/> }.</returns>
+    public static Unhandled operator /(Unhandled x, Unhandled y) => Divide(x, y);
+
+    /// <inheritdoc cref="Multiply(Unhandled, Scalar)"/>
+    public static Unhandled operator *(Unhandled x, Scalar y) => Multiply(x, y);
+
+    /// <summary>Scales the provided <see cref="Unhandled"/> by the provided <see cref="Scalar"/>.</summary>
+    /// <param name="x">The <see cref="Scalar"/> by which the <see cref="Unhandled"/> is scaled.</param>
+    /// <param name="y">The <see cref="Unhandled"/> that is scaled by the <see cref="Scalar"/>.</param>
+    /// <returns>The scaled <see cref="Unhandled"/>, { <paramref name="x"/> ∙ <paramref name="y"/> }.</returns>
+    public static Unhandled operator *(Scalar x, Unhandled y) => Multiply(y, x);
+
+    /// <inheritdoc cref="Divide(Unhandled, Scalar)"/>
+    public static Unhandled operator /(Unhandled x, Scalar y) => Divide(x, y);
+
+    /// <summary>Scales the reciprocal of the provided <see cref="Unhandled"/> by the provided <see cref="Scalar"/>.</summary>
+    /// <param name="x">The <see cref="Scalar"/> by which the reciprocal of the <see cref="Unhandled"/> is scaled.</param>
+    /// <param name="y">The <see cref="Unhandled"/>, the reciprocal of which is scaled by the <see cref="Scalar"/>.</param>
+    /// <returns>The scaled reciprocal of the <see cref="Unhandled"/>, { <paramref name="x"/> / <paramref name="y"/> }.</returns>
+    public static Unhandled operator /(Scalar x, Unhandled y) => Scalar.Divide(x, y);
+
+    /// <inheritdoc cref="Multiply(Unhandled, Vector2)"/>
+    public static Unhandled2 operator *(Unhandled a, Vector2 b) => Multiply(a, b);
+
+    /// <inheritdoc cref="Multiply(Unhandled, Vector3)"/>
+    public static Unhandled3 operator *(Unhandled a, Vector3 b) => Multiply(a, b);
+
+    /// <inheritdoc cref="Multiply(Unhandled, Vector4)"/>
+    public static Unhandled4 operator *(Unhandled a, Vector4 b) => Multiply(a, b);
+
+    /// <summary>Computes the sum of the provided <see cref="Unhandled"/> and <see cref="IScalarQuantity"/>.</summary>
+    /// <param name="x">The <see cref="Unhandled"/> that is added to the <see cref="IScalarQuantity"/>.</param>
+    /// <param name="y">The <see cref="IScalarQuantity"/> that is added to the <see cref="Unhandled"/>.</param>
+    /// <remarks>For improved performance, prefer <see cref="Add{TScalar}(Unhandled, TScalar)"/> when the scalar quantity is a <see langword="struct"/> (avoiding boxing).</remarks>
+    /// <returns>The sum of the <see cref="Unhandled"/> and <see cref="IScalarQuantity"/>, { <paramref name="x"/> + <paramref name="y"/> }.</returns>
+    /// <exception cref="ArgumentNullException"/>
+    public static Unhandled operator +(Unhandled x, IScalarQuantity y)
+    {
+        ArgumentNullException.ThrowIfNull(y);
+
+        return Add(x, y);
+    }
+
+    /// <summary>Computes the sum of the provided <see cref="Unhandled"/> and <see cref="IScalarQuantity"/>.</summary>
+    /// <param name="x">The <see cref="IScalarQuantity"/> that is added to the <see cref="Unhandled"/>.</param>
+    /// <param name="y">The <see cref="Unhandled"/> that is added to the <see cref="IScalarQuantity"/>.</param>
+    /// <remarks>For improved performance, prefer <see cref="Add{TScalar}(Unhandled, TScalar)"/> when the scalar quantity is a <see langword="struct"/> (avoiding boxing).</remarks>
+    /// <returns>The sum of the <see cref="Unhandled"/> and <see cref="IScalarQuantity"/>, { <paramref name="x"/> + <paramref name="y"/> }.</returns>
+    /// <exception cref="ArgumentNullException"/>
+    [SuppressMessage("Major Code Smell", "S2234: Parameters should be passed in the correct order", Justification = "Addition is commutative.")]
+    public static Unhandled operator +(IScalarQuantity x, Unhandled y)
+    {
+        ArgumentNullException.ThrowIfNull(x);
+
+        return Add(y, x);
+    }
+
+    /// <summary>Computes the signed difference between the provided <see cref="Unhandled"/> and <see cref="IScalarQuantity"/>.</summary>
+    /// <param name="x">The <see cref="Unhandled"/> from which the <see cref="IScalarQuantity"/> is subtracted.</param>
+    /// <param name="y">The <see cref="IScalarQuantity"/> that is subtracted from the <see cref="Unhandled"/>.</param>
+    /// <remarks>The resulting <see cref="Unhandled"/> may be negative. If this is not desired, use <see cref="Difference{TScalar}(Unhandled, TScalar)"/>.
+    /// <para>For improved performance, prefer <see cref="Subtract{TScalar}(Unhandled, TScalar)"/> when the scalar quantity is a <see langword="struct"/> (avoiding boxing).</para></remarks>
+    /// <returns>The signed difference between the <see cref="Unhandled"/> and <see cref="IScalarQuantity"/>, { <paramref name="x"/> - <paramref name="y"/> }.</returns>
+    /// <exception cref="ArgumentNullException"/>
+    public static Unhandled operator -(Unhandled x, IScalarQuantity y)
+    {
+        ArgumentNullException.ThrowIfNull(y);
+
+        return Subtract(x, y);
+    }
+
+    /// <summary>Computes the signed difference between the provided <see cref="IScalarQuantity"/> and <see cref="Unhandled"/>.</summary>
+    /// <param name="x">The <see cref="IScalarQuantity"/> from which the <see cref="Unhandled"/> is subtracted.</param>
+    /// <param name="y">The <see cref="Unhandled"/> that is subtracted from the <see cref="IScalarQuantity"/>.</param>
+    /// <remarks>The resulting <see cref="Unhandled"/> may be negative. If this is not desired, use <see cref="Difference{TScalar}(Unhandled, TScalar)"/>.
+    /// <para>For improved performance, prefer -<see cref="Subtract{TScalar}(Unhandled, TScalar)"/> when the scalar quantity is a <see langword="struct"/> (avoiding boxing).</para></remarks>
+    /// <returns>The signed difference between the <see cref="IScalarQuantity"/> and <see cref="Unhandled"/>, { <paramref name="x"/> - <paramref name="y"/> }.</returns>
+    /// <exception cref="ArgumentNullException"/>
+    [SuppressMessage("Major Code Smell", "S2234: Parameters should be passed in the correct order", Justification = "Subtraction is anti-commutative.")]
+    public static Unhandled operator -(IScalarQuantity x, Unhandled y)
+    {
+        ArgumentNullException.ThrowIfNull(x);
+
+        return -Subtract(y, x);
+    }
+
+    /// <summary>Computes the product of the provided <see cref="Unhandled"/> and <see cref="IScalarQuantity"/>.</summary>
+    /// <param name="x">The <see cref="Unhandled"/> by which the <see cref="IScalarQuantity"/> is multiplied.</param>
+    /// <param name="y">The <see cref="IScalarQuantity"/> by which the <see cref="Unhandled"/> is multiplied.</param>
+    /// <remarks>For improved performance, prefer <see cref="Multiply{TScalar}(Unhandled, TScalar)"/> when the scalar quantity is a <see langword="struct"/> (avoiding boxing).</remarks>
+    /// <returns>The product of the <see cref="Unhandled"/> and <see cref="IScalarQuantity"/>, { <paramref name="x"/> ∙ <paramref name="y"/> }.</returns>
+    /// <exception cref="ArgumentNullException"/>
+    public static Unhandled operator *(Unhandled x, IScalarQuantity y)
+    {
+        ArgumentNullException.ThrowIfNull(y);
+
+        return Multiply(x, y);
+    }
+
+    /// <summary>Computes the product of the provided <see cref="IScalarQuantity"/> and <see cref="Unhandled"/>.</summary>
+    /// <param name="x">The <see cref="IScalarQuantity"/> by which the <see cref="Unhandled"/> is multiplied.</param>
+    /// <param name="y">The <see cref="Unhandled"/> by which the <see cref="IScalarQuantity"/> is multiplied.</param>
+    /// <remarks>For improved performance, prefer <see cref="Multiply{TScalar}(TScalar)"/> when the scalar quantity is a <see langword="struct"/> (avoiding boxing).</remarks>
+    /// <returns>The product of the <see cref="IScalarQuantity"/> and <see cref="Unhandled"/>, { <paramref name="x"/> ∙ <paramref name="y"/> }.</returns>
+    /// <exception cref="ArgumentNullException"/>
+    [SuppressMessage("Major Code Smell", "S2234: Parameters should be passed in the correct order", Justification = "Multiplication is commutative.")]
+    public static Unhandled operator *(IScalarQuantity x, Unhandled y)
+    {
+        ArgumentNullException.ThrowIfNull(x);
+
+        return Multiply(y, x);
+    }
+
+    /// <summary>Computes the quotient of the provided <see cref="Unhandled"/> and <see cref="IScalarQuantity"/>.</summary>
+    /// <param name="x">The <see cref="Unhandled"/> that is divided by the <see cref="IScalarQuantity"/>.</param>
+    /// <param name="y">The <see cref="IScalarQuantity"/> by which the <see cref="Unhandled"/> is divided.</param>
+    /// <remarks>For improved performance, prefer <see cref="DivideBy{TScalar}(TScalar)"/> when the scalar quantity is a <see langword="struct"/> (avoiding boxing).</remarks>
+    /// <returns>The quotient of the <see cref="Unhandled"/> and <see cref="IScalarQuantity"/>, { <paramref name="x"/> / <paramref name="y"/> }.</returns>
+    /// <exception cref="ArgumentNullException"/>
+    public static Unhandled operator /(Unhandled x, IScalarQuantity y)
+    {
+        ArgumentNullException.ThrowIfNull(y);
+
+        return Divide(x, y);
+    }
+
+    /// <summary>Computes the quotient of the provided <see cref="IScalarQuantity"/> and <see cref="Unhandled"/>.</summary>
+    /// <param name="x">The <see cref="IScalarQuantity"/>that is divided by the <see cref="Unhandled"/>.</param>
+    /// <param name="y">The <see cref="Unhandled"/> by which the <see cref="IScalarQuantity"/> is divided.</param>
+    /// <remarks>For improved performance, prefer <see cref="Reciprocal"/> and <see cref="Multiply{TScalar}(Unhandled, TScalar)"/> when the scalar quantity is a <see langword="struct"/> (avoiding boxing).</remarks>
+    /// <returns>The quotient of the <see cref="IScalarQuantity"/> and <see cref="Unhandled"/>, { <paramref name="x"/> / <paramref name="y"/> }.</returns>
+    /// <exception cref="ArgumentNullException"/>
+    public static Unhandled operator /(IScalarQuantity x, Unhandled y)
+    {
+        ArgumentNullException.ThrowIfNull(x);
+
+        return new(x.Magnitude / y.Magnitude);
+    }
+
+    /// <summary>Computes the product of the provided <see cref="Unhandled"/> and <see cref="IVector2Quantity"/>.</summary>
+    /// <param name="a">The <see cref="Unhandled"/> by which the <see cref="IVector2Quantity"/> is multiplied.</param>
+    /// <param name="b">The <see cref="IVector2Quantity"/> by which the <see cref="Unhandled"/> is multiplied.</param>
+    /// <remarks>For improved performance, prefer <see cref="Multiply2{TVector}(TVector)"/> when the vector quantity is a <see langword="struct"/> (avoiding boxing).</remarks>
+    /// <returns>The product of the <see cref="Unhandled"/> and <see cref="IVector2Quantity"/>, { <paramref name="a"/> ∙ <paramref name="b"/> }.</returns>
+    /// <exception cref="ArgumentNullException"/>
+    public static Unhandled2 operator *(Unhandled a, IVector2Quantity b)
+    {
+        ArgumentNullException.ThrowIfNull(b);
+
+        return Multiply2(a, b);
+    }
+
+    /// <summary>Computes the product of the provided <see cref="IVector2Quantity"/> and <see cref="Unhandled"/>.</summary>
+    /// <param name="a">The <see cref="IVector2Quantity"/> by which the <see cref="Unhandled"/> is multiplied.</param>
+    /// <param name="b">The <see cref="Unhandled"/> by which the <see cref="IVector2Quantity"/> is multiplied.</param>
+    /// <remarks>For improved performance, prefer <see cref="Multiply2{TVector}(TVector)"/> when the vector quantity is a <see langword="struct"/> (avoiding boxing).</remarks>
+    /// <returns>The product of the <see cref="IVector2Quantity"/> and <see cref="Unhandled"/>, { <paramref name="a"/> ∙ <paramref name="b"/> }.</returns>
+    /// <exception cref="ArgumentNullException"/>
+    public static Unhandled2 operator *(IVector2Quantity a, Unhandled b)
+    {
+        ArgumentNullException.ThrowIfNull(a);
+
+        return Multiply2(b, a);
+    }
+
+    /// <summary>Computes the quotient of the provided <see cref="IVector2Quantity"/> and <see cref="Unhandled"/>.</summary>
+    /// <param name="a">The <see cref="IVector2Quantity"/>that is divided by the <see cref="Unhandled"/>.</param>
+    /// <param name="b">The <see cref="Unhandled"/> by which the <see cref="IVector2Quantity"/> is divided.</param>
+    /// <remarks>For improved performance, prefer <see cref="Reciprocal"/> and <see cref="Multiply2{TVector}(Unhandled, TVector)"/> when the vector quantity is a <see langword="struct"/> (avoiding boxing).</remarks>
+    /// <returns>The quotient of the <see cref="IVector2Quantity"/> and <see cref="Unhandled"/>, { <paramref name="a"/> / <paramref name="b"/> }.</returns>
+    /// <exception cref="ArgumentNullException"/>
+    public static Unhandled2 operator /(IVector2Quantity a, Unhandled b)
+    {
+        ArgumentNullException.ThrowIfNull(a);
+
+        return a.Components.DivideBy(b);
+    }
+
+    /// <summary>Computes the product of the provided <see cref="Unhandled"/> and <see cref="IVector3Quantity"/>.</summary>
+    /// <param name="a">The <see cref="Unhandled"/> by which the <see cref="IVector3Quantity"/> is multiplied.</param>
+    /// <param name="b">The <see cref="IVector3Quantity"/> by which the <see cref="Unhandled"/> is multiplied.</param>
+    /// <remarks>For improved performance, prefer <see cref="Multiply3{TVector}(TVector)"/> when the vector quantity is a <see langword="struct"/> (avoiding boxing).</remarks>
+    /// <returns>The product of the <see cref="Unhandled"/> and <see cref="IVector3Quantity"/>, { <paramref name="a"/> ∙ <paramref name="b"/> }.</returns>
+    /// <exception cref="ArgumentNullException"/>
+    public static Unhandled3 operator *(Unhandled a, IVector3Quantity b)
+    {
+        ArgumentNullException.ThrowIfNull(b);
+
+        return Multiply3(a, b);
+    }
+
+    /// <summary>Computes the product of the provided <see cref="IVector3Quantity"/> and <see cref="Unhandled"/>.</summary>
+    /// <param name="a">The <see cref="IVector3Quantity"/> by which the <see cref="Unhandled"/> is multiplied.</param>
+    /// <param name="b">The <see cref="Unhandled"/> by which the <see cref="IVector3Quantity"/> is multiplied.</param>
+    /// <remarks>For improved performance, prefer <see cref="Multiply3{TVector}(TVector)"/> when the vector quantity is a <see langword="struct"/> (avoiding boxing).</remarks>
+    /// <returns>The product of the <see cref="IVector3Quantity"/> and <see cref="Unhandled"/>, { <paramref name="a"/> ∙ <paramref name="b"/> }.</returns>
+    /// <exception cref="ArgumentNullException"/>
+    public static Unhandled3 operator *(IVector3Quantity a, Unhandled b)
+    {
+        ArgumentNullException.ThrowIfNull(a);
+
+        return Multiply3(b, a);
+    }
+
+    /// <summary>Computes the quotient of the provided <see cref="IVector3Quantity"/> and <see cref="Unhandled"/>.</summary>
+    /// <param name="a">The <see cref="IVector3Quantity"/>that is divided by the <see cref="Unhandled"/>.</param>
+    /// <param name="b">The <see cref="Unhandled"/> by which the <see cref="IVector3Quantity"/> is divided.</param>
+    /// <remarks>For improved performance, prefer <see cref="Reciprocal"/> and <see cref="Multiply3{TVector}(Unhandled, TVector)"/> when the vector quantity is a <see langword="struct"/> (avoiding boxing).</remarks>
+    /// <returns>The quotient of the <see cref="IVector3Quantity"/> and <see cref="Unhandled"/>, { <paramref name="a"/> / <paramref name="b"/> }.</returns>
+    /// <exception cref="ArgumentNullException"/>
+    public static Unhandled3 operator /(IVector3Quantity a, Unhandled b)
+    {
+        ArgumentNullException.ThrowIfNull(a);
+
+        return a.Components.DivideBy(b);
+    }
+
+    /// <summary>Computes the product of the provided <see cref="Unhandled"/> and <see cref="IVector4Quantity"/>.</summary>
+    /// <param name="a">The <see cref="Unhandled"/> by which the <see cref="IVector4Quantity"/> is multiplied.</param>
+    /// <param name="b">The <see cref="IVector4Quantity"/> by which the <see cref="Unhandled"/> is multiplied.</param>
+    /// <remarks>For improved performance, prefer <see cref="Multiply4{TVector}(TVector)"/> when the vector quantity is a <see langword="struct"/> (avoiding boxing).</remarks>
+    /// <returns>The product of the <see cref="Unhandled"/> and <see cref="IVector4Quantity"/>, { <paramref name="a"/> ∙ <paramref name="b"/> }.</returns>
+    /// <exception cref="ArgumentNullException"/>
+    public static Unhandled4 operator *(Unhandled a, IVector4Quantity b)
+    {
+        ArgumentNullException.ThrowIfNull(b);
+
+        return Multiply4(a, b);
+    }
+
     /// <summary>Computes the product of the provided <see cref="IVector4Quantity"/> and <see cref="Unhandled"/>.</summary>
     /// <param name="a">The <see cref="IVector4Quantity"/> by which the <see cref="Unhandled"/> is multiplied.</param>
     /// <param name="b">The <see cref="Unhandled"/> by which the <see cref="IVector4Quantity"/> is multiplied.</param>
-    /// <remarks>For improved performance, prefer <see cref="Multiply4{TVector}(TVector)"/> when the vector quantity is a <see langword="struct"/>.</remarks>
+    /// <remarks>For improved performance, prefer <see cref="Multiply4{TVector}(TVector)"/> when the vector quantity is a <see langword="struct"/> (avoiding boxing).</remarks>
     /// <returns>The product of the <see cref="IVector4Quantity"/> and <see cref="Unhandled"/>, { <paramref name="a"/> ∙ <paramref name="b"/> }.</returns>
     /// <exception cref="ArgumentNullException"/>
     public static Unhandled4 operator *(IVector4Quantity a, Unhandled b)
     {
         ArgumentNullException.ThrowIfNull(a);
 
-        return b.Multiply4(a);
+        return Multiply4(b, a);
     }
 
     /// <summary>Computes the quotient of the provided <see cref="IVector4Quantity"/> and <see cref="Unhandled"/>.</summary>
     /// <param name="a">The <see cref="IVector4Quantity"/>that is divided by the <see cref="Unhandled"/>.</param>
     /// <param name="b">The <see cref="Unhandled"/> by which the <see cref="IVector4Quantity"/> is divided.</param>
-    /// <remarks>For improved performance, prefer <see cref="DivideInto4{TVector}(TVector)"/> when the vector quantity is a <see langword="struct"/>.</remarks>
+    /// <remarks>For improved performance, prefer <see cref="Reciprocal"/> and <see cref="Multiply4{TVector}(Unhandled, TVector)"/> when the vector quantity is a <see langword="struct"/> (avoiding boxing).</remarks>
     /// <returns>The quotient of the <see cref="IVector4Quantity"/> and <see cref="Unhandled"/>, { <paramref name="a"/> / <paramref name="b"/> }.</returns>
     /// <exception cref="ArgumentNullException"/>
     public static Unhandled4 operator /(IVector4Quantity a, Unhandled b)
     {
         ArgumentNullException.ThrowIfNull(a);
 
-        return b.DivideInto4(a);
+        return a.Components.DivideBy(b);
     }
 
     /// <summary>Constructs an <see cref="Unhandled"/>, representing the provided <see cref="Scalar"/> magnitude.</summary>

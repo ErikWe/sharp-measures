@@ -1,0 +1,13 @@
+[*.{cs,vb}]
+
+# Validate arguments of public methods
+dotnet_diagnostic.CA1062.severity = none
+
+# Identifiers should not contain underscores
+dotnet_diagnostic.CA1707.severity = none
+
+# Identifiers should not have incorrect suffix
+dotnet_diagnostic.CA1711.severity = none
+
+# Do not raise reserved exception types
+dotnet_diagnostic.CA2201.severity = none

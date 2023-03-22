@@ -7,6 +7,12 @@ using System.Globalization;
 /// <remarks>Common <see cref="MetricPrefix"/> are defined as static properties.</remarks>
 public sealed record class MetricPrefix : IPrefix, IComparable<MetricPrefix>, IFormattable
 {
+    /// <summary>Indicates that a quantity should be scaled by one nonillion { 10 ^ 30 = 1 000 ^ 10 }. Usually denoted by { Q }.</summary>
+    public static MetricPrefix Quetta { get; } = ThousandToThePower(10);
+
+    /// <summary>Indicates that a quantity should be scaled by one octillion { 10 ^ 27 = 1 000 ^ 9 }. Usually denoted by { R }.</summary>
+    public static MetricPrefix Ronna { get; } = ThousandToThePower(9);
+
     /// <summary>Indicates that a quantity should be scaled by one septillion { 10 ^ 24 = 1 000 ^ 8 }. Usually denoted by { Y }.</summary>
     public static MetricPrefix Yotta { get; } = ThousandToThePower(8);
 
@@ -73,39 +79,51 @@ public sealed record class MetricPrefix : IPrefix, IComparable<MetricPrefix>, IF
     /// <summary>Indicates that a quantity should be scaled by one septillionth { 10 ^ -24 = 1 000 ^ -8 }. Usually denoted by { y }.</summary>
     public static MetricPrefix Yocto { get; } = ThousandToThePower(-8);
 
+    /// <summary>Indicates that a quantity should be scaled by one octillionth { 10 ^ -27 = 1 000 ^ -9 }. Usually denoted by { r }.</summary>
+    public static MetricPrefix Ronto { get; } = ThousandToThePower(-9);
+
+    /// <summary>Indicates that a quantity should be scaled by one nonillionth { 10 ^ -30 = 1 000 ^ -10 }. Usually denoted by { q }.</summary>
+    public static MetricPrefix Quecto { get; } = ThousandToThePower(-10);
+
     /// <summary>Constructs a <see cref="MetricPrefix"/>, representing a scale-factor of { 10 } raised to the provided power.</summary>
-    /// <param name="exponent">The <see cref="Scalar"/> power, used as the exponent when computing the scale-factor.</param>
+    /// <param name="exponent">The <see cref="int"/> power, used as the exponent when computing the scale-factor.</param>
     /// <returns>The constructed <see cref="MetricPrefix"/>, representing the scale-factor { 10 ^ <paramref name="exponent"/> }.</returns>
-    /// <exception cref="ArgumentException"/>
     /// <exception cref="ArgumentOutOfRangeException"/>
-    public static MetricPrefix TenToThePower(Scalar exponent) => new(Math.Pow(10, exponent));
+    public static MetricPrefix TenToThePower(int exponent)
+    {
+        var factor = Math.Pow(10, exponent);
+
+        if (double.IsPositiveInfinity(factor))
+        {
+            throw new ArgumentOutOfRangeException(nameof(exponent), factor, $"The scale-factor of a {nameof(MetricPrefix)} must be finite.");
+        }
+
+        return new(factor);
+    }
 
     /// <summary>Constructs a <see cref="MetricPrefix"/>, representing a scale-factor of { 1 000 } raised to the provided power.</summary>
-    /// <param name="exponent">The <see cref="Scalar"/> power, used as the exponent when computing the scale-factor.</param>
+    /// <param name="exponent">The <see cref="int"/> power, used as the exponent when computing the scale-factor.</param>
     /// <returns>The constructed <see cref="MetricPrefix"/>, representing the scale-factor { 1 000 ^ <paramref name="exponent"/> }.</returns>
-    /// <exception cref="ArgumentException"/>
     /// <exception cref="ArgumentOutOfRangeException"/>
-    public static MetricPrefix ThousandToThePower(Scalar exponent) => new(Math.Pow(1000, exponent));
+    public static MetricPrefix ThousandToThePower(int exponent)
+    {
+        var factor = Math.Pow(1000, exponent);
+
+        if (double.IsPositiveInfinity(factor))
+        {
+            throw new ArgumentOutOfRangeException(nameof(exponent), factor, $"The scale-factor of a {nameof(MetricPrefix)} must be finite.");
+        }
+
+        return new(factor);
+    }
 
     /// <summary>The scale-factor of the <see cref="MetricPrefix"/>.</summary>
     public Scalar Factor { get; }
 
     /// <summary>Instantiates a <see cref="MetricPrefix"/>, representing a <see cref="Scalar"/> factor.</summary>
     /// <param name="factor">The <see cref="Scalar"/> factor of the constructed <see cref="MetricPrefix"/>.</param>
-    /// <exception cref="ArgumentException"/>
-    /// <exception cref="ArgumentOutOfRangeException"/>
-    public MetricPrefix(Scalar factor)
+    private MetricPrefix(Scalar factor)
     {
-        if (factor.IsNaN)
-        {
-            throw new ArgumentException($"The scale-factor of a {nameof(MetricPrefix)} must be defined.", nameof(factor));
-        }
-
-        if (factor.IsInfinite)
-        {
-            throw new ArgumentOutOfRangeException(nameof(factor), factor, $"The scale-factor of a {nameof(MetricPrefix)} must be finite.");
-        }
-
         Factor = factor;
     }
 
@@ -202,23 +220,9 @@ public sealed record class MetricPrefix : IPrefix, IComparable<MetricPrefix>, IF
     /// <remarks>A <see cref="bool"/> representing the truthfulness of { <paramref name="lhs"/> ≥ <paramref name="rhs"/> }.</remarks>
     public static bool operator >=(MetricPrefix? lhs, MetricPrefix? rhs) => lhs?.Factor >= rhs?.Factor;
 
-    /// <summary>Constructs a <see cref="MetricPrefix"/>, representing a <see cref="Scalar"/> factor.</summary>
-    /// <param name="factor">The scale-factor represented by the constructed <see cref="MetricPrefix"/>.</param>
-    /// <returns>The constructed <see cref="MetricPrefix"/>, representing the provided <see cref="Scalar"/> factor.</returns>
-    /// <exception cref="ArgumentException"/>
-    /// <exception cref="ArgumentOutOfRangeException"/>
-    public static MetricPrefix FromScalar(Scalar factor) => new(factor);
-
     /// <summary>Retrieves the <see cref="Scalar"/> factor of the <see cref="MetricPrefix"/>.</summary>
     /// <returns>The <see cref="Scalar"/> factor of the <see cref="MetricPrefix"/>.</returns>
     public Scalar ToScalar() => Factor;
-
-    /// <summary>Constructs a <see cref="MetricPrefix"/>, representing a <see cref="Scalar"/> factor.</summary>
-    /// <param name="factor">The scale-factor represented by the constructed <see cref="MetricPrefix"/>.</param>
-    /// <returns>The constructed <see cref="MetricPrefix"/>, representing the provided <see cref="Scalar"/> factor.</returns>
-    /// <exception cref="ArgumentException"/>
-    /// <exception cref="ArgumentOutOfRangeException"/>
-    public static explicit operator MetricPrefix(Scalar factor) => FromScalar(factor);
 
     /// <summary>Retrieves the <see cref="Scalar"/> factor of the provided <see cref="MetricPrefix"/>.</summary>
     /// <param name="metricPrefix">The <see cref="MetricPrefix"/>, from which the <see cref="Scalar"/> factor is retrieved.</param>

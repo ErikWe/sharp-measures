@@ -36,7 +36,7 @@ public readonly record struct Vector2 : IVector2Quantity<Vector2>, IFormattable
     public bool IsNaN => X.IsNaN || Y.IsNaN;
 
     /// <summary>Indicates whether the <see cref="Vector2"/> represents { 0, 0 }.</summary>
-    public bool IsZero => (X.Value, Y.Value) is (0, 0);
+    public bool IsZero => X.IsZero && Y.IsZero;
 
     /// <summary>Indicates whether both the X and Y components of the <see cref="Vector2"/> represent finite values.</summary>
     public bool IsFinite => X.IsFinite && Y.IsFinite;
@@ -50,7 +50,8 @@ public readonly record struct Vector2 : IVector2Quantity<Vector2>, IFormattable
     /// <inheritdoc/>
     public Scalar SquaredMagnitude() => Dot(this);
 
-    /// <inheritdoc/>
+    /// <summary>Computes the normalized <see cref="Vector2"/> - the <see cref="Vector2"/> with the same direction, but magnitude { 1 }.</summary>
+    /// <returns>The normalized <see cref="Vector2"/>.</returns>
     public Vector2 Normalize() => this / Magnitude();
 
     /// <summary>Determines whether the <see cref="Vector2"/> is equivalent to another, provided, <see cref="Vector2"/>.</summary>
@@ -114,10 +115,12 @@ public readonly record struct Vector2 : IVector2Quantity<Vector2>, IFormattable
         y = Y;
     }
 
-    /// <inheritdoc/>
+    /// <summary>Applies the unary plus to the <see cref="Vector2"/>.</summary>
+    /// <returns>The same <see cref="Vector2"/>, { <see langword="this"/> }.</returns>
     public Vector2 Plus() => this;
 
-    /// <inheritdoc/>
+    /// <summary>Negates the <see cref="Vector2"/>.</summary>
+    /// <returns>The negated <see cref="Vector2"/>, { -<see langword="this"/> }.</returns>
     public Vector2 Negate() => (-X, -Y);
 
     /// <summary>Computes the sum of the <see cref="Vector2"/> and another, provided, <see cref="Vector2"/>.</summary>
@@ -127,7 +130,7 @@ public readonly record struct Vector2 : IVector2Quantity<Vector2>, IFormattable
 
     /// <summary>Computes the difference between the <see cref="Vector2"/> and another, provided, <see cref="Vector2"/>.</summary>
     /// <param name="subtrahend">The <see cref="Vector2"/> that is subtracted from the original <see cref="Vector2"/>.</param>
-    /// <returns>The difference between the two <see cref="Vector2"/>, { <see langword="this"/> - <paramref name="subtrahend"/> }.</returns>
+    /// <returns>The difference between the <see cref="Vector2"/>, { <see langword="this"/> - <paramref name="subtrahend"/> }.</returns>
     public Vector2 Subtract(Vector2 subtrahend) => (X - subtrahend.X, Y - subtrahend.Y);
 
     /// <summary>Computes the element-wise remainder from division of the <see cref="Vector2"/> by the provided <see cref="Scalar"/>.</summary>
@@ -140,48 +143,135 @@ public readonly record struct Vector2 : IVector2Quantity<Vector2>, IFormattable
     /// <returns>The scaled <see cref="Vector2"/>, { <see langword="this"/> ∙ <paramref name="factor"/> }.</returns>
     public Vector2 Multiply(Scalar factor) => (X * factor, Y * factor);
 
-    /// <summary>Scales the <see cref="Vector2"/> through division by the provided <see cref="Scalar"/>.</summary>
-    /// <param name="divisor">The <see cref="Scalar"/>, scaling the <see cref="Vector2"/> through division.</param>
-    /// <returns>The scaled <see cref="Vector2"/>, { <see langword="this"/> / <paramref name="divisor"/> }.</returns>
-    public Vector2 Divide(Scalar divisor) => (X / divisor, Y / divisor);
+    /// <summary>Scales the provided <see cref="Unhandled"/> by the <see cref="Vector2"/>.</summary>
+    /// <param name="factor">The <see cref="Unhandled"/> that is scaled by the <see cref="Vector2"/> is scaled.</param>
+    /// <returns>The scaled <see cref="Unhandled2"/>, { <see langword="this"/> ∙ <paramref name="factor"/> }.</returns>
+    public Unhandled2 Multiply(Unhandled factor) => (X * factor, Y * factor);
 
-    /// <summary>Computes the dot product of the <see cref="Vector2"/> and another, provided, <see cref="Vector2"/>.</summary>
-    /// <param name="factor">The <see cref="Vector2"/> by which the original <see cref="Vector2"/> is dot multiplied.</param>
-    /// <returns>The dot product of the <see cref="Vector2"/>, { <see langword="this"/> ∙ <paramref name="factor"/> }.</returns>
+    /// <summary>Scales the provided <typeparamref name="TScalar"/> by the <see cref="Vector2"/>.</summary>
+    /// <typeparam name="TScalar">The type of the scalar quantity that is scaled by the <see cref="Vector2"/>.</typeparam>
+    /// <param name="factor">The <typeparamref name="TScalar"/> that is scaled by the <see cref="Vector2"/>.</param>
+    /// <returns>The scaled <typeparamref name="TScalar"/>-tuple, { <see langword="this"/> ∙ <paramref name="factor"/> }.</returns>
+    /// <exception cref="ArgumentNullException"/>
+    public (TScalar, TScalar) Multiply<TScalar>(TScalar factor) where TScalar : IScalarQuantity<TScalar>
+    {
+        ArgumentNullException.ThrowIfNull(factor);
+
+        return (X.Multiply(factor), Y.Multiply(factor));
+    }
+
+    /// <summary>Scales the <see cref="Vector2"/> by the reciprocal of the provided <see cref="Scalar"/>.</summary>
+    /// <param name="divisor">The <see cref="Scalar"/>, the reciprocal of which scales the <see cref="Vector2"/></param>
+    /// <returns>The scaled <see cref="Vector2"/>, { <see langword="this"/> / <paramref name="divisor"/> }.</returns>
+    public Vector2 DivideBy(Scalar divisor) => (X / divisor, Y / divisor);
+
+    /// <summary>Scales the reciprocal of the provided <see cref="Unhandled"/> by the <see cref="Vector2"/>.</summary>
+    /// <param name="divisor">The <see cref="Unhandled"/>, the reciprocal of which is scaled by the <see cref="Vector2"/></param>
+    /// <returns>The scaled <see cref="Unhandled2"/>, { <see langword="this"/> / <paramref name="divisor"/> }.</returns>
+    public Unhandled2 DivideBy(Unhandled divisor) => new(X / divisor.Magnitude, Y / divisor.Magnitude);
+
+    /// <summary>Computes the dot-product of the <see cref="Vector2"/> and another, provided, <see cref="Vector2"/>.</summary>
+    /// <param name="factor">The <see cref="Vector2"/> by which the original <see cref="Vector2"/> is dot-multiplied.</param>
+    /// <returns>The dot-product of the <see cref="Vector2"/>, { <see langword="this"/> ∙ <paramref name="factor"/> }.</returns>
     public Scalar Dot(Vector2 factor) => (X * factor.X) + (Y * factor.Y);
 
-    /// <inheritdoc/>
-    public static Vector2 operator +(Vector2 a) => a.Plus();
-
-    /// <inheritdoc/>
-    public static Vector2 operator -(Vector2 a) => a.Negate();
-
     /// <summary>Computes the sum of the provided <see cref="Vector2"/>.</summary>
-    /// <param name="a">The first <see cref="Vector2"/>, added to the second <see cref="Vector2"/>.</param>
-    /// <param name="b">The second <see cref="Vector2"/>, added to the first <see cref="Vector2"/>.</param>
+    /// <param name="a">The first <see cref="Vector2"/>, which is added to the second <see cref="Vector2"/>.</param>
+    /// <param name="b">The second <see cref="Vector2"/>, which is added to the first <see cref="Vector2"/>.</param>
     /// <returns>The sum of the <see cref="Vector2"/>, { <paramref name="a"/> + <paramref name="b"/> }.</returns>
-    public static Vector2 operator +(Vector2 a, Vector2 b) => a.Add(b);
+    public static Vector2 Add(Vector2 a, Vector2 b) => a.Add(b);
 
     /// <summary>Computes the difference between the provided <see cref="Vector2"/>.</summary>
     /// <param name="a">The first <see cref="Vector2"/>, from which the second <see cref="Vector2"/> is subtracted.</param>
     /// <param name="b">The second <see cref="Vector2"/>, which is subtracted from the first <see cref="Vector2"/>.</param>
-    /// <returns>The difference between the two <see cref="Vector2"/>, { <paramref name="a"/> - <paramref name="b"/> }.</returns>
-    public static Vector2 operator -(Vector2 a, Vector2 b) => a.Subtract(b);
+    /// <returns>The difference between the <see cref="Scalar"/>, { <paramref name="a"/> - <paramref name="b"/> }.</returns>
+    public static Vector2 Subtract(Vector2 a, Vector2 b) => a.Subtract(b);
 
     /// <summary>Computes the element-wise remainder from division of the provided <see cref="Vector2"/> by the provided <see cref="Scalar"/>.</summary>
-    /// <param name="a">The <see cref="Vector2"/>, which is divided by the <see cref="Scalar"/>.</param>
-    /// <param name="b">The <see cref="Scalar"/>, by which the <see cref="Vector2"/> is divided.</param>
+    /// <param name="a">The <see cref="Vector2"/> that is divided by the <see cref="Scalar"/>.</param>
+    /// <param name="b">The <see cref="Scalar"/> by which the <see cref="Vector2"/> is divided.</param>
     /// <returns>The element-wise remainder from division of the <see cref="Vector2"/> by the <see cref="Scalar"/>, { <paramref name="a"/> % <paramref name="b"/> }.</returns>
-    public static Vector2 operator %(Vector2 a, Scalar b) => a.Remainder(b);
+    public static Vector2 Remainder(Vector2 a, Scalar b) => a.Remainder(b);
 
-    /// <inheritdoc/>
-    public static Vector2 operator *(Vector2 a, Scalar b) => a.Multiply(b);
+    /// <summary>Scales the provided <see cref="Vector2"/> by the provided <see cref="Scalar"/>.</summary>
+    /// <param name="a">The <see cref="Vector2"/> that is scaled by the <see cref="Scalar"/>.</param>
+    /// <param name="b">The <see cref="Scalar"/> by which the <see cref="Vector2"/> is scaled.</param>
+    /// <returns>The scaled <see cref="Vector2"/>, { <paramref name="a"/> ∙ <paramref name="b"/> }.</returns>
+    public static Vector2 Multiply(Vector2 a, Scalar b) => a.Multiply(b);
 
-    /// <inheritdoc/>
-    public static Vector2 operator *(Scalar a, Vector2 b) => b.Multiply(a);
+    /// <summary>Scales the provided <see cref="Unhandled"/> by the provided <see cref="Vector2"/>.</summary>
+    /// <param name="a">The <see cref="Vector2"/> by which the <see cref="Unhandled"/> is scaled.</param>
+    /// <param name="b">The <see cref="Unhandled"/> that is scaled by the <see cref="Vector2"/>.</param>
+    /// <returns>The scaled <see cref="Unhandled2"/>, { <paramref name="a"/> ∙ <paramref name="b"/> }.</returns>
+    public static Unhandled2 Multiply(Vector2 a, Unhandled b) => a.Multiply(b);
 
-    /// <inheritdoc/>
-    public static Vector2 operator /(Vector2 a, Scalar b) => a.Divide(b);
+    /// <summary>Scales the provided <typeparamref name="TScalar"/> by the provided <see cref="Vector2"/>.</summary>
+    /// <typeparam name="TScalar">The type of the scalar quantity that is scaled by the <see cref="Vector2"/>.</typeparam>
+    /// <param name="a">The <see cref="Vector2"/> by which the <typeparamref name="TScalar"/> is scaled.</param>
+    /// <param name="b">The <typeparamref name="TScalar"/> that is scaled by the <see cref="Vector2"/>.</param>
+    /// <returns>The scaled <typeparamref name="TScalar"/>-tuple, { <paramref name="a"/> ∙ <paramref name="b"/> }.</returns>
+    /// <exception cref="ArgumentNullException"/>
+    public static (TScalar, TScalar) Multiply<TScalar>(Vector2 a, TScalar b) where TScalar : IScalarQuantity<TScalar>
+    {
+        ArgumentNullException.ThrowIfNull(b);
+
+        return a.Multiply(b);
+    }
+
+    /// <summary>Scales the provided <see cref="Vector2"/> by the reciprocal of the provided <see cref="Scalar"/>.</summary>
+    /// <param name="a">The <see cref="Vector2"/> that is scaled by the reciprocal of the <see cref="Scalar"/>.</param>
+    /// <param name="b">The <see cref="Scalar"/>, the reciprocal of which scales the <see cref="Vector2"/>.</param>
+    /// <returns>The quotient of the <see cref="Vector2"/> and <see cref="Scalar"/>, { <paramref name="a"/> / <paramref name="b"/> }.</returns>
+    public static Vector2 Divide(Vector2 a, Scalar b) => a.DivideBy(b);
+
+    /// <summary>Scales the reciprocal of the provided <see cref="Unhandled"/> by the provided <see cref="Vector2"/>.</summary>
+    /// <param name="a">The <see cref="Vector2"/> by which the reciprocal of the <see cref="Unhandled"/> is scaled.</param>
+    /// <param name="b">The <see cref="Unhandled"/>, the reciprocal of which is scaled by the <see cref="Vector2"/></param>
+    /// <returns>The scaled <see cref="Unhandled2"/>, { <paramref name="a"/> / <paramref name="b"/> }.</returns>
+    public static Unhandled2 Divide(Vector2 a, Unhandled b) => a.DivideBy(b);
+
+    /// <summary>Computes the dot-product of the provided <see cref="Vector2"/>.</summary>
+    /// <param name="a">The first <see cref="Vector2"/>, by which the second <see cref="Vector2"/> is dot-multiplied.</param>
+    /// <param name="b">The second <see cref="Vector2"/>, by which the first <see cref="Vector2"/> is dot-multiplied.</param>
+    /// <returns>The dot-product of the <see cref="Vector2"/>, { <paramref name="a"/> ∙ <paramref name="b"/> }.</returns>
+    public static Scalar Dot(Vector2 a, Vector2 b) => a.Dot(b);
+
+    /// <summary>Applies the unary plus to the provided <see cref="Vector2"/>.</summary>
+    /// <param name="a">The <see cref="Vector2"/> to which the unary plus is applied.</param>
+    /// <returns>The same <see cref="Vector2"/>, { <paramref name="a"/> }.</returns>
+    public static Vector2 operator +(Vector2 a) => a.Plus();
+
+    /// <summary>Negates the provided <see cref="Vector2"/>.</summary>
+    /// <param name="a">The <see cref="Vector2"/> that is negated.</param>
+    /// <returns>The negated <see cref="Vector2"/>, { -<paramref name="a"/> }.</returns>
+    public static Vector2 operator -(Vector2 a) => a.Negate();
+
+    /// <inheritdoc cref="Add(Vector2, Vector2)"/>
+    public static Vector2 operator +(Vector2 a, Vector2 b) => Add(a, b);
+
+    /// <inheritdoc cref="Subtract(Vector2, Vector2)"/>
+    public static Vector2 operator -(Vector2 a, Vector2 b) => Subtract(a, b);
+
+    /// <inheritdoc cref="Remainder(Vector2, Scalar)"/>
+    public static Vector2 operator %(Vector2 a, Scalar b) => Remainder(a, b);
+
+    /// <inheritdoc cref="Multiply(Vector2, Scalar)"/>
+    public static Vector2 operator *(Vector2 a, Scalar b) => Multiply(a, b);
+
+    /// <summary>Scales the provided <see cref="Vector2"/> by the provided <see cref="Scalar"/>.</summary>
+    /// <param name="a">The <see cref="Scalar"/> by which the <see cref="Vector2"/> is scaled.</param>
+    /// <param name="b">The <see cref="Vector2"/> that is scaled by the <see cref="Scalar"/>.</param>
+    /// <returns>The scaled <see cref="Vector2"/>, { <paramref name="a"/> ∙ <paramref name="b"/> }.</returns>
+    public static Vector2 operator *(Scalar a, Vector2 b) => Multiply(b, a);
+
+    /// <inheritdoc cref="Divide(Vector2, Scalar)"/>
+    public static Vector2 operator /(Vector2 a, Scalar b) => Divide(a, b);
+
+    /// <inheritdoc cref="Multiply(Vector2, Unhandled)"/>
+    public static Unhandled2 operator *(Vector2 a, Unhandled b) => Multiply(a, b);
+
+    /// <inheritdoc cref="Divide(Vector2, Unhandled)"/>
+    public static Unhandled2 operator /(Vector2 a, Unhandled b) => Divide(a, b);
 
     /// <summary>Constructs a <see cref="Vector2"/>, representing the components of the provided <see cref="Scalar"/>-tuple.</summary>
     /// <param name="components">The <see cref="Scalar"/>-tuple describing the components of the constructed <see cref="Vector2"/>.</param>

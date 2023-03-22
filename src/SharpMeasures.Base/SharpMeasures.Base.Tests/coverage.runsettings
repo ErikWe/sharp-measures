@@ -15,7 +15,7 @@
                     <CodeCoverage>
                         <ModulePaths>
                             <Include>
-                                <ModulePath>.*SharpHorizons.Epoch.dll</ModulePath>
+                                <ModulePath>.*SharpMeasures.Base.dll</ModulePath>
                             </Include>
                         </ModulePaths>
                     </CodeCoverage>
