@@ -5,8 +5,4 @@
         <RootNamespace>SharpMeasures</RootNamespace>
     </PropertyGroup>
 
-    <PropertyGroup>
-        <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    </PropertyGroup>
-
 </Project>
