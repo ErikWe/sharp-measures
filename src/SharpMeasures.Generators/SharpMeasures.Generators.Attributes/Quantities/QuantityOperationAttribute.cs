@@ -1,52 +1,46 @@
-﻿namespace SharpMeasures.Generators;
+﻿namespace SharpMeasures;
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 
-/// <summary>Describes an operation { + , - , ⋅ , ÷ } supported by the quantity.</summary>
-/// <remarks>See <see cref="VectorOperationAttribute"/> for operations limited to vector quantities.</remarks>
+/// <summary>Applied to SharpMeasures quantities, describing an operation { + , - , ⋅ , ÷, ⨯ } implemented by the quantity.</summary>
+/// <typeparam name="TResult">The quantity that is the result of the operation.</typeparam>
+/// <typeparam name="TOther">The other quantity in the operation.</typeparam>
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, AllowMultiple = true)]
-public sealed class QuantityOperationAttribute : Attribute
+[SuppressMessage("Major Code Smell", "S2326: Unused type parameters should be removed", Justification = "Used when interpreting the attribute.")]
+public sealed class QuantityOperationAttribute<TResult, TOther> : Attribute
 {
-    /// <summary>The quantity that is the result of the operation.</summary>
-    public Type Result { get; }
-    /// <summary>The other quantity in the operation.</summary>
-    public Type Other { get; }
-
     /// <summary>The operator that is applied to the quantities.</summary>
     public OperatorType OperatorType { get; }
-    /// <summary>The position of this quantity in the operation. By default, the position will be <see cref="OperatorPosition.Left"/>.</summary>
-    public OperatorPosition Position { get; }
 
-    /// <summary>Dictates whether the mirrored operation is also implemented. The default behaviour is <see langword="false"/>, unless <see cref="Other"/> is defined in another assembly and <see cref="OperatorType"/>
-    /// is <see cref="OperatorType.Addition"/> or <see cref="OperatorType.Multiplication"/>.</summary>
-    /// <remarks>Using the default behaviour reduces the likelihood that two separate quantities defines the same operator, which would result in ambiguous invokations.</remarks>
-    public bool Mirror { get; init; }
+    /// <summary>The position of the implementing quantity in the operation. The default value is <see cref="OperationPosition.Left"/>.</summary>
+    public OperationPosition Position { get; init; }
 
-    /// <summary>Dictates how the operator is implemented. The default behaviour is <see cref="QuantityOperationImplementation.OperatorAndMethod"/>.</summary>
-    public QuantityOperationImplementation Implementation { get; init; }
+    /// <summary>Determines whether the mirrored operation is also implemented. The default behaviour is <see cref="OperationMirrorMode.Adaptive"/>. If the operation is symmetric it will not be implemented regardless.</summary>
+    public OperationMirrorMode MirrorMode { get; init; }
 
-    /// <summary>The name of the method, if one is implemented. By default, the name will be one of { <i>Add</i> , <i>Subtract</i> , <i>SubtractFrom</i> , <i>Multiply</i> , <i>Divide</i> , <i>DivideInto</i> } - depending on <see cref="OperatorType"/> and <see cref="Position"/>.</summary>
+    /// <summary>Dictates how the operation is implemented. The default behaviour is <see cref="OperationImplementation.All"/>, but will silently skip implementing operators that cannot be defined (such as the dot- and cross-product).</summary>
+    public OperationImplementation Implementation { get; init; }
+
+    /// <summary>Dictates how the mirrored operation is implemented, if it is implemented. The default behaviour is to mimic the non-mirrored implementation.</summary>
+    public OperationImplementation MirroredImplementation { get; init; }
+
+    /// <summary>The name of the instance method, if implemented. By default, the name will be one of { <i>Add</i>, <i>Subtract</i>, <i>SubtractFrom</i>, <i>Multiply</i>, <i>DivideBy</i>, <i>DivideInto</i>, <i>Dot</i>, <i>Cross</i>, <i>CrossInto</i> } - depending on the <see cref="SharpMeasures.OperatorType"/> and <see cref="OperationPosition"/>.</summary>
     public string MethodName { get; init; } = string.Empty;
-    /// <summary>The name of the mirrored method, if applicable. By default, the name will be one of { <i>Subtract</i>, <i>SubtractFrom</i>, <i>Divide</i>, <i>DivideInto</i> } - depending on <see cref="OperatorType"/> and <see cref="Position"/>.</summary>
+
+    /// <summary>The name of the static method, if implemented. By default, the name will be one of { <i>Add</i>, <i>Subtract</i>, <i>Multiply</i>, <i>Divide</i>, <i>Dot</i>, <i>Cross</i> } - depending on the <see cref="SharpMeasures.OperatorType"/> and <see cref="OperationPosition"/>.</summary>
+    public string StaticMethodName { get; init; } = string.Empty;
+
+    /// <summary>The name of the mirrored instance method, if implemented. By default, the name will be one of { <i>Add</i>, <i>Subtract</i>, <i>SubtractFrom</i>, <i>Multiply</i>, <i>DivideBy</i>, <i>DivideInto</i>, <i>Dot</i>, <i>Cross</i>, <i>CrossInto</i> } - depending on the <see cref="SharpMeasures.OperatorType"/> and <see cref="OperationPosition"/>.</summary>
     public string MirroredMethodName { get; init; } = string.Empty;
 
-    /// <inheritdoc cref="QuantityOperationAttribute"/>
-    /// <param name="result"><inheritdoc cref="Result" path="/summary"/><para><inheritdoc cref="Result" path="/remarks"/></para></param>
-    /// <param name="other"><inheritdoc cref="Other" path="/summary"/><para><inheritdoc cref="Other" path="/remarks"/></para></param>
-    /// <param name="operatorType"><inheritdoc cref="OperatorType" path="/summary"/><para><inheritdoc cref="OperatorType" path="/remarks"/></para></param>
-    /// <param name="position"><inheritdoc cref="Position" path="/summary"/><para><inheritdoc cref="Position" path="/remarks"/></para></param>
-    public QuantityOperationAttribute(Type result, Type other, OperatorType operatorType, OperatorPosition position)
-    {
-        Result = result;
-        Other = other;
+    /// <summary>The name of the mirrored static method, if implemented. By default, the name will be one of { <i>Add</i>, <i>Subtract</i>, <i>Multiply</i>, <i>Divide</i>, <i>Dot</i>, <i>Cross</i> } - depending on the <see cref="SharpMeasures.OperatorType"/> and <see cref="OperationPosition"/>.</summary>
+    public string MirroredStaticMethodName { get; init; } = string.Empty;
 
-        Position = position;
+    /// <inheritdoc cref="QuantityOperationAttribute{TResult, TOther}"/>
+    /// <param name="operatorType"><inheritdoc cref="OperatorType" path="/summary"/></param>
+    public QuantityOperationAttribute(OperatorType operatorType)
+    {
         OperatorType = operatorType;
     }
-
-    /// <inheritdoc cref="QuantityOperationAttribute"/>
-    /// <param name="result"><inheritdoc cref="Result" path="/summary"/><para><inheritdoc cref="Result" path="/remarks"/></para></param>
-    /// <param name="other"><inheritdoc cref="Other" path="/summary"/><para><inheritdoc cref="Other" path="/remarks"/></para></param>
-    /// <param name="operatorType"><inheritdoc cref="OperatorType" path="/summary"/><para><inheritdoc cref="OperatorType" path="/remarks"/></para></param>
-    public QuantityOperationAttribute(Type result, Type other, OperatorType operatorType) : this(result, other, operatorType, OperatorPosition.Left) { }
 }
