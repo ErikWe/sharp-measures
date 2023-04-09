@@ -1,56 +1,87 @@
-﻿namespace SharpMeasures.Generators;
+﻿namespace SharpMeasures;
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 
-/// <summary>Marks the type as an auto-generated vector quantity, behaving as a specialized form of another quantity.</summary>
-/// <remarks><inheritdoc cref="VectorQuantityAttribute" path="/remarks"/></remarks>
+/// <summary>Marks the type as an auto-generated SharpMeasures vector quantity, behaving as a specialized form of another quantity, <typeparamref name="TOriginal"/>.</summary>
+/// <typeparam name="TOriginal">The original quantity, of which this quantity is a specialized form.</typeparam>
+/// <remarks>The following attributes may be used to modify the quantity:
+/// <list type="bullet">
+/// <item>
+/// <term><see cref="QuantityOperationAttribute{TResult, TOther}"/></term>
+/// <description>Describes the operations { + , - , ⋅ , ÷, ⨯ } supported by the quantity.</description>
+/// </item>
+/// <item>
+/// <term><see cref="QuantityProcessAttribute{TResult}"/></term>
+/// <description>Describes a custom process implemented by the quantity.</description>
+/// </item>
+/// <item>
+/// <term><see cref="QuantityPropertyAttribute{TResult}"/></term>
+/// <description>Describes a custom readonly property implemented by the quantity.</description>
+/// </item>
+/// <item>
+/// <term><see cref="QuantitySumAttribute{TSum}"/></term>
+/// <description>Describes the result of addition of two instances of the quantity.</description>
+/// </item>
+/// <item>
+/// <term><see cref="QuantityDifferenceAttribute{TDifference}"/></term>
+/// <description>Describes the result of subtraction of two instances of the quantity.</description>
+/// </item>
+/// <item>
+/// <term><see cref="ScalarAssociationAttribute{TScalar}"/></term>
+/// <description>Describes the quantity as associated with a scalar quantity.</description>
+/// </item>
+/// <item>
+/// <term><see cref="ConvertibleQuantityAttribute"/></term>
+/// <description>Lists other quantities that the quantity supports conversion to and/or from.</description>
+/// </item>
+/// <item>
+/// <term><see cref="VectorConstantAttribute"/></term>
+/// <description>Defines a constant value of the quantity.</description>
+/// </item>
+/// <item>
+/// <term><see cref="IncludeUnitsAttribute"/> / <see cref="ExcludeUnitsAttribute"/></term>
+/// <description>Dictates the set of unit instances for which a property representing the magnitudes of the components is implemented.</description>
+/// </item>
+/// <item>
+/// <term><see cref="DefaultUnitAttribute"/></term>
+/// <description>Dictates the default unit of the quantity - used when formatting the quantity.</description>
+/// </item>
+/// </list></remarks>
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
-public sealed class SpecializedVectorQuantityAttribute : Attribute
+[SuppressMessage("Major Code Smell", "S2326: Unused type parameters should be removed", Justification = "Used when interpreting the attribute.")]
+public sealed class SpecializedVectorQuantityAttribute<TOriginal> : Attribute
 {
-    /// <summary>The original vector quantity, of which this quantity is a specialized form.</summary>
-    public Type OriginalVector { get; }
-
-    /// <inheritdoc cref="SpecializedScalarQuantityAttribute.InheritOperations"/>
+    /// <inheritdoc cref="SpecializedScalarQuantityAttribute{TOriginal}.InheritOperations"/>
     public bool InheritOperations { get; init; }
-    /// <inheritdoc cref="SpecializedScalarQuantityAttribute.InheritProcesses"/>
+
+    /// <inheritdoc cref="SpecializedScalarQuantityAttribute{TOriginal}.InheritProcesses"/>
     public bool InheritProcesses { get; init; }
-    /// <inheritdoc cref="SpecializedScalarQuantityAttribute.InheritConstants"/>
+
+    /// <inheritdoc cref="SpecializedScalarQuantityAttribute{TOriginal}.InheritProperties"/>
+    public bool InheritProperties { get; init; }
+
+    /// <inheritdoc cref="SpecializedScalarQuantityAttribute{TOriginal}.InheritConstants"/>
     public bool InheritConstants { get; init; }
-    /// <inheritdoc cref="SpecializedScalarQuantityAttribute.InheritConversions"/>
+
+    /// <inheritdoc cref="SpecializedScalarQuantityAttribute{TOriginal}.InheritConversions"/>
     public bool InheritConversions { get; init; }
-    /// <inheritdoc cref="SpecializedScalarQuantityAttribute.InheritUnits"/>
+
+    /// <inheritdoc cref="SpecializedScalarQuantityAttribute{TOriginal}.InheritUnits"/>
     public bool InheritUnits { get; init; }
 
-    /// <inheritdoc cref="SpecializedScalarQuantityAttribute.ForwardsCastOperatorBehaviour"/>
+    /// <inheritdoc cref="SpecializedScalarQuantityAttribute{TOriginal}.ForwardsCastOperatorBehaviour"/>
     public ConversionOperatorBehaviour ForwardsCastOperatorBehaviour { get; init; }
-    /// <inheritdoc cref="SpecializedScalarQuantityAttribute.BackwardsCastOperatorBehaviour"/>
+
+    /// <inheritdoc cref="SpecializedScalarQuantityAttribute{TOriginal}.BackwardsCastOperatorBehaviour"/>
     public ConversionOperatorBehaviour BackwardsCastOperatorBehaviour { get; init; }
 
-    /// <summary><inheritdoc cref="VectorQuantityAttribute.Scalar" path="/summary"/> By default, the value is inherited from the original quantity.</summary>
-    /// <remarks>For example; <i>Speed</i> could be considered the scalar associated with <i>Velocity</i>.</remarks>
-    public Type? Scalar { get; init; }
-
-    /// <inheritdoc cref="SpecializedScalarQuantityAttribute.ImplementSum"/>
+    /// <inheritdoc cref="SpecializedScalarQuantityAttribute{TOriginal}.ImplementSum"/>
     public bool ImplementSum { get; init; }
 
-    /// <summary><inheritdoc cref="SpecializedScalarQuantityAttribute.ImplementDifference" path="/summary"/></summary>
-    /// <remarks>To specify the quantity that represents the difference, use <see cref="Difference"/>.</remarks>
+    /// <inheritdoc cref="SpecializedScalarQuantityAttribute{TOriginal}.ImplementDifference"/>
     public bool ImplementDifference { get; init; }
 
-    /// <summary><inheritdoc cref="SpecializedScalarQuantityAttribute.Difference" path="/summary"/></summary>
-    /// <remarks>To disable support for computing the difference, use <see cref="ImplementDifference"/>.</remarks>
-    public Type? Difference { get; init; }
-
-    /// <inheritdoc cref="SpecializedScalarQuantityAttribute.DefaultUnit"/>
-    public string? DefaultUnit { get; init; }
-
-    /// <inheritdoc cref="SpecializedScalarQuantityAttribute.DefaultSymbol"/>
-    public string? DefaultSymbol { get; init; }
-
-    /// <inheritdoc cref="VectorQuantityAttribute"/>
-    /// <param name="originalVector"><inheritdoc cref="OriginalVector" path="/summary"/><para><inheritdoc cref="OriginalVector" path="/remarks"/></para></param>
-    public SpecializedVectorQuantityAttribute(Type originalVector)
-    {
-        OriginalVector = originalVector;
-    }
+    /// <inheritdoc cref="SpecializedVectorQuantityAttribute{TOriginal}"/>
+    public SpecializedVectorQuantityAttribute() { }
 }

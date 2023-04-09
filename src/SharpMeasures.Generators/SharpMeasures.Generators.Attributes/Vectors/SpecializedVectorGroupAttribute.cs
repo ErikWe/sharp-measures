@@ -1,53 +1,66 @@
-﻿namespace SharpMeasures.Generators;
+﻿namespace SharpMeasures;
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 
-/// <summary>Marks the type as the auto-generated root of a group of vectors that represent the same quantity, but of varying dimension - behaving as a specialized form of another such group.</summary>
-/// <remarks><inheritdoc cref="VectorGroupAttribute" path="/remarks"/></remarks>
+/// <summary>Marks the type as the auto-generated root of a group of SharpMeasures vectors that represent the same quantity, but of varying dimension - behaving as a specialized form of another such group.</summary>
+/// <typeparam name="TOriginal">The original group, of which this group is a specialized form.</typeparam>
+/// <remarks>The following attributes may be used to modify how the group members are generated:
+/// <list type="bullet">
+/// <item>
+/// <term><see cref="QuantityOperationAttribute{TResult, TOther}"/></term>
+/// <description>Describes the operations { + , - , ⋅ , ÷ } supported by the quantity.</description>
+/// </item>
+/// <item>
+/// <term><see cref="QuantitySumAttribute{TSum}"/></term>
+/// <description>Describes the result of addition of two instances of the quantity.</description>
+/// </item>
+/// <item>
+/// <term><see cref="QuantityDifferenceAttribute{TDifference}"/></term>
+/// <description>Describes the result of subtraction of two instances of the quantity.</description>
+/// </item>
+/// <item>
+/// <term><see cref="ScalarAssociationAttribute{TScalar}"/></term>
+/// <description>Describes the quantity as associated with a scalar quantity.</description>
+/// </item>
+/// <item>
+/// <term><see cref="ConvertibleQuantityAttribute"/></term>
+/// <description>Lists other quantities that the quantity supports conversion to and/or from.</description>
+/// </item>
+/// <item>
+/// <term><see cref="IncludeUnitsAttribute"/> / <see cref="ExcludeUnitsAttribute"/></term>
+/// <description>Dictates the set of unit instances for which a property representing the magnitudes of the components is implemented.</description>
+/// </item>
+/// <item>
+/// <term><see cref="DefaultUnitAttribute"/></term>
+/// <description>Dictates the default unit of the quantity - used when formatting the quantity.</description>
+/// </item>
+/// </list></remarks>
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
-public sealed class SpecializedVectorGroupAttribute : Attribute
+[SuppressMessage("Major Code Smell", "S2326: Unused type parameters should be removed", Justification = "Used when interpreting the attribute.")]
+public sealed class SpecializedVectorGroupAttribute<TOriginal> : Attribute
 {
-    /// <summary>The original vector group, of which this group is a specialized form.</summary>
-    public Type OriginalVectorGroup { get; }
-
-    /// <summary>Dictates whether this group inherits the operations defined by the original group. The default behaviour is <see langword="true"/>.</summary>
+    /// <inheritdoc cref="SpecializedVectorQuantityAttribute{TOriginal}.InheritOperations"/>
     public bool InheritOperations { get; init; }
-    /// <summary>Dictates whether this group inherits the conversions defined by the original group. The default behaviour is <see langword="true"/>.</summary>
+
+    /// <inheritdoc cref="SpecializedVectorQuantityAttribute{TOriginal}.InheritConversions"/>
     public bool InheritConversions { get; init; }
-    /// <summary>Dictates whether this group inherits the units of the original group. The default behaviour is <see langword="true"/>.</summary>
-    /// <remarks><see cref="IncludeUnitsAttribute"/> and <see cref="ExcludeUnitsAttribute"/> allow more granular control of what units to include.</remarks>
+
+    /// <inheritdoc cref="SpecializedVectorQuantityAttribute{TOriginal}.InheritUnits"/>
     public bool InheritUnits { get; init; }
 
-    /// <summary>Determines the behaviour of the operator converting from the original group to this group. The default behaviour is <see cref="ConversionOperatorBehaviour.Explicit"/>.</summary>
+    /// <inheritdoc cref="SpecializedVectorQuantityAttribute{TOriginal}.ForwardsCastOperatorBehaviour"/>
     public ConversionOperatorBehaviour ForwardsCastOperatorBehaviour { get; init; }
-    /// <summary>Determines the behaviour of the operator converting from this group to the original group. The default behaviour is <see cref="ConversionOperatorBehaviour.Implicit"/>.</summary>
+
+    /// <inheritdoc cref="SpecializedVectorQuantityAttribute{TOriginal}.BackwardsCastOperatorBehaviour"/>
     public ConversionOperatorBehaviour BackwardsCastOperatorBehaviour { get; init; }
 
-    /// <summary><inheritdoc cref="VectorQuantityAttribute.Scalar" path="/summary"/> By default, the value is inherited from the original quantity.</summary>
-    /// <remarks>For example; <i>Speed</i> could be considered the scalar associated with <i>Velocity</i>.</remarks>
-    public Type? Scalar { get; init; }
-
-    /// <inheritdoc cref="SpecializedVectorQuantityAttribute.ImplementSum"/>
+    /// <inheritdoc cref="SpecializedVectorQuantityAttribute{TOriginal}.ImplementSum"/>
     public bool ImplementSum { get; init; }
 
-    /// <summary><inheritdoc cref="SpecializedVectorQuantityAttribute.ImplementSum" path="/summary"/></summary>
-    /// <remarks>To specify the quantity that represents the difference, use <see cref="Difference"/>.</remarks>
+    /// <inheritdoc cref="SpecializedVectorQuantityAttribute{TOriginal}.ImplementDifference"/>
     public bool ImplementDifference { get; init; }
 
-    /// <summary><inheritdoc cref="SpecializedVectorQuantityAttribute.Difference" path="/summary"/></summary>
-    /// <remarks>To disable support for computing the difference, use <see cref="ImplementDifference"/>.</remarks>
-    public Type? Difference { get; init; }
-
-    /// <inheritdoc cref="SpecializedScalarQuantityAttribute.DefaultUnit"/>
-    public string? DefaultUnit { get; init; }
-
-    /// <inheritdoc cref="SpecializedScalarQuantityAttribute.DefaultSymbol"/>
-    public string? DefaultSymbol { get; init; }
-
-    /// <inheritdoc cref="VectorGroupAttribute"/>
-    /// <param name="originalVectorGroup"><inheritdoc cref="OriginalVectorGroup" path="/summary"/><para><inheritdoc cref="OriginalVectorGroup" path="/remarks"/></para></param>
-    public SpecializedVectorGroupAttribute(Type originalVectorGroup)
-    {
-        OriginalVectorGroup = originalVectorGroup;
-    }
+    /// <inheritdoc cref="SpecializedVectorGroupAttribute{TOriginal}"/>
+    public SpecializedVectorGroupAttribute() { }
 }
