@@ -1,17 +1,20 @@
-﻿namespace SharpMeasures.Generators;
+﻿namespace SharpMeasures;
 
 using System;
 
-/// <summary>Applied to quantities, dictating the set of units for which a property representing the magnitude is <i>not</i> implemented.</summary>
-/// <remarks>If this attribute is absent, all recognized units are included - unless <see cref="IncludeUnitsAttribute"/> is used.</remarks>
+/// <summary>Applied to SharpMeasures quantities, dictating the set of units for which a property representing the magnitude is not implemented.</summary>
+/// <remarks>If this attribute is absent, all units are included - unless <see cref="IncludeUnitsAttribute"/> is used.</remarks>
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, AllowMultiple = true)]
 public sealed class ExcludeUnitsAttribute : Attribute
 {
-    /// <summary>Names of the units for which a property representing the magnitude is <i>not</i> implemented.</summary>
+    /// <summary>The names of the units for which a property representing the magnitude is not implemented.</summary>
     public string[] ExcludedUnits { get; }
 
+    /// <summary>If the quantity is a specialized form of another quantity, dictates how to treat unit filters present in the other quantity. The default behaviour is <see cref="FilterStackingMode.Restore"/>.</summary>
+    public FilterStackingMode StackingMode { get; init; }
+
     /// <inheritdoc cref="ExcludeUnitsAttribute"/>
-    /// <param name="excludedUnits"><inheritdoc cref="ExcludedUnits" path="/summary"/><para><inheritdoc cref="ExcludedUnits" path="/remarks"/></para></param>
+    /// <param name="excludedUnits"><inheritdoc cref="ExcludedUnits" path="/summary"/></param>
     public ExcludeUnitsAttribute(params string[] excludedUnits)
     {
         ExcludedUnits = excludedUnits;

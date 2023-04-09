@@ -1,22 +1,20 @@
-﻿namespace SharpMeasures.Generators;
+﻿namespace SharpMeasures;
 
 using System;
 
-/// <summary>Applied to quantities, dictating the set of units for which a property representing the magnitude is implemented.</summary>
-/// <remarks>If this attribute is absent, all recognized units are included - unless <see cref="ExcludeUnitsAttribute"/> is used.</remarks>
+/// <summary>Applied to SharpMeasures quantities, dictating the set of units for which a property representing the magnitude is implemented.</summary>
+/// <remarks>If this attribute is absent, all units are included - unless <see cref="ExcludeUnitsAttribute"/> is used.</remarks>
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, AllowMultiple = true)]
 public sealed class IncludeUnitsAttribute : Attribute
 {
-    /// <summary>Names of the units for which a property representing the magnitude is implemented.</summary>
+    /// <summary>The names of the units for which a property representing the magnitude is implemented.</summary>
     public string[] IncludedUnits { get; }
 
-    /// <summary>If the quantity is a specialized form of another quantity, this property determines how to treat units that were marked as included by the original quantity. The default behaviour is
-    /// <see cref="InclusionStackingMode.Intersection"/>.</summary>
-    /// <remarks>This does not apply to multiple instances of <see cref="IncludeUnitsAttribute"/> applied to the same quantity - where <see cref="InclusionStackingMode.Union"/> is always used.</remarks>
-    public InclusionStackingMode StackingMode { get; init; }
+    /// <summary>If the quantity is a specialized form of another quantity, dictates how to treat unit filters present in the other quantity. The default behaviour is <see cref="FilterStackingMode.Restore"/>.</summary>
+    public FilterStackingMode StackingMode { get; init; }
 
     /// <inheritdoc cref="IncludeUnitsAttribute"/>
-    /// <param name="includedUnits"><inheritdoc cref="IncludedUnits" path="/summary"/><para><inheritdoc cref="IncludedUnits" path="/remarks"/></para></param>
+    /// <param name="includedUnits"><inheritdoc cref="IncludedUnits" path="/summary"/></param>
     public IncludeUnitsAttribute(params string[] includedUnits)
     {
         IncludedUnits = includedUnits;

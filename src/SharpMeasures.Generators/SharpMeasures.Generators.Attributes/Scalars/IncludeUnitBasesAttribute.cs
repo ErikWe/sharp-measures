@@ -1,22 +1,20 @@
-﻿namespace SharpMeasures.Generators;
+﻿namespace SharpMeasures;
 
 using System;
 
-/// <summary>Applied to scalar quantities, dictating the set of units for which a static property representing the value { 1 } is generated.</summary>
-/// <remarks>If this attribute is absent, all recognized units are included - unless <see cref="ExcludeUnitBasesAttribute"/> is used.</remarks>
+/// <summary>Applied to SharpMeasures scalar quantities, dictating the set of units for which a static property representing the magnitude { 1 } is implemented.</summary>
+/// <remarks>If this attribute is absent, all units are included - unless <see cref="ExcludeUnitBasesAttribute"/> is used.</remarks>
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, AllowMultiple = true)]
 public sealed class IncludeUnitBasesAttribute : Attribute
 {
-    /// <summary>Names of the units for which a static property representing the value { 1 } is generated.</summary>
+    /// <summary>The names of the units for which a static property representing the magnitude { 1 } is implemented.</summary>
     public string[] IncludedUnitBases { get; }
 
-    /// <summary>If the quantity is a specialized form of another quantity, this property determines how to treat units that were marked as included by the original quantity. The default behaviour is
-    /// <see cref="InclusionStackingMode.Intersection"/>.</summary>
-    /// <remarks>This does not apply to multiple instances of <see cref="IncludeUnitBasesAttribute"/> applied to the same quantity - where <see cref="InclusionStackingMode.Union"/> is always used.</remarks>
-    public InclusionStackingMode StackingMode { get; init; }
+    /// <summary>If the quantity is a specialized form of another quantity, dictates how to treat unit filters present in the other quantity. The default behaviour is <see cref="FilterStackingMode.Restore"/>.</summary>
+    public FilterStackingMode StackingMode { get; init; }
 
     /// <inheritdoc cref="IncludeUnitBasesAttribute"/>
-    /// <param name="includedUnitBases"><inheritdoc cref="IncludedUnitBases" path="/summary"/><para><inheritdoc cref="IncludedUnitBases" path="/remarks"/></para></param>
+    /// <param name="includedUnitBases"><inheritdoc cref="IncludedUnitBases" path="/summary"/></param>
     public IncludeUnitBasesAttribute(params string[] includedUnitBases)
     {
         IncludedUnitBases = includedUnitBases;

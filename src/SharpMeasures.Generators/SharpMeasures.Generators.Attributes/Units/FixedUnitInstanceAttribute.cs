@@ -1,27 +1,31 @@
-﻿namespace SharpMeasures.Generators;
+﻿namespace SharpMeasures;
 
 using System;
 
-/// <summary>Defines an instance of a unit.</summary>
+/// <summary>Applied to SharpMeasures units, defining an instance of the unit.</summary>
+/// <remarks>A fixed unit instance should define the base of a unit, from which other units are derived.</remarks>
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
 public sealed class FixedUnitInstanceAttribute : Attribute
 {
-    /// <summary>The name of the instance of the unit, in singular form.</summary>
+    /// <summary>The name of the unit instance, in singular form.</summary>
     public string Name { get; }
-    /// <summary>The name of the instance of the unit, in plural form.</summary>
-    /// <remarks>If <see cref="PluralFormRegexSubstitution"/> is set, this value is used as a .NET regex pattern. Alternatively, see <see cref="CommonPluralNotation"/> for some common notations for producing the plural form based on the singular form.</remarks>
-    public string PluralForm { get; }
 
-    /// <summary>Used as the .NET Regex substitution string when producing the plural form of the unit, with <see cref="PluralForm"/> being used as the .NET regex pattern.</summary>
-    /// <remarks>If this property is ignored, <see cref="PluralForm"/> will not be used as a .NET regex pattern.</remarks>
-    public string PluralFormRegexSubstitution { get; init; } = string.Empty;
+    /// <summary>The name of the unit instance, in plural form - or <see langword="null"/> if the plural form is identical to the singular form.</summary>
+    public string? PluralForm { get; }
 
     /// <inheritdoc cref="FixedUnitInstanceAttribute"/>
-    /// <param name="name"><inheritdoc cref="Name" path="/summary"/><para><inheritdoc cref="Name" path="/remarks"/></para></param>
-    /// <param name="pluralForm"><inheritdoc cref="PluralForm" path="/summary"/><para><inheritdoc cref="PluralForm" path="/remarks"/></para></param>
-    public FixedUnitInstanceAttribute(string name, string pluralForm)
+    /// <param name="name"><inheritdoc cref="Name" path="/summary"/></param>
+    /// <param name="pluralForm"><inheritdoc cref="PluralForm" path="/summary"/></param>
+    public FixedUnitInstanceAttribute(string name, string? pluralForm)
     {
         Name = name;
         PluralForm = pluralForm;
+    }
+
+    /// <inheritdoc cref="FixedUnitInstanceAttribute"/>
+    /// <param name="name"><inheritdoc cref="Name" path="/summary"/></param>
+    public FixedUnitInstanceAttribute(string name)
+    {
+        Name = name;
     }
 }
