@@ -1,22 +1,22 @@
-﻿namespace SharpMeasures.Generators;
+﻿namespace SharpMeasures;
 
 using System;
 
-/// <summary>Indicates that a quantity supports conversion to and/or from the listed quantities.</summary>
+/// <summary>Applied to SharpMeasures quantities, indicating that the quantity supports conversion to and/or from the listed quantities.</summary>
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, AllowMultiple = true)]
 public sealed class ConvertibleQuantityAttribute : Attribute
 {
-    /// <summary>The set of quantities to and/or from which this quantity supports conversion.</summary>
+    /// <summary>The set of quantities to and/or from which the implementing quantity supports conversion.</summary>
     public Type[] Quantities { get; }
 
-    /// <summary>Determines the direction of the conversion. The default behaviour is <see cref="QuantityConversionDirection.Onedirectional"/>.</summary>
-    public QuantityConversionDirection ConversionDirection { get; init; }
+    /// <summary>Determines how the conversion operators from the provided quantities to this quantity are implemented. The default behaviour is <see cref="ConversionOperatorBehaviour.Explicit"/>.</summary>
+    public ConversionOperatorBehaviour ForwardsBehaviour { get; init; }
 
-    /// <summary>Determines the behaviour of the conversion operator. The default behaviour is <see cref="ConversionOperatorBehaviour.Explicit"/>.</summary>
-    public ConversionOperatorBehaviour CastOperatorBehaviour { get; init; }
+    /// <summary>Determines how the conversion operators from this quantity to the provided quantities are implemented. The default behaviour is <see cref="ConversionOperatorBehaviour.Implicit"/>.</summary>
+    public ConversionOperatorBehaviour BackwardsBehaviour { get; init; }
 
     /// <inheritdoc cref="ConvertibleQuantityAttribute"/>
-    /// <param name="quantities"><inheritdoc cref="Quantities" path="/summary"/><para><inheritdoc cref="Quantities" path="/remarks"/></para></param>
+    /// <param name="quantities"><inheritdoc cref="Quantities" path="/summary"/></param>
     public ConvertibleQuantityAttribute(params Type[] quantities)
     {
         Quantities = quantities;
