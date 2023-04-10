@@ -4,7 +4,7 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 
 /// <summary>Marks the type as an auto-generated SharpMeasures unit.</summary>
-/// <typeparam name="TScalar">The scalar quantity that the unit describes.
+/// <typeparam name="TScalar">The scalar quantity that the unit describes.</typeparam>
 /// <remarks>The following attributes may be used to define instances of the unit:
 /// <list type="bullet">
 /// <item>
