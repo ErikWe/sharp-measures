@@ -67,9 +67,6 @@ public sealed class SpecializedVectorQuantityAttribute<TOriginal> : Attribute
     /// <inheritdoc cref="SpecializedScalarQuantityAttribute{TOriginal}.InheritConversions"/>
     public bool InheritConversions { get; init; }
 
-    /// <inheritdoc cref="SpecializedScalarQuantityAttribute{TOriginal}.InheritUnits"/>
-    public bool InheritUnits { get; init; }
-
     /// <inheritdoc cref="SpecializedScalarQuantityAttribute{TOriginal}.ForwardsCastOperatorBehaviour"/>
     public ConversionOperatorBehaviour ForwardsCastOperatorBehaviour { get; init; }
 

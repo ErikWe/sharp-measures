@@ -74,14 +74,6 @@ public sealed class SpecializedScalarQuantityAttribute<TOriginal> : Attribute
     /// <summary>Dictates whether the quantity should inherit the conversions defined by the original quantity. The default behaviour is <see langword="true"/>.</summary>
     public bool InheritConversions { get; init; }
 
-    /// <summary>Dictates whether the quantity should inherit the bases (static properties representing the magnitude { 1 } in various units) of the original quantity. The default behaviour is <see langword="true"/>.</summary>
-    /// <remarks><see cref="IncludeUnitBasesAttribute"/> and <see cref="ExcludeUnitBasesAttribute"/> allow more granular control of what bases to include.</remarks>
-    public bool InheritBases { get; init; }
-
-    /// <summary>Dictates whether the quantity should inherit the units of the original quantity. The default behaviour is <see langword="true"/>.</summary>
-    /// <remarks><see cref="IncludeUnitsAttribute"/> and <see cref="ExcludeUnitsAttribute"/> allow more granular control of what units to include.</remarks>
-    public bool InheritUnits { get; init; }
-
     /// <summary>Determines how the conversion operator from the original quantity to this quantity is implemented. The default behaviour is <see cref="ConversionOperatorBehaviour.Explicit"/>.</summary>
     public ConversionOperatorBehaviour ForwardsCastOperatorBehaviour { get; init; }
 

@@ -46,9 +46,6 @@ public sealed class SpecializedVectorGroupAttribute<TOriginal> : Attribute
     /// <inheritdoc cref="SpecializedVectorQuantityAttribute{TOriginal}.InheritConversions"/>
     public bool InheritConversions { get; init; }
 
-    /// <inheritdoc cref="SpecializedVectorQuantityAttribute{TOriginal}.InheritUnits"/>
-    public bool InheritUnits { get; init; }
-
     /// <inheritdoc cref="SpecializedVectorQuantityAttribute{TOriginal}.ForwardsCastOperatorBehaviour"/>
     public ConversionOperatorBehaviour ForwardsCastOperatorBehaviour { get; init; }
 
