@@ -48,43 +48,34 @@ using System.Diagnostics.CodeAnalysis;
 [SuppressMessage("Major Code Smell", "S2326: Unused type parameters should be removed", Justification = "Used when interpreting the attribute.")]
 public sealed class VectorGroupMemberAttribute<TGroup> : Attribute
 {
+    /// <inheritdoc cref="VectorQuantityAttribute{TUnit}.Dimension"/>
+    public int Dimension { get; init; }
+
     /// <summary>Dictates whether this quantity inherits the operations defined by the vector group. The default behaviour is <see langword="true"/>.</summary>
     public bool InheritOperationsFromGroup { get; init; }
+
+    /// <summary>If the associated vector group is a specialized form of another vector group, this property dictates whether this member inherits the operations defined by the corresponding member of the
+    /// original vector group. By default, the behaviour mimics that of <see cref="InheritOperationsFromGroup"/>.</summary>
+    public bool InheritOperationsFromMembers { get; init; }
+
+    /// <summary>If the associated vector group is a specialized form of another vector group, this property dictates whether this member inherits the processes defined by the corresponding member of the
+    /// original vector group. The default behaviour is <see langword="true"/>.</summary>
+    public bool InheritProcessesFromMembers { get; init; }
+
+    /// <summary>If the associated vector group is a specialized form of another vector group, this property dictates whether this member inherits the properties defined by the corresponding member of the
+    /// original vector group. The default behaviour is <see langword="true"/>.</summary>
+    public bool InheritPropertiesFromMembers { get; init; }
+
+    /// <summary>If the associated vector group is a specialized form of another vector group, this property dictates whether this member inherits the constants defined by the corresponding member of the
+    /// original vector group. The default behaviour is <see langword="true"/>.</summary>
+    public bool InheritConstantsFromMembers { get; init; }
 
     /// <summary>Dictates whether this quantity inherits the conversions defined by the vector group. The default behaviour is <see langword="true"/>.</summary>
     public bool InheritConversionsFromGroup { get; init; }
 
-    /// <summary>Dictates whether this quantity inherits the units of the vector group. The default behaviour is <see langword="true"/>.</summary>
-    /// <remarks><inheritdoc cref="SpecializedVectorQuantityAttribute{TOriginal}.InheritUnits" path="/remarks"/></remarks>
-    public bool InheritUnitsFromGroup { get; init; }
-
-    /// <summary>If the vector group is a specialized form of another vector group, this property dictates whether this member inherits the operations defined by the corresponding member of the
-    /// original vector group. By default, the behaviour mimics that of <see cref="InheritOperationsFromGroup"/>.</summary>
-    public bool InheritOperationsFromMembers { get; init; }
-
-    /// <summary>If the vector group is a specialized form of another vector group, this property dictates whether this member inherits the processes defined by the corresponding member of the
-    /// original vector group. The default behaviour is <see langword="true"/>.</summary>
-    public bool InheritProcessesFromMembers { get; init; }
-
-    /// <summary>If the vector group is a specialized form of another vector group, this property dictates whether this member inherits the properties defined by the corresponding member of the
-    /// original vector group. The default behaviour is <see langword="true"/>.</summary>
-    public bool InheritPropertiesFromMembers { get; init; }
-
-    /// <summary>If the vector group is a specialized form of another vector group, this property dictates whether this member inherits the constants defined by the corresponding member of the
-    /// original vector group. The default behaviour is <see langword="true"/>.</summary>
-    public bool InheritConstantsFromMembers { get; init; }
-
-    /// <summary>If the vector group is a specialized form of another vector group, this property dictates whether this member inherits the conversions defined by the corresponding member of the
+    /// <summary>If the associated vector group is a specialized form of another vector group, this property dictates whether this member inherits the conversions defined by the corresponding member of the
     /// original vector group. By default, the behaviour mimics that of <see cref="InheritConversionsFromGroup"/>.</summary>
     public bool InheritConversionsFromMembers { get; init; }
-
-    /// <summary>If the vector group is a specialized form of another vector group, this property dictates whether this member inherits the units of the corresponding member of the
-    /// original vector group. By default, the behaviour mimics that of <see cref="InheritUnitsFromGroup"/> - which in turn is <see langword="true"/> by default.</summary>
-    /// <remarks><inheritdoc cref="SpecializedVectorQuantityAttribute{TOriginal}.InheritUnits" path="/remarks"/></remarks>
-    public bool InheritUnitsFromMembers { get; init; }
-
-    /// <inheritdoc cref="VectorQuantityAttribute{TUnit}.Dimension"/>
-    public int Dimension { get; init; }
 
     /// <inheritdoc cref="VectorGroupMemberAttribute{TGroup}"/>
     public VectorGroupMemberAttribute() { }

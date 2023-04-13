@@ -52,27 +52,27 @@ public sealed class BiasedUnitInstanceAttribute : Attribute
     /// <param name="name"><inheritdoc cref="Name" path="/summary"/></param>
     /// <param name="pluralForm"><inheritdoc cref="PluralForm" path="/summary"/></param>
     /// <param name="originalUnitInstance"><inheritdoc cref="OriginalUnitInstance" path="/summary"/></param>
-    /// <param name="expression"><inheritdoc cref="BiasExpression" path="/summary"/><para><inheritdoc cref="BiasExpression" path="/remarks"/></para></param>
+    /// <param name="biasExpression"><inheritdoc cref="BiasExpression" path="/summary"/><para><inheritdoc cref="BiasExpression" path="/remarks"/></para></param>
     /// <remarks><inheritdoc cref="BiasedUnitInstanceAttribute" path="/remarks"/>
     /// <para>When applicable, prefer <see cref="BiasedUnitInstanceAttribute(string, string, string, double)"/>.</para></remarks>
-    public BiasedUnitInstanceAttribute(string name, string? pluralForm, string originalUnitInstance, string expression)
+    public BiasedUnitInstanceAttribute(string name, string? pluralForm, string originalUnitInstance, string biasExpression)
     {
         Name = name;
         PluralForm = pluralForm;
         OriginalUnitInstance = originalUnitInstance;
-        BiasExpression = expression;
+        BiasExpression = biasExpression;
     }
 
     /// <summary><inheritdoc cref="BiasedUnitInstanceAttribute" path="/summary"/></summary>
     /// <param name="name"><inheritdoc cref="Name" path="/summary"/></param>
     /// <param name="originalUnitInstance"><inheritdoc cref="OriginalUnitInstance" path="/summary"/></param>
-    /// <param name="expression"><inheritdoc cref="BiasExpression" path="/summary"/><para><inheritdoc cref="BiasExpression" path="/remarks"/></para></param>
+    /// <param name="biasExpression"><inheritdoc cref="BiasExpression" path="/summary"/><para><inheritdoc cref="BiasExpression" path="/remarks"/></para></param>
     /// <remarks><inheritdoc cref="BiasedUnitInstanceAttribute" path="/remarks"/>
     /// <para>When applicable, prefer <see cref="BiasedUnitInstanceAttribute(string, string, double)"/>.</para></remarks>
-    public BiasedUnitInstanceAttribute(string name, string originalUnitInstance, string expression)
+    public BiasedUnitInstanceAttribute(string name, string originalUnitInstance, string biasExpression)
     {
         Name = name;
         OriginalUnitInstance = originalUnitInstance;
-        BiasExpression = expression;
+        BiasExpression = biasExpression;
     }
 }

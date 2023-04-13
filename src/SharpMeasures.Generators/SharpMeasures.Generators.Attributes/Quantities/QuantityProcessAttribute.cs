@@ -12,7 +12,7 @@ public sealed class QuantityProcessAttribute<TResult> : Attribute
     /// <summary>The name of the process.</summary>
     public string Name { get; }
 
-    /// <summary>The expression describing the process.</summary>
+    /// <summary>The expression describing the process. Occurrences of "{k}" are replaced by the k-th parameter in the provided signature.</summary>
     public string Expression { get; }
 
     /// <summary>The signature of the process.</summary>

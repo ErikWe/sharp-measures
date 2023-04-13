@@ -10,8 +10,8 @@ using System.Diagnostics.CodeAnalysis;
 public sealed class ScalarAssociationAttribute<TScalar> : Attribute
 {
     /// <summary>Dictates whether the provided <typeparamref name="TScalar"/> should be used to describe each Cartesian component of the vector quantity. The default behaviour is <see langword="true"/>.</summary>
-    public bool AsComponents { get; }
+    public bool AsComponents { get; init; }
 
     /// <summary>Dictates whether the provided <typeparamref name="TScalar"/> should be used to describe the magnitude of the vector quantity. The default behaviour is <see langword="true"/>.</summary>
-    public bool AsMagnitude { get; }
+    public bool AsMagnitude { get; init; }
 }

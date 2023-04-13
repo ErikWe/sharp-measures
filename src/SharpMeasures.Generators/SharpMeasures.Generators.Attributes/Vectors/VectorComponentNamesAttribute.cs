@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures.Vectors;
+﻿namespace SharpMeasures;
 
 using System;
 
@@ -6,7 +6,7 @@ using System;
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
 public sealed class VectorComponentNamesAttribute : Attribute
 {
-    /// <summary>The names of the Cartesian components</summary>
+    /// <summary>The names of the Cartesian components.</summary>
     public string[] Names { get; }
 
     /// <inheritdoc cref="VectorComponentNamesAttribute"/>
