@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <RootNamespace>SharpMeasures.Generators.Parsing</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" PrivateAssets="all" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="SharpAttributeParser" PrivateAssets="all" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\SharpMeasures.Generators.Attributes\SharpMeasures.Generators.Attributes.csproj" />
+        <ProjectReference Include="..\SharpMeasures.Generators.Parsing.Representation\SharpMeasures.Generators.Parsing.Representation.csproj" />
+    </ItemGroup>
+
+</Project>
