@@ -15,6 +15,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\SharpMeasures.Generators.Attributes\SharpMeasures.Generators.Attributes.csproj" />
+        <ProjectReference Include="..\SharpMeasures.Generators.Parsing.Abstractions\SharpMeasures.Generators.Parsing.Abstractions.csproj" />
         <ProjectReference Include="..\SharpMeasures.Generators.Parsing.Representation\SharpMeasures.Generators.Parsing.Representation.csproj" />
     </ItemGroup>
 
