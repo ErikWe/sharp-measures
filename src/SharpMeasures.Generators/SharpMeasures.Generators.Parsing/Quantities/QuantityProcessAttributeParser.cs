@@ -27,12 +27,19 @@ public sealed class QuantityProcessAttributeParser : IConstructiveSyntacticAttri
     /// <inheritdoc/>
     public IRawQuantityProcess? TryParse(AttributeData attributeData, AttributeSyntax attributeSyntax)
     {
+        if (attributeSyntax is null)
+        {
+            throw new ArgumentNullException(nameof(attributeSyntax));
+        }
+
         QuantityProcessAttributeArgumentRecorder recorder = new();
 
         if (SyntacticParser.TryParse(recorder, attributeData, attributeSyntax) is false)
         {
             return null;
         }
+
+        recorder.RecordAttributeNameLocation(attributeSyntax.Name.GetLocation());
 
         return Create(recorder, AttributeParsingMode.Syntactically);
     }
@@ -67,7 +74,7 @@ public sealed class QuantityProcessAttributeParser : IConstructiveSyntacticAttri
             return null;
         }
 
-        return new QuantityProcessSyntax(recorder.ResultLocation, recorder.NameLocation, recorder.ExpressionLocation, recorder.SignatureCollectionLocation, recorder.SignatureElementLocations, recorder.ParameterNamesCollectionLocation, recorder.ParameterNamesElementLocations, recorder.ImplementStaticallyLocation);
+        return new QuantityProcessSyntax(recorder.AttributeNameLocation, recorder.ResultLocation, recorder.NameLocation, recorder.ExpressionLocation, recorder.SignatureCollectionLocation, recorder.SignatureElementLocations, recorder.ParameterNamesCollectionLocation, recorder.ParameterNamesElementLocations, recorder.ImplementStaticallyLocation);
     }
 
     private sealed class QuantityProcessAttributeArgumentRecorder : AArgumentRecorder
@@ -79,6 +86,8 @@ public sealed class QuantityProcessAttributeParser : IConstructiveSyntacticAttri
         public IReadOnlyList<ITypeSymbol?>? Signature { get; private set; }
         public IReadOnlyList<string?>? ParameterNames { get; private set; }
         public bool? ImplementStatically { get; private set; }
+
+        public Location AttributeNameLocation { get; private set; } = Location.None;
 
         public Location ResultLocation { get; private set; } = Location.None;
 
@@ -145,6 +154,11 @@ public sealed class QuantityProcessAttributeParser : IConstructiveSyntacticAttri
             ImplementStatically = implementStatically;
             ImplementStaticallyLocation = location;
         }
+
+        public void RecordAttributeNameLocation(Location location)
+        {
+            AttributeNameLocation = location;
+        }
     }
 
     private sealed record class RawQuantityProcess : IRawQuantityProcess
@@ -182,6 +196,8 @@ public sealed class QuantityProcessAttributeParser : IConstructiveSyntacticAttri
 
     private sealed record class QuantityProcessSyntax : IQuantityProcessSyntax
     {
+        private Location AttributeName { get; }
+
         private Location Result { get; }
         private Location Name { get; }
         private Location Expression { get; }
@@ -191,8 +207,10 @@ public sealed class QuantityProcessAttributeParser : IConstructiveSyntacticAttri
         private IReadOnlyList<Location> ParameterNamesElements { get; }
         private Location ImplementStatically { get; }
 
-        public QuantityProcessSyntax(Location result, Location name, Location expression, Location signatureCollection, IReadOnlyList<Location> signatureElements, Location parameterNamesCollection, IReadOnlyList<Location> parameterNamesElements, Location implementStatically)
+        public QuantityProcessSyntax(Location attributeName, Location result, Location name, Location expression, Location signatureCollection, IReadOnlyList<Location> signatureElements, Location parameterNamesCollection, IReadOnlyList<Location> parameterNamesElements, Location implementStatically)
         {
+            AttributeName = attributeName;
+
             Result = result;
             Name = name;
             Expression = expression;
@@ -202,6 +220,8 @@ public sealed class QuantityProcessAttributeParser : IConstructiveSyntacticAttri
             ParameterNamesElements = parameterNamesElements;
             ImplementStatically = implementStatically;
         }
+
+        Location IAttributeSyntax.AttributeName => AttributeName;
 
         Location IQuantityProcessSyntax.Result => Result;
         Location IQuantityProcessSyntax.Name => Name;

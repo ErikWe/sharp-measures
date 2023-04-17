@@ -27,12 +27,19 @@ public sealed class VectorComponentNamesAttributeParser : IConstructiveSemanticA
     /// <inheritdoc/>
     public IRawVectorComponentNames? TryParse(AttributeData attributeData, AttributeSyntax attributeSyntax)
     {
+        if (attributeSyntax is null)
+        {
+            throw new ArgumentNullException(nameof(attributeSyntax));
+        }
+
         VectorComponentNamesAttributeArgumentRecorder recorder = new();
 
         if (SyntacticParser.TryParse(recorder, attributeData, attributeSyntax) is false)
         {
             return null;
         }
+
+        recorder.RecordAttributeNameLocation(attributeSyntax.Name.GetLocation());
 
         return Create(recorder, AttributeParsingMode.Syntactically);
     }
@@ -62,12 +69,14 @@ public sealed class VectorComponentNamesAttributeParser : IConstructiveSemanticA
             return null;
         }
 
-        return new VectorComponentNamesSyntax(recorder.NamesCollectionLocation, recorder.NamesElementLocations);
+        return new VectorComponentNamesSyntax(recorder.AttributeNameLocation, recorder.NamesCollectionLocation, recorder.NamesElementLocations);
     }
 
     private sealed class VectorComponentNamesAttributeArgumentRecorder : AArgumentRecorder
     {
         public IReadOnlyList<string?>? Names { get; private set; }
+
+        public Location AttributeNameLocation { get; private set; } = Location.None;
 
         public Location NamesCollectionLocation { get; private set; } = Location.None;
         public IReadOnlyList<Location> NamesElementLocations { get; private set; } = Array.Empty<Location>();
@@ -83,6 +92,11 @@ public sealed class VectorComponentNamesAttributeParser : IConstructiveSemanticA
 
             NamesCollectionLocation = collectionLocation;
             NamesElementLocations = elementLocations;
+        }
+
+        public void RecordAttributeNameLocation(Location location)
+        {
+            AttributeNameLocation = location;
         }
     }
 
@@ -106,14 +120,20 @@ public sealed class VectorComponentNamesAttributeParser : IConstructiveSemanticA
 
     private sealed record class VectorComponentNamesSyntax : IVectorComponentNamesSyntax
     {
+        private Location AttributeName { get; }
+
         private Location NamesCollection { get; }
         private IReadOnlyList<Location> NamesElements { get; }
 
-        public VectorComponentNamesSyntax(Location namesCollection, IReadOnlyList<Location> namesElements)
+        public VectorComponentNamesSyntax(Location attributeName, Location namesCollection, IReadOnlyList<Location> namesElements)
         {
+            AttributeName = attributeName;
+
             NamesCollection = namesCollection;
             NamesElements = namesElements;
         }
+
+        Location IAttributeSyntax.AttributeName => AttributeName;
 
         Location IVectorComponentNamesSyntax.NamesCollection => NamesCollection;
         IReadOnlyList<Location> IVectorComponentNamesSyntax.NamesElements => NamesElements;

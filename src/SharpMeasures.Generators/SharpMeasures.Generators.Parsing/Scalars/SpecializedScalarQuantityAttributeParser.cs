@@ -27,12 +27,19 @@ public sealed class SpecializedScalarQuantityAttributeParser : IConstructiveSynt
     /// <inheritdoc/>
     public IRawSpecializedScalarQuantity? TryParse(AttributeData attributeData, AttributeSyntax attributeSyntax)
     {
+        if (attributeSyntax is null)
+        {
+            throw new ArgumentNullException(nameof(attributeSyntax));
+        }
+
         SpecializedScalarQuantityAttributeArgumentRecorder recorder = new();
 
         if (SyntacticParser.TryParse(recorder, attributeData, attributeSyntax) is false)
         {
             return null;
         }
+
+        recorder.RecordAttributeNameLocation(attributeSyntax.Name.GetLocation());
 
         return Create(recorder, AttributeParsingMode.Syntactically);
     }
@@ -68,7 +75,7 @@ public sealed class SpecializedScalarQuantityAttributeParser : IConstructiveSynt
             return null;
         }
 
-        return new SpecializedScalarQuantitySyntax(recorder.OriginalLocation, recorder.AllowNegativeLocation, recorder.InheritOperationsLocation, recorder.InheritProcessesLocation, recorder.InheritPropertiesLocation, recorder.InheritConstantsLocation,
+        return new SpecializedScalarQuantitySyntax(recorder.AttributeNameLocation, recorder.OriginalLocation, recorder.AllowNegativeLocation, recorder.InheritOperationsLocation, recorder.InheritProcessesLocation, recorder.InheritPropertiesLocation, recorder.InheritConstantsLocation,
             recorder.InheritConversionsLocation, recorder.ForwardsCastOperatorBehaviourLocation, recorder.BackwardsCastOperatorBehaviourLocation, recorder.ImplementSumLocation, recorder.ImplementDifferenceLocation);
     }
 
@@ -85,6 +92,8 @@ public sealed class SpecializedScalarQuantityAttributeParser : IConstructiveSynt
         public ConversionOperatorBehaviour? BackwardsCastOperatorBehaviour { get; private set; }
         public bool? ImplementSum { get; private set; }
         public bool? ImplementDifference { get; private set; }
+
+        public Location AttributeNameLocation { get; private set; } = Location.None;
 
         public Location OriginalLocation { get; private set; } = Location.None;
         public Location AllowNegativeLocation { get; private set; } = Location.None;
@@ -182,6 +191,11 @@ public sealed class SpecializedScalarQuantityAttributeParser : IConstructiveSynt
             ImplementDifference = implementDifference;
             ImplementDifferenceLocation = location;
         }
+
+        public void RecordAttributeNameLocation(Location location)
+        {
+            AttributeNameLocation = location;
+        }
     }
 
     private sealed record class RawSpecializedScalarQuantity : IRawSpecializedScalarQuantity
@@ -244,6 +258,8 @@ public sealed class SpecializedScalarQuantityAttributeParser : IConstructiveSynt
 
     private sealed record class SpecializedScalarQuantitySyntax : ISpecializedScalarQuantitySyntax
     {
+        private Location AttributeName { get; }
+
         private Location Original { get; }
         private Location AllowNegative { get; }
         private Location InheritOperations { get; }
@@ -256,9 +272,11 @@ public sealed class SpecializedScalarQuantityAttributeParser : IConstructiveSynt
         private Location ImplementSum { get; }
         private Location ImplementDifference { get; }
 
-        public SpecializedScalarQuantitySyntax(Location original, Location allowNegative, Location inheritOperations, Location inheritProcesses, Location inheritProperties, Location inheritConstants,
+        public SpecializedScalarQuantitySyntax(Location attributeName, Location original, Location allowNegative, Location inheritOperations, Location inheritProcesses, Location inheritProperties, Location inheritConstants,
             Location inheritConversions, Location forwardsCastOperatorBehaviour, Location backwardsCastOperatorBehaviour, Location implementSum, Location implementDifference)
         {
+            AttributeName = attributeName;
+
             Original = original;
             AllowNegative = allowNegative;
 
@@ -274,6 +292,8 @@ public sealed class SpecializedScalarQuantityAttributeParser : IConstructiveSynt
             ImplementSum = implementSum;
             ImplementDifference = implementDifference;
         }
+
+        Location IAttributeSyntax.AttributeName => AttributeName;
 
         Location ISpecializedScalarQuantitySyntax.Original => Original;
         Location ISpecializedScalarQuantitySyntax.AllowNegative => AllowNegative;

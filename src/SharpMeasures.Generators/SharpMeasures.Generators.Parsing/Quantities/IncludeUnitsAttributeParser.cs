@@ -27,12 +27,19 @@ public sealed class IncludeUnitsAttributeParser : IConstructiveSyntacticAttribut
     /// <inheritdoc/>
     public IRawIncludeUnits? TryParse(AttributeData attributeData, AttributeSyntax attributeSyntax)
     {
+        if (attributeSyntax is null)
+        {
+            throw new ArgumentNullException(nameof(attributeSyntax));
+        }
+
         IncludeUnitsAttributeArgumentRecorder recorder = new();
 
         if (SyntacticParser.TryParse(recorder, attributeData, attributeSyntax) is false)
         {
             return null;
         }
+
+        recorder.RecordAttributeNameLocation(attributeSyntax.Name.GetLocation());
 
         return Create(recorder, AttributeParsingMode.Syntactically);
     }
@@ -62,13 +69,15 @@ public sealed class IncludeUnitsAttributeParser : IConstructiveSyntacticAttribut
             return null;
         }
 
-        return new IncludeUnitsSyntax(recorder.IncludedUnitsCollectionLocation, recorder.IncludedUnitsElementLocations, recorder.StackingModeLocation);
+        return new IncludeUnitsSyntax(recorder.AttributeNameLocation, recorder.IncludedUnitsCollectionLocation, recorder.IncludedUnitsElementLocations, recorder.StackingModeLocation);
     }
 
     private sealed class IncludeUnitsAttributeArgumentRecorder : AArgumentRecorder
     {
         public IReadOnlyList<string?>? IncludedUnits { get; private set; }
         public FilterStackingMode? StackingMode { get; private set; }
+
+        public Location AttributeNameLocation { get; private set; } = Location.None;
 
         public Location IncludedUnitsCollectionLocation { get; private set; } = Location.None;
         public IReadOnlyList<Location> IncludedUnitsElementLocations { get; private set; } = Array.Empty<Location>();
@@ -96,6 +105,11 @@ public sealed class IncludeUnitsAttributeParser : IConstructiveSyntacticAttribut
             StackingMode = stackingMode;
             StackingModeLocation = location;
         }
+
+        public void RecordAttributeNameLocation(Location location)
+        {
+            AttributeNameLocation = location;
+        }
     }
 
     private sealed record class RawIncludeUnits : IRawIncludeUnits
@@ -121,16 +135,22 @@ public sealed class IncludeUnitsAttributeParser : IConstructiveSyntacticAttribut
 
     private sealed record class IncludeUnitsSyntax : IIncludeUnitsSyntax
     {
+        private Location AttributeName { get; }
+
         private Location IncludedUnitsCollection { get; }
         private IReadOnlyList<Location> IncludedUnitsElements { get; }
         private Location StackingMode { get; }
 
-        public IncludeUnitsSyntax(Location includedUnitsCollation, IReadOnlyList<Location> includedUnitsElements, Location stackingMode)
+        public IncludeUnitsSyntax(Location attributeName, Location includedUnitsCollation, IReadOnlyList<Location> includedUnitsElements, Location stackingMode)
         {
+            AttributeName = attributeName;
+
             IncludedUnitsCollection = includedUnitsCollation;
             IncludedUnitsElements = includedUnitsElements;
             StackingMode = stackingMode;
         }
+
+        Location IAttributeSyntax.AttributeName => AttributeName;
 
         Location IIncludeUnitsSyntax.IncludedUnitsCollection => IncludedUnitsCollection;
         IReadOnlyList<Location> IIncludeUnitsSyntax.IncludedUnitsElements => IncludedUnitsElements;

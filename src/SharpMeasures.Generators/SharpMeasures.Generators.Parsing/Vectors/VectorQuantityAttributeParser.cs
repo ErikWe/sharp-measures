@@ -27,12 +27,19 @@ public sealed class VectorQuantityAttributeParser : IConstructiveSemanticAttribu
     /// <inheritdoc/>
     public IRawVectorQuantity? TryParse(AttributeData attributeData, AttributeSyntax attributeSyntax)
     {
+        if (attributeSyntax is null)
+        {
+            throw new ArgumentNullException(nameof(attributeSyntax));
+        }
+
         VectorQuantityAttributeArgumentRecorder recorder = new();
 
         if (SyntacticParser.TryParse(recorder, attributeData, attributeSyntax) is false)
         {
             return null;
         }
+
+        recorder.RecordAttributeNameLocation(attributeSyntax.Name.GetLocation());
 
         return Create(recorder, AttributeParsingMode.Syntactically);
     }
@@ -67,7 +74,7 @@ public sealed class VectorQuantityAttributeParser : IConstructiveSemanticAttribu
             return null;
         }
 
-        return new VectorQuantitySyntax(recorder.UnitLocation, recorder.DimensionLocation, recorder.ImplementSumLocation, recorder.ImplementDifferenceLocation);
+        return new VectorQuantitySyntax(recorder.AttributeNameLocation, recorder.UnitLocation, recorder.DimensionLocation, recorder.ImplementSumLocation, recorder.ImplementDifferenceLocation);
     }
 
     private sealed class VectorQuantityAttributeArgumentRecorder : AArgumentRecorder
@@ -76,6 +83,8 @@ public sealed class VectorQuantityAttributeParser : IConstructiveSemanticAttribu
         public int? Dimension { get; private set; }
         public bool? ImplementSum { get; private set; }
         public bool? ImplementDifference { get; private set; }
+
+        public Location AttributeNameLocation { get; private set; } = Location.None;
 
         public Location UnitLocation { get; private set; } = Location.None;
         public Location DimensionLocation { get; private set; } = Location.None;
@@ -117,6 +126,11 @@ public sealed class VectorQuantityAttributeParser : IConstructiveSemanticAttribu
             ImplementDifference = implementDifference;
             ImplementDifferenceLocation = location;
         }
+
+        public void RecordAttributeNameLocation(Location location)
+        {
+            AttributeNameLocation = location;
+        }
     }
 
     private sealed record class RawVectorQuantity : IRawVectorQuantity
@@ -154,18 +168,24 @@ public sealed class VectorQuantityAttributeParser : IConstructiveSemanticAttribu
 
     private sealed record class VectorQuantitySyntax : IVectorQuantitySyntax
     {
+        private Location AttributeName { get; }
+
         private Location Unit { get; }
         private Location Dimension { get; }
         private Location ImplementSum { get; }
         private Location ImplementDifference { get; }
 
-        public VectorQuantitySyntax(Location unit, Location dimension, Location implementSum, Location implementDifference)
+        public VectorQuantitySyntax(Location attributeName, Location unit, Location dimension, Location implementSum, Location implementDifference)
         {
+            AttributeName = attributeName;
+
             Unit = unit;
             Dimension = dimension;
             ImplementSum = implementSum;
             ImplementDifference = implementDifference;
         }
+
+        Location IAttributeSyntax.AttributeName => AttributeName;
 
         Location IVectorQuantitySyntax.Unit => Unit;
         Location IVectorQuantitySyntax.Dimension => Dimension;

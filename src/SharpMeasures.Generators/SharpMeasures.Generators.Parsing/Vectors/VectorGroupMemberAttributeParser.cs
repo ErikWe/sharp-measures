@@ -27,12 +27,19 @@ public sealed class VectorGroupMemberAttributeParser : IConstructiveSyntacticAtt
     /// <inheritdoc/>
     public IRawVectorGroupMember? TryParse(AttributeData attributeData, AttributeSyntax attributeSyntax)
     {
+        if (attributeSyntax is null)
+        {
+            throw new ArgumentNullException(nameof(attributeSyntax));
+        }
+
         VectorGroupMemberAttributeArgumentRecorder recorder = new();
 
         if (SyntacticParser.TryParse(recorder, attributeData, attributeSyntax) is false)
         {
             return null;
         }
+
+        recorder.RecordAttributeNameLocation(attributeSyntax.Name.GetLocation());
 
         return Create(recorder, AttributeParsingMode.Syntactically);
     }
@@ -68,7 +75,7 @@ public sealed class VectorGroupMemberAttributeParser : IConstructiveSyntacticAtt
             return null;
         }
 
-        return new VectorGroupMemberSyntax(recorder.GroupLocation, recorder.DimensionLocation, recorder.InheritOperationsFromGroupLocation, recorder.InheritOperationsFromMembersLocation, recorder.InheritProcessesFromMembersLocation,
+        return new VectorGroupMemberSyntax(recorder.AttributeNameLocation, recorder.GroupLocation, recorder.DimensionLocation, recorder.InheritOperationsFromGroupLocation, recorder.InheritOperationsFromMembersLocation, recorder.InheritProcessesFromMembersLocation,
             recorder.InheritPropertiesFromMembersLocation, recorder.InheritConstantsFromMembersLocation, recorder.InheritConversionsFromGroupLocation, recorder.InheritConversionsFromMembersLocation);
     }
 
@@ -83,6 +90,8 @@ public sealed class VectorGroupMemberAttributeParser : IConstructiveSyntacticAtt
         public bool? InheritConstantsFromMembers { get; private set; }
         public bool? InheritConversionsFromGroup { get; private set; }
         public bool? InheritConversionsFromMembers { get; private set; }
+
+        public Location AttributeNameLocation { get; private set; } = Location.None;
 
         public Location GroupLocation { get; private set; } = Location.None;
         public Location DimensionLocation { get; private set; } = Location.None;
@@ -164,6 +173,11 @@ public sealed class VectorGroupMemberAttributeParser : IConstructiveSyntacticAtt
             InheritConversionsFromMembers = inheritConversionsFromMembers;
             InheritConversionsFromMembersLocation = location;
         }
+
+        public void RecordAttributeNameLocation(Location location)
+        {
+            AttributeNameLocation = location;
+        }
     }
 
     private sealed record class RawVectorGroupMember : IRawVectorGroupMember
@@ -217,6 +231,8 @@ public sealed class VectorGroupMemberAttributeParser : IConstructiveSyntacticAtt
 
     private sealed record class VectorGroupMemberSyntax : IVectorGroupMemberSyntax
     {
+        private Location AttributeName { get; }
+
         private Location Group { get; }
         private Location Dimension { get; }
         private Location InheritOperationsFromGroup { get; }
@@ -227,9 +243,11 @@ public sealed class VectorGroupMemberAttributeParser : IConstructiveSyntacticAtt
         private Location InheritConversionsFromGroup { get; }
         private Location InheritConversionsFromMembers { get; }
 
-        public VectorGroupMemberSyntax(Location group, Location dimension, Location inheritOperationsFromGroup, Location inheritOperationsFromMembers, Location inheritProcessesFromMembers, Location inheritPropertiesFromMembers, Location inheritConstantsFromMembers,
+        public VectorGroupMemberSyntax(Location attributeName, Location group, Location dimension, Location inheritOperationsFromGroup, Location inheritOperationsFromMembers, Location inheritProcessesFromMembers, Location inheritPropertiesFromMembers, Location inheritConstantsFromMembers,
             Location inheritConversionsFromGroup, Location inheritConversionsFromMembers)
         {
+            AttributeName = attributeName;
+
             Group = group;
 
             Dimension = dimension;
@@ -242,6 +260,8 @@ public sealed class VectorGroupMemberAttributeParser : IConstructiveSyntacticAtt
             InheritConversionsFromGroup = inheritConversionsFromGroup;
             InheritConversionsFromMembers = inheritConversionsFromMembers;
         }
+
+        Location IAttributeSyntax.AttributeName => AttributeName;
 
         Location IVectorGroupMemberSyntax.Group => Group;
         Location IVectorGroupMemberSyntax.Dimension => Dimension;

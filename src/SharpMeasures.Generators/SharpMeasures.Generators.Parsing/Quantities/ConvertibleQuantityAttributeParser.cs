@@ -27,12 +27,19 @@ public sealed class ConvertibleQuantityAttributeParser : IConstructiveSyntacticA
     /// <inheritdoc/>
     public IRawConvertibleQuantity? TryParse(AttributeData attributeData, AttributeSyntax attributeSyntax)
     {
+        if (attributeSyntax is null)
+        {
+            throw new ArgumentNullException(nameof(attributeSyntax));
+        }
+
         ConvertibleQuantityAttributeArgumentRecorder recorder = new();
 
         if (SyntacticParser.TryParse(recorder, attributeData, attributeSyntax) is false)
         {
             return null;
         }
+
+        recorder.RecordAttributeNameLocation(attributeSyntax.Name.GetLocation());
 
         return Create(recorder, AttributeParsingMode.Syntactically);
     }
@@ -62,7 +69,7 @@ public sealed class ConvertibleQuantityAttributeParser : IConstructiveSyntacticA
             return null;
         }
 
-        return new ConvertibleQuantitySyntax(recorder.QuantitiesCollectionLocation, recorder.QuantitiesElementLocations, recorder.ForwarsBehaviourLocation, recorder.BackwardsBehaviourLocation);
+        return new ConvertibleQuantitySyntax(recorder.AttributeNameLocation, recorder.QuantitiesCollectionLocation, recorder.QuantitiesElementLocations, recorder.ForwarsBehaviourLocation, recorder.BackwardsBehaviourLocation);
     }
 
     private sealed class ConvertibleQuantityAttributeArgumentRecorder : AArgumentRecorder
@@ -70,6 +77,8 @@ public sealed class ConvertibleQuantityAttributeParser : IConstructiveSyntacticA
         public IReadOnlyList<ITypeSymbol?>? Quantities { get; private set; }
         public ConversionOperatorBehaviour? ForwarsBehaviour { get; private set; }
         public ConversionOperatorBehaviour? BackwardsBehaviour { get; private set; }
+
+        public Location AttributeNameLocation { get; private set; } = Location.None;
 
         public Location QuantitiesCollectionLocation { get; private set; } = Location.None;
         public IReadOnlyList<Location> QuantitiesElementLocations { get; private set; } = Array.Empty<Location>();
@@ -105,6 +114,11 @@ public sealed class ConvertibleQuantityAttributeParser : IConstructiveSyntacticA
             BackwardsBehaviour = backwardsBehaviour;
             BackwardsBehaviourLocation = location;
         }
+
+        public void RecordAttributeNameLocation(Location location)
+        {
+            AttributeNameLocation = location;
+        }
     }
 
     private sealed record class RawConvertibleQuantity : IRawConvertibleQuantity
@@ -136,20 +150,26 @@ public sealed class ConvertibleQuantityAttributeParser : IConstructiveSyntacticA
 
     private sealed record class ConvertibleQuantitySyntax : IConvertibleQuantitySyntax
     {
+        private Location AttributeName { get; }
+
         private Location QuantitiesCollection { get; }
         private IReadOnlyList<Location> QuantitiesElements { get; }
 
         private Location ForwardsBehaviour { get; }
         private Location BackwardsBehaviour { get; }
 
-        public ConvertibleQuantitySyntax(Location quantitiesCollection, IReadOnlyList<Location> quantitiesElements, Location forwardsBehaviour, Location backwardsBehaviour)
+        public ConvertibleQuantitySyntax(Location attributeName, Location quantitiesCollection, IReadOnlyList<Location> quantitiesElements, Location forwardsBehaviour, Location backwardsBehaviour)
         {
+            AttributeName = attributeName;
+
             QuantitiesCollection = quantitiesCollection;
             QuantitiesElements = quantitiesElements;
 
             ForwardsBehaviour = forwardsBehaviour;
             BackwardsBehaviour = backwardsBehaviour;
         }
+
+        Location IAttributeSyntax.AttributeName => AttributeName;
 
         Location IConvertibleQuantitySyntax.QuantitiesCollection => QuantitiesCollection;
         IReadOnlyList<Location> IConvertibleQuantitySyntax.QuantitiesElements => QuantitiesElements;

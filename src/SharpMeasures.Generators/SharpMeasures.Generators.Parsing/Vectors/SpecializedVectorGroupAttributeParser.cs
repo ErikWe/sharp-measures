@@ -27,12 +27,19 @@ public sealed class SpecializedVectorGroupAttributeParser : IConstructiveSyntact
     /// <inheritdoc/>
     public IRawSpecializedVectorGroup? TryParse(AttributeData attributeData, AttributeSyntax attributeSyntax)
     {
+        if (attributeSyntax is null)
+        {
+            throw new ArgumentNullException(nameof(attributeSyntax));
+        }
+
         SpecializedVectorGroupAttributeArgumentRecorder recorder = new();
 
         if (SyntacticParser.TryParse(recorder, attributeData, attributeSyntax) is false)
         {
             return null;
         }
+
+        recorder.RecordAttributeNameLocation(attributeSyntax.Name.GetLocation());
 
         return Create(recorder, AttributeParsingMode.Syntactically);
     }
@@ -68,7 +75,7 @@ public sealed class SpecializedVectorGroupAttributeParser : IConstructiveSyntact
             return null;
         }
 
-        return new SpecializedVectorGroupSyntax(recorder.OriginalLocation, recorder.InheritOperationsLocation, recorder.InheritConversionsLocation, recorder.ForwardsCastOperatorBehaviourLocation,
+        return new SpecializedVectorGroupSyntax(recorder.AttributeNameLocation, recorder.OriginalLocation, recorder.InheritOperationsLocation, recorder.InheritConversionsLocation, recorder.ForwardsCastOperatorBehaviourLocation,
             recorder.BackwardsCastOperatorBehaviourLocation, recorder.ImplementSumLocation, recorder.ImplementDifferenceLocation);
     }
 
@@ -81,6 +88,8 @@ public sealed class SpecializedVectorGroupAttributeParser : IConstructiveSyntact
         public ConversionOperatorBehaviour? BackwardsCastOperatorBehaviour { get; private set; }
         public bool? ImplementSum { get; private set; }
         public bool? ImplementDifference { get; private set; }
+
+        public Location AttributeNameLocation { get; private set; } = Location.None;
 
         public Location OriginalLocation { get; private set; } = Location.None;
         public Location InheritOperationsLocation { get; private set; } = Location.None;
@@ -146,6 +155,11 @@ public sealed class SpecializedVectorGroupAttributeParser : IConstructiveSyntact
             ImplementDifference = implementDifference;
             ImplementDifferenceLocation = location;
         }
+
+        public void RecordAttributeNameLocation(Location location)
+        {
+            AttributeNameLocation = location;
+        }
     }
 
     private sealed record class RawSpecializedVectorGroup : IRawSpecializedVectorGroup
@@ -196,6 +210,8 @@ public sealed class SpecializedVectorGroupAttributeParser : IConstructiveSyntact
 
     private sealed record class SpecializedVectorGroupSyntax : ISpecializedVectorGroupSyntax
     {
+        private Location AttributeName { get; }
+
         private Location Original { get; }
         private Location InheritOperations { get; }
         private Location InheritConversions { get; }
@@ -204,9 +220,11 @@ public sealed class SpecializedVectorGroupAttributeParser : IConstructiveSyntact
         private Location ImplementSum { get; }
         private Location ImplementDifference { get; }
 
-        public SpecializedVectorGroupSyntax(Location original, Location inheritOperations, Location inheritConversions, Location forwardsCastOperatorBehaviour, Location backwardsCastOperatorBehaviour,
+        public SpecializedVectorGroupSyntax(Location attributeName, Location original, Location inheritOperations, Location inheritConversions, Location forwardsCastOperatorBehaviour, Location backwardsCastOperatorBehaviour,
             Location implementSum, Location implementDifference)
         {
+            AttributeName = attributeName;
+
             Original = original;
 
             InheritOperations = inheritOperations;
@@ -218,6 +236,8 @@ public sealed class SpecializedVectorGroupAttributeParser : IConstructiveSyntact
             ImplementSum = implementSum;
             ImplementDifference = implementDifference;
         }
+
+        Location IAttributeSyntax.AttributeName => AttributeName;
 
         Location ISpecializedVectorGroupSyntax.Original => Original;
         Location ISpecializedVectorGroupSyntax.InheritOperations => InheritOperations;

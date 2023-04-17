@@ -27,12 +27,19 @@ public sealed class QuantityDifferenceAttributeParser : IConstructiveSyntacticAt
     /// <inheritdoc/>
     public IRawQuantityDifference? TryParse(AttributeData attributeData, AttributeSyntax attributeSyntax)
     {
+        if (attributeSyntax is null)
+        {
+            throw new ArgumentNullException(nameof(attributeSyntax));
+        }
+
         QuantityDifferenceAttributeArgumentRecorder recorder = new();
 
         if (SyntacticParser.TryParse(recorder, attributeData, attributeSyntax) is false)
         {
             return null;
         }
+
+        recorder.RecordAttributeNameLocation(attributeSyntax.Name.GetLocation());
 
         return Create(recorder, AttributeParsingMode.Syntactically);
     }
@@ -67,13 +74,14 @@ public sealed class QuantityDifferenceAttributeParser : IConstructiveSyntacticAt
             return null;
         }
 
-        return new QuantityDifferenceSyntax(recorder.DifferenceLocation);
+        return new QuantityDifferenceSyntax(recorder.AttributeNameLocation, recorder.DifferenceLocation);
     }
 
     private sealed class QuantityDifferenceAttributeArgumentRecorder : AArgumentRecorder
     {
         public ITypeSymbol? Difference { get; private set; }
 
+        public Location AttributeNameLocation { get; private set; } = Location.None;
         public Location DifferenceLocation { get; private set; } = Location.None;
 
         protected override IEnumerable<(string, DSyntacticGenericRecorder)> AddGenericRecorders()
@@ -85,6 +93,11 @@ public sealed class QuantityDifferenceAttributeParser : IConstructiveSyntacticAt
         {
             Difference = difference;
             DifferenceLocation = location;
+        }
+
+        public void RecordAttributeNameLocation(Location location)
+        {
+            AttributeNameLocation = location;
         }
     }
 
@@ -108,12 +121,18 @@ public sealed class QuantityDifferenceAttributeParser : IConstructiveSyntacticAt
 
     private sealed record class QuantityDifferenceSyntax : IQuantityDifferenceSyntax
     {
+        private Location AttributeName { get; }
+
         private Location Difference { get; }
 
-        public QuantityDifferenceSyntax(Location difference)
+        public QuantityDifferenceSyntax(Location attributeName, Location difference)
         {
+            AttributeName = attributeName;
+
             Difference = difference;
         }
+
+        Location IAttributeSyntax.AttributeName => AttributeName;
 
         Location IQuantityDifferenceSyntax.Difference => Difference;
     }

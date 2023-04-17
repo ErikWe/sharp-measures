@@ -27,12 +27,19 @@ public sealed class SpecializedUnitlessQuantityAttributeParser : IConstructiveSy
     /// <inheritdoc/>
     public IRawSpecializedUnitlessQuantity? TryParse(AttributeData attributeData, AttributeSyntax attributeSyntax)
     {
+        if (attributeSyntax is null)
+        {
+            throw new ArgumentNullException(nameof(attributeSyntax));
+        }
+
         SpecializedUnitlessQuantityAttributeArgumentRecorder recorder = new();
 
         if (SyntacticParser.TryParse(recorder, attributeData, attributeSyntax) is false)
         {
             return null;
         }
+
+        recorder.RecordAttributeNameLocation(attributeSyntax.Name.GetLocation());
 
         return Create(recorder, AttributeParsingMode.Syntactically);
     }
@@ -68,7 +75,7 @@ public sealed class SpecializedUnitlessQuantityAttributeParser : IConstructiveSy
             return null;
         }
 
-        return new SpecializedUnitlessQuantitySyntax(recorder.OriginalLocation, recorder.AllowNegativeLocation, recorder.InheritOperationsLocation, recorder.InheritProcessesLocation, recorder.InheritPropertiesLocation,
+        return new SpecializedUnitlessQuantitySyntax(recorder.AttributeNameLocation, recorder.OriginalLocation, recorder.AllowNegativeLocation, recorder.InheritOperationsLocation, recorder.InheritProcessesLocation, recorder.InheritPropertiesLocation,
             recorder.InheritConversionsLocation, recorder.ForwardsCastOperatorBehaviourLocation, recorder.BackwardsCastOperatorBehaviourLocation, recorder.ImplementSumLocation, recorder.ImplementDifferenceLocation);
     }
 
@@ -84,6 +91,8 @@ public sealed class SpecializedUnitlessQuantityAttributeParser : IConstructiveSy
         public ConversionOperatorBehaviour? BackwardsCastOperatorBehaviour { get; private set; }
         public bool? ImplementSum { get; private set; }
         public bool? ImplementDifference { get; private set; }
+
+        public Location AttributeNameLocation { get; private set; } = Location.None;
 
         public Location OriginalLocation { get; private set; } = Location.None;
         public Location AllowNegativeLocation { get; private set; } = Location.None;
@@ -176,6 +185,11 @@ public sealed class SpecializedUnitlessQuantityAttributeParser : IConstructiveSy
             ImplementDifference = implementDifference;
             ImplementDifferenceLocation = location;
         }
+
+        public void RecordAttributeNameLocation(Location location)
+        {
+            AttributeNameLocation = location;
+        }
     }
 
     private sealed record class RawSpecializedUnitlessQuantity : IRawSpecializedUnitlessQuantity
@@ -235,6 +249,8 @@ public sealed class SpecializedUnitlessQuantityAttributeParser : IConstructiveSy
 
     private sealed record class SpecializedUnitlessQuantitySyntax : ISpecializedUnitlessQuantitySyntax
     {
+        private Location AttributeName { get; }
+
         private Location Original { get; }
         private Location AllowNegative { get; }
         private Location InheritOperations { get; }
@@ -246,9 +262,11 @@ public sealed class SpecializedUnitlessQuantityAttributeParser : IConstructiveSy
         private Location ImplementSum { get; }
         private Location ImplementDifference { get; }
 
-        public SpecializedUnitlessQuantitySyntax(Location original, Location allowNegative, Location inheritOperations, Location inheritProcesses, Location inheritProperties,
+        public SpecializedUnitlessQuantitySyntax(Location attributeName, Location original, Location allowNegative, Location inheritOperations, Location inheritProcesses, Location inheritProperties,
             Location inheritConversions, Location forwardsCastOperatorBehaviour, Location backwardsCastOperatorBehaviour, Location implementSum, Location implementDifference)
         {
+            AttributeName = attributeName;
+
             Original = original;
             AllowNegative = allowNegative;
 
@@ -263,6 +281,8 @@ public sealed class SpecializedUnitlessQuantityAttributeParser : IConstructiveSy
             ImplementSum = implementSum;
             ImplementDifference = implementDifference;
         }
+
+        Location IAttributeSyntax.AttributeName => AttributeName;
 
         Location ISpecializedUnitlessQuantitySyntax.Original => Original;
         Location ISpecializedUnitlessQuantitySyntax.AllowNegative => AllowNegative;

@@ -27,12 +27,19 @@ public sealed class ExcludeUnitsAttributeParser : IConstructiveSyntacticAttribut
     /// <inheritdoc/>
     public IRawExcludeUnits? TryParse(AttributeData attributeData, AttributeSyntax attributeSyntax)
     {
+        if (attributeSyntax is null)
+        {
+            throw new ArgumentNullException(nameof(attributeSyntax));
+        }
+
         ExcludeUnitsAttributeArgumentRecorder recorder = new();
 
         if (SyntacticParser.TryParse(recorder, attributeData, attributeSyntax) is false)
         {
             return null;
         }
+
+        recorder.RecordAttributeNameLocation(attributeSyntax.Name.GetLocation());
 
         return Create(recorder, AttributeParsingMode.Syntactically);
     }
@@ -62,13 +69,15 @@ public sealed class ExcludeUnitsAttributeParser : IConstructiveSyntacticAttribut
             return null;
         }
 
-        return new ExcludeUnitsSyntax(recorder.ExcludedUnitsCollectionLocation, recorder.ExcludeUnitsElementLocations, recorder.StackingModeLocation);
+        return new ExcludeUnitsSyntax(recorder.AttributeNameLocation, recorder.ExcludedUnitsCollectionLocation, recorder.ExcludeUnitsElementLocations, recorder.StackingModeLocation);
     }
 
     private sealed class ExcludeUnitsAttributeArgumentRecorder : AArgumentRecorder
     {
         public IReadOnlyList<string?>? ExcludedUnits { get; private set; }
         public FilterStackingMode? StackingMode { get; private set; }
+
+        public Location AttributeNameLocation { get; private set; } = Location.None;
 
         public Location ExcludedUnitsCollectionLocation { get; private set; } = Location.None;
         public IReadOnlyList<Location> ExcludeUnitsElementLocations { get; private set; } = Array.Empty<Location>();
@@ -96,6 +105,11 @@ public sealed class ExcludeUnitsAttributeParser : IConstructiveSyntacticAttribut
             StackingMode = stackingMode;
             StackingModeLocation = location;
         }
+
+        public void RecordAttributeNameLocation(Location location)
+        {
+            AttributeNameLocation = location;
+        }
     }
 
     private sealed record class RawExcludeUnits : IRawExcludeUnits
@@ -121,20 +135,22 @@ public sealed class ExcludeUnitsAttributeParser : IConstructiveSyntacticAttribut
 
     private sealed record class ExcludeUnitsSyntax : IExcludeUnitsSyntax
     {
+        private Location AttributeName { get; }
+
         private Location ExcludedUnitsCollection { get; }
         private IReadOnlyList<Location> ExcludeUnitsElements { get; }
         private Location StackingMode { get; }
 
-        /// <summary>Instantiates a <see cref="ExcludeUnitsSyntax"/>, representing syntactical information about a parsed <see cref="ExcludeUnitsAttribute"/>.</summary>
-        /// <param name="excludedUnitsCollection"><inheritdoc cref="IExcludeUnitsSyntax.ExcludedUnitsCollection" path="/summary"/></param>
-        /// <param name="excludeUnitsElements"><inheritdoc cref="IExcludeUnitsSyntax.ExcludedUnitsElements" path="/summary"/></param>
-        /// <param name="stackingMode"><inheritdoc cref="IExcludeUnitsSyntax.StackingMode" path="/summary"/></param>
-        public ExcludeUnitsSyntax(Location excludedUnitsCollection, IReadOnlyList<Location> excludeUnitsElements, Location stackingMode)
+        public ExcludeUnitsSyntax(Location attributeName, Location excludedUnitsCollection, IReadOnlyList<Location> excludeUnitsElements, Location stackingMode)
         {
+            AttributeName = attributeName;
+
             ExcludedUnitsCollection = excludedUnitsCollection;
             ExcludeUnitsElements = excludeUnitsElements;
             StackingMode = stackingMode;
         }
+
+        Location IAttributeSyntax.AttributeName => AttributeName;
 
         Location IExcludeUnitsSyntax.ExcludedUnitsCollection => ExcludedUnitsCollection;
         IReadOnlyList<Location> IExcludeUnitsSyntax.ExcludedUnitsElements => ExcludeUnitsElements;

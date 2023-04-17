@@ -27,12 +27,19 @@ public sealed class ScalarAssociationAttributeParser : IConstructiveSemanticAttr
     /// <inheritdoc/>
     public IRawScalarAssociation? TryParse(AttributeData attributeData, AttributeSyntax attributeSyntax)
     {
+        if (attributeSyntax is null)
+        {
+            throw new ArgumentNullException(nameof(attributeSyntax));
+        }
+
         ScalarAssociationAttributeArgumentRecorder recorder = new();
 
         if (SyntacticParser.TryParse(recorder, attributeData, attributeSyntax) is false)
         {
             return null;
         }
+
+        recorder.RecordAttributeNameLocation(attributeSyntax.Name.GetLocation());
 
         return Create(recorder, AttributeParsingMode.Syntactically);
     }
@@ -67,7 +74,7 @@ public sealed class ScalarAssociationAttributeParser : IConstructiveSemanticAttr
             return null;
         }
 
-        return new ScalarAssociationSyntax(recorder.ScalarLocation, recorder.AsComponentsLocation, recorder.AsMagnitudeLocation);
+        return new ScalarAssociationSyntax(recorder.AttributeNameLocation, recorder.ScalarLocation, recorder.AsComponentsLocation, recorder.AsMagnitudeLocation);
     }
 
     private sealed class ScalarAssociationAttributeArgumentRecorder : AArgumentRecorder
@@ -76,6 +83,8 @@ public sealed class ScalarAssociationAttributeParser : IConstructiveSemanticAttr
 
         public bool? AsComponents { get; private set; }
         public bool? AsMagnitude { get; private set; }
+
+        public Location AttributeNameLocation { get; private set; } = Location.None;
 
         public Location ScalarLocation { get; private set; } = Location.None;
 
@@ -110,6 +119,11 @@ public sealed class ScalarAssociationAttributeParser : IConstructiveSemanticAttr
             AsMagnitude = asMagnitude;
             AsMagnitudeLocation = location;
         }
+
+        public void RecordAttributeNameLocation(Location location)
+        {
+            AttributeNameLocation = location;
+        }
     }
 
     private sealed record class RawScalarAssociation : IRawScalarAssociation
@@ -141,18 +155,24 @@ public sealed class ScalarAssociationAttributeParser : IConstructiveSemanticAttr
 
     private sealed record class ScalarAssociationSyntax : IScalarAssociationSyntax
     {
+        private Location AttributeName { get; }
+
         private Location Scalar { get; }
 
         private Location AsComponents { get; }
         private Location AsMagnitude { get; }
 
-        public ScalarAssociationSyntax(Location scalar, Location asComponents, Location asMagnitude)
+        public ScalarAssociationSyntax(Location attributeName, Location scalar, Location asComponents, Location asMagnitude)
         {
+            AttributeName = attributeName;
+
             Scalar = scalar;
 
             AsComponents = asComponents;
             AsMagnitude = asMagnitude;
         }
+
+        Location IAttributeSyntax.AttributeName => AttributeName;
 
         Location IScalarAssociationSyntax.Scalar => Scalar;
 

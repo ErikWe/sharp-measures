@@ -29,12 +29,19 @@ public sealed class VectorConstantAttributeParser : IConstructiveSemanticAttribu
     /// <inheritdoc/>
     public IRawVectorConstant? TryParse(AttributeData attributeData, AttributeSyntax attributeSyntax)
     {
+        if (attributeSyntax is null)
+        {
+            throw new ArgumentNullException(nameof(attributeSyntax));
+        }
+
         VectorConstantAttributeArgumentRecorder recorder = new();
 
         if (SyntacticParser.TryParse(recorder, attributeData, attributeSyntax) is false)
         {
             return null;
         }
+
+        recorder.RecordAttributeNameLocation(attributeSyntax.Name.GetLocation());
 
         return Create(recorder, AttributeParsingMode.Syntactically);
     }
@@ -64,7 +71,7 @@ public sealed class VectorConstantAttributeParser : IConstructiveSemanticAttribu
             return null;
         }
 
-        return new VectorConstantSyntax(recorder.NameLocation, recorder.UnitInstanceNameLocation, recorder.ValueCollectionLocation, recorder.ValueElementLocations);
+        return new VectorConstantSyntax(recorder.AttributeNameLocation, recorder.NameLocation, recorder.UnitInstanceNameLocation, recorder.ValueCollectionLocation, recorder.ValueElementLocations);
     }
 
     private sealed class VectorConstantAttributeArgumentRecorder : AArgumentRecorder
@@ -72,6 +79,8 @@ public sealed class VectorConstantAttributeParser : IConstructiveSemanticAttribu
         public string? Name { get; private set; }
         public string? UnitInstanceName { get; private set; }
         public OneOf<IReadOnlyList<double>?, IReadOnlyList<string?>?> Value { get; private set; }
+
+        public Location AttributeNameLocation { get; private set; } = Location.None;
 
         public Location NameLocation { get; private set; } = Location.None;
         public Location UnitInstanceNameLocation { get; private set; } = Location.None;
@@ -117,6 +126,11 @@ public sealed class VectorConstantAttributeParser : IConstructiveSemanticAttribu
             ValueCollectionLocation = collectionLocation;
             ValueElementLocations = elementLocations;
         }
+
+        public void RecordAttributeNameLocation(Location location)
+        {
+            AttributeNameLocation = location;
+        }
     }
 
     private sealed record class RawVectorConstant : IRawVectorConstant
@@ -145,23 +159,24 @@ public sealed class VectorConstantAttributeParser : IConstructiveSemanticAttribu
 
     private sealed record class VectorConstantSyntax : IVectorConstantSyntax
     {
+        private Location AttributeName { get; }
+
         private Location Name { get; }
         private Location UnitInstanceName { get; }
         private Location ValueCollection { get; }
         private IReadOnlyList<Location> ValueElements { get; }
 
-        /// <summary>Instantiates a <see cref="VectorConstantSyntax"/>, representing syntactical information about a parsed <see cref="VectorConstantAttribute"/>.</summary>
-        /// <param name="name"><inheritdoc cref="IVectorConstantSyntax.Name" path="/summary"/></param>
-        /// <param name="unitInstanceName"><inheritdoc cref="IVectorConstantSyntax.UnitInstanceName" path="/summary"/></param>
-        /// <param name="valueCollection"><inheritdoc cref="IVectorConstantSyntax.ValueCollection" path="/summary"/></param>
-        /// <param name="valueElements"><inheritdoc cref="IVectorConstantSyntax.ValueElements" path="/summary"/></param>
-        public VectorConstantSyntax(Location name, Location unitInstanceName, Location valueCollection, IReadOnlyList<Location> valueElements)
+        public VectorConstantSyntax(Location attributeName, Location name, Location unitInstanceName, Location valueCollection, IReadOnlyList<Location> valueElements)
         {
+            AttributeName = attributeName;
+
             Name = name;
             UnitInstanceName = unitInstanceName;
             ValueCollection = valueCollection;
             ValueElements = valueElements;
         }
+
+        Location IAttributeSyntax.AttributeName => AttributeName;
 
         Location IVectorConstantSyntax.Name => Name;
         Location IVectorConstantSyntax.UnitInstanceName => UnitInstanceName;

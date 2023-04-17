@@ -27,9 +27,19 @@ public sealed class QuantityOperationAttributeParser : IConstructiveSyntacticAtt
     /// <inheritdoc/>
     public IRawQuantityOperation? TryParse(AttributeData attributeData, AttributeSyntax attributeSyntax)
     {
+        if (attributeSyntax is null)
+        {
+            throw new ArgumentNullException(nameof(attributeSyntax));
+        }
+
         QuantityOperationAttributeArgumentRecorder recorder = new();
 
-        SyntacticParser.TryParse(recorder, attributeData, attributeSyntax);
+        if (SyntacticParser.TryParse(recorder, attributeData, attributeSyntax) is false)
+        {
+            return null;
+        }
+
+        recorder.RecordAttributeNameLocation(attributeSyntax.Name.GetLocation());
 
         return Create(recorder, AttributeParsingMode.Syntactically);
     }
@@ -65,9 +75,8 @@ public sealed class QuantityOperationAttributeParser : IConstructiveSyntacticAtt
             return null;
         }
 
-        return new QuantityOperationSyntax(recorder.ResultLocation, recorder.OtherLocation, recorder.OperatorTypeLocation, recorder.PositionLocation, recorder.MirrorModeLocation, recorder.ImplementationLocation,
+        return new QuantityOperationSyntax(recorder.AttributeNameLocation, recorder.ResultLocation, recorder.OtherLocation, recorder.OperatorTypeLocation, recorder.PositionLocation, recorder.MirrorModeLocation, recorder.ImplementationLocation,
             recorder.MirroredImplementationLocation, recorder.MethodNameLocation, recorder.StaticMethodNameLocation, recorder.MirroredMethodNameLocation, recorder.MirroredStaticMethodNameLocation);
-
     }
 
     private sealed class QuantityOperationAttributeArgumentRecorder : AArgumentRecorder
@@ -85,6 +94,8 @@ public sealed class QuantityOperationAttributeParser : IConstructiveSyntacticAtt
         public string? StaticMethodName { get; private set; }
         public string? MirroredMethodName { get; private set; }
         public string? MirroredStaticMethodName { get; private set; }
+
+        public Location AttributeNameLocation { get; private set; } = Location.None;
 
         public Location ResultLocation { get; private set; } = Location.None;
         public Location OtherLocation { get; private set; } = Location.None;
@@ -200,6 +211,11 @@ public sealed class QuantityOperationAttributeParser : IConstructiveSyntacticAtt
 
             MirroredStaticMethodNameLocation = location;
         }
+
+        public void RecordAttributeNameLocation(Location location)
+        {
+            AttributeNameLocation = location;
+        }
     }
 
     private sealed record class RawQuantityOperation : IRawQuantityOperation
@@ -259,6 +275,8 @@ public sealed class QuantityOperationAttributeParser : IConstructiveSyntacticAtt
 
     private sealed record class QuantityOperationSyntax : IQuantityOperationSyntax
     {
+        private Location AttributeName { get; }
+
         private Location Result { get; }
         private Location Other { get; }
 
@@ -273,9 +291,11 @@ public sealed class QuantityOperationAttributeParser : IConstructiveSyntacticAtt
         private Location MirroredMethodName { get; }
         private Location MirroredStaticMethodName { get; }
 
-        public QuantityOperationSyntax(Location result, Location other, Location operatorType, Location position, Location mirrorMode, Location implementation, Location mirroredImplementation, Location methodName,
+        public QuantityOperationSyntax(Location attributeName, Location result, Location other, Location operatorType, Location position, Location mirrorMode, Location implementation, Location mirroredImplementation, Location methodName,
             Location staticMethodName, Location mirroredMethodName, Location mirroredStaticMethodName)
         {
+            AttributeName = attributeName;
+
             Result = result;
             Other = other;
 
@@ -290,6 +310,8 @@ public sealed class QuantityOperationAttributeParser : IConstructiveSyntacticAtt
             MirroredMethodName = mirroredMethodName;
             MirroredStaticMethodName = mirroredStaticMethodName;
         }
+
+        Location IAttributeSyntax.AttributeName => AttributeName;
 
         Location IQuantityOperationSyntax.Result => Result;
         Location IQuantityOperationSyntax.Other => Other;

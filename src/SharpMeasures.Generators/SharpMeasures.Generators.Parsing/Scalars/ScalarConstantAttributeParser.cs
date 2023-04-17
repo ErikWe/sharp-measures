@@ -29,12 +29,19 @@ public sealed class ScalarConstantAttributeParser : IConstructiveSyntacticAttrib
     /// <inheritdoc/>
     public IRawScalarConstant? TryParse(AttributeData attributeData, AttributeSyntax attributeSyntax)
     {
+        if (attributeSyntax is null)
+        {
+            throw new ArgumentNullException(nameof(attributeSyntax));
+        }
+
         ScalarConstantAttributeArgumentRecorder recorder = new();
 
         if (SyntacticParser.TryParse(recorder, attributeData, attributeSyntax) is false)
         {
             return null;
         }
+
+        recorder.RecordAttributeNameLocation(attributeSyntax.Name.GetLocation());
 
         return Create(recorder, AttributeParsingMode.Syntactically);
     }
@@ -69,7 +76,7 @@ public sealed class ScalarConstantAttributeParser : IConstructiveSyntacticAttrib
             return null;
         }
 
-        return new ScalarConstantSyntax(recorder.NameLocation, recorder.UnitInstanceNameLocation, recorder.ValueLocation, recorder.GenerateMultiplesPropertyLocation, recorder.MultiplesNameLocation);
+        return new ScalarConstantSyntax(recorder.AttributeNameLocation, recorder.NameLocation, recorder.UnitInstanceNameLocation, recorder.ValueLocation, recorder.GenerateMultiplesPropertyLocation, recorder.MultiplesNameLocation);
     }
 
     private sealed class ScalarConstantAttributeArgumentRecorder : AArgumentRecorder
@@ -79,6 +86,8 @@ public sealed class ScalarConstantAttributeParser : IConstructiveSyntacticAttrib
         public OneOf<double, string?>? Value { get; private set; }
         public bool? GenerateMultipliesProperty { get; private set; }
         public string? MultiplesName { get; private set; }
+
+        public Location AttributeNameLocation { get; private set; } = Location.None;
 
         public Location NameLocation { get; private set; } = Location.None;
         public Location UnitInstanceNameLocation { get; private set; } = Location.None;
@@ -135,6 +144,11 @@ public sealed class ScalarConstantAttributeParser : IConstructiveSyntacticAttrib
 
             MultiplesNameLocation = location;
         }
+
+        public void RecordAttributeNameLocation(Location location)
+        {
+            AttributeNameLocation = location;
+        }
     }
 
     private sealed record class RawScalarConstant : IRawScalarConstant
@@ -169,20 +183,26 @@ public sealed class ScalarConstantAttributeParser : IConstructiveSyntacticAttrib
 
     private sealed record class ScalarConstantSyntax : IScalarConstantSyntax
     {
+        private Location AttributeName { get; }
+
         private Location Name { get; }
         private Location UnitInstance { get; }
         private Location Value { get; }
         private Location GenerateMultiplesProperty { get; }
         private Location MultiplesName { get; }
 
-        public ScalarConstantSyntax(Location name, Location unitInstance, Location value, Location generateMultiplesProperty, Location multiplesName)
+        public ScalarConstantSyntax(Location attributeName, Location name, Location unitInstance, Location value, Location generateMultiplesProperty, Location multiplesName)
         {
+            AttributeName = attributeName;
+
             Name = name;
             UnitInstance = unitInstance;
             Value = value;
             GenerateMultiplesProperty = generateMultiplesProperty;
             MultiplesName = multiplesName;
         }
+
+        Location IAttributeSyntax.AttributeName => AttributeName;
 
         Location IScalarConstantSyntax.Name => Name;
         Location IScalarConstantSyntax.UnitInstanceName => UnitInstance;

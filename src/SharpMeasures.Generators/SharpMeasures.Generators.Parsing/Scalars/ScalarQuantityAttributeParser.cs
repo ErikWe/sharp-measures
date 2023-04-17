@@ -27,12 +27,19 @@ public sealed class ScalarQuantityAttributeParser : IConstructiveSyntacticAttrib
     /// <inheritdoc/>
     public IRawScalarQuantity? TryParse(AttributeData attributeData, AttributeSyntax attributeSyntax)
     {
+        if (attributeSyntax is null)
+        {
+            throw new ArgumentNullException(nameof(attributeSyntax));
+        }
+
         ScalarQuantityAttributeArgumentRecorder recorder = new();
 
         if (SyntacticParser.TryParse(recorder, attributeData, attributeSyntax) is false)
         {
             return null;
         }
+
+        recorder.RecordAttributeNameLocation(attributeSyntax.Name.GetLocation());
 
         return Create(recorder, AttributeParsingMode.Syntactically);
     }
@@ -67,7 +74,7 @@ public sealed class ScalarQuantityAttributeParser : IConstructiveSyntacticAttrib
             return null;
         }
 
-        return new ScalarQuantitySyntax(recorder.UnitLocation, recorder.AllowNegativeLocation, recorder.UseUnitBiasLocation, recorder.ImplementSumLocation, recorder.ImplementDifferenceLocation);
+        return new ScalarQuantitySyntax(recorder.AttributeNameLocation, recorder.UnitLocation, recorder.AllowNegativeLocation, recorder.UseUnitBiasLocation, recorder.ImplementSumLocation, recorder.ImplementDifferenceLocation);
     }
 
     private sealed class ScalarQuantityAttributeArgumentRecorder : AArgumentRecorder
@@ -77,6 +84,8 @@ public sealed class ScalarQuantityAttributeParser : IConstructiveSyntacticAttrib
         public bool? UseUnitBias { get; private set; }
         public bool? ImplementSum { get; private set; }
         public bool? ImplementDifference { get; private set; }
+
+        public Location AttributeNameLocation { get; private set; } = Location.None;
 
         public Location UnitLocation { get; private set; } = Location.None;
         public Location AllowNegativeLocation { get; private set; } = Location.None;
@@ -126,6 +135,11 @@ public sealed class ScalarQuantityAttributeParser : IConstructiveSyntacticAttrib
             ImplementDifference = implementDifference;
             ImplementDifferenceLocation = location;
         }
+
+        public void RecordAttributeNameLocation(Location location)
+        {
+            AttributeNameLocation = location;
+        }
     }
 
     private sealed record class RawScalarQuantity : IRawScalarQuantity
@@ -160,20 +174,26 @@ public sealed class ScalarQuantityAttributeParser : IConstructiveSyntacticAttrib
 
     private sealed record class ScalarQuantitySyntax : IScalarQuantitySyntax
     {
+        private Location AttributeName { get; }
+
         private Location Unit { get; }
         private Location AllowNegative { get; }
         private Location UseUnitBias { get; }
         private Location ImplementSum { get; }
         private Location ImplementDifference { get; }
 
-        public ScalarQuantitySyntax(Location unit, Location allowNegative, Location useUnitBias, Location implementSum, Location implementDifference)
+        public ScalarQuantitySyntax(Location attributeName, Location unit, Location allowNegative, Location useUnitBias, Location implementSum, Location implementDifference)
         {
+            AttributeName = attributeName;
+
             Unit = unit;
             AllowNegative = allowNegative;
             UseUnitBias = useUnitBias;
             ImplementSum = implementSum;
             ImplementDifference = implementDifference;
         }
+
+        Location IAttributeSyntax.AttributeName => AttributeName;
 
         Location IScalarQuantitySyntax.Unit => Unit;
         Location IScalarQuantitySyntax.AllowNegative => AllowNegative;

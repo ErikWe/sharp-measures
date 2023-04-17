@@ -27,12 +27,19 @@ public sealed class VectorGroupAttributeParser : IConstructiveSemanticAttributeP
     /// <inheritdoc/>
     public IRawVectorGroup? TryParse(AttributeData attributeData, AttributeSyntax attributeSyntax)
     {
+        if (attributeSyntax is null)
+        {
+            throw new ArgumentNullException(nameof(attributeSyntax));
+        }
+
         VectorGroupAttributeArgumentRecorder recorder = new();
 
         if (SyntacticParser.TryParse(recorder, attributeData, attributeSyntax) is false)
         {
             return null;
         }
+
+        recorder.RecordAttributeNameLocation(attributeSyntax.Name.GetLocation());
 
         return Create(recorder, AttributeParsingMode.Syntactically);
     }
@@ -67,7 +74,7 @@ public sealed class VectorGroupAttributeParser : IConstructiveSemanticAttributeP
             return null;
         }
 
-        return new VectorGroupSyntax(recorder.UnitLocation, recorder.ImplementSumLocation, recorder.ImplementDifferenceLocation);
+        return new VectorGroupSyntax(recorder.AttributeNameLocation, recorder.UnitLocation, recorder.ImplementSumLocation, recorder.ImplementDifferenceLocation);
     }
 
     private sealed class VectorGroupAttributeArgumentRecorder : AArgumentRecorder
@@ -75,6 +82,8 @@ public sealed class VectorGroupAttributeParser : IConstructiveSemanticAttributeP
         public ITypeSymbol? Unit { get; private set; }
         public bool? ImplementSum { get; private set; }
         public bool? ImplementDifference { get; private set; }
+
+        public Location AttributeNameLocation { get; private set; } = Location.None;
 
         public Location UnitLocation { get; private set; } = Location.None;
         public Location ImplementSumLocation { get; private set; } = Location.None;
@@ -108,6 +117,11 @@ public sealed class VectorGroupAttributeParser : IConstructiveSemanticAttributeP
             ImplementDifference = implementDifference;
             ImplementDifferenceLocation = location;
         }
+
+        public void RecordAttributeNameLocation(Location location)
+        {
+            AttributeNameLocation = location;
+        }
     }
 
     private sealed record class RawVectorGroup : IRawVectorGroup
@@ -139,20 +153,22 @@ public sealed class VectorGroupAttributeParser : IConstructiveSemanticAttributeP
 
     private sealed record class VectorGroupSyntax : IVectorGroupSyntax
     {
+        private Location AttributeName { get; }
+
         private Location Unit { get; }
         private Location ImplementSum { get; }
         private Location ImplementDifference { get; }
 
-        /// <summary>Instantiates a <see cref="VectorGroupSyntax"/>, representing syntactical information about a parsed <see cref="VectorQuantityAttribute{TUnit}"/>.</summary>
-        /// <param name="unit"><inheritdoc cref="IVectorGroupSyntax.Unit" path="/summary"/></param>
-        /// <param name="implementSum"><inheritdoc cref="IVectorGroupSyntax.ImplementSum" path="/summary"/></param>
-        /// <param name="implementDifference"><inheritdoc cref="IVectorGroupSyntax.ImplementDifference" path="/summary"/></param>
-        public VectorGroupSyntax(Location unit, Location implementSum, Location implementDifference)
+        public VectorGroupSyntax(Location attributeName, Location unit, Location implementSum, Location implementDifference)
         {
+            AttributeName = attributeName;
+
             Unit = unit;
             ImplementSum = implementSum;
             ImplementDifference = implementDifference;
         }
+
+        Location IAttributeSyntax.AttributeName => AttributeName;
 
         Location IVectorGroupSyntax.Unit => Unit;
         Location IVectorGroupSyntax.ImplementSum => ImplementSum;

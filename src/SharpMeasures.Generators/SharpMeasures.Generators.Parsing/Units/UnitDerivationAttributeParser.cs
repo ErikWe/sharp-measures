@@ -27,12 +27,19 @@ public sealed class UnitDerivationAttributeParser : IConstructiveSyntacticAttrib
     /// <inheritdoc/>
     public IRawUnitDerivation? TryParse(AttributeData attributeData, AttributeSyntax attributeSyntax)
     {
+        if (attributeSyntax is null)
+        {
+            throw new ArgumentNullException(nameof(attributeSyntax));
+        }
+
         UnitDerivationAttributeArgumentRecorder recorder = new();
 
         if (SyntacticParser.TryParse(recorder, attributeData, attributeSyntax) is false)
         {
             return null;
         }
+
+        recorder.RecordAttributeNameLocation(attributeSyntax.Name.GetLocation());
 
         return Create(recorder, AttributeParsingMode.Syntactically);
     }
@@ -62,7 +69,7 @@ public sealed class UnitDerivationAttributeParser : IConstructiveSyntacticAttrib
             return null;
         }
 
-        return new UnitDerivationSyntax(recorder.DerivationIDLocation, recorder.ExpressionLocation, recorder.SignatureCollectionLocation, recorder.SignatureElementLocations);
+        return new UnitDerivationSyntax(recorder.AttributeNameLocation, recorder.DerivationIDLocation, recorder.ExpressionLocation, recorder.SignatureCollectionLocation, recorder.SignatureElementLocations);
     }
 
     private sealed class UnitDerivationAttributeArgumentRecorder : AArgumentRecorder
@@ -70,6 +77,8 @@ public sealed class UnitDerivationAttributeParser : IConstructiveSyntacticAttrib
         public string? DerivationID { get; private set; }
         public string? Expression { get; private set; }
         public IReadOnlyList<ITypeSymbol?>? Signature { get; private set; }
+
+        public Location AttributeNameLocation { get; private set; } = Location.None;
 
         public Location DerivationIDLocation { get; private set; } = Location.None;
         public Location ExpressionLocation { get; private set; } = Location.None;
@@ -109,6 +118,11 @@ public sealed class UnitDerivationAttributeParser : IConstructiveSyntacticAttrib
             SignatureCollectionLocation = collectionLocation;
             SignatureElementLocations = elementLocations;
         }
+
+        public void RecordAttributeNameLocation(Location location)
+        {
+            AttributeNameLocation = location;
+        }
     }
 
     private sealed record class RawUnitDerivation : IRawUnitDerivation
@@ -137,18 +151,24 @@ public sealed class UnitDerivationAttributeParser : IConstructiveSyntacticAttrib
 
     private sealed record class UnitDerivationSyntax : IUnitDerivationSyntax
     {
+        private Location AttributeName { get; }
+
         private Location DerivationID { get; }
         private Location Expression { get; }
         private Location SignatureCollection { get; }
         private IReadOnlyList<Location> SignatureElements { get; }
 
-        public UnitDerivationSyntax(Location derivationID, Location expression, Location signatureCollection, IReadOnlyList<Location> signatureElements)
+        public UnitDerivationSyntax(Location attributeName, Location derivationID, Location expression, Location signatureCollection, IReadOnlyList<Location> signatureElements)
         {
+            AttributeName = attributeName;
+
             DerivationID = derivationID;
             Expression = expression;
             SignatureCollection = signatureCollection;
             SignatureElements = signatureElements;
         }
+
+        Location IAttributeSyntax.AttributeName => AttributeName;
 
         Location IUnitDerivationSyntax.DerivationID => DerivationID;
         Location IUnitDerivationSyntax.Expression => Expression;

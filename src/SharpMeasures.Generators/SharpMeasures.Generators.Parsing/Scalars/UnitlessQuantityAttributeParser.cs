@@ -27,12 +27,19 @@ public sealed class UnitlessQuantityAttributeParser : IConstructiveSyntacticAttr
     /// <inheritdoc/>
     public IRawUnitlessQuantity? TryParse(AttributeData attributeData, AttributeSyntax attributeSyntax)
     {
+        if (attributeSyntax is null)
+        {
+            throw new ArgumentNullException(nameof(attributeSyntax));
+        }
+
         UnitlessQuantityAttributeArgumentRecorder recorder = new();
 
         if (SyntacticParser.TryParse(recorder, attributeData, attributeSyntax) is false)
         {
             return null;
         }
+
+        recorder.RecordAttributeNameLocation(attributeSyntax.Name.GetLocation());
 
         return Create(recorder, AttributeParsingMode.Syntactically);
     }
@@ -62,7 +69,7 @@ public sealed class UnitlessQuantityAttributeParser : IConstructiveSyntacticAttr
             return null;
         }
 
-        return new UnitlessQuantitySyntax(recorder.AllowNegativeLocation, recorder.ImplementSumLocation, recorder.ImplementDifferenceLocation);
+        return new UnitlessQuantitySyntax(recorder.AttributeNameLocation, recorder.AllowNegativeLocation, recorder.ImplementSumLocation, recorder.ImplementDifferenceLocation);
     }
 
     private sealed class UnitlessQuantityAttributeArgumentRecorder : AArgumentRecorder
@@ -70,6 +77,8 @@ public sealed class UnitlessQuantityAttributeParser : IConstructiveSyntacticAttr
         public bool? AllowNegative { get; private set; }
         public bool? ImplementSum { get; private set; }
         public bool? ImplementDifference { get; private set; }
+
+        public Location AttributeNameLocation { get; private set; } = Location.None;
 
         public Location AllowNegativeLocation { get; private set; } = Location.None;
         public Location ImplementSumLocation { get; private set; } = Location.None;
@@ -99,6 +108,11 @@ public sealed class UnitlessQuantityAttributeParser : IConstructiveSyntacticAttr
             ImplementDifference = implementDifference;
             ImplementDifferenceLocation = location;
         }
+
+        public void RecordAttributeNameLocation(Location location)
+        {
+            AttributeNameLocation = location;
+        }
     }
 
     private sealed record class RawUnitlessQuantity : IRawUnitlessQuantity
@@ -127,16 +141,22 @@ public sealed class UnitlessQuantityAttributeParser : IConstructiveSyntacticAttr
 
     private sealed record class UnitlessQuantitySyntax : IUnitlessQuantitySyntax
     {
+        private Location AttributeName { get; }
+
         private Location AllowNegative { get; }
         private Location ImplementSum { get; }
         private Location ImplementDifference { get; }
 
-        public UnitlessQuantitySyntax(Location allowNegative, Location implementSum, Location implementDifference)
+        public UnitlessQuantitySyntax(Location attributeName, Location allowNegative, Location implementSum, Location implementDifference)
         {
+            AttributeName = attributeName;
+
             AllowNegative = allowNegative;
             ImplementSum = implementSum;
             ImplementDifference = implementDifference;
         }
+
+        Location IAttributeSyntax.AttributeName => AttributeName;
 
         Location IUnitlessQuantitySyntax.AllowNegative => AllowNegative;
         Location IUnitlessQuantitySyntax.ImplementSum => ImplementSum;

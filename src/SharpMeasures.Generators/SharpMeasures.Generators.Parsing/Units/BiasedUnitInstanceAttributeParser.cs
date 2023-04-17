@@ -31,12 +31,19 @@ public sealed class BiasedUnitInstanceAttributeParser : IConstructiveSyntacticAt
     /// <inheritdoc/>
     public IRawBiasedUnitInstance? TryParse(AttributeData attributeData, AttributeSyntax attributeSyntax)
     {
+        if (attributeSyntax is null)
+        {
+            throw new ArgumentNullException(nameof(attributeSyntax));
+        }
+
         BiasedUnitInstanceAttributeArgumentRecorder recorder = new();
 
         if (SyntacticParser.TryParse(recorder, attributeData, attributeSyntax) is false)
         {
             return null;
         }
+
+        recorder.RecordAttributeNameLocation(attributeSyntax.Name.GetLocation());
 
         return Create(recorder, AttributeParsingMode.Syntactically);
     }
@@ -71,7 +78,7 @@ public sealed class BiasedUnitInstanceAttributeParser : IConstructiveSyntacticAt
             return null;
         }
 
-        return new BiasedUnitInstanceSyntax(recorder.NameLocation, recorder.PluralFormLocation, recorder.OriginalUnitInstanceLocation, recorder.BiasLocation);
+        return new BiasedUnitInstanceSyntax(recorder.AttributeNameLocation, recorder.NameLocation, recorder.PluralFormLocation, recorder.OriginalUnitInstanceLocation, recorder.BiasLocation);
     }
 
     private sealed class BiasedUnitInstanceAttributeArgumentRecorder : AArgumentRecorder
@@ -80,6 +87,8 @@ public sealed class BiasedUnitInstanceAttributeParser : IConstructiveSyntacticAt
         public string? PluralForm { get; private set; }
         public string? OriginalUnitInstance { get; private set; }
         public OneOf<double, string?>? Bias { get; private set; }
+
+        public Location AttributeNameLocation { get; private set; } = Location.None;
 
         public Location NameLocation { get; private set; } = Location.None;
         public Location PluralFormLocation { get; private set; } = Location.None;
@@ -128,6 +137,11 @@ public sealed class BiasedUnitInstanceAttributeParser : IConstructiveSyntacticAt
             Bias = expression;
             BiasLocation = location;
         }
+
+        public void RecordAttributeNameLocation(Location location)
+        {
+            AttributeNameLocation = location;
+        }
     }
 
     private sealed record class RawBiasedUnitInstance : ARawModifiedUnitInstance<IBiasedUnitInstanceSyntax>, IRawBiasedUnitInstance
@@ -148,7 +162,7 @@ public sealed class BiasedUnitInstanceAttributeParser : IConstructiveSyntacticAt
     {
         private Location Bias { get; }
 
-        public BiasedUnitInstanceSyntax(Location name, Location pluralForm, Location originalUnitInstance, Location bias) : base(name, pluralForm, originalUnitInstance)
+        public BiasedUnitInstanceSyntax(Location attributeName, Location name, Location pluralForm, Location originalUnitInstance, Location bias) : base(attributeName, name, pluralForm, originalUnitInstance)
         {
             Bias = bias;
         }

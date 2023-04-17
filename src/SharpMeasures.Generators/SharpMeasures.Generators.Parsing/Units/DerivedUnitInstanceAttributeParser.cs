@@ -32,12 +32,19 @@ public sealed class DerivedUnitInstanceAttributeParser : IConstructiveSyntacticA
     /// <inheritdoc/>
     public IRawDerivedUnitInstance? TryParse(AttributeData attributeData, AttributeSyntax attributeSyntax)
     {
+        if (attributeSyntax is null)
+        {
+            throw new ArgumentNullException(nameof(attributeSyntax));
+        }
+
         DerivedUnitInstanceAttributeArgumentRecorder recorder = new();
 
         if (SyntacticParser.TryParse(recorder, attributeData, attributeSyntax) is false)
         {
             return null;
         }
+
+        recorder.RecordAttributeNameLocation(attributeSyntax.Name.GetLocation());
 
         return Create(recorder, AttributeParsingMode.Syntactically);
     }
@@ -67,7 +74,7 @@ public sealed class DerivedUnitInstanceAttributeParser : IConstructiveSyntacticA
             return null;
         }
 
-        return new DerivedUnitInstanceSyntax(recorder.NameLocation, recorder.PluralFormLocation, recorder.DerivationIDLocation, recorder.UnitsCollectionLocation, recorder.UnitsElementLocations);
+        return new DerivedUnitInstanceSyntax(recorder.AttributeNameLocation, recorder.NameLocation, recorder.PluralFormLocation, recorder.DerivationIDLocation, recorder.UnitsCollectionLocation, recorder.UnitsElementLocations);
     }
 
     private sealed class DerivedUnitInstanceAttributeArgumentRecorder : AArgumentRecorder
@@ -76,6 +83,8 @@ public sealed class DerivedUnitInstanceAttributeParser : IConstructiveSyntacticA
         public string? PluralForm { get; private set; }
         public string? DerivationID { get; private set; }
         public IReadOnlyList<string?>? Units { get; private set; }
+
+        public Location AttributeNameLocation { get; private set; } = Location.None;
 
         public Location NameLocation { get; private set; } = Location.None;
         public Location PluralFormLocation { get; private set; } = Location.None;
@@ -127,6 +136,11 @@ public sealed class DerivedUnitInstanceAttributeParser : IConstructiveSyntacticA
             UnitsCollectionLocation = collectionLocation;
             UnitsElementLocations = elementLocations;
         }
+
+        public void RecordAttributeNameLocation(Location location)
+        {
+            AttributeNameLocation = location;
+        }
     }
 
     private sealed record class RawDerivedUnitInstance : ARawUnitInstance<IDerivedUnitInstanceSyntax>, IRawDerivedUnitInstance
@@ -152,7 +166,7 @@ public sealed class DerivedUnitInstanceAttributeParser : IConstructiveSyntacticA
         private Location UnitsCollection { get; }
         private IReadOnlyList<Location> UnitsElements { get; }
 
-        public DerivedUnitInstanceSyntax(Location name, Location pluralForm, Location derivationID, Location unitsCollection, IReadOnlyList<Location> unitsElements) : base(name, pluralForm)
+        public DerivedUnitInstanceSyntax(Location attributeName, Location name, Location pluralForm, Location derivationID, Location unitsCollection, IReadOnlyList<Location> unitsElements) : base(attributeName, name, pluralForm)
         {
             DerivationID = derivationID;
 

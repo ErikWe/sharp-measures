@@ -27,12 +27,19 @@ public sealed class QuantitySumAttributeParser : IConstructiveSyntacticAttribute
     /// <inheritdoc/>
     public IRawQuantitySum? TryParse(AttributeData attributeData, AttributeSyntax attributeSyntax)
     {
+        if (attributeSyntax is null)
+        {
+            throw new ArgumentNullException(nameof(attributeSyntax));
+        }
+
         QuantitySumAttributeArgumentRecorder recorder = new();
 
         if (SyntacticParser.TryParse(recorder, attributeData, attributeSyntax) is false)
         {
             return null;
         }
+
+        recorder.RecordAttributeNameLocation(attributeSyntax.Name.GetLocation());
 
         return Create(recorder, AttributeParsingMode.Syntactically);
     }
@@ -67,12 +74,14 @@ public sealed class QuantitySumAttributeParser : IConstructiveSyntacticAttribute
             return null;
         }
 
-        return new QuantitySumSyntax(recorder.SumLocation);
+        return new QuantitySumSyntax(recorder.AttributeNameLocation, recorder.SumLocation);
     }
 
     private sealed class QuantitySumAttributeArgumentRecorder : AArgumentRecorder
     {
         public ITypeSymbol? Sum { get; private set; }
+
+        public Location AttributeNameLocation { get; private set; } = Location.None;
 
         public Location SumLocation { get; private set; } = Location.None;
 
@@ -85,6 +94,11 @@ public sealed class QuantitySumAttributeParser : IConstructiveSyntacticAttribute
         {
             Sum = sum;
             SumLocation = location;
+        }
+
+        public void RecordAttributeNameLocation(Location location)
+        {
+            AttributeNameLocation = location;
         }
     }
 
@@ -108,14 +122,18 @@ public sealed class QuantitySumAttributeParser : IConstructiveSyntacticAttribute
 
     private sealed record class QuantitySumSyntax : IQuantitySumSyntax
     {
+        private Location AttributeNmae { get; }
+
         private Location Sum { get; }
 
-        /// <summary>Instantiates a <see cref="QuantitySumSyntax"/>, representing syntactical information about a parsed <see cref="QuantitySumAttribute{TSum}"/>.</summary>
-        /// <param name="sum"><inheritdoc cref="IQuantitySumSyntax.Sum" path="/summary"/></param>
-        public QuantitySumSyntax(Location sum)
+        public QuantitySumSyntax(Location attributeName, Location sum)
         {
+            AttributeNmae = attributeName;
+
             Sum = sum;
         }
+
+        Location IAttributeSyntax.AttributeName => AttributeNmae;
 
         Location IQuantitySumSyntax.Sum => Sum;
     }

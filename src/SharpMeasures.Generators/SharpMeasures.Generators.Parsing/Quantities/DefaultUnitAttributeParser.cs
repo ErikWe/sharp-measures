@@ -27,12 +27,19 @@ public sealed class DefaultUnitAttributeParser : IConstructiveSyntacticAttribute
     /// <inheritdoc/>
     public IRawDefaultUnit? TryParse(AttributeData attributeData, AttributeSyntax attributeSyntax)
     {
+        if (attributeSyntax is null)
+        {
+            throw new ArgumentNullException(nameof(attributeSyntax));
+        }
+
         DefaultUnitAttributeArgumentRecorder recorder = new();
 
         if (SyntacticParser.TryParse(recorder, attributeData, attributeSyntax) is false)
         {
             return null;
         }
+
+        recorder.RecordAttributeNameLocation(attributeSyntax.Name.GetLocation());
 
         return Create(recorder, AttributeParsingMode.Syntactically);
     }
@@ -62,13 +69,15 @@ public sealed class DefaultUnitAttributeParser : IConstructiveSyntacticAttribute
             return null;
         }
 
-        return new DefaultUnitSyntax(recorder.UnitLocation, recorder.SymbolLocation);
+        return new DefaultUnitSyntax(recorder.AttributeNameLocation, recorder.UnitLocation, recorder.SymbolLocation);
     }
 
     private sealed class DefaultUnitAttributeArgumentRecorder : AArgumentRecorder
     {
         public string? Unit { get; private set; }
         public string? Symbol { get; private set; }
+
+        public Location AttributeNameLocation { get; private set; } = Location.None;
 
         public Location UnitLocation { get; private set; } = Location.None;
         public Location SymbolLocation { get; private set; } = Location.None;
@@ -89,6 +98,11 @@ public sealed class DefaultUnitAttributeParser : IConstructiveSyntacticAttribute
         {
             Symbol = symbol;
             SymbolLocation = location;
+        }
+
+        public void RecordAttributeNameLocation(Location location)
+        {
+            AttributeNameLocation = location;
         }
     }
 
@@ -115,14 +129,20 @@ public sealed class DefaultUnitAttributeParser : IConstructiveSyntacticAttribute
 
     private sealed record class DefaultUnitSyntax : IDefaultUnitSyntax
     {
+        private Location AttributeName { get; }
+
         private Location Unit { get; }
         private Location Symbol { get; }
 
-        public DefaultUnitSyntax(Location unit, Location symbol)
+        public DefaultUnitSyntax(Location attributeName, Location unit, Location symbol)
         {
+            AttributeName = attributeName;
+
             Unit = unit;
             Symbol = symbol;
         }
+
+        Location IAttributeSyntax.AttributeName => AttributeName;
 
         Location IDefaultUnitSyntax.Unit => Unit;
         Location IDefaultUnitSyntax.Symbol => Symbol;

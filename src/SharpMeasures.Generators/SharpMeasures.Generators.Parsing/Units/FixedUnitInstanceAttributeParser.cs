@@ -29,12 +29,19 @@ public sealed class FixedUnitInstanceAttributeParser : IConstructiveSyntacticAtt
     /// <inheritdoc/>
     public IRawFixedUnitInstance? TryParse(AttributeData attributeData, AttributeSyntax attributeSyntax)
     {
+        if (attributeSyntax is null)
+        {
+            throw new ArgumentNullException(nameof(attributeSyntax));
+        }
+
         FixedUnitInstanceAttributeArgumentRecorder recorder = new();
 
         if (SyntacticParser.TryParse(recorder, attributeData, attributeSyntax) is false)
         {
             return null;
         }
+
+        recorder.RecordAttributeNameLocation(attributeSyntax.Name.GetLocation());
 
         return Create(recorder, AttributeParsingMode.Syntactically);
     }
@@ -64,13 +71,15 @@ public sealed class FixedUnitInstanceAttributeParser : IConstructiveSyntacticAtt
             return null;
         }
 
-        return new FixedUnitInstanceSyntax(recorder.NameLocation, recorder.PluralFormLocation);
+        return new FixedUnitInstanceSyntax(recorder.AttributeNameLocation, recorder.NameLocation, recorder.PluralFormLocation);
     }
 
     private sealed class FixedUnitInstanceAttributeArgumentRecorder : AArgumentRecorder
     {
         public string? Name { get; private set; }
         public string? PluralForm { get; private set; }
+
+        public Location AttributeNameLocation { get; private set; } = Location.None;
 
         public Location NameLocation { get; private set; } = Location.None;
         public Location PluralFormLocation { get; private set; } = Location.None;
@@ -96,6 +105,11 @@ public sealed class FixedUnitInstanceAttributeParser : IConstructiveSyntacticAtt
 
             PluralFormLocation = location;
         }
+
+        public void RecordAttributeNameLocation(Location location)
+        {
+            AttributeNameLocation = location;
+        }
     }
 
     private sealed record class RawFixedUnitInstance : ARawUnitInstance<IFixedUnitInstanceSyntax>, IRawFixedUnitInstance
@@ -107,6 +121,6 @@ public sealed class FixedUnitInstanceAttributeParser : IConstructiveSyntacticAtt
 
     private sealed record class FixedUnitInstanceSyntax : AUnitInstanceSyntax, IFixedUnitInstanceSyntax
     {
-        public FixedUnitInstanceSyntax(Location name, Location pluralForm) : base(name, pluralForm) { }
+        public FixedUnitInstanceSyntax(Location attributeName, Location name, Location pluralForm) : base(attributeName, name, pluralForm) { }
     }
 }

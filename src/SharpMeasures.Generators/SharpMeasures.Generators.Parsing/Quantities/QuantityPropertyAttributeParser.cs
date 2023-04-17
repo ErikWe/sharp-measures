@@ -27,12 +27,19 @@ public sealed class QuantityPropertyAttributeParser : IConstructiveSyntacticAttr
     /// <inheritdoc/>
     public IRawQuantityProperty? TryParse(AttributeData attributeData, AttributeSyntax attributeSyntax)
     {
+        if (attributeSyntax is null)
+        {
+            throw new ArgumentNullException(nameof(attributeSyntax));
+        }
+
         QuantityPropertyAttributeArgumentRecorder recorder = new();
 
         if (SyntacticParser.TryParse(recorder, attributeData, attributeSyntax) is false)
         {
             return null;
         }
+
+        recorder.RecordAttributeNameLocation(attributeSyntax.Name.GetLocation());
 
         return Create(recorder, AttributeParsingMode.Syntactically);
     }
@@ -67,7 +74,7 @@ public sealed class QuantityPropertyAttributeParser : IConstructiveSyntacticAttr
             return null;
         }
 
-        return new QuantityPropertySyntax(recorder.ResultLocation, recorder.NameLocation, recorder.ExpressionLocation, recorder.ImplementStaticallyLocation);
+        return new QuantityPropertySyntax(recorder.AttributeNameLocation, recorder.ResultLocation, recorder.NameLocation, recorder.ExpressionLocation, recorder.ImplementStaticallyLocation);
     }
 
     private sealed class QuantityPropertyAttributeArgumentRecorder : AArgumentRecorder
@@ -77,6 +84,8 @@ public sealed class QuantityPropertyAttributeParser : IConstructiveSyntacticAttr
         public string? Name { get; private set; }
         public string? Expression { get; private set; }
         public bool? ImplementStatically { get; private set; }
+
+        public Location AttributeNameLocation { get; private set; } = Location.None;
 
         public Location ResultLocation { get; private set; } = Location.None;
 
@@ -119,6 +128,11 @@ public sealed class QuantityPropertyAttributeParser : IConstructiveSyntacticAttr
             ImplementStatically = implementStatically;
             ImplementStaticallyLocation = location;
         }
+
+        public void RecordAttributeNameLocation(Location location)
+        {
+            AttributeNameLocation = location;
+        }
     }
 
     private sealed record class RawQuantityProperty : IRawQuantityProperty
@@ -150,23 +164,24 @@ public sealed class QuantityPropertyAttributeParser : IConstructiveSyntacticAttr
 
     private sealed record class QuantityPropertySyntax : IQuantityPropertySyntax
     {
+        private Location AttributeName { get; }
+
         private Location Result { get; }
         private Location Name { get; }
         private Location Expression { get; }
         private Location ImplementStatically { get; }
 
-        /// <summary>Instantiates a <see cref="QuantityPropertySyntax"/>, representing syntactical information about a parsed <see cref="QuantityPropertyAttribute{TResult}"/>.</summary>
-        /// <param name="result"><inheritdoc cref="IQuantityPropertySyntax.Result" path="/summary"/></param>
-        /// <param name="name"><inheritdoc cref="IQuantityPropertySyntax.Name" path="/summary"/></param>
-        /// <param name="expression"><inheritdoc cref="IQuantityPropertySyntax.Expression" path="/summary"/></param>
-        /// <param name="implementStatically"><inheritdoc cref="IQuantityPropertySyntax.ImplementStatically" path="/summary"/></param>
-        public QuantityPropertySyntax(Location result, Location name, Location expression, Location implementStatically)
+        public QuantityPropertySyntax(Location attributeName, Location result, Location name, Location expression, Location implementStatically)
         {
+            AttributeName = attributeName;
+
             Result = result;
             Name = name;
             Expression = expression;
             ImplementStatically = implementStatically;
         }
+
+        Location IAttributeSyntax.AttributeName => AttributeName;
 
         Location IQuantityPropertySyntax.Result => Result;
         Location IQuantityPropertySyntax.Name => Name;

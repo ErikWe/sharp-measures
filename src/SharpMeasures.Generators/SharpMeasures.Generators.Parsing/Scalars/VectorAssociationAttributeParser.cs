@@ -27,12 +27,19 @@ public sealed class VectorAssociationAttributeParser : IConstructiveSyntacticAtt
     /// <inheritdoc/>
     public IRawVectorAssociation? TryParse(AttributeData attributeData, AttributeSyntax attributeSyntax)
     {
+        if (attributeSyntax is null)
+        {
+            throw new ArgumentNullException(nameof(attributeSyntax));
+        }
+
         VectorAssociationAttributeArgumentRecorder recorder = new();
 
         if (SyntacticParser.TryParse(recorder, attributeData, attributeSyntax) is false)
         {
             return null;
         }
+
+        recorder.RecordAttributeNameLocation(attributeSyntax.Name.GetLocation());
 
         return Create(recorder, AttributeParsingMode.Syntactically);
     }
@@ -67,12 +74,14 @@ public sealed class VectorAssociationAttributeParser : IConstructiveSyntacticAtt
             return null;
         }
 
-        return new VectorAssociationSyntax(recorder.VectorLocation);
+        return new VectorAssociationSyntax(recorder.AttributeNameLocation, recorder.VectorLocation);
     }
 
     private sealed class VectorAssociationAttributeArgumentRecorder : AArgumentRecorder
     {
         public ITypeSymbol? Vector { get; private set; }
+
+        public Location AttributeNameLocation { get; private set; } = Location.None;
 
         public Location VectorLocation { get; private set; } = Location.None;
 
@@ -85,6 +94,11 @@ public sealed class VectorAssociationAttributeParser : IConstructiveSyntacticAtt
         {
             Vector = vector;
             VectorLocation = location;
+        }
+
+        public void RecordAttributeNameLocation(Location location)
+        {
+            AttributeNameLocation = location;
         }
     }
 
@@ -108,12 +122,18 @@ public sealed class VectorAssociationAttributeParser : IConstructiveSyntacticAtt
 
     private sealed record class VectorAssociationSyntax : IVectorAssociationSyntax
     {
+        private Location AttributeName { get; }
+
         private Location Vector { get; }
 
-        public VectorAssociationSyntax(Location vector)
+        public VectorAssociationSyntax(Location attributeName, Location vector)
         {
+            AttributeName = attributeName;
+
             Vector = vector;
         }
+
+        Location IAttributeSyntax.AttributeName => AttributeName;
 
         Location IVectorAssociationSyntax.Vector => Vector;
     }

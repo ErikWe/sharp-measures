@@ -31,12 +31,19 @@ public sealed class ScaledUnitInstanceAttributeParser : IConstructiveSyntacticAt
     /// <inheritdoc/>
     public IRawScaledUnitInstance? TryParse(AttributeData attributeData, AttributeSyntax attributeSyntax)
     {
+        if (attributeSyntax is null)
+        {
+            throw new ArgumentNullException(nameof(attributeSyntax));
+        }
+
         ScaledUnitInstanceAttributeArgumentRecorder recorder = new();
 
         if (SyntacticParser.TryParse(recorder, attributeData, attributeSyntax) is false)
         {
             return null;
         }
+
+        recorder.RecordAttributeNameLocation(attributeSyntax.Name.GetLocation());
 
         return Create(recorder, AttributeParsingMode.Syntactically);
     }
@@ -71,7 +78,7 @@ public sealed class ScaledUnitInstanceAttributeParser : IConstructiveSyntacticAt
             return null;
         }
 
-        return new ScaledUnitInstanceSyntax(recorder.NameLocation, recorder.PluralFormLocation, recorder.OriginalUnitInstanceLocation, recorder.ScaleLocation);
+        return new ScaledUnitInstanceSyntax(recorder.AttributeNameLocation, recorder.NameLocation, recorder.PluralFormLocation, recorder.OriginalUnitInstanceLocation, recorder.ScaleLocation);
     }
 
     private sealed class ScaledUnitInstanceAttributeArgumentRecorder : AArgumentRecorder
@@ -80,6 +87,8 @@ public sealed class ScaledUnitInstanceAttributeParser : IConstructiveSyntacticAt
         public string? PluralForm { get; private set; }
         public string? OriginalUnitInstance { get; private set; }
         public OneOf<double, string?>? Scale { get; private set; }
+
+        public Location AttributeNameLocation { get; private set; } = Location.None;
 
         public Location NameLocation { get; private set; } = Location.None;
         public Location PluralFormLocation { get; private set; } = Location.None;
@@ -128,6 +137,11 @@ public sealed class ScaledUnitInstanceAttributeParser : IConstructiveSyntacticAt
             Scale = expression;
             ScaleLocation = location;
         }
+
+        public void RecordAttributeNameLocation(Location location)
+        {
+            AttributeNameLocation = location;
+        }
     }
 
     private sealed record class RawScaledUnitInstance : ARawModifiedUnitInstance<IScaledUnitInstanceSyntax>, IRawScaledUnitInstance
@@ -148,7 +162,7 @@ public sealed class ScaledUnitInstanceAttributeParser : IConstructiveSyntacticAt
     {
         private Location Scale { get; }
 
-        public ScaledUnitInstanceSyntax(Location name, Location pluralForm, Location originalUnitInstance, Location scale) : base(name, pluralForm, originalUnitInstance)
+        public ScaledUnitInstanceSyntax(Location attributeName, Location name, Location pluralForm, Location originalUnitInstance, Location scale) : base(attributeName, name, pluralForm, originalUnitInstance)
         {
             Scale = scale;
         }

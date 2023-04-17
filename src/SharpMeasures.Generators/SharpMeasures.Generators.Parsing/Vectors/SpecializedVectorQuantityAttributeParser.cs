@@ -27,12 +27,19 @@ public sealed class SpecializedVectorQuantityAttributeParser : IConstructiveSynt
     /// <inheritdoc/>
     public IRawSpecializedVectorQuantity? TryParse(AttributeData attributeData, AttributeSyntax attributeSyntax)
     {
+        if (attributeSyntax is null)
+        {
+            throw new ArgumentNullException(nameof(attributeSyntax));
+        }
+
         SpecializedVectorQuantityAttributeArgumentRecorder recorder = new();
 
         if (SyntacticParser.TryParse(recorder, attributeData, attributeSyntax) is false)
         {
             return null;
         }
+
+        recorder.RecordAttributeNameLocation(attributeSyntax.Name.GetLocation());
 
         return Create(recorder, AttributeParsingMode.Syntactically);
     }
@@ -68,7 +75,7 @@ public sealed class SpecializedVectorQuantityAttributeParser : IConstructiveSynt
             return null;
         }
 
-        return new SpecializedVectorQuantitySyntax(recorder.OriginalLocation, recorder.InheritOperationsLocation, recorder.InheritProcessesLocation, recorder.InheritPropertiesLocation, recorder.InheritConstantsLocation,
+        return new SpecializedVectorQuantitySyntax(recorder.AttributeNameLocation, recorder.OriginalLocation, recorder.InheritOperationsLocation, recorder.InheritProcessesLocation, recorder.InheritPropertiesLocation, recorder.InheritConstantsLocation,
             recorder.InheritConversionsLocation, recorder.ForwardsCastOperatorBehaviourLocation, recorder.BackwardsCastOperatorBehaviourLocation, recorder.ImplementSumLocation, recorder.ImplementDifferenceLocation);
     }
 
@@ -84,6 +91,8 @@ public sealed class SpecializedVectorQuantityAttributeParser : IConstructiveSynt
         public ConversionOperatorBehaviour? BackwardsCastOperatorBehaviour { get; private set; }
         public bool? ImplementSum { get; private set; }
         public bool? ImplementDifference { get; private set; }
+
+        public Location AttributeNameLocation { get; private set; } = Location.None;
 
         public Location OriginalLocation { get; private set; } = Location.None;
         public Location InheritOperationsLocation { get; private set; } = Location.None;
@@ -173,6 +182,11 @@ public sealed class SpecializedVectorQuantityAttributeParser : IConstructiveSynt
             ImplementDifference = implementDifference;
             ImplementDifferenceLocation = location;
         }
+
+        public void RecordAttributeNameLocation(Location location)
+        {
+            AttributeNameLocation = location;
+        }
     }
 
     private sealed record class RawSpecializedVectorQuantity : IRawSpecializedVectorQuantity
@@ -232,6 +246,8 @@ public sealed class SpecializedVectorQuantityAttributeParser : IConstructiveSynt
 
     private sealed record class SpecializedVectorQuantitySyntax : ISpecializedVectorQuantitySyntax
     {
+        private Location AttributeName { get; }
+
         private Location Original { get; }
         private Location InheritOperations { get; }
         private Location InheritProcesses { get; }
@@ -243,9 +259,11 @@ public sealed class SpecializedVectorQuantityAttributeParser : IConstructiveSynt
         private Location ImplementSum { get; }
         private Location ImplementDifference { get; }
 
-        public SpecializedVectorQuantitySyntax(Location original, Location inheritOperations, Location inheritProcesses, Location inheritProperties, Location inheritConstants,
+        public SpecializedVectorQuantitySyntax(Location attributeName, Location original, Location inheritOperations, Location inheritProcesses, Location inheritProperties, Location inheritConstants,
             Location inheritConversions, Location forwardsCastOperatorBehaviour, Location backwardsCastOperatorBehaviour, Location implementSum, Location implementDifference)
         {
+            AttributeName = attributeName;
+
             Original = original;
 
             InheritOperations = inheritOperations;
@@ -260,6 +278,8 @@ public sealed class SpecializedVectorQuantityAttributeParser : IConstructiveSynt
             ImplementSum = implementSum;
             ImplementDifference = implementDifference;
         }
+
+        Location IAttributeSyntax.AttributeName => AttributeName;
 
         Location ISpecializedVectorQuantitySyntax.Original => Original;
         Location ISpecializedVectorQuantitySyntax.InheritOperations => InheritOperations;

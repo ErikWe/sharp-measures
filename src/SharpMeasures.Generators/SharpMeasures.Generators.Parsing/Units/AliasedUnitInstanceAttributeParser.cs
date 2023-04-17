@@ -29,12 +29,19 @@ public sealed class AliasedUnitInstanceAttributeParser : IConstructiveSyntacticA
     /// <inheritdoc/>
     public IRawAliasedUnitInstance? TryParse(AttributeData attributeData, AttributeSyntax attributeSyntax)
     {
+        if (attributeSyntax is null)
+        {
+            throw new ArgumentNullException(nameof(attributeSyntax));
+        }
+
         AliasedUnitInstanceAttributeArgumentRecorder recorder = new();
 
         if (SyntacticParser.TryParse(recorder, attributeData, attributeSyntax) is false)
         {
             return null;
         }
+
+        recorder.RecordAttributeNameLocation(attributeSyntax.Name.GetLocation());
 
         return Create(recorder, AttributeParsingMode.Syntactically);
     }
@@ -64,7 +71,7 @@ public sealed class AliasedUnitInstanceAttributeParser : IConstructiveSyntacticA
             return null;
         }
 
-        return new AliasedUnitInstanceSyntax(recorder.NameLocation, recorder.PluralFormLocation, recorder.OriginalUnitInstanceLocation);
+        return new AliasedUnitInstanceSyntax(recorder.AttributeNameLocation, recorder.NameLocation, recorder.PluralFormLocation, recorder.OriginalUnitInstanceLocation);
     }
 
     private sealed class AliasedUnitInstanceAttributeArgumentRecorder : AArgumentRecorder
@@ -72,6 +79,8 @@ public sealed class AliasedUnitInstanceAttributeParser : IConstructiveSyntacticA
         public string? Name { get; private set; }
         public string? PluralForm { get; private set; }
         public string? OriginalUnitInstance { get; private set; }
+
+        public Location AttributeNameLocation { get; private set; } = Location.None;
 
         public Location NameLocation { get; private set; } = Location.None;
         public Location PluralFormLocation { get; private set; } = Location.None;
@@ -105,6 +114,11 @@ public sealed class AliasedUnitInstanceAttributeParser : IConstructiveSyntacticA
             OriginalUnitInstance = originalUnitInstance;
             OriginalUnitInstanceLocation = location;
         }
+
+        public void RecordAttributeNameLocation(Location location)
+        {
+            AttributeNameLocation = location;
+        }
     }
 
     private sealed record class RawAliasedUnitInstance : ARawModifiedUnitInstance<IAliasedUnitInstanceSyntax>, IRawAliasedUnitInstance
@@ -116,6 +130,6 @@ public sealed class AliasedUnitInstanceAttributeParser : IConstructiveSyntacticA
 
     private sealed record class AliasedUnitInstanceSyntax : AModifiedUnitInstanceSyntax, IAliasedUnitInstanceSyntax
     {
-        public AliasedUnitInstanceSyntax(Location name, Location pluralForm, Location originalUnitInstance) : base(name, pluralForm, originalUnitInstance) { }
+        public AliasedUnitInstanceSyntax(Location attributeName, Location name, Location pluralForm, Location originalUnitInstance) : base(attributeName, name, pluralForm, originalUnitInstance) { }
     }
 }

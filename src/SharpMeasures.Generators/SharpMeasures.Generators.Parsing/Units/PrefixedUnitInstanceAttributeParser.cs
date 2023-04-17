@@ -31,12 +31,19 @@ public sealed class PrefixedUnitInstanceAttributeParser : IConstructiveSyntactic
     /// <inheritdoc/>
     public IRawPrefixedUnitInstance? TryParse(AttributeData attributeData, AttributeSyntax attributeSyntax)
     {
+        if (attributeSyntax is null)
+        {
+            throw new ArgumentNullException(nameof(attributeSyntax));
+        }
+
         PrefixedUnitInstanceAttributeArgumentRecorder recorder = new();
 
         if (SyntacticParser.TryParse(recorder, attributeData, attributeSyntax) is false)
         {
             return null;
         }
+
+        recorder.RecordAttributeNameLocation(attributeSyntax.Name.GetLocation());
 
         return Create(recorder, AttributeParsingMode.Syntactically);
     }
@@ -71,7 +78,7 @@ public sealed class PrefixedUnitInstanceAttributeParser : IConstructiveSyntactic
             return null;
         }
 
-        return new PrefixedUnitInstanceSyntax(recorder.NameLocation, recorder.PluralFormLocation, recorder.OriginalUnitInstanceLocation, recorder.PrefixLocation);
+        return new PrefixedUnitInstanceSyntax(recorder.AttributeNameLocation, recorder.NameLocation, recorder.PluralFormLocation, recorder.OriginalUnitInstanceLocation, recorder.PrefixLocation);
     }
 
     private sealed class PrefixedUnitInstanceAttributeArgumentRecorder : AArgumentRecorder
@@ -80,6 +87,8 @@ public sealed class PrefixedUnitInstanceAttributeParser : IConstructiveSyntactic
         public string? PluralForm { get; private set; }
         public string? OriginalUnitInstance { get; private set; }
         public OneOf<MetricPrefixName, BinaryPrefixName>? Prefix { get; private set; }
+
+        public Location AttributeNameLocation { get; private set; } = Location.None;
 
         public Location NameLocation { get; private set; } = Location.None;
         public Location PluralFormLocation { get; private set; } = Location.None;
@@ -128,6 +137,11 @@ public sealed class PrefixedUnitInstanceAttributeParser : IConstructiveSyntactic
             Prefix = binaryPrefix;
             PrefixLocation = location;
         }
+
+        public void RecordAttributeNameLocation(Location location)
+        {
+            AttributeNameLocation = location;
+        }
     }
 
     private sealed record class RawPrefixedUnitInstance : ARawModifiedUnitInstance<IPrefixedUnitInstanceSyntax>, IRawPrefixedUnitInstance
@@ -148,7 +162,7 @@ public sealed class PrefixedUnitInstanceAttributeParser : IConstructiveSyntactic
     {
         private Location Prefix { get; }
 
-        public PrefixedUnitInstanceSyntax(Location name, Location pluralForm, Location originalUnitInstance, Location prefix) : base(name, pluralForm, originalUnitInstance)
+        public PrefixedUnitInstanceSyntax(Location attributeName, Location name, Location pluralForm, Location originalUnitInstance, Location prefix) : base(attributeName, name, pluralForm, originalUnitInstance)
         {
             Prefix = prefix;
         }
