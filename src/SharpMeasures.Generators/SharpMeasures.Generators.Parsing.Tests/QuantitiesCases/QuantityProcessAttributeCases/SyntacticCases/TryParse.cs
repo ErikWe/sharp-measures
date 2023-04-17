@@ -61,6 +61,7 @@ public class TryParse
 
         var intType = compilation.GetSpecialType(SpecialType.System_Int32);
 
+        var expectedAttributeNameLocation = attributeSyntax.Name.GetLocation();
         var expectedResultLocation = ExpectedLocation.TypeArgument(attributeSyntax, 0);
         var expectedNameLocation = ExpectedLocation.SingleArgument(attributeSyntax, 0);
         var expectedExpressionLocation = ExpectedLocation.SingleArgument(attributeSyntax, 1);
@@ -74,7 +75,8 @@ public class TryParse
         Assert.Null(actual.ParameterNames);
         Assert.Null(actual.ImplementStatically);
 
-        Assert.Equal(expectedResultLocation, actual.Syntax!.Result);
+        Assert.Equal(expectedAttributeNameLocation, actual.Syntax!.AttributeName);
+        Assert.Equal(expectedResultLocation, actual.Syntax.Result);
         Assert.Equal(expectedNameLocation, actual.Syntax.Name);
         Assert.Equal(expectedExpressionLocation, actual.Syntax.Expression);
         Assert.Equal(Location.None, actual.Syntax.SignatureCollection);
@@ -97,6 +99,7 @@ public class TryParse
 
         var intType = compilation.GetSpecialType(SpecialType.System_Int32);
 
+        var expectedAttributeNameLocation = attributeSyntax.Name.GetLocation();
         var expectedResultLocation = ExpectedLocation.TypeArgument(attributeSyntax, 0);
         var expectedNameLocation = ExpectedLocation.SingleArgument(attributeSyntax, 0);
         var expectedExpressionLocation = ExpectedLocation.SingleArgument(attributeSyntax, 1);
@@ -112,7 +115,8 @@ public class TryParse
         Assert.Null(actual.ParameterNames);
         Assert.Null(actual.ImplementStatically);
 
-        Assert.Equal(expectedResultLocation, actual.Syntax!.Result);
+        Assert.Equal(expectedAttributeNameLocation, actual.Syntax!.AttributeName);
+        Assert.Equal(expectedResultLocation, actual.Syntax.Result);
         Assert.Equal(expectedNameLocation, actual.Syntax.Name);
         Assert.Equal(expectedExpressionLocation, actual.Syntax.Expression);
         Assert.Equal(expectedSignatureCollectionLocation, actual.Syntax.SignatureCollection);
@@ -136,6 +140,7 @@ public class TryParse
         var intType = compilation.GetSpecialType(SpecialType.System_Int32);
         var stringType = compilation.GetSpecialType(SpecialType.System_String);
 
+        var expectedAttributeNameLocation = attributeSyntax.Name.GetLocation();
         var expectedResultLocation = ExpectedLocation.TypeArgument(attributeSyntax, 0);
         var expectedNameLocation = ExpectedLocation.SingleArgument(attributeSyntax, 0);
         var expectedExpressionLocation = ExpectedLocation.SingleArgument(attributeSyntax, 1);
@@ -152,7 +157,8 @@ public class TryParse
         Assert.Equal(new[] { "parameter" }, actual.ParameterNames);
         Assert.True(actual.ImplementStatically);
 
-        Assert.Equal(expectedResultLocation, actual.Syntax!.Result);
+        Assert.Equal(expectedAttributeNameLocation, actual.Syntax!.AttributeName);
+        Assert.Equal(expectedResultLocation, actual.Syntax.Result);
         Assert.Equal(expectedNameLocation, actual.Syntax.Name);
         Assert.Equal(expectedExpressionLocation, actual.Syntax.Expression);
         Assert.Equal(expectedSignatureCollectionLocation, actual.Syntax.SignatureCollection);
@@ -175,6 +181,7 @@ public class TryParse
 
         var intType = compilation.GetSpecialType(SpecialType.System_Int32);
 
+        var expectedAttributeNameLocation = attributeSyntax.Name.GetLocation();
         var expectedResultLocation = ExpectedLocation.TypeArgument(attributeSyntax, 0);
         var expectedNameLocation = ExpectedLocation.SingleArgument(attributeSyntax, 0);
         var expectedExpressionLocation = ExpectedLocation.SingleArgument(attributeSyntax, 1);
@@ -191,7 +198,8 @@ public class TryParse
         Assert.Empty(actual.ParameterNames);
         Assert.True(actual.ImplementStatically);
 
-        Assert.Equal(expectedResultLocation, actual.Syntax!.Result);
+        Assert.Equal(expectedAttributeNameLocation, actual.Syntax!.AttributeName);
+        Assert.Equal(expectedResultLocation, actual.Syntax.Result);
         Assert.Equal(expectedNameLocation, actual.Syntax.Name);
         Assert.Equal(expectedExpressionLocation, actual.Syntax.Expression);
         Assert.Equal(expectedSignatureCollectionLocation, actual.Syntax.SignatureCollection);
@@ -214,6 +222,7 @@ public class TryParse
 
         var intType = compilation.GetSpecialType(SpecialType.System_Int32);
 
+        var expectedAttributeNameLocation = attributeSyntax.Name.GetLocation();
         var expectedResultLocation = ExpectedLocation.TypeArgument(attributeSyntax, 0);
         var expectedNameLocation = ExpectedLocation.SingleArgument(attributeSyntax, 0);
         var expectedExpressionLocation = ExpectedLocation.SingleArgument(attributeSyntax, 1);
@@ -230,7 +239,8 @@ public class TryParse
         Assert.Equal(new string?[] { null }, actual.ParameterNames);
         Assert.True(actual.ImplementStatically);
 
-        Assert.Equal(expectedResultLocation, actual.Syntax!.Result);
+        Assert.Equal(expectedAttributeNameLocation, actual.Syntax!.AttributeName);
+        Assert.Equal(expectedResultLocation, actual.Syntax.Result);
         Assert.Equal(expectedNameLocation, actual.Syntax.Name);
         Assert.Equal(expectedExpressionLocation, actual.Syntax.Expression);
         Assert.Equal(expectedSignatureCollectionLocation, actual.Syntax.SignatureCollection);

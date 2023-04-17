@@ -59,6 +59,7 @@ public class TryParse
 
         var (_, attributeData, attributeSyntax) = await CompilationStore.GetComponents(source, "Foo");
 
+        var expectedAttributeNameLocation = attributeSyntax.Name.GetLocation();
         var expectedAllowNegativeLocation = ExpectedLocation.SingleArgument(attributeSyntax, 0);
 
         var actual = Target(parser, attributeData, attributeSyntax);
@@ -67,7 +68,8 @@ public class TryParse
         Assert.Null(actual.ImplementSum);
         Assert.Null(actual.ImplementDifference);
 
-        Assert.Equal(expectedAllowNegativeLocation, actual.Syntax!.AllowNegative);
+        Assert.Equal(expectedAttributeNameLocation, actual.Syntax!.AttributeName);
+        Assert.Equal(expectedAllowNegativeLocation, actual.Syntax.AllowNegative);
         Assert.Equal(Location.None, actual.Syntax.ImplementSum);
         Assert.Equal(Location.None, actual.Syntax.ImplementDifference);
     }
@@ -83,6 +85,7 @@ public class TryParse
 
         var (_, attributeData, attributeSyntax) = await CompilationStore.GetComponents(source, "Foo");
 
+        var expectedAttributeNameLocation = attributeSyntax.Name.GetLocation();
         var expectedImplementSumLocation = ExpectedLocation.SingleArgument(attributeSyntax, 0);
 
         var actual = Target(parser, attributeData, attributeSyntax);
@@ -91,7 +94,8 @@ public class TryParse
         Assert.True(actual.ImplementSum);
         Assert.Null(actual.ImplementDifference);
 
-        Assert.Equal(Location.None, actual.Syntax!.AllowNegative);
+        Assert.Equal(expectedAttributeNameLocation, actual.Syntax!.AttributeName);
+        Assert.Equal(Location.None, actual.Syntax.AllowNegative);
         Assert.Equal(expectedImplementSumLocation, actual.Syntax.ImplementSum);
         Assert.Equal(Location.None, actual.Syntax.ImplementDifference);
     }
@@ -107,6 +111,7 @@ public class TryParse
 
         var (_, attributeData, attributeSyntax) = await CompilationStore.GetComponents(source, "Foo");
 
+        var expectedAttributeNameLocation = attributeSyntax.Name.GetLocation();
         var expectedImplementDifferenceLocation = ExpectedLocation.SingleArgument(attributeSyntax, 0);
 
         var actual = Target(parser, attributeData, attributeSyntax);
@@ -115,7 +120,8 @@ public class TryParse
         Assert.Null(actual.ImplementSum);
         Assert.True(actual.ImplementDifference);
 
-        Assert.Equal(Location.None, actual.Syntax!.AllowNegative);
+        Assert.Equal(expectedAttributeNameLocation, actual.Syntax!.AttributeName);
+        Assert.Equal(Location.None, actual.Syntax.AllowNegative);
         Assert.Equal(Location.None, actual.Syntax.ImplementSum);
         Assert.Equal(expectedImplementDifferenceLocation, actual.Syntax.ImplementDifference);
     }

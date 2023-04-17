@@ -61,6 +61,7 @@ public class TryParse
 
         var intType = compilation.GetSpecialType(SpecialType.System_Int32);
 
+        var expectedAttributeNameLocation = attributeSyntax.Name.GetLocation();
         var expectedOriginalLocation = ExpectedLocation.TypeArgument(attributeSyntax, 0);
 
         var actual = Target(parser, attributeData, attributeSyntax);
@@ -75,7 +76,8 @@ public class TryParse
         Assert.Null(actual.ImplementSum);
         Assert.Null(actual.ImplementDifference);
 
-        Assert.Equal(expectedOriginalLocation, actual.Syntax!.Original);
+        Assert.Equal(expectedAttributeNameLocation, actual.Syntax!.AttributeName);
+        Assert.Equal(expectedOriginalLocation, actual.Syntax.Original);
         Assert.Equal(Location.None, actual.Syntax.AllowNegative);
         Assert.Equal(Location.None, actual.Syntax.InheritOperations);
         Assert.Equal(Location.None, actual.Syntax.InheritProcesses);
@@ -99,6 +101,7 @@ public class TryParse
 
         var intType = compilation.GetSpecialType(SpecialType.System_Int32);
 
+        var expectedAttributeNameLocation = attributeSyntax.Name.GetLocation();
         var expectedOriginalLocation = ExpectedLocation.TypeArgument(attributeSyntax, 0);
         var expectedAllowNegativeLocation = ExpectedLocation.SingleArgument(attributeSyntax, 0);
 
@@ -114,7 +117,8 @@ public class TryParse
         Assert.Null(actual.ImplementSum);
         Assert.Null(actual.ImplementDifference);
 
-        Assert.Equal(expectedOriginalLocation, actual.Syntax!.Original);
+        Assert.Equal(expectedAttributeNameLocation, actual.Syntax!.AttributeName);
+        Assert.Equal(expectedOriginalLocation, actual.Syntax.Original);
         Assert.Equal(expectedAllowNegativeLocation, actual.Syntax.AllowNegative);
         Assert.Equal(Location.None, actual.Syntax.InheritOperations);
         Assert.Equal(Location.None, actual.Syntax.InheritProcesses);
@@ -138,6 +142,7 @@ public class TryParse
 
         var intType = compilation.GetSpecialType(SpecialType.System_Int32);
 
+        var expectedAttributeNameLocation = attributeSyntax.Name.GetLocation();
         var expectedOriginalLocation = ExpectedLocation.TypeArgument(attributeSyntax, 0);
         var expectedInheritOperationsLocation = ExpectedLocation.SingleArgument(attributeSyntax, 0);
 
@@ -153,7 +158,8 @@ public class TryParse
         Assert.Null(actual.ImplementSum);
         Assert.Null(actual.ImplementDifference);
 
-        Assert.Equal(expectedOriginalLocation, actual.Syntax!.Original);
+        Assert.Equal(expectedAttributeNameLocation, actual.Syntax!.AttributeName);
+        Assert.Equal(expectedOriginalLocation, actual.Syntax.Original);
         Assert.Equal(Location.None, actual.Syntax.AllowNegative);
         Assert.Equal(expectedInheritOperationsLocation, actual.Syntax.InheritOperations);
         Assert.Equal(Location.None, actual.Syntax.InheritProcesses);
@@ -177,6 +183,7 @@ public class TryParse
 
         var intType = compilation.GetSpecialType(SpecialType.System_Int32);
 
+        var expectedAttributeNameLocation = attributeSyntax.Name.GetLocation();
         var expectedOriginalLocation = ExpectedLocation.TypeArgument(attributeSyntax, 0);
         var expectedInheritProcessesLocation = ExpectedLocation.SingleArgument(attributeSyntax, 0);
 
@@ -192,7 +199,8 @@ public class TryParse
         Assert.Null(actual.ImplementSum);
         Assert.Null(actual.ImplementDifference);
 
-        Assert.Equal(expectedOriginalLocation, actual.Syntax!.Original);
+        Assert.Equal(expectedAttributeNameLocation, actual.Syntax!.AttributeName);
+        Assert.Equal(expectedOriginalLocation, actual.Syntax.Original);
         Assert.Equal(Location.None, actual.Syntax.AllowNegative);
         Assert.Equal(Location.None, actual.Syntax.InheritOperations);
         Assert.Equal(expectedInheritProcessesLocation, actual.Syntax.InheritProcesses);
@@ -216,6 +224,7 @@ public class TryParse
 
         var intType = compilation.GetSpecialType(SpecialType.System_Int32);
 
+        var expectedAttributeNameLocation = attributeSyntax.Name.GetLocation();
         var expectedOriginalLocation = ExpectedLocation.TypeArgument(attributeSyntax, 0);
         var expectedInheritPropertiesLocation = ExpectedLocation.SingleArgument(attributeSyntax, 0);
 
@@ -231,7 +240,8 @@ public class TryParse
         Assert.Null(actual.ImplementSum);
         Assert.Null(actual.ImplementDifference);
 
-        Assert.Equal(expectedOriginalLocation, actual.Syntax!.Original);
+        Assert.Equal(expectedAttributeNameLocation, actual.Syntax!.AttributeName);
+        Assert.Equal(expectedOriginalLocation, actual.Syntax.Original);
         Assert.Equal(Location.None, actual.Syntax.AllowNegative);
         Assert.Equal(Location.None, actual.Syntax.InheritOperations);
         Assert.Equal(Location.None, actual.Syntax.InheritProcesses);
@@ -255,6 +265,7 @@ public class TryParse
 
         var intType = compilation.GetSpecialType(SpecialType.System_Int32);
 
+        var expectedAttributeNameLocation = attributeSyntax.Name.GetLocation();
         var expectedOriginalLocation = ExpectedLocation.TypeArgument(attributeSyntax, 0);
         var expectedInheritConstantsLocation = ExpectedLocation.SingleArgument(attributeSyntax, 0);
 
@@ -270,7 +281,8 @@ public class TryParse
         Assert.Null(actual.ImplementSum);
         Assert.Null(actual.ImplementDifference);
 
-        Assert.Equal(expectedOriginalLocation, actual.Syntax!.Original);
+        Assert.Equal(expectedAttributeNameLocation, actual.Syntax!.AttributeName);
+        Assert.Equal(expectedOriginalLocation, actual.Syntax.Original);
         Assert.Equal(Location.None, actual.Syntax.AllowNegative);
         Assert.Equal(Location.None, actual.Syntax.InheritOperations);
         Assert.Equal(Location.None, actual.Syntax.InheritProcesses);
@@ -294,6 +306,7 @@ public class TryParse
 
         var intType = compilation.GetSpecialType(SpecialType.System_Int32);
 
+        var expectedAttributeNameLocation = attributeSyntax.Name.GetLocation();
         var expectedOriginalLocation = ExpectedLocation.TypeArgument(attributeSyntax, 0);
         var expectedInheritConversionsLocation = ExpectedLocation.SingleArgument(attributeSyntax, 0);
 
@@ -309,7 +322,8 @@ public class TryParse
         Assert.Null(actual.ImplementSum);
         Assert.Null(actual.ImplementDifference);
 
-        Assert.Equal(expectedOriginalLocation, actual.Syntax!.Original);
+        Assert.Equal(expectedAttributeNameLocation, actual.Syntax!.AttributeName);
+        Assert.Equal(expectedOriginalLocation, actual.Syntax.Original);
         Assert.Equal(Location.None, actual.Syntax.AllowNegative);
         Assert.Equal(Location.None, actual.Syntax.InheritOperations);
         Assert.Equal(Location.None, actual.Syntax.InheritProcesses);
@@ -333,6 +347,7 @@ public class TryParse
 
         var intType = compilation.GetSpecialType(SpecialType.System_Int32);
 
+        var expectedAttributeNameLocation = attributeSyntax.Name.GetLocation();
         var expectedOriginalLocation = ExpectedLocation.TypeArgument(attributeSyntax, 0);
         var expectedImplementSumLocation = ExpectedLocation.SingleArgument(attributeSyntax, 0);
 
@@ -348,7 +363,8 @@ public class TryParse
         Assert.True(actual.ImplementSum);
         Assert.Null(actual.ImplementDifference);
 
-        Assert.Equal(expectedOriginalLocation, actual.Syntax!.Original);
+        Assert.Equal(expectedAttributeNameLocation, actual.Syntax!.AttributeName);
+        Assert.Equal(expectedOriginalLocation, actual.Syntax.Original);
         Assert.Equal(Location.None, actual.Syntax.AllowNegative);
         Assert.Equal(Location.None, actual.Syntax.InheritOperations);
         Assert.Equal(Location.None, actual.Syntax.InheritProcesses);
@@ -372,6 +388,7 @@ public class TryParse
 
         var intType = compilation.GetSpecialType(SpecialType.System_Int32);
 
+        var expectedAttributeNameLocation = attributeSyntax.Name.GetLocation();
         var expectedOriginalLocation = ExpectedLocation.TypeArgument(attributeSyntax, 0);
         var expectedImplementDifferenceLocation = ExpectedLocation.SingleArgument(attributeSyntax, 0);
 
@@ -387,7 +404,8 @@ public class TryParse
         Assert.Null(actual.ImplementSum);
         Assert.True(actual.ImplementDifference);
 
-        Assert.Equal(expectedOriginalLocation, actual.Syntax!.Original);
+        Assert.Equal(expectedAttributeNameLocation, actual.Syntax!.AttributeName);
+        Assert.Equal(expectedOriginalLocation, actual.Syntax.Original);
         Assert.Equal(Location.None, actual.Syntax.AllowNegative);
         Assert.Equal(Location.None, actual.Syntax.InheritOperations);
         Assert.Equal(Location.None, actual.Syntax.InheritProcesses);

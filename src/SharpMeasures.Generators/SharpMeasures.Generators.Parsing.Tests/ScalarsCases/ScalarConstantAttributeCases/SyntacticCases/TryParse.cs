@@ -59,6 +59,7 @@ public class TryParse
 
         var (_, attributeData, attributeSyntax) = await CompilationStore.GetComponents(source, "Foo");
 
+        var expectedAttributeNameLocation = attributeSyntax.Name.GetLocation();
         var expectedNameLocation = ExpectedLocation.SingleArgument(attributeSyntax, 0);
         var expectedUnitInstanceNameLocation = ExpectedLocation.SingleArgument(attributeSyntax, 1);
         var expectedValueLocation = ExpectedLocation.SingleArgument(attributeSyntax, 2);
@@ -71,7 +72,8 @@ public class TryParse
         Assert.Null(actual.GenerateMultiplesProperty);
         Assert.Null(actual.MultiplesName);
 
-        Assert.Equal(expectedNameLocation, actual.Syntax!.Name);
+        Assert.Equal(expectedAttributeNameLocation, actual.Syntax!.AttributeName);
+        Assert.Equal(expectedNameLocation, actual.Syntax.Name);
         Assert.Equal(expectedUnitInstanceNameLocation, actual.Syntax.UnitInstanceName);
         Assert.Equal(expectedValueLocation, actual.Syntax.Value);
         Assert.Equal(Location.None, actual.Syntax.GenerateMultiplesProperty);
@@ -89,6 +91,7 @@ public class TryParse
 
         var (_, attributeData, attributeSyntax) = await CompilationStore.GetComponents(source, "Foo");
 
+        var expectedAttributeNameLocation = attributeSyntax.Name.GetLocation();
         var expectedNameLocation = ExpectedLocation.SingleArgument(attributeSyntax, 0);
         var expectedUnitInstanceNameLocation = ExpectedLocation.SingleArgument(attributeSyntax, 1);
         var expectedValueLocation = ExpectedLocation.SingleArgument(attributeSyntax, 2);
@@ -101,7 +104,8 @@ public class TryParse
         Assert.Null(actual.GenerateMultiplesProperty);
         Assert.Null(actual.MultiplesName);
 
-        Assert.Equal(expectedNameLocation, actual.Syntax!.Name);
+        Assert.Equal(expectedAttributeNameLocation, actual.Syntax!.AttributeName);
+        Assert.Equal(expectedNameLocation, actual.Syntax.Name);
         Assert.Equal(expectedUnitInstanceNameLocation, actual.Syntax.UnitInstanceName);
         Assert.Equal(expectedValueLocation, actual.Syntax.Value);
         Assert.Equal(Location.None, actual.Syntax.GenerateMultiplesProperty);
@@ -119,6 +123,7 @@ public class TryParse
 
         var (_, attributeData, attributeSyntax) = await CompilationStore.GetComponents(source, "Foo");
 
+        var expectedAttributeNameLocation = attributeSyntax.Name.GetLocation();
         var expectedNameLocation = ExpectedLocation.SingleArgument(attributeSyntax, 0);
         var expectedUnitInstanceNameLocation = ExpectedLocation.SingleArgument(attributeSyntax, 1);
         var expectedValueLocation = ExpectedLocation.SingleArgument(attributeSyntax, 2);
@@ -131,7 +136,8 @@ public class TryParse
         Assert.Null(actual.GenerateMultiplesProperty);
         Assert.Null(actual.MultiplesName);
 
-        Assert.Equal(expectedNameLocation, actual.Syntax!.Name);
+        Assert.Equal(expectedAttributeNameLocation, actual.Syntax!.AttributeName);
+        Assert.Equal(expectedNameLocation, actual.Syntax.Name);
         Assert.Equal(expectedUnitInstanceNameLocation, actual.Syntax.UnitInstanceName);
         Assert.Equal(expectedValueLocation, actual.Syntax.Value);
         Assert.Equal(Location.None, actual.Syntax.GenerateMultiplesProperty);
@@ -149,6 +155,7 @@ public class TryParse
 
         var (_, attributeData, attributeSyntax) = await CompilationStore.GetComponents(source, "Foo");
 
+        var expectedAttributeNameLocation = attributeSyntax.Name.GetLocation();
         var expectedNameLocation = ExpectedLocation.SingleArgument(attributeSyntax, 0);
         var expectedUnitInstanceNameLocation = ExpectedLocation.SingleArgument(attributeSyntax, 1);
         var expectedValueLocation = ExpectedLocation.SingleArgument(attributeSyntax, 2);
@@ -163,7 +170,8 @@ public class TryParse
         Assert.True(actual.GenerateMultiplesProperty);
         Assert.Equal("Constants", actual.MultiplesName);
 
-        Assert.Equal(expectedNameLocation, actual.Syntax!.Name);
+        Assert.Equal(expectedAttributeNameLocation, actual.Syntax!.AttributeName);
+        Assert.Equal(expectedNameLocation, actual.Syntax.Name);
         Assert.Equal(expectedUnitInstanceNameLocation, actual.Syntax.UnitInstanceName);
         Assert.Equal(expectedValueLocation, actual.Syntax.Value);
         Assert.Equal(expectedGenerateMultiplesPropertyLocation, actual.Syntax.GenerateMultiplesProperty);
@@ -181,6 +189,7 @@ public class TryParse
 
         var (_, attributeData, attributeSyntax) = await CompilationStore.GetComponents(source, "Foo");
 
+        var expectedAttributeNameLocation = attributeSyntax.Name.GetLocation();
         var expectedNameLocation = ExpectedLocation.SingleArgument(attributeSyntax, 0);
         var expectedUnitInstanceNameLocation = ExpectedLocation.SingleArgument(attributeSyntax, 1);
         var expectedValueLocation = ExpectedLocation.SingleArgument(attributeSyntax, 2);
@@ -194,7 +203,8 @@ public class TryParse
         Assert.Null(actual.GenerateMultiplesProperty);
         Assert.Null(actual.MultiplesName);
 
-        Assert.Equal(expectedNameLocation, actual.Syntax!.Name);
+        Assert.Equal(expectedAttributeNameLocation, actual.Syntax!.AttributeName);
+        Assert.Equal(expectedNameLocation, actual.Syntax.Name);
         Assert.Equal(expectedUnitInstanceNameLocation, actual.Syntax.UnitInstanceName);
         Assert.Equal(expectedValueLocation, actual.Syntax.Value);
         Assert.Equal(Location.None, actual.Syntax.GenerateMultiplesProperty);

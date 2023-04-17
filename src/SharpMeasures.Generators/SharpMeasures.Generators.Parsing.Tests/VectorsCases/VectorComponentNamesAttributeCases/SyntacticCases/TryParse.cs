@@ -59,13 +59,15 @@ public class TryParse
 
         var (_, attributeData, attributeSyntax) = await CompilationStore.GetComponents(source, "Foo");
 
+        var expectedAttributeNameLocation = attributeSyntax.Name.GetLocation();
         var (expectedNamesCollectionLocation, expectedNamesElementLocations) = ExpectedLocation.ArrayArgument(attributeSyntax, 0);
 
         var actual = Target(parser, attributeData, attributeSyntax);
 
         Assert.Null(actual!.Names);
 
-        Assert.Equal(expectedNamesCollectionLocation, actual.Syntax!.NamesCollection);
+        Assert.Equal(expectedAttributeNameLocation, actual.Syntax!.AttributeName);
+        Assert.Equal(expectedNamesCollectionLocation, actual.Syntax.NamesCollection);
         Assert.Equal(expectedNamesElementLocations, actual.Syntax.NamesElements);
     }
 
@@ -80,11 +82,14 @@ public class TryParse
 
         var (_, attributeData, attributeSyntax) = await CompilationStore.GetComponents(source, "Foo");
 
+        var expectedAttributeNameLocation = attributeSyntax.Name.GetLocation();
+
         var actual = Target(parser, attributeData, attributeSyntax);
 
         Assert.Empty(actual!.Names);
 
-        Assert.Equal(Location.None, actual.Syntax!.NamesCollection);
+        Assert.Equal(expectedAttributeNameLocation, actual.Syntax!.AttributeName);
+        Assert.Equal(Location.None, actual.Syntax.NamesCollection);
         Assert.Empty(actual.Syntax.NamesElements);
     }
 
@@ -99,13 +104,15 @@ public class TryParse
 
         var (_, attributeData, attributeSyntax) = await CompilationStore.GetComponents(source, "Foo");
 
+        var expectedAttributeNameLocation = attributeSyntax.Name.GetLocation();
         var (expectedNamesCollectionLocation, expectedNamesElementLocations) = ExpectedLocation.ArrayArgument(attributeSyntax, 0);
 
         var actual = Target(parser, attributeData, attributeSyntax);
 
         Assert.Equal(new[] { "X", null }, actual!.Names);
 
-        Assert.Equal(expectedNamesCollectionLocation, actual.Syntax!.NamesCollection);
+        Assert.Equal(expectedAttributeNameLocation, actual.Syntax!.AttributeName);
+        Assert.Equal(expectedNamesCollectionLocation, actual.Syntax.NamesCollection);
         Assert.Equal(expectedNamesElementLocations, actual.Syntax.NamesElements);
     }
 
@@ -120,13 +127,15 @@ public class TryParse
 
         var (_, attributeData, attributeSyntax) = await CompilationStore.GetComponents(source, "Foo");
 
+        var expectedAttributeNameLocation = attributeSyntax.Name.GetLocation();
         var (expectedNamesCollectionLocation, expectedNamesElementLocations) = ExpectedLocation.ArrayArgument(attributeSyntax, 0);
 
         var actual = Target(parser, attributeData, attributeSyntax);
 
         Assert.Equal(new[] { "X", "Y" }, actual!.Names);
 
-        Assert.Equal(expectedNamesCollectionLocation, actual.Syntax!.NamesCollection);
+        Assert.Equal(expectedAttributeNameLocation, actual.Syntax!.AttributeName);
+        Assert.Equal(expectedNamesCollectionLocation, actual.Syntax.NamesCollection);
         Assert.Equal(expectedNamesElementLocations, actual.Syntax.NamesElements);
     }
 }

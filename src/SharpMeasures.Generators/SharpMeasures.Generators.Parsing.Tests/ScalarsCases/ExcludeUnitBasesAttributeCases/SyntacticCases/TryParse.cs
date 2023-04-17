@@ -59,6 +59,7 @@ public class TryParse
 
         var (_, attributeData, attributeSyntax) = await CompilationStore.GetComponents(source, "Foo");
 
+        var expectedAttributeNameLocation = attributeSyntax.Name.GetLocation();
         var (expectedExcludedUnitBasesCollectionLocation, expectedExcludedUnitBasesElementLocations) = ExpectedLocation.ArrayArgument(attributeSyntax, 0);
 
         var actual = Target(parser, attributeData, attributeSyntax);
@@ -66,7 +67,8 @@ public class TryParse
         Assert.Null(actual!.ExcludedUnitBases);
         Assert.Null(actual.StackingMode);
 
-        Assert.Equal(expectedExcludedUnitBasesCollectionLocation, actual.Syntax!.ExcludedUnitBasesCollection);
+        Assert.Equal(expectedAttributeNameLocation, actual.Syntax!.AttributeName);
+        Assert.Equal(expectedExcludedUnitBasesCollectionLocation, actual.Syntax.ExcludedUnitBasesCollection);
         Assert.Equal(expectedExcludedUnitBasesElementLocations, actual.Syntax.ExcludedUnitBasesElements);
         Assert.Equal(Location.None, actual.Syntax.StackingMode);
     }
@@ -82,6 +84,7 @@ public class TryParse
 
         var (_, attributeData, attributeSyntax) = await CompilationStore.GetComponents(source, "Foo");
 
+        var expectedAttributeNameLocation = attributeSyntax.Name.GetLocation();
         var (expectedExcludedUnitBasesCollectionLocation, expectedExcludedUnitBasesElementLocations) = ExpectedLocation.ArrayArgument(attributeSyntax, 0);
 
         var actual = Target(parser, attributeData, attributeSyntax);
@@ -89,7 +92,8 @@ public class TryParse
         Assert.Equal(new[] { "42", null }, actual!.ExcludedUnitBases);
         Assert.Null(actual.StackingMode);
 
-        Assert.Equal(expectedExcludedUnitBasesCollectionLocation, actual.Syntax!.ExcludedUnitBasesCollection);
+        Assert.Equal(expectedAttributeNameLocation, actual.Syntax!.AttributeName);
+        Assert.Equal(expectedExcludedUnitBasesCollectionLocation, actual.Syntax.ExcludedUnitBasesCollection);
         Assert.Equal(expectedExcludedUnitBasesElementLocations, actual.Syntax.ExcludedUnitBasesElements);
         Assert.Equal(Location.None, actual.Syntax.StackingMode);
     }
@@ -105,6 +109,7 @@ public class TryParse
 
         var (_, attributeData, attributeSyntax) = await CompilationStore.GetComponents(source, "Foo");
 
+        var expectedAttributeNameLocation = attributeSyntax.Name.GetLocation();
         var (expectedExcludedUnitBasesCollectionLocation, expectedExcludedUnitBasesElementLocations) = ExpectedLocation.ArrayArgument(attributeSyntax, 0);
         var expectedStackingModeLocation = ExpectedLocation.SingleArgument(attributeSyntax, 1);
 
@@ -113,7 +118,8 @@ public class TryParse
         Assert.Null(actual!.ExcludedUnitBases);
         Assert.Equal(FilterStackingMode.Keep, actual.StackingMode);
 
-        Assert.Equal(expectedExcludedUnitBasesCollectionLocation, actual.Syntax!.ExcludedUnitBasesCollection);
+        Assert.Equal(expectedAttributeNameLocation, actual.Syntax!.AttributeName);
+        Assert.Equal(expectedExcludedUnitBasesCollectionLocation, actual.Syntax.ExcludedUnitBasesCollection);
         Assert.Equal(expectedExcludedUnitBasesElementLocations, actual.Syntax.ExcludedUnitBasesElements);
         Assert.Equal(expectedStackingModeLocation, actual.Syntax.StackingMode);
     }

@@ -61,6 +61,7 @@ public class TryParse
 
         var intType = compilation.GetSpecialType(SpecialType.System_Int32);
 
+        var expectedAttributeNameLocation = attributeSyntax.Name.GetLocation();
         var expectedUnitLocation = ExpectedLocation.TypeArgument(attributeSyntax, 0);
 
         var actual = Target(parser, attributeData, attributeSyntax);
@@ -69,7 +70,8 @@ public class TryParse
         Assert.Null(actual.ImplementSum);
         Assert.Null(actual.ImplementDifference);
 
-        Assert.Equal(expectedUnitLocation, actual.Syntax!.Unit);
+        Assert.Equal(expectedAttributeNameLocation, actual.Syntax!.AttributeName);
+        Assert.Equal(expectedUnitLocation, actual.Syntax.Unit);
         Assert.Equal(Location.None, actual.Syntax.ImplementSum);
         Assert.Equal(Location.None, actual.Syntax.ImplementDifference);
     }
@@ -87,6 +89,7 @@ public class TryParse
 
         var intType = compilation.GetSpecialType(SpecialType.System_Int32);
 
+        var expectedAttributeNameLocation = attributeSyntax.Name.GetLocation();
         var expectedUnitLocation = ExpectedLocation.TypeArgument(attributeSyntax, 0);
         var expectedImplementSumLocation = ExpectedLocation.SingleArgument(attributeSyntax, 0);
 
@@ -96,7 +99,8 @@ public class TryParse
         Assert.True(actual.ImplementSum);
         Assert.Null(actual.ImplementDifference);
 
-        Assert.Equal(expectedUnitLocation, actual.Syntax!.Unit);
+        Assert.Equal(expectedAttributeNameLocation, actual.Syntax!.AttributeName);
+        Assert.Equal(expectedUnitLocation, actual.Syntax.Unit);
         Assert.Equal(expectedImplementSumLocation, actual.Syntax.ImplementSum);
         Assert.Equal(Location.None, actual.Syntax.ImplementDifference);
     }
@@ -114,6 +118,7 @@ public class TryParse
 
         var intType = compilation.GetSpecialType(SpecialType.System_Int32);
 
+        var expectedAttributeNameLocation = attributeSyntax.Name.GetLocation();
         var expectedUnitLocation = ExpectedLocation.TypeArgument(attributeSyntax, 0);
         var expectedImplementDifferenceLocation = ExpectedLocation.SingleArgument(attributeSyntax, 0);
 
@@ -123,7 +128,8 @@ public class TryParse
         Assert.Null(actual.ImplementSum);
         Assert.True(actual.ImplementDifference);
 
-        Assert.Equal(expectedUnitLocation, actual.Syntax!.Unit);
+        Assert.Equal(expectedAttributeNameLocation, actual.Syntax!.AttributeName);
+        Assert.Equal(expectedUnitLocation, actual.Syntax.Unit);
         Assert.Equal(Location.None, actual.Syntax.ImplementSum);
         Assert.Equal(expectedImplementDifferenceLocation, actual.Syntax.ImplementDifference);
     }

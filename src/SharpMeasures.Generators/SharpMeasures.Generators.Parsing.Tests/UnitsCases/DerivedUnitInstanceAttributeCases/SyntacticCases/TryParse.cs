@@ -59,6 +59,7 @@ public class TryParse
 
         var (_, attributeData, attributeSyntax) = await CompilationStore.GetComponents(source, "Foo");
 
+        var expectedAttributeNameLocation = attributeSyntax.Name.GetLocation();
         var expectedNameLocation = ExpectedLocation.SingleArgument(attributeSyntax, 0);
         var expectedPluralFormLocation = ExpectedLocation.SingleArgument(attributeSyntax, 1);
         var expectedDerivationIDLocation = ExpectedLocation.SingleArgument(attributeSyntax, 2);
@@ -71,7 +72,8 @@ public class TryParse
         Assert.Null(actual.DerivationID);
         Assert.Null(actual.Units);
 
-        Assert.Equal(expectedNameLocation, actual.Syntax!.Name);
+        Assert.Equal(expectedAttributeNameLocation, actual.Syntax!.AttributeName);
+        Assert.Equal(expectedNameLocation, actual.Syntax.Name);
         Assert.Equal(expectedPluralFormLocation, actual.Syntax.PluralForm);
         Assert.Equal(expectedDerivationIDLocation, actual.Syntax.DerivationID);
         Assert.Equal(expectedUnitsCollectionLocation, actual.Syntax.UnitsCollection);
@@ -89,6 +91,7 @@ public class TryParse
 
         var (_, attributeData, attributeSyntax) = await CompilationStore.GetComponents(source, "Foo");
 
+        var expectedAttributeNameLocation = attributeSyntax.Name.GetLocation();
         var expectedNameLocation = ExpectedLocation.SingleArgument(attributeSyntax, 0);
         var expectedPluralFormLocation = ExpectedLocation.SingleArgument(attributeSyntax, 1);
         var (expectedUnitsCollectionLocation, expectedUnitsElementLocations) = ExpectedLocation.ArrayArgument(attributeSyntax, 2);
@@ -100,7 +103,8 @@ public class TryParse
         Assert.Null(actual.DerivationID);
         Assert.Equal(new[] { "42", "314" }, actual.Units);
 
-        Assert.Equal(expectedNameLocation, actual.Syntax!.Name);
+        Assert.Equal(expectedAttributeNameLocation, actual.Syntax!.AttributeName);
+        Assert.Equal(expectedNameLocation, actual.Syntax.Name);
         Assert.Equal(expectedPluralFormLocation, actual.Syntax.PluralForm);
         Assert.Equal(Location.None, actual.Syntax.DerivationID);
         Assert.Equal(expectedUnitsCollectionLocation, actual.Syntax.UnitsCollection);
@@ -118,6 +122,7 @@ public class TryParse
 
         var (_, attributeData, attributeSyntax) = await CompilationStore.GetComponents(source, "Foo");
 
+        var expectedAttributeNameLocation = attributeSyntax.Name.GetLocation();
         var expectedNameLocation = ExpectedLocation.SingleArgument(attributeSyntax, 0);
         var (expectedUnitsCollectionLocation, expectedUnitsElementLocations) = ExpectedLocation.ArrayArgument(attributeSyntax, 1);
 
@@ -128,7 +133,8 @@ public class TryParse
         Assert.Null(actual.DerivationID);
         Assert.Equal(new[] { "42", "314" }, actual.Units);
 
-        Assert.Equal(expectedNameLocation, actual.Syntax!.Name);
+        Assert.Equal(expectedAttributeNameLocation, actual.Syntax!.AttributeName);
+        Assert.Equal(expectedNameLocation, actual.Syntax.Name);
         Assert.Equal(Location.None, actual.Syntax.PluralForm);
         Assert.Equal(Location.None, actual.Syntax.DerivationID);
         Assert.Equal(expectedUnitsCollectionLocation, actual.Syntax.UnitsCollection);
@@ -146,6 +152,7 @@ public class TryParse
 
         var (_, attributeData, attributeSyntax) = await CompilationStore.GetComponents(source, "Foo");
 
+        var expectedAttributeNameLocation = attributeSyntax.Name.GetLocation();
         var expectedNameLocation = ExpectedLocation.SingleArgument(attributeSyntax, 0);
         var expectedPluralFormLocation = ExpectedLocation.SingleArgument(attributeSyntax, 1);
         var expectedDerivationIDLocation = ExpectedLocation.SingleArgument(attributeSyntax, 2);
@@ -158,7 +165,8 @@ public class TryParse
         Assert.Equal("ID", actual.DerivationID);
         Assert.Equal(new[] { "42", "314" }, actual.Units);
 
-        Assert.Equal(expectedNameLocation, actual.Syntax!.Name);
+        Assert.Equal(expectedAttributeNameLocation, actual.Syntax!.AttributeName);
+        Assert.Equal(expectedNameLocation, actual.Syntax.Name);
         Assert.Equal(expectedPluralFormLocation, actual.Syntax.PluralForm);
         Assert.Equal(expectedDerivationIDLocation, actual.Syntax.DerivationID);
         Assert.Equal(expectedUnitsCollectionLocation, actual.Syntax.UnitsCollection);
@@ -176,6 +184,7 @@ public class TryParse
 
         var (_, attributeData, attributeSyntax) = await CompilationStore.GetComponents(source, "Foo");
 
+        var expectedAttributeNameLocation = attributeSyntax.Name.GetLocation();
         var expectedNameLocation = ExpectedLocation.SingleArgument(attributeSyntax, 0);
         var (expectedUnitsCollectionLocation, expectedUnitsElementLocations) = ExpectedLocation.ArrayArgument(attributeSyntax, 1);
 
@@ -186,7 +195,8 @@ public class TryParse
         Assert.Null(actual.DerivationID);
         Assert.Equal(Array.Empty<string>(), actual.Units);
 
-        Assert.Equal(expectedNameLocation, actual.Syntax!.Name);
+        Assert.Equal(expectedAttributeNameLocation, actual.Syntax!.AttributeName);
+        Assert.Equal(expectedNameLocation, actual.Syntax.Name);
         Assert.Equal(Location.None, actual.Syntax.PluralForm);
         Assert.Equal(Location.None, actual.Syntax.DerivationID);
         Assert.Equal(expectedUnitsCollectionLocation, actual.Syntax.UnitsCollection);
@@ -204,6 +214,7 @@ public class TryParse
 
         var (_, attributeData, attributeSyntax) = await CompilationStore.GetComponents(source, "Foo");
 
+        var expectedAttributeNameLocation = attributeSyntax.Name.GetLocation();
         var expectedNameLocation = ExpectedLocation.SingleArgument(attributeSyntax, 0);
         var (expectedUnitsCollectionLocation, expectedUnitsElementLocations) = ExpectedLocation.ArrayArgument(attributeSyntax, 1);
 
@@ -214,7 +225,8 @@ public class TryParse
         Assert.Null(actual.DerivationID);
         Assert.Equal(new[] { "42", null }, actual.Units);
 
-        Assert.Equal(expectedNameLocation, actual.Syntax!.Name);
+        Assert.Equal(expectedAttributeNameLocation, actual.Syntax!.AttributeName);
+        Assert.Equal(expectedNameLocation, actual.Syntax.Name);
         Assert.Equal(Location.None, actual.Syntax.PluralForm);
         Assert.Equal(Location.None, actual.Syntax.DerivationID);
         Assert.Equal(expectedUnitsCollectionLocation, actual.Syntax.UnitsCollection);

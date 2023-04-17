@@ -59,6 +59,7 @@ public class TryParse
 
         var (_, attributeData, attributeSyntax) = await CompilationStore.GetComponents(source, "Foo");
 
+        var expectedAttributeNameLocation = attributeSyntax.Name.GetLocation();
         var expectedNameLocation = ExpectedLocation.SingleArgument(attributeSyntax, 0);
         var expectedPluralFormLocation = ExpectedLocation.SingleArgument(attributeSyntax, 1);
 
@@ -67,7 +68,8 @@ public class TryParse
         Assert.Null(actual!.Name);
         Assert.Null(actual.PluralForm);
 
-        Assert.Equal(expectedNameLocation, actual.Syntax!.Name);
+        Assert.Equal(expectedAttributeNameLocation, actual.Syntax!.AttributeName);
+        Assert.Equal(expectedNameLocation, actual.Syntax.Name);
         Assert.Equal(expectedPluralFormLocation, actual.Syntax.PluralForm);
     }
 
@@ -82,6 +84,7 @@ public class TryParse
 
         var (_, attributeData, attributeSyntax) = await CompilationStore.GetComponents(source, "Foo");
 
+        var expectedAttributeNameLocation = attributeSyntax.Name.GetLocation();
         var expectedNameLocation = ExpectedLocation.SingleArgument(attributeSyntax, 0);
         var expectedPluralFormLocation = ExpectedLocation.SingleArgument(attributeSyntax, 1);
 
@@ -90,7 +93,8 @@ public class TryParse
         Assert.Equal("Metre", actual!.Name);
         Assert.Equal("Metres", actual.PluralForm);
 
-        Assert.Equal(expectedNameLocation, actual.Syntax!.Name);
+        Assert.Equal(expectedAttributeNameLocation, actual.Syntax!.AttributeName);
+        Assert.Equal(expectedNameLocation, actual.Syntax.Name);
         Assert.Equal(expectedPluralFormLocation, actual.Syntax.PluralForm);
     }
 
@@ -105,6 +109,7 @@ public class TryParse
 
         var (_, attributeData, attributeSyntax) = await CompilationStore.GetComponents(source, "Foo");
 
+        var expectedAttributeNameLocation = attributeSyntax.Name.GetLocation();
         var expectedNameLocation = ExpectedLocation.SingleArgument(attributeSyntax, 0);
 
         var actual = Target(parser, attributeData, attributeSyntax);
@@ -112,7 +117,8 @@ public class TryParse
         Assert.Equal("Metre", actual!.Name);
         Assert.Null(actual.PluralForm);
 
-        Assert.Equal(expectedNameLocation, actual.Syntax!.Name);
+        Assert.Equal(expectedAttributeNameLocation, actual.Syntax!.AttributeName);
+        Assert.Equal(expectedNameLocation, actual.Syntax.Name);
         Assert.Equal(Location.None, actual.Syntax.PluralForm);
     }
 }

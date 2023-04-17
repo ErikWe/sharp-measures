@@ -62,6 +62,7 @@ public class TryParse
         var intType = compilation.GetSpecialType(SpecialType.System_Int32);
         var stringType = compilation.GetSpecialType(SpecialType.System_String);
 
+        var expectedAttributeNameLocation = attributeSyntax.Name.GetLocation();
         var expectedResultLocation = ExpectedLocation.TypeArgument(attributeSyntax, 0);
         var expectedOtherLocation = ExpectedLocation.TypeArgument(attributeSyntax, 1);
         var expectedOperatorTypeLocation = ExpectedLocation.SingleArgument(attributeSyntax, 0);
@@ -80,7 +81,8 @@ public class TryParse
         Assert.Null(actual.MirroredMethodName);
         Assert.Null(actual.MirroredStaticMethodName);
 
-        Assert.Equal(expectedResultLocation, actual.Syntax!.Result);
+        Assert.Equal(expectedAttributeNameLocation, actual.Syntax!.AttributeName);
+        Assert.Equal(expectedResultLocation, actual.Syntax.Result);
         Assert.Equal(expectedOtherLocation, actual.Syntax.Other);
         Assert.Equal(expectedOperatorTypeLocation, actual.Syntax.OperatorType);
         Assert.Equal(Location.None, actual.Syntax.Position);
@@ -107,6 +109,7 @@ public class TryParse
         var intType = compilation.GetSpecialType(SpecialType.System_Int32);
         var stringType = compilation.GetSpecialType(SpecialType.System_String);
 
+        var expectedAttributeNameLocation = attributeSyntax.Name.GetLocation();
         var expectedResultLocation = ExpectedLocation.TypeArgument(attributeSyntax, 0);
         var expectedOtherLocation = ExpectedLocation.TypeArgument(attributeSyntax, 1);
         var expectedOperatorTypeLocation = ExpectedLocation.SingleArgument(attributeSyntax, 0);
@@ -129,7 +132,8 @@ public class TryParse
         Assert.Null(actual.MirroredMethodName);
         Assert.Null(actual.MirroredStaticMethodName);
 
-        Assert.Equal(expectedResultLocation, actual.Syntax!.Result);
+        Assert.Equal(expectedAttributeNameLocation, actual.Syntax!.AttributeName);
+        Assert.Equal(expectedResultLocation, actual.Syntax.Result);
         Assert.Equal(expectedOtherLocation, actual.Syntax.Other);
         Assert.Equal(expectedOperatorTypeLocation, actual.Syntax.OperatorType);
         Assert.Equal(Location.None, actual.Syntax.Position);
@@ -158,6 +162,7 @@ public class TryParse
         var intType = compilation.GetSpecialType(SpecialType.System_Int32);
         var stringType = compilation.GetSpecialType(SpecialType.System_String);
 
+        var expectedAttributeNameLocation = attributeSyntax.Name.GetLocation();
         var expectedResultLocation = ExpectedLocation.TypeArgument(attributeSyntax, 0);
         var expectedOtherLocation = ExpectedLocation.TypeArgument(attributeSyntax, 1);
         var expectedOperatorTypeLocation = ExpectedLocation.SingleArgument(attributeSyntax, 0);
@@ -184,7 +189,8 @@ public class TryParse
         Assert.Equal("MirroredMethod", actual.MirroredMethodName);
         Assert.Equal("MirroredStaticMethod", actual.MirroredStaticMethodName);
 
-        Assert.Equal(expectedResultLocation, actual.Syntax!.Result);
+        Assert.Equal(expectedAttributeNameLocation, actual.Syntax!.AttributeName);
+        Assert.Equal(expectedResultLocation, actual.Syntax.Result);
         Assert.Equal(expectedOtherLocation, actual.Syntax.Other);
         Assert.Equal(expectedOperatorTypeLocation, actual.Syntax.OperatorType);
         Assert.Equal(expectedPositionLocation, actual.Syntax.Position);

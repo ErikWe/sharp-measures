@@ -61,12 +61,14 @@ public class TryParse
 
         var intType = compilation.GetSpecialType(SpecialType.System_Int32);
 
+        var expectedAttributeNameLocation = attributeSyntax.Name.GetLocation();
         var expectedLocation = ExpectedLocation.TypeArgument(attributeSyntax, 0);
 
         var actual = Target(parser, attributeData, attributeSyntax);
 
         Assert.Equal(intType, actual!.Vector);
 
-        Assert.Equal(expectedLocation, actual.Syntax!.Vector);
+        Assert.Equal(expectedAttributeNameLocation, actual.Syntax!.AttributeName);
+        Assert.Equal(expectedLocation, actual.Syntax.Vector);
     }
 }

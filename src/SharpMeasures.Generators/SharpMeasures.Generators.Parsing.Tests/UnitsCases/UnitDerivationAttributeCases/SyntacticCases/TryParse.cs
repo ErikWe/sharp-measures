@@ -59,6 +59,7 @@ public class TryParse
 
         var (_, attributeData, attributeSyntax) = await CompilationStore.GetComponents(source, "Foo");
 
+        var expectedAttributeNameLocation = attributeSyntax.Name.GetLocation();
         var expectedDerivationIDLocation = ExpectedLocation.SingleArgument(attributeSyntax, 0);
         var expectedExpressionLocation = ExpectedLocation.SingleArgument(attributeSyntax, 1);
         var (expectedSignatureCollectionLocation, expectedSignatureElementLocations) = ExpectedLocation.ArrayArgument(attributeSyntax, 2);
@@ -69,7 +70,8 @@ public class TryParse
         Assert.Null(actual.Expression);
         Assert.Null(actual.Signature);
 
-        Assert.Equal(expectedDerivationIDLocation, actual.Syntax!.DerivationID);
+        Assert.Equal(expectedAttributeNameLocation, actual.Syntax!.AttributeName);
+        Assert.Equal(expectedDerivationIDLocation, actual.Syntax.DerivationID);
         Assert.Equal(expectedExpressionLocation, actual.Syntax.Expression);
         Assert.Equal(expectedSignatureCollectionLocation, actual.Syntax.SignatureCollection);
         Assert.Equal(expectedSignatureElementLocations, actual.Syntax.SignatureElements);
@@ -91,6 +93,7 @@ public class TryParse
 
         var expectedSignature = new[] { intType, stringType };
 
+        var expectedAttributeNameLocation = attributeSyntax.Name.GetLocation();
         var expectedDerivationIDLocation = ExpectedLocation.SingleArgument(attributeSyntax, 0);
         var expectedExpressionLocation = ExpectedLocation.SingleArgument(attributeSyntax, 1);
         var (expectedSignatureCollectionLocation, expectedSignatureElementLocations) = ExpectedLocation.ArrayArgument(attributeSyntax, 2);
@@ -101,7 +104,8 @@ public class TryParse
         Assert.Equal("Expression", actual.Expression);
         Assert.Equal(expectedSignature, actual.Signature);
 
-        Assert.Equal(expectedDerivationIDLocation, actual.Syntax!.DerivationID);
+        Assert.Equal(expectedAttributeNameLocation, actual.Syntax!.AttributeName);
+        Assert.Equal(expectedDerivationIDLocation, actual.Syntax.DerivationID);
         Assert.Equal(expectedExpressionLocation, actual.Syntax.Expression);
         Assert.Equal(expectedSignatureCollectionLocation, actual.Syntax.SignatureCollection);
         Assert.Equal(expectedSignatureElementLocations, actual.Syntax.SignatureElements);
@@ -123,6 +127,7 @@ public class TryParse
 
         var expectedSignature = new[] { intType, stringType };
 
+        var expectedAttributeNameLocation = attributeSyntax.Name.GetLocation();
         var expectedExpressionLocation = ExpectedLocation.SingleArgument(attributeSyntax, 0);
         var (expectedSignatureCollectionLocation, expectedSignatureElementLocations) = ExpectedLocation.ArrayArgument(attributeSyntax, 1);
 
@@ -132,7 +137,8 @@ public class TryParse
         Assert.Equal("Expression", actual.Expression);
         Assert.Equal(expectedSignature, actual.Signature);
 
-        Assert.Equal(Location.None, actual.Syntax!.DerivationID);
+        Assert.Equal(expectedAttributeNameLocation, actual.Syntax!.AttributeName);
+        Assert.Equal(Location.None, actual.Syntax.DerivationID);
         Assert.Equal(expectedExpressionLocation, actual.Syntax.Expression);
         Assert.Equal(expectedSignatureCollectionLocation, actual.Syntax.SignatureCollection);
         Assert.Equal(expectedSignatureElementLocations, actual.Syntax.SignatureElements);
@@ -149,6 +155,7 @@ public class TryParse
 
         var (_, attributeData, attributeSyntax) = await CompilationStore.GetComponents(source, "Foo");
 
+        var expectedAttributeNameLocation = attributeSyntax.Name.GetLocation();
         var expectedExpressionLocation = ExpectedLocation.SingleArgument(attributeSyntax, 0);
         var (expectedSignatureCollectionLocation, expectedSignatureElementLocations) = ExpectedLocation.ArrayArgument(attributeSyntax, 1);
 
@@ -158,7 +165,8 @@ public class TryParse
         Assert.Equal("Expression", actual.Expression);
         Assert.Equal(Array.Empty<ITypeSymbol>(), actual.Signature);
 
-        Assert.Equal(Location.None, actual.Syntax!.DerivationID);
+        Assert.Equal(expectedAttributeNameLocation, actual.Syntax!.AttributeName);
+        Assert.Equal(Location.None, actual.Syntax.DerivationID);
         Assert.Equal(expectedExpressionLocation, actual.Syntax.Expression);
         Assert.Equal(expectedSignatureCollectionLocation, actual.Syntax.SignatureCollection);
         Assert.Equal(expectedSignatureElementLocations, actual.Syntax.SignatureElements);
@@ -179,6 +187,7 @@ public class TryParse
 
         var expectedSignature = new[] { intType, null };
 
+        var expectedAttributeNameLocation = attributeSyntax.Name.GetLocation();
         var expectedExpressionLocation = ExpectedLocation.SingleArgument(attributeSyntax, 0);
         var (expectedSignatureCollectionLocation, expectedSignatureElementLocations) = ExpectedLocation.ArrayArgument(attributeSyntax, 1);
 
@@ -188,7 +197,9 @@ public class TryParse
         Assert.Equal("Expression", actual.Expression);
         Assert.Equal(expectedSignature, actual.Signature);
 
-        Assert.Equal(expectedExpressionLocation, actual.Syntax!.Expression);
+        Assert.Equal(expectedAttributeNameLocation, actual.Syntax!.AttributeName);
+        Assert.Equal(Location.None, actual.Syntax.DerivationID);
+        Assert.Equal(expectedExpressionLocation, actual.Syntax.Expression);
         Assert.Equal(expectedSignatureCollectionLocation, actual.Syntax.SignatureCollection);
         Assert.Equal(expectedSignatureElementLocations, actual.Syntax.SignatureElements);
     }

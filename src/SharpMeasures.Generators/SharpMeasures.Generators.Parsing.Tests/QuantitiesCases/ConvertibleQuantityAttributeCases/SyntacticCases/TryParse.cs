@@ -59,13 +59,16 @@ public class TryParse
 
         var (_, attributeData, attributeSyntax) = await CompilationStore.GetComponents(source, "Foo");
 
+        var expectedAttributeNameLocation = attributeSyntax.Name.GetLocation();
+
         var actual = Target(parser, attributeData, attributeSyntax);
 
         Assert.Empty(actual!.Quantities);
         Assert.Null(actual.ForwardsBehaviour);
         Assert.Null(actual.BackwardsBehaviour);
 
-        Assert.Equal(Location.None, actual.Syntax!.QuantitiesCollection);
+        Assert.Equal(expectedAttributeNameLocation, actual.Syntax!.AttributeName);
+        Assert.Equal(Location.None, actual.Syntax.QuantitiesCollection);
         Assert.Empty(actual.Syntax.QuantitiesElements);
         Assert.Equal(Location.None, actual.Syntax.ForwardsBehaviour);
         Assert.Equal(Location.None, actual.Syntax.BackwardsBehaviour);
@@ -82,6 +85,7 @@ public class TryParse
 
         var (_, attributeData, attributeSyntax) = await CompilationStore.GetComponents(source, "Foo");
 
+        var expectedAttributeNameLocation = attributeSyntax.Name.GetLocation();
         var (expectedQuantitiesCollectionLocation, expectedQuantitiesElementLocations) = ExpectedLocation.ArrayArgument(attributeSyntax, 0);
 
         var actual = Target(parser, attributeData, attributeSyntax);
@@ -90,7 +94,8 @@ public class TryParse
         Assert.Null(actual.ForwardsBehaviour);
         Assert.Null(actual.BackwardsBehaviour);
 
-        Assert.Equal(expectedQuantitiesCollectionLocation, actual.Syntax!.QuantitiesCollection);
+        Assert.Equal(expectedAttributeNameLocation, actual.Syntax!.AttributeName);
+        Assert.Equal(expectedQuantitiesCollectionLocation, actual.Syntax.QuantitiesCollection);
         Assert.Equal(expectedQuantitiesElementLocations, actual.Syntax.QuantitiesElements);
         Assert.Equal(Location.None, actual.Syntax.ForwardsBehaviour);
         Assert.Equal(Location.None, actual.Syntax.BackwardsBehaviour);
@@ -107,6 +112,7 @@ public class TryParse
 
         var (compilation, attributeData, attributeSyntax) = await CompilationStore.GetComponents(source, "Foo");
 
+        var expectedAttributeNameLocation = attributeSyntax.Name.GetLocation();
         var (expectedQuantitiesCollectionLocation, expectedQuantitiesElementLocations) = ExpectedLocation.ArrayArgument(attributeSyntax, 0);
 
         var intType = compilation.GetSpecialType(SpecialType.System_Int32);
@@ -117,7 +123,8 @@ public class TryParse
         Assert.Null(actual.ForwardsBehaviour);
         Assert.Null(actual.BackwardsBehaviour);
 
-        Assert.Equal(expectedQuantitiesCollectionLocation, actual.Syntax!.QuantitiesCollection);
+        Assert.Equal(expectedAttributeNameLocation, actual.Syntax!.AttributeName);
+        Assert.Equal(expectedQuantitiesCollectionLocation, actual.Syntax.QuantitiesCollection);
         Assert.Equal(expectedQuantitiesElementLocations, actual.Syntax.QuantitiesElements);
         Assert.Equal(Location.None, actual.Syntax.ForwardsBehaviour);
         Assert.Equal(Location.None, actual.Syntax.BackwardsBehaviour);
@@ -134,6 +141,7 @@ public class TryParse
 
         var (_, attributeData, attributeSyntax) = await CompilationStore.GetComponents(source, "Foo");
 
+        var expectedAttributeNameLocation = attributeSyntax.Name.GetLocation();
         var expectedForwardsBehaviourLocation = ExpectedLocation.SingleArgument(attributeSyntax, 0);
 
         var actual = Target(parser, attributeData, attributeSyntax);
@@ -142,7 +150,8 @@ public class TryParse
         Assert.Equal(ConversionOperatorBehaviour.Implicit, actual.ForwardsBehaviour);
         Assert.Null(actual.BackwardsBehaviour);
 
-        Assert.Equal(Location.None, actual.Syntax!.QuantitiesCollection);
+        Assert.Equal(expectedAttributeNameLocation, actual.Syntax!.AttributeName);
+        Assert.Equal(Location.None, actual.Syntax.QuantitiesCollection);
         Assert.Empty(actual.Syntax.QuantitiesElements);
         Assert.Equal(expectedForwardsBehaviourLocation, actual.Syntax.ForwardsBehaviour);
         Assert.Equal(Location.None, actual.Syntax.BackwardsBehaviour);
@@ -159,6 +168,7 @@ public class TryParse
 
         var (_, attributeData, attributeSyntax) = await CompilationStore.GetComponents(source, "Foo");
 
+        var expectedAttributeNameLocation = attributeSyntax.Name.GetLocation();
         var expectedBackwardsBehaviourLocation = ExpectedLocation.SingleArgument(attributeSyntax, 0);
 
         var actual = Target(parser, attributeData, attributeSyntax);
@@ -167,7 +177,8 @@ public class TryParse
         Assert.Null(actual.ForwardsBehaviour);
         Assert.Equal(ConversionOperatorBehaviour.Implicit, actual.BackwardsBehaviour);
 
-        Assert.Equal(Location.None, actual.Syntax!.QuantitiesCollection);
+        Assert.Equal(expectedAttributeNameLocation, actual.Syntax!.AttributeName);
+        Assert.Equal(Location.None, actual.Syntax.QuantitiesCollection);
         Assert.Empty(actual.Syntax.QuantitiesElements);
         Assert.Equal(Location.None, actual.Syntax.ForwardsBehaviour);
         Assert.Equal(expectedBackwardsBehaviourLocation, actual.Syntax.BackwardsBehaviour);

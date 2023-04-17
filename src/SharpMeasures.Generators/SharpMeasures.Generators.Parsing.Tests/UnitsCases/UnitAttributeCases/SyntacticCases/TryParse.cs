@@ -61,6 +61,7 @@ public class TryParse
 
         var expectedType = compilation.GetSpecialType(SpecialType.System_Int32);
 
+        var expectedAttributeNameLocation = attributeSyntax.Name.GetLocation();
         var expectedScalarLocation = ExpectedLocation.TypeArgument(attributeSyntax, 0);
 
         var actual = Target(parser, attributeData, attributeSyntax);
@@ -68,7 +69,8 @@ public class TryParse
         Assert.Equal(expectedType, actual!.Scalar);
         Assert.False(actual.BiasTerm.HasValue);
 
-        Assert.Equal(expectedScalarLocation, actual.Syntax!.Scalar);
+        Assert.Equal(expectedAttributeNameLocation, actual.Syntax!.AttributeName);
+        Assert.Equal(expectedScalarLocation, actual.Syntax.Scalar);
         Assert.Equal(Location.None, actual.Syntax.BiasTerm);
     }
 
@@ -85,6 +87,7 @@ public class TryParse
 
         var expectedType = compilation.GetSpecialType(SpecialType.System_Int32);
 
+        var expectedAttributeNameLocation = attributeSyntax.Name.GetLocation();
         var expectedScalarLocation = ExpectedLocation.TypeArgument(attributeSyntax, 0);
         var expectedBiasTermLocation = ExpectedLocation.SingleArgument(attributeSyntax, 0);
 
@@ -93,7 +96,8 @@ public class TryParse
         Assert.Equal(expectedType, actual!.Scalar);
         Assert.True(actual.BiasTerm);
 
-        Assert.Equal(expectedScalarLocation, actual.Syntax!.Scalar);
+        Assert.Equal(expectedAttributeNameLocation, actual.Syntax!.AttributeName);
+        Assert.Equal(expectedScalarLocation, actual.Syntax.Scalar);
         Assert.Equal(expectedBiasTermLocation, actual.Syntax.BiasTerm);
     }
 
@@ -110,6 +114,7 @@ public class TryParse
 
         var expectedType = compilation.GetSpecialType(SpecialType.System_Int32);
 
+        var expectedAttributeNameLocation = attributeSyntax.Name.GetLocation();
         var expectedScalarLocation = ExpectedLocation.TypeArgument(attributeSyntax, 0);
         var expectedBiasTermLocation = ExpectedLocation.SingleArgument(attributeSyntax, 0);
 
@@ -118,7 +123,8 @@ public class TryParse
         Assert.Equal(expectedType, actual!.Scalar);
         Assert.False(actual.BiasTerm);
 
-        Assert.Equal(expectedScalarLocation, actual.Syntax!.Scalar);
+        Assert.Equal(expectedAttributeNameLocation, actual.Syntax!.AttributeName);
+        Assert.Equal(expectedScalarLocation, actual.Syntax.Scalar);
         Assert.Equal(expectedBiasTermLocation, actual.Syntax.BiasTerm);
     }
 }

@@ -59,6 +59,7 @@ public class TryParse
 
         var (_, attributeData, attributeSyntax) = await CompilationStore.GetComponents(source, "Foo");
 
+        var expectedAttributeNameLocation = attributeSyntax.Name.GetLocation();
         var expectedUnitLocation = ExpectedLocation.SingleArgument(attributeSyntax, 0);
         var expectedSymbolLocation = ExpectedLocation.SingleArgument(attributeSyntax, 1);
 
@@ -67,7 +68,8 @@ public class TryParse
         Assert.Null(actual!.Unit);
         Assert.Null(actual.Symbol);
 
-        Assert.Equal(expectedUnitLocation, actual.Syntax!.Unit);
+        Assert.Equal(expectedAttributeNameLocation, actual.Syntax!.AttributeName);
+        Assert.Equal(expectedUnitLocation, actual.Syntax.Unit);
         Assert.Equal(expectedSymbolLocation, actual.Syntax.Symbol);
     }
 
@@ -82,6 +84,7 @@ public class TryParse
 
         var (_, attributeData, attributeSyntax) = await CompilationStore.GetComponents(source, "Foo");
 
+        var expectedAttributeNameLocation = attributeSyntax.Name.GetLocation();
         var expectedUnitLocation = ExpectedLocation.SingleArgument(attributeSyntax, 0);
         var expectedSymbolLocation = ExpectedLocation.SingleArgument(attributeSyntax, 1);
 
@@ -90,7 +93,8 @@ public class TryParse
         Assert.Equal("Unit", actual!.Unit);
         Assert.Equal("Symbol", actual.Symbol);
 
-        Assert.Equal(expectedUnitLocation, actual.Syntax!.Unit);
+        Assert.Equal(expectedAttributeNameLocation, actual.Syntax!.AttributeName);
+        Assert.Equal(expectedUnitLocation, actual.Syntax.Unit);
         Assert.Equal(expectedSymbolLocation, actual.Syntax.Symbol);
     }
 }

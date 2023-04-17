@@ -61,6 +61,7 @@ public class TryParse
 
         var intType = compilation.GetSpecialType(SpecialType.System_Int32);
 
+        var expectedAttributeNameLocation = attributeSyntax.Name.GetLocation();
         var expectedGroupLocation = ExpectedLocation.TypeArgument(attributeSyntax, 0);
 
         var actual = Target(parser, attributeData, attributeSyntax);
@@ -75,7 +76,8 @@ public class TryParse
         Assert.Null(actual.InheritConversionsFromGroup);
         Assert.Null(actual.InheritConversionsFromMembers);
 
-        Assert.Equal(expectedGroupLocation, actual.Syntax!.Group);
+        Assert.Equal(expectedAttributeNameLocation, actual.Syntax!.AttributeName);
+        Assert.Equal(expectedGroupLocation, actual.Syntax.Group);
         Assert.Equal(Location.None, actual.Syntax.Dimension);
         Assert.Equal(Location.None, actual.Syntax.InheritOperationsFromGroup);
         Assert.Equal(Location.None, actual.Syntax.InheritOperationsFromMembers);
@@ -99,6 +101,7 @@ public class TryParse
 
         var intType = compilation.GetSpecialType(SpecialType.System_Int32);
 
+        var expectedAttributeNameLocation = attributeSyntax.Name.GetLocation();
         var expectedGroupLocation = ExpectedLocation.TypeArgument(attributeSyntax, 0);
         var expectedDimensionLocation = ExpectedLocation.SingleArgument(attributeSyntax, 0);
 
@@ -114,7 +117,8 @@ public class TryParse
         Assert.Null(actual.InheritConversionsFromGroup);
         Assert.Null(actual.InheritConversionsFromMembers);
 
-        Assert.Equal(expectedGroupLocation, actual.Syntax!.Group);
+        Assert.Equal(expectedAttributeNameLocation, actual.Syntax!.AttributeName);
+        Assert.Equal(expectedGroupLocation, actual.Syntax.Group);
         Assert.Equal(expectedDimensionLocation, actual.Syntax.Dimension);
         Assert.Equal(Location.None, actual.Syntax.InheritOperationsFromGroup);
         Assert.Equal(Location.None, actual.Syntax.InheritOperationsFromMembers);
@@ -138,6 +142,7 @@ public class TryParse
 
         var intType = compilation.GetSpecialType(SpecialType.System_Int32);
 
+        var expectedAttributeNameLocation = attributeSyntax.Name.GetLocation();
         var expectedGroupLocation = ExpectedLocation.TypeArgument(attributeSyntax, 0);
         var expectedInheritOperationsFromGroupLocation = ExpectedLocation.SingleArgument(attributeSyntax, 0);
 
@@ -153,7 +158,8 @@ public class TryParse
         Assert.Null(actual.InheritConversionsFromGroup);
         Assert.Null(actual.InheritConversionsFromMembers);
 
-        Assert.Equal(expectedGroupLocation, actual.Syntax!.Group);
+        Assert.Equal(expectedAttributeNameLocation, actual.Syntax!.AttributeName);
+        Assert.Equal(expectedGroupLocation, actual.Syntax.Group);
         Assert.Equal(Location.None, actual.Syntax.Dimension);
         Assert.Equal(expectedInheritOperationsFromGroupLocation, actual.Syntax.InheritOperationsFromGroup);
         Assert.Equal(Location.None, actual.Syntax.InheritOperationsFromMembers);
@@ -177,6 +183,7 @@ public class TryParse
 
         var intType = compilation.GetSpecialType(SpecialType.System_Int32);
 
+        var expectedAttributeNameLocation = attributeSyntax.Name.GetLocation();
         var expectedGroupLocation = ExpectedLocation.TypeArgument(attributeSyntax, 0);
         var expectedInheritOperationsFromMembersLocation = ExpectedLocation.SingleArgument(attributeSyntax, 0);
 
@@ -192,7 +199,8 @@ public class TryParse
         Assert.Null(actual.InheritConversionsFromGroup);
         Assert.Null(actual.InheritConversionsFromMembers);
 
-        Assert.Equal(expectedGroupLocation, actual.Syntax!.Group);
+        Assert.Equal(expectedAttributeNameLocation, actual.Syntax!.AttributeName);
+        Assert.Equal(expectedGroupLocation, actual.Syntax.Group);
         Assert.Equal(Location.None, actual.Syntax.Dimension);
         Assert.Equal(Location.None, actual.Syntax.InheritOperationsFromGroup);
         Assert.Equal(expectedInheritOperationsFromMembersLocation, actual.Syntax.InheritOperationsFromMembers);
@@ -216,6 +224,7 @@ public class TryParse
 
         var intType = compilation.GetSpecialType(SpecialType.System_Int32);
 
+        var expectedAttributeNameLocation = attributeSyntax.Name.GetLocation();
         var expectedGroupLocation = ExpectedLocation.TypeArgument(attributeSyntax, 0);
         var expectedInheritProcessesFromMembersLocation = ExpectedLocation.SingleArgument(attributeSyntax, 0);
 
@@ -231,7 +240,8 @@ public class TryParse
         Assert.Null(actual.InheritConversionsFromGroup);
         Assert.Null(actual.InheritConversionsFromMembers);
 
-        Assert.Equal(expectedGroupLocation, actual.Syntax!.Group);
+        Assert.Equal(expectedAttributeNameLocation, actual.Syntax!.AttributeName);
+        Assert.Equal(expectedGroupLocation, actual.Syntax.Group);
         Assert.Equal(Location.None, actual.Syntax.Dimension);
         Assert.Equal(Location.None, actual.Syntax.InheritOperationsFromGroup);
         Assert.Equal(Location.None, actual.Syntax.InheritOperationsFromMembers);
@@ -255,6 +265,7 @@ public class TryParse
 
         var intType = compilation.GetSpecialType(SpecialType.System_Int32);
 
+        var expectedAttributeNameLocation = attributeSyntax.Name.GetLocation();
         var expectedGroupLocation = ExpectedLocation.TypeArgument(attributeSyntax, 0);
         var expectedInheritPropertiesFromMembersLocation = ExpectedLocation.SingleArgument(attributeSyntax, 0);
 
@@ -270,7 +281,8 @@ public class TryParse
         Assert.Null(actual.InheritConversionsFromGroup);
         Assert.Null(actual.InheritConversionsFromMembers);
 
-        Assert.Equal(expectedGroupLocation, actual.Syntax!.Group);
+        Assert.Equal(expectedAttributeNameLocation, actual.Syntax!.AttributeName);
+        Assert.Equal(expectedGroupLocation, actual.Syntax.Group);
         Assert.Equal(Location.None, actual.Syntax.Dimension);
         Assert.Equal(Location.None, actual.Syntax.InheritOperationsFromGroup);
         Assert.Equal(Location.None, actual.Syntax.InheritOperationsFromMembers);
@@ -294,6 +306,7 @@ public class TryParse
 
         var intType = compilation.GetSpecialType(SpecialType.System_Int32);
 
+        var expectedAttributeNameLocation = attributeSyntax.Name.GetLocation();
         var expectedGroupLocation = ExpectedLocation.TypeArgument(attributeSyntax, 0);
         var expectedInheritConstantsFromMembersLocation = ExpectedLocation.SingleArgument(attributeSyntax, 0);
 
@@ -309,7 +322,8 @@ public class TryParse
         Assert.Null(actual.InheritConversionsFromGroup);
         Assert.Null(actual.InheritConversionsFromMembers);
 
-        Assert.Equal(expectedGroupLocation, actual.Syntax!.Group);
+        Assert.Equal(expectedAttributeNameLocation, actual.Syntax!.AttributeName);
+        Assert.Equal(expectedGroupLocation, actual.Syntax.Group);
         Assert.Equal(Location.None, actual.Syntax.Dimension);
         Assert.Equal(Location.None, actual.Syntax.InheritOperationsFromGroup);
         Assert.Equal(Location.None, actual.Syntax.InheritOperationsFromMembers);
@@ -333,6 +347,7 @@ public class TryParse
 
         var intType = compilation.GetSpecialType(SpecialType.System_Int32);
 
+        var expectedAttributeNameLocation = attributeSyntax.Name.GetLocation();
         var expectedGroupLocation = ExpectedLocation.TypeArgument(attributeSyntax, 0);
         var expectedInheritConversionsFromGroupLocation = ExpectedLocation.SingleArgument(attributeSyntax, 0);
 
@@ -348,7 +363,8 @@ public class TryParse
         Assert.True(actual.InheritConversionsFromGroup);
         Assert.Null(actual.InheritConversionsFromMembers);
 
-        Assert.Equal(expectedGroupLocation, actual.Syntax!.Group);
+        Assert.Equal(expectedAttributeNameLocation, actual.Syntax!.AttributeName);
+        Assert.Equal(expectedGroupLocation, actual.Syntax.Group);
         Assert.Equal(Location.None, actual.Syntax.Dimension);
         Assert.Equal(Location.None, actual.Syntax.InheritOperationsFromGroup);
         Assert.Equal(Location.None, actual.Syntax.InheritOperationsFromMembers);
@@ -372,6 +388,7 @@ public class TryParse
 
         var intType = compilation.GetSpecialType(SpecialType.System_Int32);
 
+        var expectedAttributeNameLocation = attributeSyntax.Name.GetLocation();
         var expectedGroupLocation = ExpectedLocation.TypeArgument(attributeSyntax, 0);
         var expectedInheritConversionsFromMembersLocation = ExpectedLocation.SingleArgument(attributeSyntax, 0);
 
@@ -387,7 +404,8 @@ public class TryParse
         Assert.Null(actual.InheritConversionsFromGroup);
         Assert.True(actual.InheritConversionsFromMembers);
 
-        Assert.Equal(expectedGroupLocation, actual.Syntax!.Group);
+        Assert.Equal(expectedAttributeNameLocation, actual.Syntax!.AttributeName);
+        Assert.Equal(expectedGroupLocation, actual.Syntax.Group);
         Assert.Equal(Location.None, actual.Syntax.Dimension);
         Assert.Equal(Location.None, actual.Syntax.InheritOperationsFromGroup);
         Assert.Equal(Location.None, actual.Syntax.InheritOperationsFromMembers);

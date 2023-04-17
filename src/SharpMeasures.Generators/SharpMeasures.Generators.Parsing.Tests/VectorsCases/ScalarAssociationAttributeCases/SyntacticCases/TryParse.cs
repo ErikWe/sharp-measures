@@ -61,6 +61,7 @@ public class TryParse
 
         var intType = compilation.GetSpecialType(SpecialType.System_Int32);
 
+        var expectedAttributeNameLocation = attributeSyntax.Name.GetLocation();
         var expectedScalarLocation = ExpectedLocation.TypeArgument(attributeSyntax, 0);
 
         var actual = Target(parser, attributeData, attributeSyntax);
@@ -69,7 +70,8 @@ public class TryParse
         Assert.Null(actual.AsComponents);
         Assert.Null(actual.AsMagnitude);
 
-        Assert.Equal(expectedScalarLocation, actual.Syntax!.Scalar);
+        Assert.Equal(expectedAttributeNameLocation, actual.Syntax!.AttributeName);
+        Assert.Equal(expectedScalarLocation, actual.Syntax.Scalar);
         Assert.Equal(Location.None, actual.Syntax.AsComponents);
         Assert.Equal(Location.None, actual.Syntax.AsMagnitude);
     }
@@ -87,6 +89,7 @@ public class TryParse
 
         var intType = compilation.GetSpecialType(SpecialType.System_Int32);
 
+        var expectedAttributeNameLocation = attributeSyntax.Name.GetLocation();
         var expectedScalarLocation = ExpectedLocation.TypeArgument(attributeSyntax, 0);
         var expectedAsComponentsLocation = ExpectedLocation.SingleArgument(attributeSyntax, 0);
 
@@ -96,7 +99,8 @@ public class TryParse
         Assert.True(actual.AsComponents);
         Assert.Null(actual.AsMagnitude);
 
-        Assert.Equal(expectedScalarLocation, actual.Syntax!.Scalar);
+        Assert.Equal(expectedAttributeNameLocation, actual.Syntax!.AttributeName);
+        Assert.Equal(expectedScalarLocation, actual.Syntax.Scalar);
         Assert.Equal(expectedAsComponentsLocation, actual.Syntax.AsComponents);
         Assert.Equal(Location.None, actual.Syntax.AsMagnitude);
     }
@@ -114,6 +118,7 @@ public class TryParse
 
         var intType = compilation.GetSpecialType(SpecialType.System_Int32);
 
+        var expectedAttributeNameLocation = attributeSyntax.Name.GetLocation();
         var expectedScalarLocation = ExpectedLocation.TypeArgument(attributeSyntax, 0);
         var expectedAsMagnitudeLocation = ExpectedLocation.SingleArgument(attributeSyntax, 0);
 
@@ -123,7 +128,8 @@ public class TryParse
         Assert.Null(actual.AsComponents);
         Assert.True(actual.AsMagnitude);
 
-        Assert.Equal(expectedScalarLocation, actual.Syntax!.Scalar);
+        Assert.Equal(expectedAttributeNameLocation, actual.Syntax!.AttributeName);
+        Assert.Equal(expectedScalarLocation, actual.Syntax.Scalar);
         Assert.Equal(Location.None, actual.Syntax.AsComponents);
         Assert.Equal(expectedAsMagnitudeLocation, actual.Syntax.AsMagnitude);
     }
