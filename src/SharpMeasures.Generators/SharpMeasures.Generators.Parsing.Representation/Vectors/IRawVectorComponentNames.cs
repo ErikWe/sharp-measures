@@ -2,7 +2,7 @@
 
 using System.Collections.Generic;
 
-/// <summary>Represents a parased <see cref="VectorComponentNamesAttribute"/>.</summary>
+/// <summary>Represents a parsed <see cref="VectorComponentNamesAttribute"/>.</summary>
 public interface IRawVectorComponentNames
 {
     /// <summary>The names of the Cartesian components.</summary>
