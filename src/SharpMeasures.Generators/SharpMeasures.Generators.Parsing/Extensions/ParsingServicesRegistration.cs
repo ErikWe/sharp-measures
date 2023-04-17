@@ -50,8 +50,8 @@ public static class ParsingServicesRegistration
         services.AddSingleton<IConstructiveSemanticAttributeParser<IRawDerivedUnitInstance>, DerivedUnitInstanceAttributeParser>();
         services.AddSingleton<IConstructiveSyntacticAttributeParser<IRawDerivedUnitInstance>, DerivedUnitInstanceAttributeParser>();
 
-        services.AddSingleton<IConstructiveSemanticAttributeParser<IRawDerivableUnit>, DerivableUnitAttributeParser>();
-        services.AddSingleton<IConstructiveSyntacticAttributeParser<IRawDerivableUnit>, DerivableUnitAttributeParser>();
+        services.AddSingleton<IConstructiveSemanticAttributeParser<IRawUnitDerivation>, UnitDerivationAttributeParser>();
+        services.AddSingleton<IConstructiveSyntacticAttributeParser<IRawUnitDerivation>, UnitDerivationAttributeParser>();
     }
 
     private static void AddSharpMeasuresQuantityAttributesParsing(IServiceCollection services)

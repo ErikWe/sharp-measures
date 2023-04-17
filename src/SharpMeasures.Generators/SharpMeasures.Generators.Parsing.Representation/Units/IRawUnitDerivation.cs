@@ -4,8 +4,8 @@ using Microsoft.CodeAnalysis;
 
 using System.Collections.Generic;
 
-/// <summary>Represents a parsed <see cref="DerivableUnitAttribute"/>.</summary>
-public interface IRawDerivableUnit
+/// <summary>Represents a parsed <see cref="UnitDerivationAttribute"/>.</summary>
+public interface IRawUnitDerivation
 {
     /// <summary>The <see cref="string"/> ID of the derivation, if provided.</summary>
     public abstract string? DerivationID { get; }
@@ -16,6 +16,6 @@ public interface IRawDerivableUnit
     /// <summary>The signature of the derivation, a collection of units.</summary>
     public abstract IReadOnlyList<ITypeSymbol?>? Signature { get; }
 
-    /// <summary>Provides syntactical information about the parsed <see cref="DerivableUnitAttribute"/>.</summary>
-    public abstract IDerivableUnitSyntax? Syntax { get; }
+    /// <summary>Provides syntactical information about the parsed <see cref="UnitDerivationAttribute"/>.</summary>
+    public abstract IUnitDerivationSyntax? Syntax { get; }
 }
