@@ -2,7 +2,7 @@
 
 using System;
 
-/// <summary>Applied to SharpMeasures units, defining an instance of the unit using instances of other units, according to a definition provided by a <see cref="DerivableUnitAttribute"/>.</summary>
+/// <summary>Applied to SharpMeasures units, defining an instance of the unit using instances of other units, according to a definition provided by a <see cref="UnitDerivationAttribute"/>.</summary>
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, AllowMultiple = true)]
 public sealed class DerivedUnitInstanceAttribute : Attribute
 {
@@ -12,7 +12,7 @@ public sealed class DerivedUnitInstanceAttribute : Attribute
     /// <inheritdoc cref="FixedUnitInstanceAttribute.PluralForm"/>
     public string? PluralForm { get; }
 
-    /// <summary>The ID of the intended derivation signature, as defined by a <see cref="DerivableUnitAttribute"/> - or <see langword="null"/> if there is exactly one derivation available.</summary>
+    /// <summary>The ID of the intended derivation signature, as defined by a <see cref="UnitDerivationAttribute"/> - or <see langword="null"/> if there is exactly one derivation available.</summary>
     public string? DerivationID { get; }
 
     /// <summary>The names of the unit instances of other units from which this unit instance is derived. The order must match that of the derivation signature.</summary>

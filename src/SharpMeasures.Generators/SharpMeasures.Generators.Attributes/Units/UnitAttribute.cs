@@ -35,7 +35,7 @@ using System.Diagnostics.CodeAnalysis;
 /// The following attribute may be used to add functionality to the unit:
 /// <list type="bullet">
 /// <item>
-/// <term><see cref="DerivableUnitAttribute"/></term>
+/// <term><see cref="UnitDerivationAttribute"/></term>
 /// <description>Describes how instances of the unit may be derived from instances of another unit.</description>
 /// </item>
 /// </list></remarks>
