@@ -3,7 +3,7 @@
 using Microsoft.CodeAnalysis;
 
 /// <summary>Represents syntactical information about a parsed <see cref="VectorGroupMemberAttribute{TGroup}"/>.</summary>
-public interface IVectorGroupMemberSyntax
+public interface IVectorGroupMemberSyntax : IAttributeSyntax
 {
     /// <summary>The <see cref="Location"/> of the argument for the group that the member belongs to.</summary>
     public abstract Location Group { get; }

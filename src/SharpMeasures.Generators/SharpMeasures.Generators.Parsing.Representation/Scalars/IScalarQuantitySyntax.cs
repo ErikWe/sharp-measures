@@ -3,7 +3,7 @@
 using Microsoft.CodeAnalysis;
 
 /// <summary>Represents syntactical information about a parsed <see cref="ScalarQuantityAttribute{TUnit}"/>.</summary>
-public interface IScalarQuantitySyntax
+public interface IScalarQuantitySyntax : IAttributeSyntax
 {
     /// <summary>The <see cref="Location"/> of the argument for the unit that describes the quantity.</summary>
     public abstract Location Unit { get; }

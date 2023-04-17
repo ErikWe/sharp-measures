@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis;
 using System.Collections.Generic;
 
 /// <summary>Represents the syntactical information about a parsed <see cref="QuantityProcessAttribute{TResult}"/>.</summary>
-public interface IQuantityProcessSyntax
+public interface IQuantityProcessSyntax : IAttributeSyntax
 {
     /// <summary>The <see cref="Location"/> of the argument for the type that is the result of the process.</summary>
     public abstract Location Result { get; }

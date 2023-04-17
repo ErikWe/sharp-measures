@@ -3,7 +3,7 @@
 using Microsoft.CodeAnalysis;
 
 /// <summary>Represents syntactical information about a parsed <see cref="UnitAttribute{TScalar}"/>.</summary>
-public interface IUnitSyntax
+public interface IUnitSyntax : IAttributeSyntax
 {
     /// <summary>The <see cref="Location"/> of the argument for the scalar quantity that the unit describes.</summary>
     public abstract Location Scalar { get; }

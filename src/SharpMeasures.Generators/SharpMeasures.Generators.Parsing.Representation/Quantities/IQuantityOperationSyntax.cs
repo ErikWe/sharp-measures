@@ -3,7 +3,7 @@
 using Microsoft.CodeAnalysis;
 
 /// <summary>Represents syntactical information about a parsed <see cref="QuantityOperationAttribute{TResult, TOther}"/>.</summary>
-public interface IQuantityOperationSyntax
+public interface IQuantityOperationSyntax : IAttributeSyntax
 {
     /// <summary>The <see cref="Location"/> of the argument for the quantity that is the result of the operation.</summary>
     public abstract Location Result { get; }

@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis;
 using System.Collections.Generic;
 
 /// <summary>Represents syntactical information about a parsed <see cref="IncludeUnitsAttribute"/>.</summary>
-public interface IIncludeUnitsSyntax
+public interface IIncludeUnitsSyntax : IAttributeSyntax
 {
     /// <summary>The <see cref="Location"/> of the argument for the names of the included unit instances.</summary>
     public abstract Location IncludedUnitsCollection { get; }

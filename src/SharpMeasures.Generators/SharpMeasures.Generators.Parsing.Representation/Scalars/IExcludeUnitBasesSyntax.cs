@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis;
 using System.Collections.Generic;
 
 /// <summary>Represents syntactical information about a parsed <see cref="ExcludeUnitBasesAttribute"/>.</summary>
-public interface IExcludeUnitBasesSyntax
+public interface IExcludeUnitBasesSyntax : IAttributeSyntax
 {
     /// <summary>The <see cref="Location"/> of the argument for the names of the excluded unit instances.</summary>
     public abstract Location ExcludedUnitBasesCollection { get; }

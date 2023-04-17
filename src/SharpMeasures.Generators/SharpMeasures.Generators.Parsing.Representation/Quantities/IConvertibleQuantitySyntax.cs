@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis;
 using System.Collections.Generic;
 
 /// <summary>Represents syntactical information about a parsed <see cref="ConvertibleQuantityAttribute"/>.</summary>
-public interface IConvertibleQuantitySyntax
+public interface IConvertibleQuantitySyntax : IAttributeSyntax
 {
     /// <summary>The <see cref="Location"/> of the argument for the target quantities.</summary>
     public abstract Location QuantitiesCollection { get; }

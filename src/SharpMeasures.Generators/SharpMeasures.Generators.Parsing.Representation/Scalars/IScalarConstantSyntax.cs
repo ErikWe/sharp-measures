@@ -3,7 +3,7 @@
 using Microsoft.CodeAnalysis;
 
 /// <summary>Represents syntactical information about a parsed <see cref="ScalarConstantAttribute"/>.</summary>
-public interface IScalarConstantSyntax
+public interface IScalarConstantSyntax : IAttributeSyntax
 {
     /// <summary>The <see cref="Location"/> of the argument for the name of the constant.</summary>
     public abstract Location Name { get; }

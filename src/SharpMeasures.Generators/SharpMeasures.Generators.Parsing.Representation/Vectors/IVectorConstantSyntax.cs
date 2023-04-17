@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis;
 using System.Collections.Generic;
 
 /// <summary>Represents syntactical information about a parsed <see cref="VectorConstantAttribute"/>.</summary>
-public interface IVectorConstantSyntax
+public interface IVectorConstantSyntax : IAttributeSyntax
 {
     /// <summary>The <see cref="Location"/> of the argument for the name of the constant.</summary>
     public abstract Location Name { get; }

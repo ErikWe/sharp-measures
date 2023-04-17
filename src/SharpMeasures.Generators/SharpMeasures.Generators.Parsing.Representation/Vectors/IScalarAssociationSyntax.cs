@@ -3,7 +3,7 @@
 using Microsoft.CodeAnalysis;
 
 /// <summary>Represents syntactical information about a parsed <see cref="ScalarAssociationAttribute{TScalar}"/>.</summary>
-public interface IScalarAssociationSyntax
+public interface IScalarAssociationSyntax : IAttributeSyntax
 {
     /// <summary>The <see cref="Location"/> of the argument for the scalar quantity associated with the vector quantity.</summary>
     public abstract Location Scalar { get; }
