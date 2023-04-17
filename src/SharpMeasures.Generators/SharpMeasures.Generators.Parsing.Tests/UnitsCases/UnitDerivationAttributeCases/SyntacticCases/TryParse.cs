@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures.Generators.Parsing.Tests.UnitsCases.DerivableUnitAttributeCases.SyntacticCases;
+﻿namespace SharpMeasures.Generators.Parsing.Tests.UnitsCases.UnitDerivationAttributeCases.SyntacticCases;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -12,14 +12,14 @@ using Xunit;
 
 public class TryParse
 {
-    private static IRawDerivableUnit? Target(IConstructiveSyntacticAttributeParser<IRawDerivableUnit> parser, AttributeData attributeData, AttributeSyntax attributeSyntax) => parser.TryParse(attributeData, attributeSyntax);
+    private static IRawUnitDerivation? Target(IConstructiveSyntacticAttributeParser<IRawUnitDerivation> parser, AttributeData attributeData, AttributeSyntax attributeSyntax) => parser.TryParse(attributeData, attributeSyntax);
 
     [Theory]
     [ClassData(typeof(Datasets.ParserSources))]
-    public async Task NullAttributeData_ArgumentNullException(IConstructiveSyntacticAttributeParser<IRawDerivableUnit> parser)
+    public async Task NullAttributeData_ArgumentNullException(IConstructiveSyntacticAttributeParser<IRawUnitDerivation> parser)
     {
         var source = """
-            [SharpMeasures.DerivableUnit("Expression", new Type[0])]
+            [SharpMeasures.UnitDerivation("Expression", new Type[0])]
             public class Foo { }
             """;
 
@@ -33,10 +33,10 @@ public class TryParse
 
     [Theory]
     [ClassData(typeof(Datasets.ParserSources))]
-    public async Task NullAttributeSyntax_ArgumentNullException(IConstructiveSyntacticAttributeParser<IRawDerivableUnit> parser)
+    public async Task NullAttributeSyntax_ArgumentNullException(IConstructiveSyntacticAttributeParser<IRawUnitDerivation> parser)
     {
         var source = """
-            [SharpMeasures.DerivableUnit("Expression", new Type[0])]
+            [SharpMeasures.UnitDerivation("Expression", new Type[0])]
             public class Foo { }
             """;
 
@@ -50,10 +50,10 @@ public class TryParse
 
     [Theory]
     [ClassData(typeof(Datasets.ParserSources))]
-    public async Task NullValues_Match(IConstructiveSyntacticAttributeParser<IRawDerivableUnit> parser)
+    public async Task NullValues_Match(IConstructiveSyntacticAttributeParser<IRawUnitDerivation> parser)
     {
         var source = """
-            [SharpMeasures.DerivableUnit(null, (string)null, null)]
+            [SharpMeasures.UnitDerivation(null, (string)null, null)]
             public class Foo { }
             """;
 
@@ -77,10 +77,10 @@ public class TryParse
 
     [Theory]
     [ClassData(typeof(Datasets.ParserSources))]
-    public async Task WithDerivationID_Match(IConstructiveSyntacticAttributeParser<IRawDerivableUnit> parser)
+    public async Task WithDerivationID_Match(IConstructiveSyntacticAttributeParser<IRawUnitDerivation> parser)
     {
         var source = """
-            [SharpMeasures.DerivableUnit("ID", "Expression", new[] { typeof(int), typeof(string) })]
+            [SharpMeasures.UnitDerivation("ID", "Expression", new[] { typeof(int), typeof(string) })]
             public class Foo { }
             """;
 
@@ -109,10 +109,10 @@ public class TryParse
 
     [Theory]
     [ClassData(typeof(Datasets.ParserSources))]
-    public async Task WithoutDerivationID_Match(IConstructiveSyntacticAttributeParser<IRawDerivableUnit> parser)
+    public async Task WithoutDerivationID_Match(IConstructiveSyntacticAttributeParser<IRawUnitDerivation> parser)
     {
         var source = """
-            [SharpMeasures.DerivableUnit("Expression", new[] { typeof(int), typeof(string) })]
+            [SharpMeasures.UnitDerivation("Expression", new[] { typeof(int), typeof(string) })]
             public class Foo { }
             """;
 
@@ -140,10 +140,10 @@ public class TryParse
 
     [Theory]
     [ClassData(typeof(Datasets.ParserSources))]
-    public async Task EmptySignature_Match(IConstructiveSyntacticAttributeParser<IRawDerivableUnit> parser)
+    public async Task EmptySignature_Match(IConstructiveSyntacticAttributeParser<IRawUnitDerivation> parser)
     {
         var source = """
-            [SharpMeasures.DerivableUnit("Expression", new System.Type[0])]
+            [SharpMeasures.UnitDerivation("Expression", new System.Type[0])]
             public class Foo { }
             """;
 
@@ -166,10 +166,10 @@ public class TryParse
 
     [Theory]
     [ClassData(typeof(Datasets.ParserSources))]
-    public async Task NullContainingSignature_Match(IConstructiveSyntacticAttributeParser<IRawDerivableUnit> parser)
+    public async Task NullContainingSignature_Match(IConstructiveSyntacticAttributeParser<IRawUnitDerivation> parser)
     {
         var source = """
-            [SharpMeasures.DerivableUnit("Expression", new[] { typeof(int), null })]
+            [SharpMeasures.UnitDerivation("Expression", new[] { typeof(int), null })]
             public class Foo { }
             """;
 

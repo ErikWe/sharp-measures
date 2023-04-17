@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures.Generators.Parsing.Tests.UnitsCases.DerivableUnitAttributeCases.SemanticCases;
+﻿namespace SharpMeasures.Generators.Parsing.Tests.UnitsCases.UnitDerivationAttributeCases.SemanticCases;
 
 using Microsoft.CodeAnalysis;
 
@@ -11,11 +11,11 @@ using Xunit;
 
 public class TryParse
 {
-    private static IRawDerivableUnit? Target(IConstructiveSemanticAttributeParser<IRawDerivableUnit> parser, AttributeData attributeData) => parser.TryParse(attributeData);
+    private static IRawUnitDerivation? Target(IConstructiveSemanticAttributeParser<IRawUnitDerivation> parser, AttributeData attributeData) => parser.TryParse(attributeData);
 
     [Theory]
     [ClassData(typeof(Datasets.ParserSources))]
-    public void NullAttributeData_ArgumentNullException(IConstructiveSemanticAttributeParser<IRawDerivableUnit> parser)
+    public void NullAttributeData_ArgumentNullException(IConstructiveSemanticAttributeParser<IRawUnitDerivation> parser)
     {
         var attributeData = Datasets.GetNullAttributeData();
 
@@ -26,10 +26,10 @@ public class TryParse
 
     [Theory]
     [ClassData(typeof(Datasets.ParserSources))]
-    public async Task NullValues_Match(IConstructiveSemanticAttributeParser<IRawDerivableUnit> parser)
+    public async Task NullValues_Match(IConstructiveSemanticAttributeParser<IRawUnitDerivation> parser)
     {
         var source = """
-            [SharpMeasures.DerivableUnit(null, (string)null, null)]
+            [SharpMeasures.UnitDerivation(null, (string)null, null)]
             public class Foo { }
             """;
 
@@ -47,10 +47,10 @@ public class TryParse
 
     [Theory]
     [ClassData(typeof(Datasets.ParserSources))]
-    public async Task WithDerivationID_Match(IConstructiveSemanticAttributeParser<IRawDerivableUnit> parser)
+    public async Task WithDerivationID_Match(IConstructiveSemanticAttributeParser<IRawUnitDerivation> parser)
     {
         var source = """
-            [SharpMeasures.DerivableUnit("ID", "Expression", new[] { typeof(int), typeof(string) })]
+            [SharpMeasures.UnitDerivation("ID", "Expression", new[] { typeof(int), typeof(string) })]
             public class Foo { }
             """;
 
@@ -71,10 +71,10 @@ public class TryParse
 
     [Theory]
     [ClassData(typeof(Datasets.ParserSources))]
-    public async Task WithoutDerivationID_Match(IConstructiveSemanticAttributeParser<IRawDerivableUnit> parser)
+    public async Task WithoutDerivationID_Match(IConstructiveSemanticAttributeParser<IRawUnitDerivation> parser)
     {
         var source = """
-            [SharpMeasures.DerivableUnit("Expression", new[] { typeof(int), typeof(string) })]
+            [SharpMeasures.UnitDerivation("Expression", new[] { typeof(int), typeof(string) })]
             public class Foo { }
             """;
 
@@ -95,10 +95,10 @@ public class TryParse
 
     [Theory]
     [ClassData(typeof(Datasets.ParserSources))]
-    public async Task EmptySignature_Match(IConstructiveSemanticAttributeParser<IRawDerivableUnit> parser)
+    public async Task EmptySignature_Match(IConstructiveSemanticAttributeParser<IRawUnitDerivation> parser)
     {
         var source = """
-            [SharpMeasures.DerivableUnit("Expression", new System.Type[0])]
+            [SharpMeasures.UnitDerivation("Expression", new System.Type[0])]
             public class Foo { }
             """;
 
@@ -114,10 +114,10 @@ public class TryParse
 
     [Theory]
     [ClassData(typeof(Datasets.ParserSources))]
-    public async Task NullContainingSignature_Match(IConstructiveSemanticAttributeParser<IRawDerivableUnit> parser)
+    public async Task NullContainingSignature_Match(IConstructiveSemanticAttributeParser<IRawUnitDerivation> parser)
     {
         var source = """
-            [SharpMeasures.DerivableUnit("Expression", new[] { typeof(int), null })]
+            [SharpMeasures.UnitDerivation("Expression", new[] { typeof(int), null })]
             public class Foo { }
             """;
 
